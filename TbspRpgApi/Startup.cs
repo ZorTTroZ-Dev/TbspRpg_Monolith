@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using TbspRpgApi.Repositories;
 
 namespace TbspRpgApi
 {
@@ -32,6 +34,12 @@ namespace TbspRpgApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TbspRpgApi", Version = "v1" });
             });
+            
+            var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+
+            services.AddDbContext<DatabaseContext>(
+                options => options.UseNpgsql(connectionString)
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
