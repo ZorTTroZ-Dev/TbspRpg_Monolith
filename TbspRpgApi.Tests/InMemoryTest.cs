@@ -12,6 +12,15 @@ namespace TbspRpgApi.Tests
             DbContextOptions = new DbContextOptionsBuilder<DatabaseContext>()
                 .UseInMemoryDatabase(dbName)
                 .Options;
+            Setup();
+        }
+        
+        private void Setup()
+        {
+            var databaseContext = new DatabaseContext(DbContextOptions);
+            databaseContext.Database.EnsureDeleted();
+            databaseContext.Database.EnsureCreated();
+            databaseContext.SaveChanges();
         }
     }
 }

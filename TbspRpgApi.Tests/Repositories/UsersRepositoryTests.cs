@@ -7,18 +7,7 @@ namespace TbspRpgApi.Tests.Repositories
 {
     public class UsersRepositoryTests : InMemoryTest
     {
-        public UsersRepositoryTests() : base("UsersRepositoryTests")
-        {
-            Setup();
-        }
-
-        private void Setup()
-        {
-            var databaseContext = new DatabaseContext(DbContextOptions);
-            databaseContext.Database.EnsureDeleted();
-            databaseContext.Database.EnsureCreated();
-            databaseContext.SaveChanges();
-        }
+        public UsersRepositoryTests() : base("UsersRepositoryTests") { }
 
         #region GetUserById
 
@@ -34,7 +23,7 @@ namespace TbspRpgApi.Tests.Repositories
                 Password = "test"
             };
             context.Users.Add(testUser);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
             var repo = new UsersRepository(context);
             
             //act
@@ -76,7 +65,7 @@ namespace TbspRpgApi.Tests.Repositories
                 Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
             };
             context.Users.Add(testUser);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
             var repo = new UsersRepository(context);
             
             //act
@@ -101,7 +90,7 @@ namespace TbspRpgApi.Tests.Repositories
                 Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
             };
             context.Users.Add(testUser);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
             var repo = new UsersRepository(context);
             
             //act
@@ -124,7 +113,7 @@ namespace TbspRpgApi.Tests.Repositories
                 Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
             };
             context.Users.Add(testUser);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
             var repo = new UsersRepository(context);
             
             //act
@@ -147,7 +136,7 @@ namespace TbspRpgApi.Tests.Repositories
                 Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
             };
             context.Users.Add(testUser);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
             var repo = new UsersRepository(context);
             
             //act
