@@ -7,12 +7,12 @@ namespace TbspRpgApi.ViewModels
     {
         public Guid Id { get; }
         
-        public string UserName { get; }
+        public string Username { get; }
 
         public UserViewModel(User user)
         {
             Id = user.Id;
-            UserName = user.UserName;
+            Username = user.UserName;
         }
     }
 }

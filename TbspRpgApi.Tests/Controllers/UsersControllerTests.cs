@@ -61,7 +61,7 @@ namespace TbspRpgApi.Tests.Controllers
             Assert.NotNull(okObjectResult);
             var authResponse = okObjectResult.Value as UserViewModel;
             Assert.NotNull(authResponse);
-            Assert.Equal("test", authResponse.UserName);
+            Assert.Equal("test", authResponse.Username);
             Assert.Equal(testUser.Id, authResponse.Id);
         }
         
