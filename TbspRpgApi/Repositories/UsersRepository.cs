@@ -6,12 +6,12 @@ using TbspRpgApi.Entities;
 
 namespace TbspRpgApi.Repositories
 {
-    public interface IUserRepository {
+    public interface IUsersRepository {
         Task<User> GetUserById(Guid id);
-        Task<User> GetUserByUsernameAndPassword(string username, string password);
+        Task<User> GetUserByUsernameAndPassword(string userName, string password);
     }
     
-    public class UsersRepository : IUserRepository
+    public class UsersRepository : IUsersRepository
     {
         private readonly DatabaseContext _databaseContext;
 
@@ -25,10 +25,10 @@ namespace TbspRpgApi.Repositories
             return _databaseContext.Users.AsQueryable().Where(user => user.Id == id).FirstOrDefaultAsync();
         }
 
-        public Task<User> GetUserByUsernameAndPassword(string username, string password)
+        public Task<User> GetUserByUsernameAndPassword(string userName, string password)
         {
             return _databaseContext.Users.AsQueryable().Where(user =>
-                user.UserName == username &&
+                user.UserName == userName &&
                 user.Password == password).FirstOrDefaultAsync();
         }
     }

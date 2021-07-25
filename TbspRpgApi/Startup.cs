@@ -11,8 +11,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using TbspRpgApi.Repositories;
+using TbspRpgApi.Services;
+using TbspRpgApi.Settings;
 
 namespace TbspRpgApi
 {
@@ -28,18 +31,28 @@ namespace TbspRpgApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
+            
+            // settings objects
+            services.Configure<DatabaseSettings>(Configuration.GetSection("Database"));
+            services.AddSingleton<IDatabaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+            
+            // services and repositories
+            services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<IUsersService, UsersService>();
+            
+            // setup the database connection
+            var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+            services.AddDbContext<DatabaseContext>(
+                options => options.UseNpgsql(connectionString)
+            );
+            
+            // swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TbspRpgApi", Version = "v1" });
             });
-            
-            var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-
-            services.AddDbContext<DatabaseContext>(
-                options => options.UseNpgsql(connectionString)
-            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
