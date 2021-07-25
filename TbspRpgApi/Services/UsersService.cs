@@ -38,16 +38,16 @@ namespace TbspRpgApi.Services
         {
             // we'll need to add the salt and hash the password
             // then check that against the database value
-            _logger.LogInformation("hashing password");
+            _logger.LogDebug("hashing password");
             var hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password,
                 Convert.FromBase64String(_databaseSettings.Salt),
                 KeyDerivationPrf.HMACSHA1,
                 10000,
                 256 / 8));
-            _logger.LogInformation("password hashed");
+            _logger.LogDebug("password hashed");
             
-            _logger.LogInformation("looking up user");
+            _logger.LogDebug("looking up user");
             return _usersRepository.GetUserByUsernameAndPassword(userName, hashedPassword);
         }
     }
