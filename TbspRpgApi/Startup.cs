@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using TbspRpgApi.Repositories;
 using TbspRpgApi.Services;
 using TbspRpgApi.Settings;
@@ -65,6 +66,8 @@ namespace TbspRpgApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TbspRpgApi v1"));
             }
 
+            app.UseSerilogRequestLogging();
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
