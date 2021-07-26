@@ -7,9 +7,9 @@ using Xunit;
 
 namespace TbspRpgApi.Tests.Repositories
 {
-    public class SourceRepositoryTests : InMemoryTest
+    public class SourcesRepositoryTests : InMemoryTest
     {
-        public SourceRepositoryTests() : base("SourceRepositoryTests") { }
+        public SourcesRepositoryTests() : base("SourceRepositoryTests") { }
 
         #region GetSourceForKey
 
@@ -27,7 +27,7 @@ namespace TbspRpgApi.Tests.Repositories
             };
             context.SourcesEn.Add(testSource);
             await context.SaveChangesAsync();
-            var repository = new SourceRepository(context);
+            var repository = new SourcesRepository(context);
             
             //act
             var text = await repository.GetSourceForKey(testSource.Key);
@@ -50,7 +50,7 @@ namespace TbspRpgApi.Tests.Repositories
             };
             context.SourcesEn.Add(testSource);
             await context.SaveChangesAsync();
-            var repository = new SourceRepository(context);
+            var repository = new SourcesRepository(context);
             
             //act
             var text = await repository.GetSourceForKey(Guid.NewGuid());
@@ -73,7 +73,7 @@ namespace TbspRpgApi.Tests.Repositories
             };
             context.SourcesEsp.Add(testSource);
             await context.SaveChangesAsync();
-            var repository = new SourceRepository(context);
+            var repository = new SourcesRepository(context);
             
             //act
             var text = await repository.GetSourceForKey(testSource.Key, Languages.SPANISH);
@@ -96,7 +96,7 @@ namespace TbspRpgApi.Tests.Repositories
             };
             context.SourcesEn.Add(testSource);
             await context.SaveChangesAsync();
-            var repository = new SourceRepository(context);
+            var repository = new SourcesRepository(context);
         
             //act
             Task Act() => repository.GetSourceForKey(testSource.Key, "banana");

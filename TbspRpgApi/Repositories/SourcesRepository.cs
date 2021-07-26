@@ -7,16 +7,16 @@ using TbspRpgApi.Settings;
 
 namespace TbspRpgApi.Repositories
 {
-    public interface ISourceRepository
+    public interface ISourcesRepository
     {
         Task<string> GetSourceForKey(Guid key, string language = null);
     }
     
-    public class SourceRepository : ISourceRepository
+    public class SourcesRepository : ISourcesRepository
     {
         private readonly DatabaseContext _databaseContext;
 
-        public SourceRepository(DatabaseContext databaseContext)
+        public SourcesRepository(DatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
         }
