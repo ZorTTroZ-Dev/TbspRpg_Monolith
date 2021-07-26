@@ -42,6 +42,8 @@ namespace TbspRpgApi
             // services and repositories
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<ISourcesRepository, SourcesRepository>();
+            services.AddScoped<IRoutesRepository, RoutesRepository>();
             
             // setup the database connection
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
