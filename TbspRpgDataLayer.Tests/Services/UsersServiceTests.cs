@@ -21,6 +21,7 @@ namespace TbspRpgApi.Tests.Services
             };
             return new UsersService(
                 new UsersRepository(context),
+                settings,
                 NullLogger<UsersService>.Instance);
         }
 
@@ -77,7 +78,7 @@ namespace TbspRpgApi.Tests.Services
         #region GetUserByUserNameAndPassword
 
         [Fact]
-        public async void GetUserByUserNameAndPassword_Valid_ReturnUser()
+        public async void Authenticate_Valid_ReturnUser()
         {
             // arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -92,7 +93,7 @@ namespace TbspRpgApi.Tests.Services
             var service = CreateService(context);
             
             // act
-            var user = await service.GetUserByUserNameAndPassword("test", "test");
+            var user = await service.Authenticate("test", "test");
             
             // assert
             Assert.NotNull(user);
@@ -101,7 +102,7 @@ namespace TbspRpgApi.Tests.Services
         }
         
         [Fact]
-        public async void GetUserByUserNameAndPassword_InValidPassword_ReturnNull()
+        public async void Authenticate_InValidPassword_ReturnNull()
         {
             // arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -116,14 +117,14 @@ namespace TbspRpgApi.Tests.Services
             var service = CreateService(context);
             
             // act
-            var user = await service.GetUserByUserNameAndPassword("test", "testt");
+            var user = await service.Authenticate("test", "testt");
             
             // assert
             Assert.Null(user);
         }
         
         [Fact]
-        public async void GetUserByUserNameAndPassword_InValidUserName_ReturnNull()
+        public async void Authenticate_InValidUserName_ReturnNull()
         {
             // arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -138,7 +139,7 @@ namespace TbspRpgApi.Tests.Services
             var service = CreateService(context);
             
             // act
-            var user = await service.GetUserByUserNameAndPassword("testy", "test");
+            var user = await service.Authenticate("testy", "test");
             
             // assert
             Assert.Null(user);
