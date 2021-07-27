@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
 
-namespace TbspRpgApi.Repositories
+namespace TbspRpgDataLayer
 {
     public class DatabaseContext : DbContext
     {

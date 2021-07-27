@@ -1,4 +1,4 @@
-namespace TbspRpgApi.Settings
+namespace TbspRpgSettings.Settings
 {
     public class Languages
     {

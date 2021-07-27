@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities.LanguageSources;
-using TbspRpgApi.Repositories;
-using TbspRpgApi.Settings;
+using TbspRpgDataLayer;
+using TbspRpgDataLayer.Repositories;
+using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Repositories

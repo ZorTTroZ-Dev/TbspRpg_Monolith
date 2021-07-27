@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using TbspRpgApi.Entities;
-using TbspRpgApi.Repositories;
+using TbspRpgDataLayer;
+using TbspRpgDataLayer.Repositories;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Repositories

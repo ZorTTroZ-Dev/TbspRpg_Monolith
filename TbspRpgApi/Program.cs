@@ -1,10 +1,8 @@
 using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging.EventLog;
 using Serilog;
 using Serilog.Events;
-using TbspRpgApi.Services;
 
 namespace TbspRpgApi
 {

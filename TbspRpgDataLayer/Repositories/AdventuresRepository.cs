@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TbspRpgApi.Entities;
 
-namespace TbspRpgApi.Repositories
+namespace TbspRpgDataLayer.Repositories
 {
     public interface IAdventuresRepository
     {

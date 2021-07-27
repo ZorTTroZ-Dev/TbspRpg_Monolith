@@ -1,22 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using TbspRpgApi.Repositories;
-using TbspRpgApi.Services;
-using TbspRpgApi.Settings;
 
 namespace TbspRpgApi
 {
@@ -35,23 +23,23 @@ namespace TbspRpgApi
             services.AddControllers();
             
             // settings objects
-            services.Configure<DatabaseSettings>(Configuration.GetSection("Database"));
-            services.AddSingleton<IDatabaseSettings>(sp =>
-                sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+            // services.Configure<DatabaseSettings>(Configuration.GetSection("Database"));
+            // services.AddSingleton<IDatabaseSettings>(sp =>
+            //     sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
             
             // services and repositories
-            services.AddScoped<IUsersRepository, UsersRepository>();
-            services.AddScoped<IUsersService, UsersService>();
-            services.AddScoped<ISourcesRepository, SourcesRepository>();
-            services.AddScoped<IRoutesRepository, RoutesRepository>();
-            services.AddScoped<ILocationsRepository, LocationsRepository>();
-            services.AddScoped<IAdventuresRepository, AdventuresRepository>();
+            // services.AddScoped<IUsersRepository, UsersRepository>();
+            // services.AddScoped<IUsersService, UsersService>();
+            // services.AddScoped<ISourcesRepository, SourcesRepository>();
+            // services.AddScoped<IRoutesRepository, RoutesRepository>();
+            // services.AddScoped<ILocationsRepository, LocationsRepository>();
+            // services.AddScoped<IAdventuresRepository, AdventuresRepository>();
             
             // setup the database connection
-            var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-            services.AddDbContext<DatabaseContext>(
-                options => options.UseNpgsql(connectionString)
-            );
+            // var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+            // services.AddDbContext<DatabaseContext>(
+            //     options => options.UseNpgsql(connectionString)
+            // );
             
             // swagger
             services.AddSwaggerGen(c =>

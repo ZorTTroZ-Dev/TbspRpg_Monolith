@@ -1,12 +1,15 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace TbspRpgApi.Migrations
+namespace TbspRpgDataLayer.Migrations
 {
-    public partial class AddAdventureEntities : Migration
+    public partial class AddUserAndAdventureEntities : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:PostgresExtension:uuid-ossp", ",,");
+
             migrationBuilder.CreateTable(
                 name: "adventures",
                 columns: table => new
@@ -46,6 +49,19 @@ namespace TbspRpgApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_sources_esp", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "user",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
+                    UserName = table.Column<string>(type: "text", nullable: true),
+                    Password = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_user", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -123,6 +139,9 @@ namespace TbspRpgApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "sources_esp");
+
+            migrationBuilder.DropTable(
+                name: "user");
 
             migrationBuilder.DropTable(
                 name: "locations");

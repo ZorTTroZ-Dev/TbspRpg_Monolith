@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using TbspRpgApi.Repositories;
+using TbspRpgDataLayer;
 
 namespace TbspRpgApi.Tests
 {

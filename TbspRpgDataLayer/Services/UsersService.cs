@@ -1,12 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
-using TbspRpgApi.Repositories;
-using TbspRpgApi.Settings;
+using TbspRpgDataLayer.Repositories;
 
-namespace TbspRpgApi.Services
+namespace TbspRpgDataLayer.Services
 {
     public interface IUsersService {
         Task<User> GetById(Guid id);
@@ -16,16 +14,13 @@ namespace TbspRpgApi.Services
     public class UsersService : IUsersService
     {
         private readonly IUsersRepository _usersRepository;
-        private readonly IDatabaseSettings _databaseSettings;
         private readonly ILogger<UsersService> _logger;
 
         public UsersService(
             IUsersRepository usersRepository,
-            IDatabaseSettings databaseSettings,
             ILogger<UsersService> logger)
         {
             _usersRepository = usersRepository;
-            _databaseSettings = databaseSettings;
             _logger = logger;
         }
 
@@ -38,17 +33,18 @@ namespace TbspRpgApi.Services
         {
             // we'll need to add the salt and hash the password
             // then check that against the database value
-            _logger.LogDebug("hashing password");
-            var hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password,
-                Convert.FromBase64String(_databaseSettings.Salt),
-                KeyDerivationPrf.HMACSHA1,
-                10000,
-                256 / 8));
-            _logger.LogDebug("password hashed");
+            // _logger.LogDebug("hashing password");
+            // var hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+            //     password,
+            //     Convert.FromBase64String(_databaseSettings.Salt),
+            //     KeyDerivationPrf.HMACSHA1,
+            //     10000,
+            //     256 / 8));
+            // _logger.LogDebug("password hashed");
             
             _logger.LogDebug("looking up user");
-            return _usersRepository.GetUserByUsernameAndPassword(userName, hashedPassword);
+            //return _usersRepository.GetUserByUsernameAndPassword(userName, hashedPassword);
+            throw new NotImplementedException();
         }
     }
 }

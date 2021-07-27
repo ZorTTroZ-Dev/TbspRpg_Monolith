@@ -1,9 +1,10 @@
 using System;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Entities;
-using TbspRpgApi.Repositories;
-using TbspRpgApi.Services;
-using TbspRpgApi.Settings;
+using TbspRpgDataLayer.Repositories;
+using TbspRpgDataLayer;
+using TbspRpgDataLayer.Services;
+using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Services
@@ -20,7 +21,6 @@ namespace TbspRpgApi.Tests.Services
             };
             return new UsersService(
                 new UsersRepository(context),
-                settings,
                 NullLogger<UsersService>.Instance);
         }
 

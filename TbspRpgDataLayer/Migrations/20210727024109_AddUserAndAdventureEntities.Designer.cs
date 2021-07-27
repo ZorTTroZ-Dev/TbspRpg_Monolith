@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using TbspRpgApi.Repositories;
+using TbspRpgDataLayer;
 
-namespace TbspRpgApi.Migrations
+namespace TbspRpgDataLayer.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210726000234_AddAdventureEntities")]
-    partial class AddAdventureEntities
+    [Migration("20210727024109_AddUserAndAdventureEntities")]
+    partial class AddUserAndAdventureEntities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
