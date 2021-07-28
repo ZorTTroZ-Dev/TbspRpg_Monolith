@@ -137,6 +137,11 @@ namespace TbspRpgDataLayer
                 .HasMany(a => a.Games)
                 .WithOne(g => g.Adventure)
                 .HasForeignKey(g => g.AdventureId);
+            
+            modelBuilder.Entity<Location>()
+                .HasMany(l => l.Games)
+                .WithOne(g => g.Location)
+                .HasForeignKey(g => g.LocationId);
 
             #endregion
         }

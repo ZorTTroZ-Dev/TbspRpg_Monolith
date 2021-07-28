@@ -13,5 +13,6 @@ namespace TbspRpgApi.Entities
         
         public Adventure Adventure { get; set; }
         public ICollection<Route> Routes { get; set; }
+        public ICollection<Game> Games { get; set; }
     }
 }

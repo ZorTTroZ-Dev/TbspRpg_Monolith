@@ -8,9 +8,11 @@ namespace TbspRpgApi.Entities
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public Guid AdventureId { get; set; }
+        public Guid LocationId { get; set; }
         
         public Adventure Adventure { get; set; }
         public User User { get; set; }
+        public Location Location { get; set; }
         public ICollection<Content> Contents { get; set; }
     }
 }
