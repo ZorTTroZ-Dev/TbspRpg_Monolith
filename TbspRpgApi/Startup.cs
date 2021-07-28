@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using TbspRpgApi.Services;
 using TbspRpgDataLayer;
 using TbspRpgSettings.Settings;
 
@@ -31,6 +32,8 @@ namespace TbspRpgApi
                 sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
             
             DataLayerStartUp.InitializeDataLayer(services);
+
+            services.AddScoped<IUsersService, UsersService>();
 
             // swagger
             services.AddSwaggerGen(c =>
