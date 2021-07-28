@@ -5,12 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Adapters" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TbspRpgDataLayer\TbspRpgDataLayer.csproj" />
   </ItemGroup>
 
 </Project>

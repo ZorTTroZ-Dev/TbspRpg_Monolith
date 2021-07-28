@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using TbspRpgDataLayer;
 
 namespace TbspRpgApi
 {
@@ -27,20 +28,8 @@ namespace TbspRpgApi
             // services.AddSingleton<IDatabaseSettings>(sp =>
             //     sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
             
-            // services and repositories
-            // services.AddScoped<IUsersRepository, UsersRepository>();
-            // services.AddScoped<IUsersService, UsersService>();
-            // services.AddScoped<ISourcesRepository, SourcesRepository>();
-            // services.AddScoped<IRoutesRepository, RoutesRepository>();
-            // services.AddScoped<ILocationsRepository, LocationsRepository>();
-            // services.AddScoped<IAdventuresRepository, AdventuresRepository>();
-            
-            // setup the database connection
-            // var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-            // services.AddDbContext<DatabaseContext>(
-            //     options => options.UseNpgsql(connectionString)
-            // );
-            
+            DataLayerStartUp.InitializeDataLayer(services);
+
             // swagger
             services.AddSwaggerGen(c =>
             {
