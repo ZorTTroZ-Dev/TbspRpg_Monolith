@@ -24,6 +24,13 @@ namespace TbspRpgDataLayer
 
         #endregion
 
+        #region Game
+
+        public DbSet<Game> Games { get; set; }
+        public DbSet<Content> Contents { get; set; }
+
+        #endregion
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresExtension("uuid-ossp");
@@ -92,6 +99,44 @@ namespace TbspRpgDataLayer
                 .HasColumnType("uuid")
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();
+
+            #endregion
+
+            #region Game
+
+            modelBuilder.Entity<Game>().ToTable("games");
+            modelBuilder.Entity<Content>().ToTable("contents");
+
+            modelBuilder.Entity<Game>().HasKey(a => a.Id);
+            modelBuilder.Entity<Game>().Property(a => a.Id)
+                .HasColumnType("uuid")
+                .HasDefaultValueSql("uuid_generate_v4()")
+                .IsRequired();
+            
+            modelBuilder.Entity<Content>().HasKey(a => a.Id);
+            modelBuilder.Entity<Content>().Property(a => a.Id)
+                .HasColumnType("uuid")
+                .HasDefaultValueSql("uuid_generate_v4()")
+                .IsRequired();
+            
+            modelBuilder.Entity<Game>()
+                .HasMany(g => g.Contents)
+                .WithOne(c => c.Game)
+                .HasForeignKey(c => c.GameId);
+
+            #endregion
+
+            #region Relations
+            
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Games)
+                .WithOne(g => g.User)
+                .HasForeignKey(g => g.UserId);
+            
+            modelBuilder.Entity<Adventure>()
+                .HasMany(a => a.Games)
+                .WithOne(g => g.Adventure)
+                .HasForeignKey(g => g.AdventureId);
 
             #endregion
         }
