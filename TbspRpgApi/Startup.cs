@@ -34,6 +34,7 @@ namespace TbspRpgApi
             DataLayerStartUp.InitializeDataLayer(services);
 
             services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IAdventuresService, AdventuresService>();
 
             // swagger
             services.AddSwaggerGen(c =>
