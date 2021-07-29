@@ -1,12 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities.LanguageSources;
-using TbspRpgDataLayer;
 using TbspRpgDataLayer.Repositories;
 using TbspRpgSettings.Settings;
 using Xunit;
 
-namespace TbspRpgApi.Tests.Repositories
+namespace TbspRpgDataLayer.Tests.Repositories
 {
     public class SourcesRepositoryTests : InMemoryTest
     {

@@ -2,12 +2,11 @@ using System;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Repositories;
-using TbspRpgDataLayer;
 using TbspRpgDataLayer.Services;
 using TbspRpgSettings.Settings;
 using Xunit;
 
-namespace TbspRpgApi.Tests.Services
+namespace TbspRpgDataLayer.Tests.Services
 {
     public class UsersServiceTests : InMemoryTest
     {

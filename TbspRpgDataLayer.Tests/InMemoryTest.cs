@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TbspRpgDataLayer;
 
-namespace TbspRpgApi.Tests
+namespace TbspRpgDataLayer.Tests
 {
     public class InMemoryTest
     {

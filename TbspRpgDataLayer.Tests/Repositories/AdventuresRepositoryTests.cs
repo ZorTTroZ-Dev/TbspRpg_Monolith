@@ -1,11 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities;
-using TbspRpgDataLayer;
 using TbspRpgDataLayer.Repositories;
 using Xunit;
 
-namespace TbspRpgApi.Tests.Repositories
+namespace TbspRpgDataLayer.Tests.Repositories
 {
     public class AdventuresRepositoryTests : InMemoryTest
     {
