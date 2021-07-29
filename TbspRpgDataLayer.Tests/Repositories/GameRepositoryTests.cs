@@ -150,7 +150,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             Assert.Single(context.Games);
             Assert.NotNull(context.Games.AsQueryable().FirstOrDefault());
             // ReSharper disable once PossibleNullReferenceException
-            Assert.Equal(game.Id, context.Games.AsQueryable().FirstOrDefault().Id);
+            Assert.Equal(game.Id, context.Games.AsQueryable().First().Id);
         }
 
         #endregion

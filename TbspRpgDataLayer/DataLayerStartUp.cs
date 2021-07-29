@@ -6,7 +6,7 @@ using TbspRpgDataLayer.Services;
 
 namespace TbspRpgDataLayer
 {
-    public class DataLayerStartUp
+    public static class DataLayerStartUp
     {
         public static void InitializeDataLayer(IServiceCollection services)
         {
@@ -17,6 +17,8 @@ namespace TbspRpgDataLayer
             services.AddScoped<IRoutesRepository, RoutesRepository>();
             services.AddScoped<ILocationsRepository, LocationsRepository>();
             services.AddScoped<IAdventuresRepository, AdventuresRepository>();
+            services.AddScoped<IGameRepository, GameRepository>();
+            services.AddScoped<IAdventuresService, AdventuresService>();
             
             // setup the database connection
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
