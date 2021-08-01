@@ -8,12 +8,6 @@ namespace TbspRpgApi.Tests.Services
 {
     public class UsersServiceTests : ApiTest
     {
-        private UsersService CreateUsersService(IEnumerable<User> users)
-        {
-            var dlUsersService = MockDataLayerUsersService(users);
-            return new UsersService(dlUsersService);
-        }
-        
         #region Authenticate
 
         [Fact]

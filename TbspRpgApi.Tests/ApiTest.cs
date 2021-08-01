@@ -21,5 +21,28 @@ namespace TbspRpgApi.Tests
 
             return usersService.Object;
         }
+
+        protected static IAdventuresService MockDataLayerAdventuresService(IEnumerable<Adventure> adventures)
+        {
+            var adventuresService = new Mock<IAdventuresService>();
+
+            adventuresService.Setup(service =>
+                    service.GetAllAdventures())
+                .ReturnsAsync(adventures.ToList());
+
+            return adventuresService.Object;
+        }
+        
+        protected static TbspRpgApi.Services.UsersService CreateUsersService(IEnumerable<User> users)
+        {
+            var dlUsersService = MockDataLayerUsersService(users);
+            return new TbspRpgApi.Services.UsersService(dlUsersService);
+        }
+        
+        protected static TbspRpgApi.Services.AdventuresService CreateAdventuresService(IEnumerable<Adventure> adventures)
+        {
+            var dlAdventuresService = MockDataLayerAdventuresService(adventures);
+            return new TbspRpgApi.Services.AdventuresService(dlAdventuresService);
+        }
     }
 }
