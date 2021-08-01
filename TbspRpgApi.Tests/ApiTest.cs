@@ -29,6 +29,11 @@ namespace TbspRpgApi.Tests
             adventuresService.Setup(service =>
                     service.GetAllAdventures())
                 .ReturnsAsync(adventures.ToList());
+            
+            adventuresService.Setup(service =>
+                    service.GetAdventureByName(It.IsAny<string>()))
+                .ReturnsAsync((string name) =>
+                    adventures.FirstOrDefault(a => a.Name == name));
 
             return adventuresService.Object;
         }

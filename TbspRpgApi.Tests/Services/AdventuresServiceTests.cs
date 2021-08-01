@@ -39,5 +39,48 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+
+        #region GetAdventureByName
+
+        [Fact]
+        public async void GetAdventureByName_Exists_ReturnAdventure()
+        {
+            // arrange
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test",
+                SourceKey = Guid.NewGuid()
+            };
+            var service = CreateAdventuresService(new List<Adventure>() {testAdventure});
+            
+            // act`
+            var adventureViewModel = await service.GetAdventureByName("test");
+            
+            // assert
+            Assert.NotNull(adventureViewModel);
+            Assert.Equal(testAdventure.Id, adventureViewModel.Id);
+        }
+
+        [Fact]
+        public async void GetAdventureByName_NotExist_ReturnNull()
+        {
+            // arrange
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test",
+                SourceKey = Guid.NewGuid()
+            };
+            var service = CreateAdventuresService(new List<Adventure>() {testAdventure});
+            
+            // act`
+            var adventureViewModel = await service.GetAdventureByName("testy");
+            
+            // assert
+            Assert.Null(adventureViewModel);
+        }
+
+        #endregion
     }
 }

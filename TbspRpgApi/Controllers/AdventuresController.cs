@@ -26,5 +26,11 @@ namespace TbspRpgApi.Controllers
             var adventures = await _adventuresService.GetAllAdventures();
             return Ok(adventures);
         }
+        
+        [HttpGet("{name}")]
+        public async Task<IActionResult> GetAdventureByName(string name) {
+            var adventure = await _adventuresService.GetAdventureByName(name);
+            return Ok(adventure);
+        }
     }
 }

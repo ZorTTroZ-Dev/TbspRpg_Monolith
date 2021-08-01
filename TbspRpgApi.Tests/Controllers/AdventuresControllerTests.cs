@@ -53,5 +53,73 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+
+        #region GetAdventureByName
+
+        [Fact]
+        public async void GetAdventureByName_Exists_ReturnAdventure()
+        {
+            // arrange
+            var testAdventures = new List<Adventure>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test",
+                    SourceKey = Guid.NewGuid()
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test two",
+                    SourceKey = Guid.NewGuid()
+                }
+            };
+            var controller = CreateController(testAdventures);
+            
+            // act
+            var response = await controller.GetAdventureByName("test");
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var adventureViewModel = okObjectResult.Value as AdventureViewModel;
+            Assert.NotNull(adventureViewModel);
+            Assert.Equal(testAdventures[0].Id, adventureViewModel.Id);
+        }
+        
+        [Fact]
+        public async void GetAdventureByName_NotExist_ReturnNull()
+        {
+            // arrange
+            var testAdventures = new List<Adventure>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test",
+                    SourceKey = Guid.NewGuid()
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test two",
+                    SourceKey = Guid.NewGuid()
+                }
+            };
+            var controller = CreateController(testAdventures);
+            
+            // act
+            var response = await controller.GetAdventureByName("testy");
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var adventureViewModel = okObjectResult.Value as AdventureViewModel;
+            Assert.Null(adventureViewModel);
+            //Assert.Equal(testAdventures[0].Id, adventureViewModel.Id);
+        }
+
+        #endregion
     }
 }

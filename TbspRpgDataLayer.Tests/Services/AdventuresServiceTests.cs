@@ -49,5 +49,74 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region GetAdventureByName
+
+        [Fact]
+        public async void GetAdventureByName_Exact_ReturnAdventure()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test"
+            };
+            context.Adventures.Add(testAdventure);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var adventure = await service.GetAdventureByName("test");
+            
+            // assert
+            Assert.NotNull(adventure);
+            Assert.Equal(testAdventure.Id, adventure.Id);
+        }
+
+        [Fact]
+        public async void GetAdventureByName_CaseInsensitive_ReturnAdventure()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test"
+            };
+            context.Adventures.Add(testAdventure);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var adventure = await service.GetAdventureByName("tEsT");
+            
+            // assert
+            Assert.NotNull(adventure);
+            Assert.Equal(testAdventure.Id, adventure.Id);
+        }
+
+        [Fact]
+        public async void GetAdventureByName_Invalid_ReturnNull()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test"
+            };
+            context.Adventures.Add(testAdventure);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var adventure = await service.GetAdventureByName("testy");
+            
+            // assert
+            Assert.Null(adventure);
+        }
+
+        #endregion
     }
 }
