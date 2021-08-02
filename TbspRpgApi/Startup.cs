@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.Services;
 using TbspRpgDataLayer;
 using TbspRpgSettings.Settings;
@@ -30,6 +31,10 @@ namespace TbspRpgApi
             services.Configure<DatabaseSettings>(Configuration.GetSection("Database"));
             services.AddSingleton<IDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+            
+            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
+            services.AddSingleton<IJwtSettings>(sp =>
+                sp.GetRequiredService<IOptions<JwtSettings>>().Value);
             
             DataLayerStartUp.InitializeDataLayer(services);
 
@@ -58,8 +63,10 @@ namespace TbspRpgApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            
+            app.UseMiddleware<JwtMiddleware>();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

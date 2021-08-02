@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Controllers;
 using TbspRpgApi.Entities;
+using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.Services;
 using TbspRpgApi.ViewModels;
@@ -17,6 +18,10 @@ namespace TbspRpgApi.Tests.Controllers
         {
             var dlUsersService = MockDataLayerUsersService(users);
             return new UsersController(new UsersService(dlUsersService),
+                new JwtSettings()
+                {
+                    Secret = "vtqj@y31d%%j01tae3*bqu16&5$x@s@=22&bk$h9+=55kv-i6t"
+                },
                 NullLogger<UsersController>.Instance);
         }
         
@@ -45,10 +50,11 @@ namespace TbspRpgApi.Tests.Controllers
             //assert
             var okObjectResult = response as OkObjectResult;
             Assert.NotNull(okObjectResult);
-            var authResponse = okObjectResult.Value as UserViewModel;
+            var authResponse = okObjectResult.Value as UserAuthViewModel;
             Assert.NotNull(authResponse);
             Assert.Equal("test", authResponse.Username);
             Assert.Equal(testUser.Id, authResponse.Id);
+            Assert.NotNull(authResponse.Token);
         }
         
         [Fact]
