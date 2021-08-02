@@ -16,8 +16,7 @@ namespace TbspRpgApi.Tests.Controllers
     {
         private static UsersController CreateController(IEnumerable<User> users)
         {
-            var dlUsersService = MockDataLayerUsersService(users);
-            return new UsersController(new UsersService(dlUsersService),
+            return new UsersController(CreateUsersService(users),
                 new JwtSettings()
                 {
                     Secret = "vtqj@y31d%%j01tae3*bqu16&5$x@s@=22&bk$h9+=55kv-i6t"
