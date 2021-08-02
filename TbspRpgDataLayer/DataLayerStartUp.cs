@@ -12,13 +12,15 @@ namespace TbspRpgDataLayer
         {
             // services and repositories
             services.AddScoped<IUsersRepository, UsersRepository>();
-            services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<ISourcesRepository, SourcesRepository>();
             services.AddScoped<IRoutesRepository, RoutesRepository>();
             services.AddScoped<ILocationsRepository, LocationsRepository>();
             services.AddScoped<IAdventuresRepository, AdventuresRepository>();
             services.AddScoped<IGameRepository, GameRepository>();
+            
+            services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IAdventuresService, AdventuresService>();
+            services.AddScoped<IGamesService, GamesService>();
             
             // setup the database connection
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");

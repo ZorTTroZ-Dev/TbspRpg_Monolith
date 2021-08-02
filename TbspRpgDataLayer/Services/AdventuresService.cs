@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,7 @@ namespace TbspRpgDataLayer.Services
     {
         Task<List<Adventure>> GetAllAdventures();
         Task<Adventure> GetAdventureByName(string name);
+        Task<Adventure> GetAdventureById(Guid adventureId);
     }
     
     public class AdventuresService : IAdventuresService
@@ -32,6 +34,11 @@ namespace TbspRpgDataLayer.Services
         public Task<Adventure> GetAdventureByName(string name)
         {
             return _adventuresRepository.GetAdventureByName(name);
+        }
+
+        public Task<Adventure> GetAdventureById(Guid adventureId)
+        {
+            return _adventuresRepository.GetAdventureById(adventureId);
         }
     }
 }

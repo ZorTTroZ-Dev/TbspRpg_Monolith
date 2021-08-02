@@ -118,5 +118,52 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region GetAdventureById
+
+        [Fact]
+        public async void GetAdventureById_Exists_ReturnAdventure()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test"
+            };
+            context.Adventures.Add(testAdventure);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var adventure = await service.GetAdventureById(testAdventure.Id);
+            
+            // assert
+            Assert.NotNull(adventure);
+            Assert.Equal(testAdventure.Id, adventure.Id);
+        }
+
+        [Fact]
+        public async void GetAdventureById_Invalid_ReturnNull()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test"
+            };
+            context.Adventures.Add(testAdventure);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var adventure = await service.GetAdventureById(Guid.NewGuid());
+            
+            // assert
+            Assert.Null(adventure);
+        }
+
+        #endregion
     }
 }
