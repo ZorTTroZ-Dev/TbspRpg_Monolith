@@ -29,6 +29,8 @@ services:
     image: dpage/pgadmin4:latest
     ports:
       - '8080:80'
+    volumes:
+      - './pgadmin_data:/var/lib/pgadmin'
     environment:
       - 'PGADMIN_DEFAULT_EMAIL=admin@zorttroz.com'
       - 'PGADMIN_DEFAULT_PASSWORD=admin'

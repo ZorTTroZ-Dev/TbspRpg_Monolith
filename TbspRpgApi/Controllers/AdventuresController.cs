@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Services;
-using TbspRpgApi.ViewModels;
 
 namespace TbspRpgApi.Controllers
 {
