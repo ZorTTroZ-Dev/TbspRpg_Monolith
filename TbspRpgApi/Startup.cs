@@ -9,6 +9,7 @@ using Serilog;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.Services;
 using TbspRpgDataLayer;
+using TbspRpgProcessor;
 using TbspRpgSettings.Settings;
 
 namespace TbspRpgApi
@@ -37,6 +38,7 @@ namespace TbspRpgApi
                 sp.GetRequiredService<IOptions<JwtSettings>>().Value);
             
             DataLayerStartUp.InitializeDataLayer(services);
+            ProcessorStartup.InitializeProcessorLayer(services);
 
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IAdventuresService, AdventuresService>();

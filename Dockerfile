@@ -6,6 +6,7 @@ WORKDIR /app
 COPY ./TbspRpgApi /app
 COPY ./TbspRpgDataLayer /TbspRpgDataLayer
 COPY ./TbspRpgSettings /TbspRpgSettings
+COPY ./TbspRpgProcessor /TbspRpgProcessor
 
 #build the site
 RUN dotnet restore
