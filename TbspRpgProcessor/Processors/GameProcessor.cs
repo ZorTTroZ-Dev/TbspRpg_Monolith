@@ -46,7 +46,7 @@ namespace TbspRpgProcessor.Processors
             
             // check if the user already has a game of this adventure
             var game = await _gamesService.GetGameByAdventureIdAndUserId(adventure.Id, user.Id);
-            if (game == null)
+            if (game != null)
                 throw new Exception("user already has an instance of given adventure");
 
             throw new NotImplementedException();
