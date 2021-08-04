@@ -109,9 +109,9 @@ namespace TbspRpgDataLayer.Tests.Services
             
             // act 
             service.AddGame(testGame);
+            service.SaveChanges();
             
             // assert
-            await context.SaveChangesAsync();
             Assert.Single(context.Games);
             Assert.Equal(testGame.Id, context.Games.First().Id);
         }
