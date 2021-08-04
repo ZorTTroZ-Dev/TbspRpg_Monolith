@@ -9,6 +9,7 @@ namespace TbspRpgDataLayer.Services
     public interface IGamesService
     {
         Task<Game> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId);
+        void AddGame(Game game);
     }
     
     public class GamesService : IGamesService
@@ -26,6 +27,11 @@ namespace TbspRpgDataLayer.Services
         public Task<Game> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId)
         {
             return _gameRepository.GetGameByAdventureIdAndUserId(adventureId, userId);
+        }
+
+        public void AddGame(Game game)
+        {
+            _gameRepository.AddGame(game);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Repositories;
@@ -87,6 +88,32 @@ namespace TbspRpgDataLayer.Tests.Services
             
             // assert
             Assert.Null(game);
+        }
+
+        #endregion
+
+        #region AddGame
+
+        [Fact]
+        public async void AddGame_GameAdded()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                UserId = Guid.NewGuid()
+            };
+            var service = CreateService(context);
+            
+            // act 
+            service.AddGame(testGame);
+            
+            // assert
+            await context.SaveChangesAsync();
+            Assert.Single(context.Games);
+            Assert.Equal(testGame.Id, context.Games.First().Id);
         }
 
         #endregion

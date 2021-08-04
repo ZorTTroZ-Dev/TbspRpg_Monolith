@@ -51,16 +51,32 @@ namespace TbspRpgDataLayer.Tests
             return adventuresService.Object;
         }
         
-        public static IGamesService MockDataLayerGamesService(IEnumerable<Game> adventures)
+        public static IGamesService MockDataLayerGamesService(IEnumerable<Game> games)
         {
             var gamesService = new Mock<IGamesService>();
             
             gamesService.Setup(service =>
                     service.GetGameByAdventureIdAndUserId(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((Guid adventureId, Guid userId) =>
-                    adventures.FirstOrDefault(g => g.AdventureId == adventureId && g.UserId == userId));
+                    games.FirstOrDefault(g => g.AdventureId == adventureId && g.UserId == userId));
+            
+            gamesService.Setup(service =>
+                    service.AddGame(It.IsAny<Game>()))
+                .Callback((Game game) => games = games.Append(game));
 
             return gamesService.Object;
+        }
+
+        public static ILocationsService MockDataLayerLocationsService(IEnumerable<Location> locations)
+        {
+            var locationsService = new Mock<ILocationsService>();
+            
+            locationsService.Setup(service =>
+                    service.GetInitialLocationForAdventure(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId) =>
+                    locations.FirstOrDefault(l => l.AdventureId == adventureId && l.Initial));
+
+            return locationsService.Object;
         }
     }
 }
