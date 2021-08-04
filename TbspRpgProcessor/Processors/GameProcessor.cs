@@ -16,17 +16,20 @@ namespace TbspRpgProcessor.Processors
         private readonly IAdventuresService _adventuresService;
         private readonly IUsersService _usersService;
         private readonly IGamesService _gamesService;
+        private readonly ILocationsService _locationsService;
         private readonly ILogger<GameProcessor> _logger;
 
         public GameProcessor(
             IAdventuresService adventuresService,
             IUsersService usersService,
             IGamesService gamesService,
+            ILocationsService locationsService,
             ILogger<GameProcessor> logger)
         {
             _adventuresService = adventuresService;
             _usersService = usersService;
             _gamesService = gamesService;
+            _locationsService = locationsService;
             _logger = logger;
         }
         
@@ -48,8 +51,29 @@ namespace TbspRpgProcessor.Processors
             var game = await _gamesService.GetGameByAdventureIdAndUserId(adventure.Id, user.Id);
             if (game != null)
                 throw new Exception("user already has an instance of given adventure");
-
-            throw new NotImplementedException();
+            
+            // get the initial location for the game
+            var location = await _locationsService.GetInitialLocationForAdventure(adventure.Id);
+            if (location == null)
+                throw new Exception("no initial location for adventure");
+            
+            // add game to the context
+            game = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = adventure.Id,
+                UserId = user.Id,
+                LocationId = location.Id
+            };
+            _gamesService.AddGame(game);
+            
+            // create content entry for adventure's source key
+            // create content entry for the initial location source key
+            // add contents to context
+            
+            // save context changes
+            _gamesService.SaveChanges();
+            return game;
         }
     }
 }

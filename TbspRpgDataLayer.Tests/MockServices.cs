@@ -51,7 +51,7 @@ namespace TbspRpgDataLayer.Tests
             return adventuresService.Object;
         }
         
-        public static IGamesService MockDataLayerGamesService(IEnumerable<Game> games)
+        public static IGamesService MockDataLayerGamesService(ICollection<Game> games)
         {
             var gamesService = new Mock<IGamesService>();
             
@@ -62,7 +62,7 @@ namespace TbspRpgDataLayer.Tests
             
             gamesService.Setup(service =>
                     service.AddGame(It.IsAny<Game>()))
-                .Callback((Game game) => games = games.Append(game));
+                .Callback((Game game) => games.Add(game));
 
             return gamesService.Object;
         }
