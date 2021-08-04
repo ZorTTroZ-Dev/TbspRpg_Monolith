@@ -6,7 +6,7 @@ using TbspRpgDataLayer.Repositories;
 
 namespace TbspRpgDataLayer.Services
 {
-    public interface IGamesService
+    public interface IGamesService : IBaseService
     {
         Task<Game> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId);
         void AddGame(Game game);
@@ -32,6 +32,11 @@ namespace TbspRpgDataLayer.Services
         public void AddGame(Game game)
         {
             _gameRepository.AddGame(game);
+        }
+
+        public void SaveChanges()
+        {
+            _gameRepository.SaveChanges();
         }
     }
 }

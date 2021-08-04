@@ -5,7 +5,7 @@ using TbspRpgApi.Entities;
 
 namespace TbspRpgDataLayer.Repositories
 {
-    public interface IGameRepository
+    public interface IGameRepository : IBaseRepository
     {
         Task<Game> GetGameById(Guid gameId);
         Task<Game> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId);
@@ -35,6 +35,11 @@ namespace TbspRpgDataLayer.Repositories
         public async void AddGame(Game game)
         {
             await _databaseContext.Games.AddAsync(game);
+        }
+
+        public async void SaveChanges()
+        {
+            await _databaseContext.SaveChangesAsync();
         }
     }
 }
