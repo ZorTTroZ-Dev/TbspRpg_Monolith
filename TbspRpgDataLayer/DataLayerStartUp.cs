@@ -21,6 +21,7 @@ namespace TbspRpgDataLayer
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IAdventuresService, AdventuresService>();
             services.AddScoped<IGamesService, GamesService>();
+            services.AddScoped<ILocationsService, LocationsService>();
             
             // setup the database connection
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
