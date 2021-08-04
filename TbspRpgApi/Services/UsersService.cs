@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.ViewModels;
 
 namespace TbspRpgApi.Services
@@ -11,16 +12,20 @@ namespace TbspRpgApi.Services
     public class UsersService : IUsersService
     {
         private readonly TbspRpgDataLayer.Services.IUsersService _usersService;
+        private readonly IJwtHelper _jwtHelper;
 
-        public UsersService(TbspRpgDataLayer.Services.IUsersService usersService)
+        public UsersService(TbspRpgDataLayer.Services.IUsersService usersService, IJwtSettings jwtSettings)
         {
             _usersService = usersService;
+            _jwtHelper = new JwtHelper(jwtSettings.Secret);
         }
 
         public async Task<UserViewModel> Authenticate(string userName, string password)
         {
             var user = await _usersService.Authenticate(userName, password);
-            return user == null ? null : new UserViewModel(user);
+            if (user == null) return null;
+            var token = _jwtHelper.GenerateToken(user.Id.ToString());
+            return new UserAuthViewModel(user, token);
         }
     }
 }

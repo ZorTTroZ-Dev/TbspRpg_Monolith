@@ -5,12 +5,11 @@ namespace TbspRpgApi.ViewModels
 {
     public class UserAuthViewModel : UserViewModel
     {
-        public string Token { get; set; }
+        public string Token { get; }
         
-        public UserAuthViewModel(UserViewModel userViewModel)
+        public UserAuthViewModel(User user, string token) : base(user)
         {
-            Id = userViewModel.Id;
-            Username = userViewModel.Username;
+            Token = token;
         }
     }
 }

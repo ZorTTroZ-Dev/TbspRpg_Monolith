@@ -13,13 +13,11 @@ namespace TbspRpgApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUsersService _usersService;
-        private readonly IJwtHelper _jwtHelper;
         private readonly ILogger<UsersController> _logger;
         
-        public UsersController(IUsersService usersService, IJwtSettings jwtSettings, ILogger<UsersController> logger)
+        public UsersController(IUsersService usersService, ILogger<UsersController> logger)
         {
             _usersService = usersService;
-            _jwtHelper = new JwtHelper(jwtSettings.Secret);
             _logger = logger;
         }
         
@@ -31,10 +29,7 @@ namespace TbspRpgApi.Controllers
 
             if (userViewModel != null)
             {
-                var token = _jwtHelper.GenerateToken(userViewModel.Id.ToString());
-                var userAuthViewModel = new UserAuthViewModel(userViewModel);
-                userAuthViewModel.Token = token;
-                return Ok(userAuthViewModel);
+                return Ok(userViewModel);
             }
             
             _logger.LogDebug("authentication failed for {Username}", model.UserName);
