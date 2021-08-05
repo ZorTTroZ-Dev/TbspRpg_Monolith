@@ -8,7 +8,7 @@ namespace TbspRpgProcessor.Processors
 {
     public interface IGameProcessor
     {
-        Task<Game> StartGame(Guid userId, Guid adventureId);
+        Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
     }
     
     public class GameProcessor : IGameProcessor
@@ -17,6 +17,7 @@ namespace TbspRpgProcessor.Processors
         private readonly IUsersService _usersService;
         private readonly IGamesService _gamesService;
         private readonly ILocationsService _locationsService;
+        private readonly IContentsService _contentsService;
         private readonly ILogger<GameProcessor> _logger;
 
         public GameProcessor(
@@ -24,16 +25,18 @@ namespace TbspRpgProcessor.Processors
             IUsersService usersService,
             IGamesService gamesService,
             ILocationsService locationsService,
+            IContentsService contentsService,
             ILogger<GameProcessor> logger)
         {
             _adventuresService = adventuresService;
             _usersService = usersService;
             _gamesService = gamesService;
             _locationsService = locationsService;
+            _contentsService = contentsService;
             _logger = logger;
         }
         
-        public async Task<Game> StartGame(Guid userId, Guid adventureId)
+        public async Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp)
         {
             // make sure the ids are valid
             var userTask = _usersService.GetById(userId);
@@ -68,9 +71,24 @@ namespace TbspRpgProcessor.Processors
             _gamesService.AddGame(game);
             
             // create content entry for adventure's source key
-            // create content entry for the initial location source key
-            // add contents to context
+            var secondsSinceEpoch = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds();
+            _contentsService.AddContent(new Content()
+            {
+                Id = Guid.NewGuid(),
+                GameId = game.Id,
+                Position = (ulong)secondsSinceEpoch,
+                SourceId = adventure.SourceKey
+            });
             
+            // create content entry for the initial location source key
+            _contentsService.AddContent(new Content()
+            {
+                Id = Guid.NewGuid(),
+                GameId = game.Id,
+                Position = (ulong)secondsSinceEpoch + 1,
+                SourceId = location.SourceKey
+            });
+
             // save context changes
             _gamesService.SaveChanges();
             return game;

@@ -78,5 +78,10 @@ namespace TbspRpgDataLayer.Tests
 
             return locationsService.Object;
         }
+
+        public static IContentsService MockDataLayerContentsService(ICollection<Content> contents)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

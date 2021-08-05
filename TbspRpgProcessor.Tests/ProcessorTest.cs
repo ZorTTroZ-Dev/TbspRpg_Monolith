@@ -12,16 +12,19 @@ namespace TbspRpgProcessor.Tests
             IEnumerable<User> users = null,
             IEnumerable<Adventure> adventures = null,
             ICollection<Game> games = null,
-            IEnumerable<Location> locations = null)
+            IEnumerable<Location> locations = null,
+            ICollection<Content> contents = null)
         {
             var usersService = MockServices.MockDataLayerUsersService(users);
             var adventuresService = MockServices.MockDataLayerAdventuresService(adventures);
             var gamesService = MockServices.MockDataLayerGamesService(games);
             var locationsService = MockServices.MockDataLayerLocationsService(locations);
+            var contentsService = MockServices.MockDataLayerContentsService(contents);
             return new GameProcessor(adventuresService,
                 usersService,
                 gamesService,
                 locationsService,
+                contentsService,
                 NullLogger<GameProcessor>.Instance);
         }
     }

@@ -35,7 +35,8 @@ namespace TbspRpgProcessor.Tests.Processors
                 testAdventures);
             
             // act
-            Task Act() => processor.StartGame(Guid.NewGuid(), testAdventures[0].Id);
+            Task Act() => processor.StartGame(Guid.NewGuid(),
+                testAdventures[0].Id, DateTime.Now);
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
@@ -66,7 +67,8 @@ namespace TbspRpgProcessor.Tests.Processors
                 testAdventures);
             
             // act
-            Task Act() => processor.StartGame(testUsers[0].Id, Guid.NewGuid());
+            Task Act() => processor.StartGame(testUsers[0].Id,
+                Guid.NewGuid(), DateTime.Now);
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
@@ -107,7 +109,8 @@ namespace TbspRpgProcessor.Tests.Processors
                 testGames);
             
             // act
-            Task Act() => processor.StartGame(testUsers[0].Id, testAdventures[0].Id);
+            Task Act() => processor.StartGame(testUsers[0].Id,
+                testAdventures[0].Id, DateTime.Now);
 
             // assert
             await Assert.ThrowsAsync<Exception>(Act);
@@ -140,7 +143,8 @@ namespace TbspRpgProcessor.Tests.Processors
                 new List<Location>());
             
             // act
-            Task Act() => processor.StartGame(testUsers[0].Id, testAdventures[0].Id);
+            Task Act() => processor.StartGame(testUsers[0].Id,
+                testAdventures[0].Id, DateTime.Now);
 
             // assert
             await Assert.ThrowsAsync<Exception>(Act);
@@ -183,7 +187,8 @@ namespace TbspRpgProcessor.Tests.Processors
                 testLocations);
             
             // act
-            var game = await processor.StartGame(testUsers[0].Id, testAdventures[0].Id);
+            var game = await processor.StartGame(testUsers[0].Id,
+                testAdventures[0].Id, DateTime.Now);
 
             // assert
             Assert.Single(testGames);
