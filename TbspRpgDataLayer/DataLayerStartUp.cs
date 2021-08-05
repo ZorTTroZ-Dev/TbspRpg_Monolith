@@ -17,6 +17,7 @@ namespace TbspRpgDataLayer
             services.AddScoped<ILocationsRepository, LocationsRepository>();
             services.AddScoped<IAdventuresRepository, AdventuresRepository>();
             services.AddScoped<IGameRepository, GameRepository>();
+            services.AddScoped<IContentsRepository, ContentsRepository>();
             
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IAdventuresService, AdventuresService>();
