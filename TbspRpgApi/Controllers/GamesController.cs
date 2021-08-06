@@ -12,7 +12,14 @@ namespace TbspRpgApi.Controllers
     public class GamesController : ControllerBase
     {
         private readonly IGamesService _gamesService;
-        private readonly Logger<GamesController> _logger;
+        private readonly ILogger<GamesController> _logger;
+
+        public GamesController(IGamesService gamesService,
+            ILogger<GamesController> logger)
+        {
+            _gamesService = gamesService;
+            _logger = logger;
+        }
         
         [Route("start/{adventureId:guid}")]
         [Authorize]
