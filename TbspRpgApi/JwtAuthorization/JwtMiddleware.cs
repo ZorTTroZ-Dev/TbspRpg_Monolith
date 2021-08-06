@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -31,8 +32,11 @@ namespace TbspRpgApi.JwtAuthorization
             try
             {
                 var userId = _jwtHelper.ValidateToken(token);
-                // attach user to context on successful jwt validation
-                context.Items["UserId"] = userId;
+                if (Guid.TryParse(userId, out var guidUserId))
+                {
+                    // attach user to context on successful jwt validation
+                    context.Items["UserId"] = guidUserId;    
+                }
             }
             catch
             {
