@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities;
 using Xunit;
@@ -159,7 +160,8 @@ namespace TbspRpgProcessor.Tests.Processors
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    Name = "test adventure"
+                    Name = "test adventure",
+                    SourceKey = Guid.NewGuid()
                 }
             };
             var testUsers = new List<User>()
@@ -176,15 +178,18 @@ namespace TbspRpgProcessor.Tests.Processors
                 {
                     Id = Guid.NewGuid(),
                     AdventureId = testAdventures[0].Id,
-                    Initial = true
+                    Initial = true,
+                    SourceKey = Guid.NewGuid()
                 }
             };
+            var testContents = new List<Content>();
             var testGames = new List<Game>();
             var processor = CreateGameProcessor(
                 testUsers,
                 testAdventures,
                 testGames,
-                testLocations);
+                testLocations,
+                testContents);
             
             // act
             var game = await processor.StartGame(testUsers[0].Id,
@@ -196,6 +201,9 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.Equal(testAdventures[0].Id, game.AdventureId);
             Assert.Equal(testUsers[0].Id, game.UserId);
             Assert.Equal(testLocations[0].Id, game.LocationId);
+            Assert.Equal(2, testContents.Count);
+            Assert.NotNull(testContents.FirstOrDefault(c => c.SourceId == testAdventures[0].SourceKey));
+            Assert.NotNull(testContents.FirstOrDefault(c => c.SourceId == testLocations[0].SourceKey));
         }
 
         #endregion

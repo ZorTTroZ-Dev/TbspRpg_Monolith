@@ -81,7 +81,18 @@ namespace TbspRpgDataLayer.Tests
 
         public static IContentsService MockDataLayerContentsService(ICollection<Content> contents)
         {
-            throw new NotImplementedException();
+            var contentsService = new Mock<IContentsService>();
+            
+            contentsService.Setup(service =>
+                    service.GetContentForGameAtPosition(It.IsAny<Guid>(), It.IsAny<ulong>()))
+                .ReturnsAsync((Guid gameId, ulong position) =>
+                    contents.FirstOrDefault(c => c.GameId == gameId && c.Position == position));
+            
+            contentsService.Setup(service =>
+                    service.AddContent(It.IsAny<Content>()))
+                .Callback((Content content) => contents.Add(content));
+
+            return contentsService.Object;
         }
     }
 }
