@@ -23,7 +23,7 @@ namespace TbspRpgApi.Controllers
         
         [Route("start/{adventureId:guid}")]
         [Authorize]
-        public async Task<IActionResult> Start(Guid adventureId) {
+        public async Task<IActionResult> StartGame(Guid adventureId) {
             try
             {
                 var userId = GetUserId();
@@ -36,7 +36,7 @@ namespace TbspRpgApi.Controllers
                     return BadRequest(new { message = "couldn't start game" });
                 }
             }
-            catch (Exception e)
+            catch
             {
                 return BadRequest(new { message = "couldn't start game" });
             }
