@@ -8,7 +8,7 @@ namespace TbspRpgDataLayer.Repositories
 {
     public interface IContentsRepository : IBaseRepository
     {
-        void AddContent(Content content);
+        Task AddContent(Content content);
         Task<Content> GetContentForGameAtPosition(Guid gameId, ulong position);
     }
     
@@ -21,7 +21,7 @@ namespace TbspRpgDataLayer.Repositories
             _databaseContext = databaseContext;
         }
 
-        public async void AddContent(Content content)
+        public async Task AddContent(Content content)
         {
             await _databaseContext.AddAsync(content);
         }
@@ -32,7 +32,7 @@ namespace TbspRpgDataLayer.Repositories
                 .FirstOrDefaultAsync(content => content.GameId == gameId && content.Position == position);
         }
 
-        public async void SaveChanges()
+        public async Task SaveChanges()
         {
             await _databaseContext.SaveChangesAsync();
         }

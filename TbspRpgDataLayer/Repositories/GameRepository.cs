@@ -9,7 +9,7 @@ namespace TbspRpgDataLayer.Repositories
     {
         Task<Game> GetGameById(Guid gameId);
         Task<Game> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId);
-        void AddGame(Game game);
+        Task AddGame(Game game);
     }
     
     public class GameRepository : IGameRepository
@@ -32,12 +32,12 @@ namespace TbspRpgDataLayer.Repositories
                 .FirstOrDefaultAsync(g => g.AdventureId == adventureId && g.UserId == userId);
         }
 
-        public async void AddGame(Game game)
+        public async Task AddGame(Game game)
         {
             await _databaseContext.Games.AddAsync(game);
         }
 
-        public async void SaveChanges()
+        public async Task SaveChanges()
         {
             await _databaseContext.SaveChangesAsync();
         }

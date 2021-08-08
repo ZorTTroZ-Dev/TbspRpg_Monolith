@@ -68,11 +68,11 @@ namespace TbspRpgProcessor.Processors
                 UserId = user.Id,
                 LocationId = location.Id
             };
-            _gamesService.AddGame(game);
+            await _gamesService.AddGame(game);
             
             // create content entry for adventure's source key
             var secondsSinceEpoch = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds();
-            _contentsService.AddContent(new Content()
+            await _contentsService.AddContent(new Content()
             {
                 Id = Guid.NewGuid(),
                 GameId = game.Id,
@@ -81,7 +81,7 @@ namespace TbspRpgProcessor.Processors
             });
             
             // create content entry for the initial location source key
-            _contentsService.AddContent(new Content()
+            await _contentsService.AddContent(new Content()
             {
                 Id = Guid.NewGuid(),
                 GameId = game.Id,
@@ -90,7 +90,7 @@ namespace TbspRpgProcessor.Processors
             });
 
             // save context changes
-            _gamesService.SaveChanges();
+            await _gamesService.SaveChanges();
             return game;
         }
     }

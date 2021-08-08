@@ -8,7 +8,7 @@ namespace TbspRpgDataLayer.Services
 {
     public interface IContentsService : IBaseService
     {
-        void AddContent(Content content);
+        Task AddContent(Content content);
         Task<Content> GetContentForGameAtPosition(Guid gameId, ulong position);
     }
     
@@ -24,16 +24,16 @@ namespace TbspRpgDataLayer.Services
             _logger = logger;
         }
         
-        public void SaveChanges()
+        public async Task SaveChanges()
         {
-            _contentsRepository.SaveChanges();
+            await _contentsRepository.SaveChanges();
         }
 
-        public async void AddContent(Content content)
+        public async Task AddContent(Content content)
         {
             var dbContent = await GetContentForGameAtPosition(content.GameId, content.Position);
             if(dbContent == null)
-                _contentsRepository.AddContent(content);
+                await _contentsRepository.AddContent(content);
         }
 
         public Task<Content> GetContentForGameAtPosition(Guid gameId, ulong position)

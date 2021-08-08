@@ -9,7 +9,7 @@ namespace TbspRpgDataLayer.Services
     public interface IGamesService : IBaseService
     {
         Task<Game> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId);
-        void AddGame(Game game);
+        Task AddGame(Game game);
     }
     
     public class GamesService : IGamesService
@@ -29,14 +29,14 @@ namespace TbspRpgDataLayer.Services
             return _gameRepository.GetGameByAdventureIdAndUserId(adventureId, userId);
         }
 
-        public void AddGame(Game game)
+        public async Task AddGame(Game game)
         {
-            _gameRepository.AddGame(game);
+            await _gameRepository.AddGame(game);
         }
 
-        public void SaveChanges()
+        public async Task SaveChanges()
         {
-            _gameRepository.SaveChanges();
+            await _gameRepository.SaveChanges();
         }
     }
 }

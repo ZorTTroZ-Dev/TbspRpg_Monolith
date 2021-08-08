@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace TbspRpgDataLayer.Services
 {
     public interface IBaseService
     {
-        void SaveChanges();
+        Task SaveChanges();
     }
 }
