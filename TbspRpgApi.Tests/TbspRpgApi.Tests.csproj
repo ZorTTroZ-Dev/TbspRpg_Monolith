@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TbspRpgApi\TbspRpgApi.csproj" />
     <ProjectReference Include="..\TbspRpgDataLayer.Tests\TbspRpgDataLayer.Tests.csproj" />
+    <ProjectReference Include="..\TbspRpgProcessor.Tests\TbspRpgProcessor.Tests.csproj" />
   </ItemGroup>
 
 </Project>

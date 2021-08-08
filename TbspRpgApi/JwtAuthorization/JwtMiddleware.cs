@@ -35,7 +35,7 @@ namespace TbspRpgApi.JwtAuthorization
                 if (Guid.TryParse(userId, out var guidUserId))
                 {
                     // attach user to context on successful jwt validation
-                    context.Items["UserId"] = guidUserId;    
+                    context.Items[AuthorizeAttribute.USER_ID_CONTEXT_KEY] = guidUserId;    
                 }
             }
             catch

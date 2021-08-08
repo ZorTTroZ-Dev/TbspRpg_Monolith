@@ -9,7 +9,7 @@ namespace TbspRpgApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GamesController : ControllerBase
+    public class GamesController : BaseController
     {
         private readonly IGamesService _gamesService;
         private readonly ILogger<GamesController> _logger;
@@ -26,10 +26,10 @@ namespace TbspRpgApi.Controllers
         public async Task<IActionResult> Start(Guid adventureId) {
             try
             {
-                if (HttpContext.Items[AuthorizeAttribute.USER_ID_CONTEXT_KEY] != null)
+                var userId = GetUserId();
+                if (userId != null)
                 {
-                    var userId = (Guid) HttpContext.Items[AuthorizeAttribute.USER_ID_CONTEXT_KEY];
-                    await _gamesService.StartGame(userId, adventureId, DateTime.Now);
+                    await _gamesService.StartGame(userId.GetValueOrDefault(), adventureId, DateTime.Now);
                 }
                 else
                 {
