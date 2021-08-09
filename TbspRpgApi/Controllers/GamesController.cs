@@ -20,6 +20,16 @@ namespace TbspRpgApi.Controllers
             _gamesService = gamesService;
             _logger = logger;
         }
+
+        [Route("adventure/{adventureId:guid}")]
+        [Authorize]
+        public async Task<IActionResult> GetGameByAdventure(Guid adventureId)
+        {
+            var userId = GetUserId();
+            if (userId == null) return BadRequest(new {message = "couldn't get game by adventure id"});
+            var game = await _gamesService.GetGameByAdventureIdAndUserId(adventureId, userId.GetValueOrDefault());
+            return Ok(game);
+        }
         
         [Route("start/{adventureId:guid}")]
         [Authorize]

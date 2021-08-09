@@ -29,13 +29,58 @@ namespace TbspRpgApi.Tests.Services
         public async void StartGame_GameStarted()
         {
             // arrange
-            var service = CreateGamesService(new List<Game>(), Guid.NewGuid());
+            var service = CreateGamesService(new List<Game>());
             
             // act
             await service.StartGame(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now);
             
             // assert
             
+        }
+
+        #endregion
+
+        #region GetGameByAdventureIdAndUserId
+
+        [Fact]
+        public async void GetGameByAdventureIdAndUserId_Exists_ReturnGameViewModel()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                UserId = Guid.NewGuid()
+            };
+            var service = CreateGamesService(new List<Game>() {testGame});
+            
+            // act
+            var gameViewModel = await service.GetGameByAdventureIdAndUserId(
+                testGame.AdventureId, testGame.UserId);
+            
+            // assert
+            Assert.NotNull(gameViewModel);
+            Assert.Equal(testGame.Id, gameViewModel.Id);
+        }
+
+        [Fact]
+        public async void GetGameByAdventureIdAndUserId_NotExist_ReturnNull()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                UserId = Guid.NewGuid()
+            };
+            var service = CreateGamesService(new List<Game>() {testGame});
+            
+            // act
+            var gameViewModel = await service.GetGameByAdventureIdAndUserId(
+                Guid.NewGuid(), testGame.UserId);
+            
+            // assert
+            Assert.Null(gameViewModel);
         }
 
         #endregion

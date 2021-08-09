@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Controllers;
 using TbspRpgApi.Entities;
 using TbspRpgApi.JwtAuthorization;
+using TbspRpgApi.ViewModels;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Controllers
@@ -78,6 +79,78 @@ namespace TbspRpgApi.Tests.Controllers
             var acceptedResult = response as AcceptedResult;
             Assert.NotNull(acceptedResult);
             Assert.Equal(202, acceptedResult.StatusCode);
+        }
+
+        #endregion
+
+        #region GetGameByAdventure
+
+        [Fact]
+        public async void GetGameByAdventure_Exist_ReturnGame()
+        {
+            // arrange
+            var userId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                UserId = userId
+            };
+            var controller = CreateGamesController(new List<Game>()
+            {
+                testGame
+            }, Guid.NewGuid(), userId);
+            
+            // act
+            var response = await controller.GetGameByAdventure(testGame.AdventureId);
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var gameViewModel = okObjectResult.Value as GameViewModel;
+            Assert.NotNull(gameViewModel);
+            Assert.Equal(testGame.Id, gameViewModel.Id);
+        }
+
+        [Fact]
+        public async void GetGameByAdventure_NotExist_EmptyResponse()
+        {
+            // arrange
+            var userId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                UserId = userId
+            };
+            var controller = CreateGamesController(new List<Game>()
+            {
+                testGame
+            }, Guid.NewGuid(), userId);
+            
+            // act
+            var response = await controller.GetGameByAdventure(Guid.NewGuid());
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var gameViewModel = okObjectResult.Value as GameViewModel;
+            Assert.Null(gameViewModel);
+        }
+
+        [Fact]
+        public async void GetGameByAdventure_NoUser_BadRequest()
+        {
+            // arrange
+            var controller = CreateGamesController(new List<Game>(), Guid.NewGuid(), null);
+            
+            // act
+            var response = await controller.GetGameByAdventure(Guid.NewGuid());
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
         }
 
         #endregion

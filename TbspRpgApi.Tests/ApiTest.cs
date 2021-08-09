@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Entities;
 using TbspRpgApi.JwtAuthorization;
@@ -27,10 +28,11 @@ namespace TbspRpgApi.Tests
             return new AdventuresService(dlAdventuresService);
         }
 
-        protected static GamesService CreateGamesService(ICollection<Game> games, Guid startGameExceptionId)
+        protected static GamesService CreateGamesService(ICollection<Game> games, Guid? startGameExceptionId = null)
         {
+            startGameExceptionId ??= Guid.NewGuid();
             var dlGamesService = MockServices.MockDataLayerGamesService(games);
-            var gameProcessor = ProcessorTest.MockGameProcessor(startGameExceptionId);
+            var gameProcessor = ProcessorTest.MockGameProcessor(startGameExceptionId.GetValueOrDefault());
             return new GamesService(
                 dlGamesService,
                 gameProcessor,
