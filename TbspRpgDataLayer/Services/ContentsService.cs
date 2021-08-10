@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Repositories;
 
 namespace TbspRpgDataLayer.Services
@@ -10,6 +13,10 @@ namespace TbspRpgDataLayer.Services
     {
         Task AddContent(Content content);
         Task<Content> GetContentForGameAtPosition(Guid gameId, ulong position);
+        Task<List<Content>> GetAllContentForGame(Guid gameId);
+        Task<Content> GetLatestForGame(Guid gameId);
+        Task<List<Content>> GetContentForGameAfterPosition(Guid gameId, ulong position);
+        Task<List<Content>> GetPartialContentForGame(Guid gameId, ContentFilterRequest filterRequest);
     }
     
     public class ContentsService : IContentsService
@@ -39,6 +46,48 @@ namespace TbspRpgDataLayer.Services
         public Task<Content> GetContentForGameAtPosition(Guid gameId, ulong position)
         {
             return _contentsRepository.GetContentForGameAtPosition(gameId, position);
+        }
+
+        public Task<List<Content>> GetAllContentForGame(Guid gameId)
+        {
+            return _contentsRepository.GetContentForGame(gameId);
+        }
+
+        public async Task<Content> GetLatestForGame(Guid gameId)
+        {
+            var contents = await _contentsRepository.GetContentForGameReverse(gameId, null, 1);
+            return contents.FirstOrDefault();
+        }
+
+        public Task<List<Content>> GetContentForGameAfterPosition(Guid gameId, ulong position)
+        {
+            return _contentsRepository.GetContentForGameAfterPosition(gameId, position);
+        }
+
+        public async Task<List<Content>> GetPartialContentForGame(Guid gameId, ContentFilterRequest filterRequest)
+        {
+            List<Content> contents = null;
+            if (string.IsNullOrEmpty(filterRequest.Direction) || filterRequest.IsForward())
+            {
+                contents = await _contentsRepository.GetContentForGame(
+                    gameId,
+                    (int?) filterRequest.Start,
+                    (int?) filterRequest.Count);
+            } 
+            else if (filterRequest.IsBackward())
+            {
+                contents = await _contentsRepository.GetContentForGameReverse(
+                    gameId,
+                    (int?) filterRequest.Start,
+                    (int?) filterRequest.Count);
+            }
+            else
+            {
+                //we can't parse the direction
+                throw new ArgumentException($"invalid direction argument {filterRequest.Direction}");
+            }
+
+            return contents;
         }
     }
 }
