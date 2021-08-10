@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Storage;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Repositories;
 using Xunit;
@@ -110,6 +110,414 @@ namespace TbspRpgDataLayer.Tests.Repositories
             
             // assert
             Assert.Null(content);
+        }
+
+        #endregion
+
+        #region GetContentForGame
+
+        [Fact]
+        public async void GetContentForGame_NoCountNoOffset_ReturnsAll()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 1
+                }
+            };
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            //act
+            var contents = await repository.GetContentForGame(testGameId);
+            
+            //assert
+            Assert.Equal(3, contents.Count);
+            Assert.Equal((ulong)0, contents[0].Position);
+            Assert.Equal((ulong)42, contents[2].Position);
+        }
+        
+        [Fact]
+        public async void GetContentForGame_NoOffset_ReturnPartial()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 1
+                }
+            };
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            //act
+            var contents = await repository.GetContentForGame(testGameId, null, 2);
+            
+            //assert
+            Assert.Equal(2, contents.Count);
+            Assert.Equal((ulong)0, contents[0].Position);
+            Assert.Equal((ulong)1, contents[1].Position);
+        }
+        
+        [Fact]
+        public async void GetContentForGame_NoCount_ReturnPartial()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 1
+                }
+            };
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            //act
+            var contents = await repository.GetContentForGame(testGameId, 2);
+            
+            //assert
+            Assert.Single(contents);
+            Assert.Equal(testContents[0].Id, contents[0].Id);
+            Assert.Equal((ulong)42, contents[0].Position);
+        }
+        
+        [Fact]
+        public async void GetContentForGame_OffsetCount_ReturnPartial()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 1
+                }
+            };
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            //act
+            var contents = await repository.GetContentForGame(testGameId, 1, 2);
+            
+            //assert
+            Assert.Equal(2, contents.Count);
+            Assert.Equal((ulong)1, contents[0].Position);
+            Assert.Equal((ulong)42, contents[1].Position);
+        }
+        
+        #endregion
+        
+        #region GetContentForGameReverse
+
+        [Fact]
+        public async void GetContentForGameReverse_NoCountNoOffset_ReturnsAll()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 1
+                }
+            };
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            //act
+            var contents = await repository.GetContentForGameReverse(testGameId);
+            
+            //assert
+            Assert.Equal(3, contents.Count);
+            Assert.Equal((ulong)42, contents[0].Position);
+            Assert.Equal((ulong)0, contents[2].Position);
+        }
+        
+        [Fact]
+        public async void GetContentForGameReverse_NoOffset_ReturnPartial()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 1
+                }
+            };
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            //act
+            var contents = await repository.GetContentForGameReverse(testGameId, null, 2);
+            
+            //assert
+            Assert.Equal(2, contents.Count);
+            Assert.Equal((ulong)42, contents[0].Position);
+            Assert.Equal((ulong)1, contents[1].Position);
+        }
+
+        [Fact]
+        public async void GetContentForGameReverse_NoCount_ReturnPartial()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 1
+                }
+            };
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            //act
+            var contents = await repository.GetContentForGameReverse(testGameId, 2);
+            
+            //assert
+            Assert.Single(contents);
+            Assert.Equal((ulong)0, contents[0].Position);
+        }
+        
+        [Fact]
+        public async void GetContentForGameReverse_OffsetCount_ReturnPartial()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 1
+                }
+            };
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            //act
+            var contents = await repository.GetContentForGameReverse(testGameId, 1, 2);
+            
+            //assert
+            Assert.Equal(2, contents.Count);
+            Assert.Equal((ulong)1, contents[0].Position);
+            Assert.Equal((ulong)0, contents[1].Position);
+        }
+        
+        #endregion
+        
+        #region GetContentForGameAfterPosition
+
+        [Fact]
+        public async void GetContentForGameAfterPosition_EarlyPosition_ReturnContent()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 1
+                }
+            };
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            //act
+            var contents = await repository.GetContentForGameAfterPosition(testGameId, 40);
+            
+            //assert
+            Assert.Single(contents);
+            Assert.Equal(testContents[0].Id, contents[0].Id);
+        }
+        
+        [Fact]
+        public async void GetContentForGameAfterPosition_LastPosition_ReturnNoContent()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 1
+                }
+            };
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            //act
+            var contents = await repository.GetContentForGameAfterPosition(testGameId, 42);
+            
+            //assert
+            Assert.Empty(contents);
         }
 
         #endregion
