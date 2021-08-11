@@ -43,6 +43,7 @@ namespace TbspRpgApi
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IAdventuresService, AdventuresService>();
             services.AddScoped<IGamesService, GamesService>();
+            services.AddScoped<IContentsService, ContentsService>();
 
             // swagger
             services.AddSwaggerGen(c =>
