@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Services;
 
 namespace TbspRpgDataLayer.Tests
@@ -91,6 +92,55 @@ namespace TbspRpgDataLayer.Tests
             contentsService.Setup(service =>
                     service.AddContent(It.IsAny<Content>()))
                 .Callback((Content content) => contents.Add(content));
+            
+            contentsService.Setup(service =>
+                    service.GetAllContentForGame(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid gameId) => 
+                    contents.
+                        OrderBy(c => c.Position).
+                        Where(c => c.GameId == gameId).ToList());
+            
+            contentsService.Setup(service =>
+                    service.GetLatestForGame(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid gameId) => 
+                    contents.
+                        OrderBy(c => c.Position).
+                        FirstOrDefault(c => c.GameId == gameId));
+            
+            contentsService.Setup(service =>
+                    service.GetContentForGameAfterPosition(It.IsAny<Guid>(), It.IsAny<ulong>()))
+                .ReturnsAsync((Guid gameId, ulong position) => 
+                    contents.
+                        OrderBy(c => c.Position).
+                        Where(c => c.GameId == gameId && c.Position > position).ToList());
+
+            contentsService.Setup(service =>
+                    service.GetPartialContentForGame(It.IsAny<Guid>(), It.IsAny<ContentFilterRequest>()))
+                .ReturnsAsync((Guid gameId, ContentFilterRequest cfr) =>
+                {
+                    var start = 0;
+                    var count = 0;
+                    if (cfr.Start != null)
+                        start = (int) cfr.Start.GetValueOrDefault();
+                    if (cfr.Count != null)
+                        count = (int) cfr.Count.GetValueOrDefault();
+                    cfr.Direction ??= "f";
+                    
+                    if (cfr.IsBackward())
+                    {
+                        return contents.
+                            OrderByDescending(c => c.Position).
+                            Skip(start).
+                            Take(count).
+                            Where(c => c.GameId == gameId).ToList();
+                    }
+                    
+                    return contents.
+                        OrderBy(c => c.Position).
+                        Skip(start).
+                        Take(count).
+                        Where(c => c.GameId == gameId).ToList();
+                });
 
             return contentsService.Object;
         }
