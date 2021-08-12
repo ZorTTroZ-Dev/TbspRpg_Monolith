@@ -38,15 +38,11 @@ namespace TbspRpgProcessor.Processors
         
         public async Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp)
         {
-            // make sure the ids are valid
-            var userTask = _usersService.GetById(userId);
-            var adventureTask = _adventuresService.GetAdventureById(adventureId);
-
-            var user = await userTask;
+            var user = await _usersService.GetById(userId);
             if (user == null)
                 throw new ArgumentException("invalid user id");
 
-            var adventure = await adventureTask;
+            var adventure = await _adventuresService.GetAdventureById(adventureId);
             if (adventure == null)
                 throw new ArgumentException("invalid adventure id");
             
