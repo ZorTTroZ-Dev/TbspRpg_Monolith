@@ -134,12 +134,17 @@ namespace TbspRpgDataLayer.Tests
                             Take(count).
                             Where(c => c.GameId == gameId).ToList();
                     }
-                    
-                    return contents.
-                        OrderBy(c => c.Position).
-                        Skip(start).
-                        Take(count).
-                        Where(c => c.GameId == gameId).ToList();
+
+                    if (cfr.IsForward())
+                    {
+                        return contents.
+                            OrderBy(c => c.Position).
+                            Skip(start).
+                            Take(count).
+                            Where(c => c.GameId == gameId).ToList();
+                    }
+
+                    throw new ArgumentException("invalid direction argument");
                 });
 
             return contentsService.Object;

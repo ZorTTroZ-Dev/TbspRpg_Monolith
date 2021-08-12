@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TbspRpgApi.Entities;
+using TbspRpgApi.RequestModels;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Services
@@ -72,6 +73,89 @@ namespace TbspRpgApi.Tests.Services
             
             // assert
             Assert.Null(contentViewModel);
+        }
+
+        #endregion
+
+        #region GetPartialContentForGame
+
+        [Fact]
+        public async void GetPartialContentForGame_NoContent_ReturnNull()
+        {
+            // arrange
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42,
+                    SourceId = Guid.NewGuid()
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0,
+                    SourceId = Guid.NewGuid()
+                }
+            };
+            var service = CreateContentsService(testContents);
+            
+            // act
+            var contents = await service.GetPartialContentForGame(
+                testGameId,
+                new ContentFilterRequest()
+                {
+                    Direction = "f",
+                    Start = 3,
+                    Count = 1
+                });
+            
+            // assert
+            Assert.Null(contents);
+        }
+        
+        [Fact]
+        public async void GetPartialContentForGame_Content_ReturnContent()
+        {
+            // arrange
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42,
+                    SourceId = Guid.NewGuid()
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0,
+                    SourceId = Guid.NewGuid()
+                }
+            };
+            var service = CreateContentsService(testContents);
+            
+            // act
+            var contents = await service.GetPartialContentForGame(
+                testGameId,
+                new ContentFilterRequest()
+                {
+                    Direction = "f",
+                    Start = 0,
+                    Count = 1
+                });
+            
+            // assert
+            Assert.NotNull(contents);
+            Assert.Single(contents.SourceIds);
+            Assert.Equal(testGameId, contents.Id);
+            Assert.Equal((ulong)0, contents.Index);
         }
 
         #endregion

@@ -3,12 +3,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.JwtAuthorization;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.Services;
 
 namespace TbspRpgApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/{gameId:guid}")]
     public class ContentsController : BaseController
     {
         private readonly IContentsService _contentsService;
@@ -21,12 +22,25 @@ namespace TbspRpgApi.Controllers
             _logger = logger;
         }
         
-        [Route("{gameId:guid}/latest")]
+        [Route("latest")]
         [Authorize]
         public async Task<IActionResult> GetLatestContentForGame(Guid gameId)
         {
             var contentViewModel = await _contentsService.GetLatestForGame(gameId);
             return Ok(contentViewModel);
+        }
+        
+        [Authorize, HttpGet("filter")]
+        public async Task<IActionResult> GetPartialContentForGame(Guid gameId, [FromQuery] ContentFilterRequest filterRequest) {
+            try
+            {
+                var contentViewModel = await _contentsService.GetPartialContentForGame(gameId, filterRequest);
+                return Ok(contentViewModel);
+            }
+            catch
+            {
+                return BadRequest(new { message = "invalid filter request" });
+            }
         }
     }
 }
