@@ -104,7 +104,7 @@ namespace TbspRpgDataLayer.Tests
                     service.GetLatestForGame(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid gameId) => 
                     contents.
-                        OrderBy(c => c.Position).
+                        OrderByDescending(c => c.Position).
                         FirstOrDefault(c => c.GameId == gameId));
             
             contentsService.Setup(service =>

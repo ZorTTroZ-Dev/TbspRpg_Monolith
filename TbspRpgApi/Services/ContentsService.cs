@@ -25,7 +25,7 @@ namespace TbspRpgApi.Services
         public async Task<ContentViewModel> GetLatestForGame(Guid gameId)
         {
             var content = await _contentsService.GetLatestForGame(gameId);
-            return new ContentViewModel(content);
+            return content != null ? new ContentViewModel(content) : null;
         }
     }
 }

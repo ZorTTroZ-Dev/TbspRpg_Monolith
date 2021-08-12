@@ -38,5 +38,11 @@ namespace TbspRpgApi.Tests
                 gameProcessor,
                 NullLogger<GamesService>.Instance);
         }
+
+        protected static ContentsService CreateContentsService(ICollection<Content> contents)
+        {
+            var dlContentsService = MockServices.MockDataLayerContentsService(contents);
+            return new ContentsService(dlContentsService, NullLogger<ContentsService>.Instance);
+        }
     }
 }
