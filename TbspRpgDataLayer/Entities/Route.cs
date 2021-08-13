@@ -6,6 +6,7 @@ namespace TbspRpgApi.Entities
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public Guid SourceKey { get; set; }
         public Guid SuccessSourceKey { get; set; }
         public Guid FailureSourceKey { get; set; }
         public Guid LocationId { get; set; }
