@@ -42,5 +42,12 @@ namespace TbspRpgApi.Controllers
                 return BadRequest(new { message = "invalid filter request" });
             }
         }
+
+        [Authorize, HttpGet("after/{position}")]
+        public async Task<IActionResult> GetContentForGameAfterPosition(Guid gameId, ulong position)
+        {
+            var contentViewModel = await _contentsService.GetContentForGameAfterPosition(gameId, position);
+            return Ok(contentViewModel);
+        }
     }
 }

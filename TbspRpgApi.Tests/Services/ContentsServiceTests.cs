@@ -159,5 +159,74 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+
+        #region GetContentForGameAfterPosition
+
+        [Fact]
+        public async void GetContentForGameAfterPosition_NoResults_ReturnNull()
+        {
+            // arrange
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42,
+                    SourceId = Guid.NewGuid()
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0,
+                    SourceId = Guid.NewGuid()
+                }
+            };
+            var service = CreateContentsService(testContents);
+            
+            //act
+            var contentViewModel = await service.GetContentForGameAfterPosition(testGameId, 43);
+            
+            // assert
+            Assert.Null(contentViewModel);
+        }
+        
+        [Fact]
+        public async void GetContentForGameAfterPosition_ReturnContents()
+        {
+            // arrange
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42,
+                    SourceId = Guid.NewGuid()
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0,
+                    SourceId = Guid.NewGuid()
+                }
+            };
+            var service = CreateContentsService(testContents);
+            
+            // act
+            var contentViewModel = await service.GetContentForGameAfterPosition(testGameId, 10);
+            
+            // assert
+            Assert.NotNull(contentViewModel);
+            Assert.Equal(testGameId, contentViewModel.Id);
+            Assert.Single(contentViewModel.SourceIds);
+            Assert.Equal((ulong)42, contentViewModel.Index);
+        }
+
+        #endregion
     }
 }

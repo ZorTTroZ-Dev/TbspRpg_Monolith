@@ -219,5 +219,45 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+
+        #region GetContentForGameAfterPosition
+
+        [Fact]
+        public async void GetContentForGameAfterPosition_ReturnsContent()
+        {
+            // arrange
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42,
+                    SourceId = Guid.NewGuid()
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0,
+                    SourceId = Guid.NewGuid()
+                }
+            };
+            var controller = CreateController(testContents);
+            
+            // act
+            var response = await controller.GetContentForGameAfterPosition(testGameId, 10);
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var contentViewModel = okObjectResult.Value as ContentViewModel;
+            Assert.NotNull(contentViewModel);
+            Assert.Equal(testGameId, contentViewModel.Id);
+            Assert.Single(contentViewModel.SourceIds);
+        }
+
+        #endregion
     }
 }
