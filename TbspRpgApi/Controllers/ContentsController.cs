@@ -26,12 +26,16 @@ namespace TbspRpgApi.Controllers
         [Authorize]
         public async Task<IActionResult> GetLatestContentForGame(Guid gameId)
         {
+            if(!CanAccessGame(gameId))
+                return BadRequest(new { message = "not your game" });
             var contentViewModel = await _contentsService.GetLatestForGame(gameId);
             return Ok(contentViewModel);
         }
         
         [Authorize, HttpGet("filter")]
         public async Task<IActionResult> GetPartialContentForGame(Guid gameId, [FromQuery] ContentFilterRequest filterRequest) {
+            if(!CanAccessGame(gameId))
+                return BadRequest(new { message = "not your game" });
             try
             {
                 var contentViewModel = await _contentsService.GetPartialContentForGame(gameId, filterRequest);
@@ -46,6 +50,8 @@ namespace TbspRpgApi.Controllers
         [Authorize, HttpGet("after/{position}")]
         public async Task<IActionResult> GetContentForGameAfterPosition(Guid gameId, ulong position)
         {
+            if(!CanAccessGame(gameId))
+                return BadRequest(new { message = "not your game" });
             var contentViewModel = await _contentsService.GetContentForGameAfterPosition(gameId, position);
             return Ok(contentViewModel);
         }

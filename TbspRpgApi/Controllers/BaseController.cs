@@ -8,9 +8,14 @@ namespace TbspRpgApi.Controllers
     {
         public BaseController() {}
 
-        public Guid? GetUserId()
+        protected Guid? GetUserId()
         {
             return (Guid?) HttpContext.Items[AuthorizeAttribute.USER_ID_CONTEXT_KEY];
         }
+
+        protected bool CanAccessGame(Guid gameId)
+        {
+            return true;
+        } 
     }
 }
