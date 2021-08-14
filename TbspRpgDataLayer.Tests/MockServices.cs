@@ -65,6 +65,10 @@ namespace TbspRpgDataLayer.Tests
                     service.AddGame(It.IsAny<Game>()))
                 .Callback((Game game) => games.Add(game));
 
+            gamesService.Setup(service =>
+                    service.GetGameByIdIncludeLocation(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid gameId) => games.FirstOrDefault(g => g.Id == gameId));
+
             return gamesService.Object;
         }
 
