@@ -10,6 +10,7 @@ namespace TbspRpgDataLayer.Services
     {
         Task<Game> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId);
         Task AddGame(Game game);
+        Task<Game> GetGameByIdIncludeLocation(Guid gameId);
     }
     
     public class GamesService : IGamesService
@@ -32,6 +33,11 @@ namespace TbspRpgDataLayer.Services
         public async Task AddGame(Game game)
         {
             await _gameRepository.AddGame(game);
+        }
+
+        public Task<Game> GetGameByIdIncludeLocation(Guid gameId)
+        {
+            return _gameRepository.GetGameByIdWithLocation(gameId);
         }
 
         public async Task SaveChanges()

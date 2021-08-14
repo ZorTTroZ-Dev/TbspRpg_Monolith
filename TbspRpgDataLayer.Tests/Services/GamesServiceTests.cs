@@ -117,5 +117,39 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region GetGameByIdIncludeLocation
+
+        [Fact]
+        public async void GetGameByIdIncludeLocation()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocationId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = testLocationId,
+                Location = new Location()
+                {
+                    Id = testLocationId,
+                    Name = "test location",
+                    Initial = true
+                }
+            };
+            context.Games.Add(testGame);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var game = await service.GetGameByIdIncludeLocation(testGame.Id);
+            
+            // assert
+            Assert.NotNull(game);
+            Assert.NotNull(game.Location);
+            Assert.Equal(testLocationId, game.Location.Id);
+        }
+
+        #endregion
     }
 }
