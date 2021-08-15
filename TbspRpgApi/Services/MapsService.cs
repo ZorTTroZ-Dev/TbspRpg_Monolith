@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.ViewModels;
@@ -15,12 +16,15 @@ namespace TbspRpgApi.Services
     public class MapsService : IMapsService
     {
         private readonly TbspRpgDataLayer.Services.IGamesService _gamesService;
+        private readonly TbspRpgDataLayer.Services.IRoutesService _routesService;
         private readonly ILogger<MapsService> _logger;
 
         public MapsService(TbspRpgDataLayer.Services.IGamesService gamesService,
+            TbspRpgDataLayer.Services.IRoutesService routesService,
             ILogger<MapsService> logger)
         {
             _gamesService = gamesService;
+            _routesService = routesService;
             _logger = logger;
         }
         
@@ -32,9 +36,13 @@ namespace TbspRpgApi.Services
             return new LocationViewModel(game.Location);
         }
 
-        public Task<List<RouteViewModel>> GetCurrentRoutesForGame(Guid gameId)
+        public async Task<List<RouteViewModel>> GetCurrentRoutesForGame(Guid gameId)
         {
-            throw new NotImplementedException();
+            var game = await _gamesService.GetGameById(gameId);
+            if (game == null || game.LocationId == Guid.Empty)
+                throw new Exception("invalid game id or no location");
+            var routes = await _routesService.GetRoutesForLocation(game.LocationId);
+            return routes.Select(route => new RouteViewModel(route)).ToList();
         }
     }
 }

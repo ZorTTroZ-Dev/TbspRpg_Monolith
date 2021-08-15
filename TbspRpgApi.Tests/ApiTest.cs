@@ -45,10 +45,11 @@ namespace TbspRpgApi.Tests
             return new ContentsService(dlContentsService, NullLogger<ContentsService>.Instance);
         }
 
-        protected static MapsService CreateMapsService(ICollection<Game> games)
+        protected static MapsService CreateMapsService(ICollection<Game> games, ICollection<Route> routes = null)
         {
             var dlGamesService = MockServices.MockDataLayerGamesService(games);
-            return new MapsService(dlGamesService, NullLogger<MapsService>.Instance);
+            var dlRoutesService = MockServices.MockDataLayerRoutesService(routes);
+            return new MapsService(dlGamesService, dlRoutesService, NullLogger<MapsService>.Instance);
         }
     }
 }
