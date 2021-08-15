@@ -7,13 +7,13 @@ namespace TbspRpgApi.ViewModels
     {
         public Guid Id { get; }
         public string Name { get; }
-        
-        //public string DisplayText { get; set; }
+        public Guid SourceKey { get; }
 
         public RouteViewModel(Route route)
         {
             Id = route.Id;
             Name = route.Name;
+            SourceKey = route.SourceKey;
         }
     }
 }
