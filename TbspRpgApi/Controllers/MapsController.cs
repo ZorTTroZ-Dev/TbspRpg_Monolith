@@ -34,5 +34,20 @@ namespace TbspRpgApi.Controllers
                 return BadRequest(new {message = ex.Message});
             }
         }
+        
+        [HttpGet("routes"), Authorize]
+        public async Task<IActionResult> GetCurrentRoutesForGame(Guid gameId) {
+            if(!CanAccessGame(gameId))
+                return BadRequest(new { message = "not your game" });
+            try
+            {
+                var routes = await _mapsService.GetCurrentRoutesForGame(gameId);
+                return Ok(routes);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new {message = ex.Message});
+            }
+        }
     }
 }

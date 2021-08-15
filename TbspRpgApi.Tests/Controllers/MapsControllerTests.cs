@@ -11,9 +11,9 @@ namespace TbspRpgApi.Tests.Controllers
 {
     public class MapsControllerTests : ApiTest
     {
-        private static MapsController CreateController(ICollection<Game> games)
+        private static MapsController CreateController(ICollection<Game> games, ICollection<Route> routes = null)
         {
-            var mapsService = CreateMapsService(games);
+            var mapsService = CreateMapsService(games, routes);
             return new MapsController(mapsService, NullLogger<MapsController>.Instance);
         }
 
@@ -92,6 +92,118 @@ namespace TbspRpgApi.Tests.Controllers
             var locationViewModel = okObjectResult.Value as LocationViewModel;
             Assert.NotNull(locationViewModel);
             Assert.Equal(testLocationId, locationViewModel.Id);
+        }
+
+        #endregion
+
+        #region GetCurrentRoutesForGame
+
+        [Fact]
+        public async void GetCurrentRoutesForGame_Valid_ReturnsRoutes()
+        {
+            // arrange
+            var testLocationId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = testLocationId
+            };
+            var testRoutes = new List<Route>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route1",
+                    LocationId = testLocationId
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route2",
+                    LocationId = testLocationId
+                }
+            };
+            var controller = CreateController(new List<Game>() {testGame}, testRoutes);
+            
+            // act
+            var response = await controller.GetCurrentRoutesForGame(testGame.Id);
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var routeViewModels = okObjectResult.Value as List<RouteViewModel>;
+            Assert.NotNull(routeViewModels);
+            Assert.Equal(2, routeViewModels.Count);
+        }
+        
+        [Fact]
+        public async void GetCurrentRoutesForGame_NoGame_BadRequest()
+        {
+            // arrange
+            var testLocationId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid()
+            };
+            var testRoutes = new List<Route>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route1",
+                    LocationId = testLocationId
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route2",
+                    LocationId = testLocationId
+                }
+            };
+            var controller = CreateController(new List<Game>() {testGame}, testRoutes);
+            
+            // act
+            var response = await controller.GetCurrentRoutesForGame(Guid.NewGuid());
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+        
+        [Fact]
+        public async void GetCurrentRoutesForGame_NoLocation_BadRequest()
+        {
+            // arrange
+            var testLocationId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid()
+            };
+            var testRoutes = new List<Route>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route1",
+                    LocationId = testLocationId
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route2",
+                    LocationId = testLocationId
+                }
+            };
+            var controller = CreateController(new List<Game>() {testGame}, testRoutes);
+            
+            // act
+            var response = await controller.GetCurrentRoutesForGame(testGame.Id);
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
         }
 
         #endregion
