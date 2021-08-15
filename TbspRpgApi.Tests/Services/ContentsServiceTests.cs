@@ -22,14 +22,14 @@ namespace TbspRpgApi.Tests.Services
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 42,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 0,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 }
             };
             var service = CreateContentsService(testContents);
@@ -39,7 +39,7 @@ namespace TbspRpgApi.Tests.Services
             
             // assert
             Assert.NotNull(contentViewModel);
-            Assert.Single(contentViewModel.SourceIds);
+            Assert.Single(contentViewModel.SourceKeys);
             Assert.Equal(testGameId, contentViewModel.Id);
             Assert.Equal((ulong)42, contentViewModel.Index);
         }
@@ -56,14 +56,14 @@ namespace TbspRpgApi.Tests.Services
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 42,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 0,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 }
             };
             var service = CreateContentsService(testContents);
@@ -91,14 +91,14 @@ namespace TbspRpgApi.Tests.Services
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 42,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 0,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 }
             };
             var service = CreateContentsService(testContents);
@@ -129,14 +129,14 @@ namespace TbspRpgApi.Tests.Services
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 42,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 0,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 }
             };
             var service = CreateContentsService(testContents);
@@ -153,7 +153,7 @@ namespace TbspRpgApi.Tests.Services
             
             // assert
             Assert.NotNull(contents);
-            Assert.Single(contents.SourceIds);
+            Assert.Single(contents.SourceKeys);
             Assert.Equal(testGameId, contents.Id);
             Assert.Equal((ulong)0, contents.Index);
         }
@@ -174,14 +174,14 @@ namespace TbspRpgApi.Tests.Services
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 42,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 0,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 }
             };
             var service = CreateContentsService(testContents);
@@ -205,14 +205,14 @@ namespace TbspRpgApi.Tests.Services
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 42,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 0,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 }
             };
             var service = CreateContentsService(testContents);
@@ -223,7 +223,7 @@ namespace TbspRpgApi.Tests.Services
             // assert
             Assert.NotNull(contentViewModel);
             Assert.Equal(testGameId, contentViewModel.Id);
-            Assert.Single(contentViewModel.SourceIds);
+            Assert.Single(contentViewModel.SourceKeys);
             Assert.Equal((ulong)42, contentViewModel.Index);
         }
 

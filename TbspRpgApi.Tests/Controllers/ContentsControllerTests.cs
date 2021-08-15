@@ -32,14 +32,14 @@ namespace TbspRpgApi.Tests.Controllers
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 42,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 0,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 }
             };
             var controller = CreateController(testContents);
@@ -53,7 +53,7 @@ namespace TbspRpgApi.Tests.Controllers
             var contentViewModel = okObjectResult.Value as ContentViewModel;
             Assert.NotNull(contentViewModel);
             Assert.Equal(testGameId, contentViewModel.Id);
-            Assert.Single(contentViewModel.SourceIds);
+            Assert.Single(contentViewModel.SourceKeys);
         }
         
         [Fact]
@@ -68,14 +68,14 @@ namespace TbspRpgApi.Tests.Controllers
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 42,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 0,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 }
             };
             var controller = CreateController(testContents);
@@ -106,14 +106,14 @@ namespace TbspRpgApi.Tests.Controllers
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 42,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 0,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 }
             };
             var controller = CreateController(testContents);
@@ -146,14 +146,14 @@ namespace TbspRpgApi.Tests.Controllers
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 42,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 0,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 }
             };
             var controller = CreateController(testContents);
@@ -187,14 +187,14 @@ namespace TbspRpgApi.Tests.Controllers
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 42,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 0,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 }
             };
             var controller = CreateController(testContents);
@@ -215,7 +215,7 @@ namespace TbspRpgApi.Tests.Controllers
             var contentViewModel = okObjectResult.Value as ContentViewModel;
             Assert.NotNull(contentViewModel);
             Assert.Equal(testGameId, contentViewModel.Id);
-            Assert.Single(contentViewModel.SourceIds);
+            Assert.Single(contentViewModel.SourceKeys);
         }
 
         #endregion
@@ -234,14 +234,14 @@ namespace TbspRpgApi.Tests.Controllers
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 42,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     GameId = testGameId,
                     Position = 0,
-                    SourceId = Guid.NewGuid()
+                    SourceKey = Guid.NewGuid()
                 }
             };
             var controller = CreateController(testContents);
@@ -255,7 +255,7 @@ namespace TbspRpgApi.Tests.Controllers
             var contentViewModel = okObjectResult.Value as ContentViewModel;
             Assert.NotNull(contentViewModel);
             Assert.Equal(testGameId, contentViewModel.Id);
-            Assert.Single(contentViewModel.SourceIds);
+            Assert.Single(contentViewModel.SourceKeys);
         }
 
         #endregion

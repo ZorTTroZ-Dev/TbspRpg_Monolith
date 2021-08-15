@@ -202,8 +202,8 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.Equal(testUsers[0].Id, game.UserId);
             Assert.Equal(testLocations[0].Id, game.LocationId);
             Assert.Equal(2, testContents.Count);
-            Assert.NotNull(testContents.FirstOrDefault(c => c.SourceId == testAdventures[0].SourceKey));
-            Assert.NotNull(testContents.FirstOrDefault(c => c.SourceId == testLocations[0].SourceKey));
+            Assert.NotNull(testContents.FirstOrDefault(c => c.SourceKey == testAdventures[0].SourceKey));
+            Assert.NotNull(testContents.FirstOrDefault(c => c.SourceKey == testLocations[0].SourceKey));
         }
 
         #endregion

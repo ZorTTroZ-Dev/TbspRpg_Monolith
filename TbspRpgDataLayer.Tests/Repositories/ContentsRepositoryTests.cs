@@ -33,8 +33,8 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var repository = CreateRepository(context);
             
             // act
-            repository.AddContent(testContent);
-            repository.SaveChanges();
+            await repository.AddContent(testContent);
+            await repository.SaveChanges();
             
             // assert
             Assert.Single(context.Contents);

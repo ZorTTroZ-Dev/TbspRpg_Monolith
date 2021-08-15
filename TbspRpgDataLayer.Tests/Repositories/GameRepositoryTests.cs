@@ -143,7 +143,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var gameRepository = new GameRepository(context);
 
             // act
-            gameRepository.AddGame(game);
+            await gameRepository.AddGame(game);
             await context.SaveChangesAsync();
             
             // assert

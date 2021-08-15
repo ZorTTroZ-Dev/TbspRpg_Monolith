@@ -108,8 +108,8 @@ namespace TbspRpgDataLayer.Tests.Services
             var service = CreateService(context);
             
             // act 
-            service.AddGame(testGame);
-            service.SaveChanges();
+            await service.AddGame(testGame);
+            await service.SaveChanges();
             
             // assert
             Assert.Single(context.Games);
