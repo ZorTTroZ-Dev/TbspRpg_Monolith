@@ -84,6 +84,17 @@ namespace TbspRpgDataLayer.Tests
             return locationsService.Object;
         }
 
+        public static IRoutesService MockDataLayerRoutesService(ICollection<Route> routes)
+        {
+            var routesService = new Mock<IRoutesService>();
+
+            routesService.Setup(service =>
+                    service.GetRoutesForLocation(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid locationId) => routes.Where(r => r.LocationId == locationId).ToList());
+
+            return routesService.Object;
+        }
+
         public static IContentsService MockDataLayerContentsService(ICollection<Content> contents)
         {
             var contentsService = new Mock<IContentsService>();
