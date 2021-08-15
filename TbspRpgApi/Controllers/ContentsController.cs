@@ -22,7 +22,7 @@ namespace TbspRpgApi.Controllers
             _logger = logger;
         }
         
-        [Route("latest")]
+        [HttpGet("latest")]
         [Authorize]
         public async Task<IActionResult> GetLatestContentForGame(Guid gameId)
         {

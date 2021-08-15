@@ -21,7 +21,7 @@ namespace TbspRpgApi.Controllers
             _logger = logger;
         }
 
-        [Route("adventure/{adventureId:guid}")]
+        [HttpGet("adventure/{adventureId:guid}")]
         [Authorize]
         public async Task<IActionResult> GetGameByAdventure(Guid adventureId)
         {
@@ -31,7 +31,7 @@ namespace TbspRpgApi.Controllers
             return Ok(game);
         }
         
-        [Route("start/{adventureId:guid}")]
+        [HttpGet("start/{adventureId:guid}")]
         [Authorize]
         public async Task<IActionResult> StartGame(Guid adventureId) {
             try
