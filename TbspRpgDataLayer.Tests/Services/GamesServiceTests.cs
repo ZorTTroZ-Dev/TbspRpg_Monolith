@@ -151,5 +151,50 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region GetGameById
+
+        [Fact]
+        public async void GetGameById_GameExists_ReturnGame()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid()
+            };
+            context.Games.Add(testGame);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var game = await service.GetGameById(testGame.Id);
+            
+            // assert
+            Assert.NotNull(game);
+            Assert.Equal(testGame.Id, game.Id);
+        }
+        
+        [Fact]
+        public async void GetGameById_NotExists_ReturnNull()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid()
+            };
+            context.Games.Add(testGame);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var game = await service.GetGameById(Guid.NewGuid());
+            
+            // assert
+            Assert.Null(game);
+        }
+
+        #endregion
     }
 }
