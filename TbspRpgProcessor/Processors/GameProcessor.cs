@@ -49,7 +49,7 @@ namespace TbspRpgProcessor.Processors
             // check if the user already has a game of this adventure
             var game = await _gamesService.GetGameByAdventureIdAndUserId(adventure.Id, user.Id);
             if (game != null)
-                throw new Exception("user already has an instance of given adventure");
+                return game;
             
             // get the initial location for the game
             var location = await _locationsService.GetInitialLocationForAdventure(adventure.Id);

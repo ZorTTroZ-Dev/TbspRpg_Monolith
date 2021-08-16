@@ -76,7 +76,7 @@ namespace TbspRpgProcessor.Tests.Processors
         }
         
         [Fact]
-        public async void StartGame_GameExists_ThrowsException()
+        public async void StartGame_GameExists_ReturnsGame()
         {
             // arrange
             var testAdventures = new List<Adventure>()
@@ -108,13 +108,16 @@ namespace TbspRpgProcessor.Tests.Processors
                 testUsers,
                 testAdventures,
                 testGames);
-            
+
             // act
-            Task Act() => processor.StartGame(testUsers[0].Id,
+            var game = await processor.StartGame(testUsers[0].Id,
                 testAdventures[0].Id, DateTime.Now);
 
             // assert
-            await Assert.ThrowsAsync<Exception>(Act);
+            Assert.Single(testGames);
+            Assert.NotNull(game);
+            Assert.Equal(testAdventures[0].Id, game.AdventureId);
+            Assert.Equal(testUsers[0].Id, game.UserId);
         }
         
         [Fact]
