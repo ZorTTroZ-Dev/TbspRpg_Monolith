@@ -71,6 +71,9 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<Guid>("AdventureId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Language")
+                        .HasColumnType("text");
+
                     b.Property<Guid>("LocationId")
                         .HasColumnType("uuid");
 
