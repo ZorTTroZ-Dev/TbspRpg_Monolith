@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using TbspRpgApi.Entities;
+using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Services;
 using TbspRpgDataLayer.Tests;
 using TbspRpgProcessor.Processors;
@@ -31,6 +32,15 @@ namespace TbspRpgProcessor.Tests
                 NullLogger<GameProcessor>.Instance);
         }
 
+        protected static IContentProcessor CreateContentProcessor(
+            ICollection<Game> games = null,
+            ICollection<En> sources = null)
+        {
+            var gamesService = MockServices.MockDataLayerGamesService(games);
+            var sourcesService = MockServices.MockDataLayerSourcesService(sources);
+            return new ContentProcessor(gamesService, sourcesService, NullLogger<ContentProcessor>.Instance);
+        }
+
         public static IGameProcessor MockGameProcessor(Guid startGameExceptionId)
         {
             var gameProcessor = new Mock<IGameProcessor>();
@@ -51,6 +61,13 @@ namespace TbspRpgProcessor.Tests
                 });
             
             return gameProcessor.Object;
+        }
+
+        public static IContentProcessor MockContentProcessor(ICollection<Game> games, ICollection<En> sources)
+        {
+            var gamesService = MockServices.MockDataLayerGamesService(games);
+            var sourcesService = MockServices.MockDataLayerSourcesService(sources);
+            return new ContentProcessor(gamesService, sourcesService, NullLogger<ContentProcessor>.Instance);
         }
     }
 }

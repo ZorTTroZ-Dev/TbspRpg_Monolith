@@ -7,7 +7,7 @@ namespace TbspRpgProcessor.Processors
 {
     public interface IContentProcessor
     {
-        Task<string> GetContentForKey(Guid gameId, Guid sourceKey);
+        Task<string> GetSourceForKey(Guid gameId, Guid sourceKey);
     }
     
     public class ContentProcessor : IContentProcessor
@@ -26,7 +26,7 @@ namespace TbspRpgProcessor.Processors
             _logger = logger;
         }
 
-        public async Task<string> GetContentForKey(Guid gameId, Guid sourceKey)
+        public async Task<string> GetSourceForKey(Guid gameId, Guid sourceKey)
         {
             // get the language the game is set to
             // eventually this will look up javascript

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Moq;
 using TbspRpgApi.Entities;
+using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Services;
 
@@ -97,6 +99,17 @@ namespace TbspRpgDataLayer.Tests
                 .ReturnsAsync((Guid locationId) => routes.Where(r => r.LocationId == locationId).ToList());
 
             return routesService.Object;
+        }
+
+        public static ISourcesService MockDataLayerSourcesService(ICollection<En> sources)
+        {
+            var sourcesService = new Mock<ISourcesService>();
+
+            sourcesService.Setup(service =>
+                    service.GetSourceForKey(It.IsAny<Guid>(), It.IsAny<string>()))
+                .ReturnsAsync((Guid key, string language) => sources.FirstOrDefault(s => s.Key == key).Text);
+
+            return sourcesService.Object;
         }
 
         public static IContentsService MockDataLayerContentsService(ICollection<Content> contents)
