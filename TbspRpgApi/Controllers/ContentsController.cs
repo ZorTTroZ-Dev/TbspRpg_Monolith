@@ -55,5 +55,22 @@ namespace TbspRpgApi.Controllers
             var contentViewModel = await _contentsService.GetContentForGameAfterPosition(gameId, position);
             return Ok(contentViewModel);
         }
+        
+        [Authorize, HttpGet("source/{key:guid}")]
+        public async Task<IActionResult> GetSourceForKey(Guid gameId, Guid key) {
+            if(!CanAccessGame(gameId))
+                return BadRequest(new { message = "not your game" });
+            try
+            {
+                var source = await _contentsService.GetSourceForKey(gameId, key);
+                if(source == null)
+                    return BadRequest(new { message = "invalid source key request" });
+                return Ok(source);
+            }
+            catch
+            {
+                return BadRequest(new { message = "invalid source key request" });
+            }
+        }
     }
 }

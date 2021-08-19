@@ -4,17 +4,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Controllers;
 using TbspRpgApi.Entities;
+using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Controllers
 {
     public class ContentsControllerTests : ApiTest
     {
-        private static ContentsController CreateController(ICollection<Content> contents)
+        private static ContentsController CreateController(
+            ICollection<Content> contents = null,
+            ICollection<Game> games = null,
+            ICollection<En> sources = null)
         {
-            var service = CreateContentsService(contents);
+            var service = CreateContentsService(contents, games, sources);
             return new ContentsController(service, NullLogger<ContentsController>.Instance);
         }
         
@@ -256,6 +261,64 @@ namespace TbspRpgApi.Tests.Controllers
             Assert.NotNull(contentViewModel);
             Assert.Equal(testGameId, contentViewModel.Id);
             Assert.Single(contentViewModel.SourceKeys);
+        }
+
+        #endregion
+        
+        #region GetSourceForKey
+
+        [Fact]
+        public async void GetSourceForKey_InvalidKey_BadRequest()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            };
+            var controller = CreateController(
+                null,
+                new List<Game>() {testGame},
+                new List<En>());
+            
+            // act
+            var response = await controller.GetSourceForKey(testGame.Id, Guid.NewGuid());
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+
+        [Fact]
+        public async void GetSourceForKey_ValidKey_ReturnSource()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            };
+            var testSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                Text = "test source"
+            };
+            var controller = CreateController(
+                null,
+                new List<Game>() {testGame},
+                new List<En>() {testSource});
+            
+            // act
+            var response = await controller.GetSourceForKey(testGame.Id, testSource.Key);
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var source = okObjectResult.Value as string;
+            Assert.NotNull(source);
+            Assert.Equal("test source", source);
         }
 
         #endregion
