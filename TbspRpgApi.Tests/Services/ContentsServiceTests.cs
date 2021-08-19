@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using TbspRpgApi.Entities;
+using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgApi.RequestModels;
+using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Services
@@ -226,6 +228,67 @@ namespace TbspRpgApi.Tests.Services
             Assert.Single(contentViewModel.SourceKeys);
             Assert.Equal((ulong)42, contentViewModel.Index);
         }
+
+        #endregion
+
+        #region GetSourceForKey
+
+        [Fact]
+        public async void GetSourceForKey_BadKey_ReturnNull()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            };
+            var testSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                Text = "test source"
+            };
+            var service = CreateContentsService(
+                new List<Content>(),
+                new List<Game>() { testGame },
+                new List<En>() { testSource });
+            
+            // act
+            var source = await service.GetSourceForKey(testGame.Id, Guid.NewGuid());
+            
+            // assert
+            Assert.Null(source);
+        }
+        
+        [Fact]
+        public async void GetSourceForKey_ValidKey_ReturnSource()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            };
+            var testSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                Text = "test source"
+            };
+            var service = CreateContentsService(
+                new List<Content>(),
+                new List<Game>() { testGame },
+                new List<En>() { testSource });
+            
+            // act
+            var source = await service.GetSourceForKey(testGame.Id, testSource.Key);
+            
+            // assert
+            Assert.NotNull(source);
+            Assert.Equal("test source", source);
+        }
+
+        
 
         #endregion
     }

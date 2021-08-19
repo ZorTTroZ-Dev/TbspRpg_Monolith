@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
 {
@@ -11,17 +12,21 @@ namespace TbspRpgApi.Services
         Task<ContentViewModel> GetLatestForGame(Guid gameId);
         Task<ContentViewModel> GetPartialContentForGame(Guid gameId, ContentFilterRequest filterRequest);
         Task<ContentViewModel> GetContentForGameAfterPosition(Guid gameId, ulong position);
+        Task<string> GetSourceForKey(Guid gameId, Guid sourceKey);
     }
     
     public class ContentsService : IContentsService
     {
         private readonly TbspRpgDataLayer.Services.IContentsService _contentsService;
+        private readonly IContentProcessor _contentProcessor;
         private readonly ILogger<ContentsService> _logger;
 
         public ContentsService(TbspRpgDataLayer.Services.IContentsService contentsService,
+            IContentProcessor contentProcessor,
             ILogger<ContentsService> logger)
         {
             _contentsService = contentsService;
+            _contentProcessor = contentProcessor;
             _logger = logger;
         }
 
@@ -47,6 +52,11 @@ namespace TbspRpgApi.Services
         {
             var contents = await _contentsService.GetContentForGameAfterPosition(gameId, position);
             return contents.Count > 0 ? new ContentViewModel(contents) : null;
+        }
+
+        public Task<string> GetSourceForKey(Guid gameId, Guid sourceKey)
+        {
+            return _contentProcessor.GetSourceForKey(gameId, sourceKey);
         }
     }
 }

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Entities;
+using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.Services;
 using TbspRpgDataLayer.Tests;
@@ -39,10 +39,13 @@ namespace TbspRpgApi.Tests
                 NullLogger<GamesService>.Instance);
         }
 
-        protected static ContentsService CreateContentsService(ICollection<Content> contents)
+        protected static ContentsService CreateContentsService(ICollection<Content> contents,
+            ICollection<Game> games = null, ICollection<En> sources = null)
         {
             var dlContentsService = MockServices.MockDataLayerContentsService(contents);
-            return new ContentsService(dlContentsService, NullLogger<ContentsService>.Instance);
+            var contentProcessor = ProcessorTest.MockContentProcessor(games, sources);
+            return new ContentsService(dlContentsService, 
+                contentProcessor, NullLogger<ContentsService>.Instance);
         }
 
         protected static MapsService CreateMapsService(ICollection<Game> games, ICollection<Route> routes = null)
