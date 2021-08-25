@@ -281,11 +281,11 @@ namespace TbspRpgApi.Tests.Services
                 new List<En>() { testSource });
             
             // act
-            var source = await service.GetSourceForKey(testGame.Id, testSource.Key);
+            var sourceViewModel = await service.GetSourceForKey(testGame.Id, testSource.Key);
             
             // assert
-            Assert.NotNull(source);
-            Assert.Equal("test source", source);
+            Assert.NotNull(sourceViewModel);
+            Assert.Equal("test source", sourceViewModel.Text);
         }
 
         

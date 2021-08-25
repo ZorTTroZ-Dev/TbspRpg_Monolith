@@ -12,7 +12,7 @@ namespace TbspRpgApi.Services
         Task<ContentViewModel> GetLatestForGame(Guid gameId);
         Task<ContentViewModel> GetPartialContentForGame(Guid gameId, ContentFilterRequest filterRequest);
         Task<ContentViewModel> GetContentForGameAfterPosition(Guid gameId, ulong position);
-        Task<string> GetSourceForKey(Guid gameId, Guid sourceKey);
+        Task<SourceViewModel> GetSourceForKey(Guid gameId, Guid sourceKey);
     }
     
     public class ContentsService : IContentsService
@@ -54,9 +54,10 @@ namespace TbspRpgApi.Services
             return contents.Count > 0 ? new ContentViewModel(contents) : null;
         }
 
-        public Task<string> GetSourceForKey(Guid gameId, Guid sourceKey)
+        public async Task<SourceViewModel> GetSourceForKey(Guid gameId, Guid sourceKey)
         {
-            return _contentProcessor.GetSourceForKey(gameId, sourceKey);
+            var text = await _contentProcessor.GetSourceForKey(gameId, sourceKey);
+            return text == null ? null : new SourceViewModel(text);
         }
     }
 }

@@ -316,9 +316,9 @@ namespace TbspRpgApi.Tests.Controllers
             // assert
             var okObjectResult = response as OkObjectResult;
             Assert.NotNull(okObjectResult);
-            var source = okObjectResult.Value as string;
+            var source = okObjectResult.Value as SourceViewModel;
             Assert.NotNull(source);
-            Assert.Equal("test source", source);
+            Assert.Equal("test source", source.Text);
         }
 
         #endregion

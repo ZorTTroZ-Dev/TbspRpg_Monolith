@@ -1,4 +1,4 @@
-# TbspRpg_Monolith
+# TbspRpgApi (Monolithic)
 
 This is a game engine for text based online single player role playing games (TBSPRPG).
 The frontend UI is written in Angular (https://angular.io/).
