@@ -10,6 +10,7 @@ namespace TbspRpgApi.Entities
         public Guid AdventureId { get; set; }
         public Guid LocationId { get; set; }
         public string Language { get; set; }
+        public long RouteUpdateTimeStamp { get; set; }
 
         public Adventure Adventure { get; set; }
         public User User { get; set; }
