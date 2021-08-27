@@ -201,7 +201,7 @@ namespace TbspRpgProcessor.Tests.Processors
             // assert
             Assert.Single(testGames);
             Assert.NotNull(game);
-            Assert.True(game.RouteUpdateTimeStamp > 0);
+            Assert.True(game.LocationUpdateTimeStamp > 0);
             Assert.Equal(testAdventures[0].Id, game.AdventureId);
             Assert.Equal(testUsers[0].Id, game.UserId);
             Assert.Equal(testLocations[0].Id, game.LocationId);

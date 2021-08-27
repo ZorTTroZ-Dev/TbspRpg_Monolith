@@ -64,7 +64,7 @@ namespace TbspRpgProcessor.Processors
                 AdventureId = adventure.Id,
                 UserId = user.Id,
                 LocationId = location.Id,
-                RouteUpdateTimeStamp = secondsSinceEpoch
+                LocationUpdateTimeStamp = secondsSinceEpoch
             };
             await _gamesService.AddGame(game);
             
