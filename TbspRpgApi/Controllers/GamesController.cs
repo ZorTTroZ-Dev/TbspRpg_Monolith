@@ -39,7 +39,7 @@ namespace TbspRpgApi.Controllers
                 var userId = GetUserId();
                 if (userId != null)
                 {
-                    await _gamesService.StartGame(userId.GetValueOrDefault(), adventureId, DateTime.Now);
+                    await _gamesService.StartGame(userId.GetValueOrDefault(), adventureId, DateTime.UtcNow);
                 }
                 else
                 {
