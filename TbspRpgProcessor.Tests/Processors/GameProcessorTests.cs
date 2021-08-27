@@ -196,11 +196,12 @@ namespace TbspRpgProcessor.Tests.Processors
             
             // act
             var game = await processor.StartGame(testUsers[0].Id,
-                testAdventures[0].Id, DateTime.Now);
+                testAdventures[0].Id, DateTime.UtcNow);
 
             // assert
             Assert.Single(testGames);
             Assert.NotNull(game);
+            Assert.True(game.RouteUpdateTimeStamp > 0);
             Assert.Equal(testAdventures[0].Id, game.AdventureId);
             Assert.Equal(testUsers[0].Id, game.UserId);
             Assert.Equal(testLocations[0].Id, game.LocationId);

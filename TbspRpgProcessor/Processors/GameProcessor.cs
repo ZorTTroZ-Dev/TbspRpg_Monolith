@@ -57,17 +57,18 @@ namespace TbspRpgProcessor.Processors
                 throw new Exception("no initial location for adventure");
             
             // add game to the context
+            var secondsSinceEpoch = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds();
             game = new Game()
             {
                 Id = Guid.NewGuid(),
                 AdventureId = adventure.Id,
                 UserId = user.Id,
-                LocationId = location.Id
+                LocationId = location.Id,
+                RouteUpdateTimeStamp = secondsSinceEpoch
             };
             await _gamesService.AddGame(game);
             
             // create content entry for adventure's source key
-            var secondsSinceEpoch = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds();
             await _contentsService.AddContent(new Content()
             {
                 Id = Guid.NewGuid(),
