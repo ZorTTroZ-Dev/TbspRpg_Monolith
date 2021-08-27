@@ -49,5 +49,21 @@ namespace TbspRpgApi.Controllers
                 return BadRequest(new {message = ex.Message});
             }
         }
+        
+        [HttpGet("routes/after/{timeStamp}"), Authorize]
+        public async Task<IActionResult> GetRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp) {
+            if(!CanAccessGame(gameId))
+                return BadRequest(new { message = "not your game" });
+            try
+            {
+                var routes = await _mapsService.GetCurrentRoutesForGameAfterTimeStamp(
+                    gameId, timeStamp);
+                return Ok(routes);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new {message = ex.Message});
+            }
+        }
     }
 }

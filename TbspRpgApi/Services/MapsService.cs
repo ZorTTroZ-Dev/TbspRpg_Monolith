@@ -11,6 +11,7 @@ namespace TbspRpgApi.Services
     {
         Task<LocationViewModel> GetCurrentLocationForGame(Guid gameId);
         Task<List<RouteViewModel>> GetCurrentRoutesForGame(Guid gameId);
+        Task<List<RouteViewModel>> GetCurrentRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp);
     }
     
     public class MapsService : IMapsService
@@ -36,11 +37,24 @@ namespace TbspRpgApi.Services
             return new LocationViewModel(game.Location);
         }
 
+        // If these prove to be useful, move them in to the data layer service
+        // and make them single queries
         public async Task<List<RouteViewModel>> GetCurrentRoutesForGame(Guid gameId)
         {
             var game = await _gamesService.GetGameById(gameId);
             if (game == null || game.LocationId == Guid.Empty)
                 throw new Exception("invalid game id or no location");
+            var routes = await _routesService.GetRoutesForLocation(game.LocationId);
+            return routes.Select(route => new RouteViewModel(route, game)).ToList();
+        }
+        
+        public async Task<List<RouteViewModel>> GetCurrentRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp)
+        {
+            var game = await _gamesService.GetGameById(gameId);
+            if (game == null || game.LocationId == Guid.Empty)
+                throw new Exception("invalid game id or no location");
+            if (game.LocationUpdateTimeStamp <= timeStamp)
+                return new List<RouteViewModel>();
             var routes = await _routesService.GetRoutesForLocation(game.LocationId);
             return routes.Select(route => new RouteViewModel(route, game)).ToList();
         }
