@@ -42,7 +42,7 @@ namespace TbspRpgApi.Services
             if (game == null || game.LocationId == Guid.Empty)
                 throw new Exception("invalid game id or no location");
             var routes = await _routesService.GetRoutesForLocation(game.LocationId);
-            return routes.Select(route => new RouteViewModel(route)).ToList();
+            return routes.Select(route => new RouteViewModel(route, game)).ToList();
         }
     }
 }

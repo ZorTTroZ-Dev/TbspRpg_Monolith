@@ -8,12 +8,14 @@ namespace TbspRpgApi.ViewModels
         public Guid Id { get; }
         public string Name { get; }
         public Guid SourceKey { get; }
+        public long TimeStamp { get; }
 
-        public RouteViewModel(Route route)
+        public RouteViewModel(Route route, Game game)
         {
             Id = route.Id;
             Name = route.Name;
             SourceKey = route.SourceKey;
+            TimeStamp = game.RouteUpdateTimeStamp;
         }
     }
 }
