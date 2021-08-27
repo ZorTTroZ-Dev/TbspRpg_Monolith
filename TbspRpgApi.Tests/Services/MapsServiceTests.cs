@@ -186,5 +186,82 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+
+        #region GetCurrentRoutesForGameAfterTimeStamp
+
+        [Fact]
+        public async void GetCurrentRoutesForGameAfterTimeStamp_NewRoutes_ReturnRoutes()
+        {
+            // arrange
+            var testLocationId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = testLocationId,
+                LocationUpdateTimeStamp = 42
+            };
+            var testRoutes = new List<Route>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route1",
+                    LocationId = testLocationId
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route2",
+                    LocationId = testLocationId
+                }
+            };
+            var service = CreateMapsService(new List<Game>() {testGame}, testRoutes);
+            
+            // act
+            var routes = 
+                await service.GetCurrentRoutesForGameAfterTimeStamp(testGame.Id, 15);
+            
+            // assert
+            Assert.Equal(2, routes.Count);
+            Assert.NotNull(routes.FirstOrDefault(r => r.Name == "route1"));
+        }
+        
+        [Fact]
+        public async void GetCurrentRoutesForGameAfterTimeStamp_NoNewRoutes_ReturnEmpty()
+        {
+            // arrange
+            var testLocationId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = testLocationId,
+                LocationUpdateTimeStamp = 42
+            };
+            var testRoutes = new List<Route>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route1",
+                    LocationId = testLocationId
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route2",
+                    LocationId = testLocationId
+                }
+            };
+            var service = CreateMapsService(new List<Game>() {testGame}, testRoutes);
+            
+            // act
+            var routes = 
+                await service.GetCurrentRoutesForGameAfterTimeStamp(testGame.Id, 50);
+            
+            // assert
+            Assert.Empty(routes);
+        }
+
+        #endregion
     }
 }

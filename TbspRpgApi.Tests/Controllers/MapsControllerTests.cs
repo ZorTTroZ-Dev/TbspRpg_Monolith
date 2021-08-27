@@ -207,5 +207,87 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+
+        #region GetRoutesForGameAfterTimeStamp
+
+        [Fact]
+        public async void GetCurrentRoutesForGameAfterTimeStamp_UpdatesExist_ReturnsRoutes()
+        {
+            // arrange
+            var testLocationId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = testLocationId,
+                LocationUpdateTimeStamp = 42
+            };
+            var testRoutes = new List<Route>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route1",
+                    LocationId = testLocationId
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route2",
+                    LocationId = testLocationId
+                }
+            };
+            var controller = CreateController(new List<Game>() {testGame}, testRoutes);
+            
+            // act
+            var response = await controller.GetRoutesForGameAfterTimeStamp(testGame.Id, 40);
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var routeViewModels = okObjectResult.Value as List<RouteViewModel>;
+            Assert.NotNull(routeViewModels);
+            Assert.Equal(2, routeViewModels.Count);
+        }
+        
+        [Fact]
+        public async void GetCurrentRoutesForGameAfterTimeStamp_NoUpdates_ReturnsRoutes()
+        {
+            // arrange
+            var testLocationId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = testLocationId,
+                LocationUpdateTimeStamp = 42
+            };
+            var testRoutes = new List<Route>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route1",
+                    LocationId = testLocationId
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route2",
+                    LocationId = testLocationId
+                }
+            };
+            var controller = CreateController(new List<Game>() {testGame}, testRoutes);
+            
+            // act
+            var response = await controller.GetRoutesForGameAfterTimeStamp(testGame.Id, 43);
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var routeViewModels = okObjectResult.Value as List<RouteViewModel>;
+            Assert.NotNull(routeViewModels);
+            Assert.Empty(routeViewModels);
+        }
+
+        #endregion
     }
 }
