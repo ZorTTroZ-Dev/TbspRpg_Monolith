@@ -10,6 +10,7 @@ namespace TbspRpgDataLayer.Services
     public interface IRoutesService
     {
         Task<List<Route>> GetRoutesForLocation(Guid locationId);
+        Task<Route> GetRouteById(Guid routeId);
     }
     
     public class RoutesService : IRoutesService
@@ -26,6 +27,11 @@ namespace TbspRpgDataLayer.Services
         public Task<List<Route>> GetRoutesForLocation(Guid locationId)
         {
             return _routesRepository.GetRoutesForLocation(locationId);
+        }
+
+        public Task<Route> GetRouteById(Guid routeId)
+        {
+            return _routesRepository.GetRouteById(routeId);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Data.Common;
 using System.Linq;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Repositories;
@@ -63,6 +64,53 @@ namespace TbspRpgDataLayer.Tests.Repositories
             
             //assert
             Assert.Empty(routes);
+        }
+
+        #endregion
+
+        #region GetRouteById
+
+        [Fact]
+        public async void GetRouteById_Valid_ReturnRoute()
+        {
+            // arrange
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route"
+            };
+            await using var context = new DatabaseContext(DbContextOptions);
+            context.Routes.Add(testRoute);
+            await context.SaveChangesAsync();
+            var repository = new RoutesRepository(context);
+            
+            // act
+            var route = await repository.GetRouteById(testRoute.Id);
+            
+            // assert
+            Assert.NotNull(route);
+            Assert.Equal(testRoute.Id, route.Id);
+        }
+        
+        [Fact]
+        public async void GetRouteById_InValid_ReturnNull()
+        {
+            // arrange
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route"
+            };
+            await using var context = new DatabaseContext(DbContextOptions);
+            context.Routes.Add(testRoute);
+            await context.SaveChangesAsync();
+            var repository = new RoutesRepository(context);
+            
+            // act
+            var route = await repository.GetRouteById(Guid.NewGuid());
+            
+            // assert
+            Assert.Null(route);
         }
 
         #endregion

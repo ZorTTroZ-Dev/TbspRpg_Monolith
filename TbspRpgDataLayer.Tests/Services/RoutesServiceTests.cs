@@ -100,5 +100,52 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region GetRouteById
+
+        [Fact]
+        public async void GetRouteById_Valid_ReturnRoute()
+        {
+            // arrange
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route"
+            };
+            await using var context = new DatabaseContext(DbContextOptions);
+            context.Routes.Add(testRoute);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var route = await service.GetRouteById(testRoute.Id);
+            
+            // assert
+            Assert.NotNull(route);
+            Assert.Equal(testRoute.Id, route.Id);
+        }
+        
+        [Fact]
+        public async void GetRouteById_InValid_ReturnNull()
+        {
+            // arrange
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route"
+            };
+            await using var context = new DatabaseContext(DbContextOptions);
+            context.Routes.Add(testRoute);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var route = await service.GetRouteById(Guid.NewGuid());
+            
+            // assert
+            Assert.Null(route);
+        }
+
+        #endregion
     }
 }

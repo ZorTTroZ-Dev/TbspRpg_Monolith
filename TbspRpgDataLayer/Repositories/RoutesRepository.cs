@@ -10,6 +10,7 @@ namespace TbspRpgDataLayer.Repositories
     public interface IRoutesRepository
     {
         Task<List<Route>> GetRoutesForLocation(Guid locationId);
+        Task<Route> GetRouteById(Guid routeId);
     }
     
     public class RoutesRepository : IRoutesRepository
@@ -24,6 +25,11 @@ namespace TbspRpgDataLayer.Repositories
         public Task<List<Route>> GetRoutesForLocation(Guid locationId)
         {
             return _databaseContext.Routes.AsQueryable().Where(rt => rt.LocationId == locationId).ToListAsync();
+        }
+
+        public Task<Route> GetRouteById(Guid routeId)
+        {
+            return _databaseContext.Routes.AsQueryable().FirstOrDefaultAsync(route => route.Id == routeId);
         }
     }
 }
