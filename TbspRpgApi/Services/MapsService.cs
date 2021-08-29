@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
 {
@@ -12,20 +13,24 @@ namespace TbspRpgApi.Services
         Task<LocationViewModel> GetCurrentLocationForGame(Guid gameId);
         Task<List<RouteViewModel>> GetCurrentRoutesForGame(Guid gameId);
         Task<List<RouteViewModel>> GetCurrentRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp);
+        Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp);
     }
     
     public class MapsService : IMapsService
     {
         private readonly TbspRpgDataLayer.Services.IGamesService _gamesService;
         private readonly TbspRpgDataLayer.Services.IRoutesService _routesService;
+        private readonly IMapProcessor _mapProcessor;
         private readonly ILogger<MapsService> _logger;
 
         public MapsService(TbspRpgDataLayer.Services.IGamesService gamesService,
             TbspRpgDataLayer.Services.IRoutesService routesService,
+            IMapProcessor mapProcessor,
             ILogger<MapsService> logger)
         {
             _gamesService = gamesService;
             _routesService = routesService;
+            _mapProcessor = mapProcessor;
             _logger = logger;
         }
         
@@ -57,6 +62,11 @@ namespace TbspRpgApi.Services
                 return new List<RouteViewModel>();
             var routes = await _routesService.GetRoutesForLocation(game.LocationId);
             return routes.Select(route => new RouteViewModel(route, game)).ToList();
+        }
+
+        public async Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp)
+        {
+            await _mapProcessor.ChangeLocationViaRoute(gameId, routeId, timeStamp);
         }
     }
 }

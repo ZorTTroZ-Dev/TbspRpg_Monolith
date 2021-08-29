@@ -85,7 +85,7 @@ namespace TbspRpgProcessor.Tests
                 {
                     if (gameId == changeLocationViaRouteExceptionId)
                     {
-                        throw new ArgumentException("can't start game");
+                        throw new ArgumentException("can't change location");
                     }
                 });
             

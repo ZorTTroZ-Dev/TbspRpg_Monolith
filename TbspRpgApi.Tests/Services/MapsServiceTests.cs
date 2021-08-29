@@ -263,5 +263,23 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+
+        #region ChangeLocationViaRoute
+
+        [Fact]
+        public async void ChangeLocationViaRoute_BadArgument_ThrowException()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var service = CreateMapsService(null, null, exceptionId);
+            
+            // act
+            Task Act() => service.ChangeLocationViaRoute(exceptionId, Guid.NewGuid(), DateTime.UtcNow);
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        #endregion
     }
 }

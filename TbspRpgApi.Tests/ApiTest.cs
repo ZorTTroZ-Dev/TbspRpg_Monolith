@@ -48,11 +48,18 @@ namespace TbspRpgApi.Tests
                 contentProcessor, NullLogger<ContentsService>.Instance);
         }
 
-        protected static MapsService CreateMapsService(ICollection<Game> games, ICollection<Route> routes = null)
+        protected static MapsService CreateMapsService(ICollection<Game> games,
+            ICollection<Route> routes = null,
+            Guid? changeLocationViaRouteExceptionId = null)
         {
             var dlGamesService = MockServices.MockDataLayerGamesService(games);
             var dlRoutesService = MockServices.MockDataLayerRoutesService(routes);
-            return new MapsService(dlGamesService, dlRoutesService, NullLogger<MapsService>.Instance);
+            var mapProcessor = ProcessorTest.MockMapProcessor(changeLocationViaRouteExceptionId.GetValueOrDefault());
+            return new MapsService(
+                dlGamesService,
+                dlRoutesService,
+                mapProcessor,
+                NullLogger<MapsService>.Instance);
         }
     }
 }
