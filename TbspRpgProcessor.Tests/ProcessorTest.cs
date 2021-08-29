@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using TbspRpgApi.Entities;
@@ -41,6 +42,17 @@ namespace TbspRpgProcessor.Tests
             return new ContentProcessor(gamesService, sourcesService, NullLogger<ContentProcessor>.Instance);
         }
 
+        protected static IMapProcessor CreateMapProcessor(
+            ICollection<Game> games = null,
+            ICollection<Route> routes = null,
+            ICollection<Content> contents = null)
+        {
+            var gamesService = MockServices.MockDataLayerGamesService(games);
+            var routesService = MockServices.MockDataLayerRoutesService(routes);
+            var contentsService = MockServices.MockDataLayerContentsService(contents);
+            return new MapProcessor(gamesService, routesService, contentsService, NullLogger<MapProcessor>.Instance);
+        }
+
         public static IGameProcessor MockGameProcessor(Guid startGameExceptionId)
         {
             var gameProcessor = new Mock<IGameProcessor>();
@@ -61,6 +73,23 @@ namespace TbspRpgProcessor.Tests
                 });
             
             return gameProcessor.Object;
+        }
+        
+        public static IMapProcessor MockMapProcessor(Guid changeLocationViaRouteExceptionId)
+        {
+            var mapProcessor = new Mock<IMapProcessor>();
+            
+            mapProcessor.Setup(service =>
+                    service.ChangeLocationViaRoute(It.IsAny<Guid>(), It.IsAny<Guid>(),It.IsAny<DateTime>()))
+                .Callback((Guid gameId, Guid routeId, DateTime timeStamp) =>
+                {
+                    if (gameId == changeLocationViaRouteExceptionId)
+                    {
+                        throw new ArgumentException("can't start game");
+                    }
+                });
+            
+            return mapProcessor.Object;
         }
 
         public static IContentProcessor MockContentProcessor(ICollection<Game> games, ICollection<En> sources)
