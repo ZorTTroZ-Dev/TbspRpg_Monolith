@@ -23,7 +23,10 @@ namespace TbspRpgApi.Controllers
         [HttpGet("location"), Authorize]
         public async Task<IActionResult> GetCurrentLocationForGame(Guid gameId) {
             if(!CanAccessGame(gameId))
-                return BadRequest(new { message = "not your game" });
+            {
+                return BadRequest(new { message = NotYourGameErrorMessage });
+            }
+
             try
             {
                 var location = await _mapsService.GetCurrentLocationForGame(gameId);
@@ -35,10 +38,25 @@ namespace TbspRpgApi.Controllers
             }
         }
         
+        [HttpGet("changelocation/{routeId:guid}"), Authorize]
+        public async Task<IActionResult> ChangeLocationViaRoute(Guid gameId, Guid routeId) {
+            if(!CanAccessGame(gameId))
+                return BadRequest(new { message = NotYourGameErrorMessage });
+            try
+            {
+                await _mapsService.ChangeLocationViaRoute(gameId, routeId, DateTime.UtcNow);
+                return Accepted();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new {message = ex.Message});
+            }
+        }
+        
         [HttpGet("routes"), Authorize]
         public async Task<IActionResult> GetCurrentRoutesForGame(Guid gameId) {
             if(!CanAccessGame(gameId))
-                return BadRequest(new { message = "not your game" });
+                return BadRequest(new { message = NotYourGameErrorMessage });
             try
             {
                 var routes = await _mapsService.GetCurrentRoutesForGame(gameId);
@@ -53,7 +71,7 @@ namespace TbspRpgApi.Controllers
         [HttpGet("routes/after/{timeStamp}"), Authorize]
         public async Task<IActionResult> GetRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp) {
             if(!CanAccessGame(gameId))
-                return BadRequest(new { message = "not your game" });
+                return BadRequest(new { message = NotYourGameErrorMessage });
             try
             {
                 var routes = await _mapsService.GetCurrentRoutesForGameAfterTimeStamp(

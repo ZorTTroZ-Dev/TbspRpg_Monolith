@@ -6,6 +6,8 @@ namespace TbspRpgApi.Controllers
 {
     public class BaseController : ControllerBase
     {
+        protected const string NotYourGameErrorMessage = "not your game";
+
         public BaseController() {}
 
         protected Guid? GetUserId()

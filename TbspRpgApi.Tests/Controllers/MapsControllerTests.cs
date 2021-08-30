@@ -11,9 +11,12 @@ namespace TbspRpgApi.Tests.Controllers
 {
     public class MapsControllerTests : ApiTest
     {
-        private static MapsController CreateController(ICollection<Game> games, ICollection<Route> routes = null)
+        private static MapsController CreateController(
+            ICollection<Game> games,
+            ICollection<Route> routes = null,
+            Guid? changeLocationViaRouteExceptionId = null)
         {
-            var mapsService = CreateMapsService(games, routes);
+            var mapsService = CreateMapsService(games, routes, changeLocationViaRouteExceptionId);
             return new MapsController(mapsService, NullLogger<MapsController>.Instance);
         }
 
@@ -286,6 +289,77 @@ namespace TbspRpgApi.Tests.Controllers
             var routeViewModels = okObjectResult.Value as List<RouteViewModel>;
             Assert.NotNull(routeViewModels);
             Assert.Empty(routeViewModels);
+        }
+
+        #endregion
+
+        #region ChangeLocationViaRoute
+
+        [Fact]
+        public async void ChangeLocationViaRoute_Exception_BadRequest()
+        {
+            // arrange
+            var testLocationId = Guid.NewGuid();
+            var exceptionId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = testLocationId,
+                LocationUpdateTimeStamp = 42
+            };
+            var testRoutes = new List<Route>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route1",
+                    LocationId = testLocationId
+                }
+            };
+            var controller = CreateController(
+                new List<Game>() {testGame},
+                testRoutes, exceptionId);
+            
+            // act
+            var response = await controller.ChangeLocationViaRoute(exceptionId, testRoutes[0].Id);
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+
+        [Fact]
+        public async void ChangeLocationViaRoute_Valid_Accepted()
+        {
+            // arrange
+            var testLocationId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = testLocationId,
+                LocationUpdateTimeStamp = 42
+            };
+            var testRoutes = new List<Route>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "route1",
+                    LocationId = testLocationId
+                }
+            };
+            var controller = CreateController(
+                new List<Game>() {testGame},
+                testRoutes);
+            
+            // act
+            var response = await controller.ChangeLocationViaRoute(testGame.Id, testRoutes[0].Id);
+            
+            // assert
+            var acceptedResult = response as AcceptedResult;
+            Assert.NotNull(acceptedResult);
+            Assert.Equal(202, acceptedResult.StatusCode);
         }
 
         #endregion

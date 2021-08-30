@@ -27,7 +27,7 @@ namespace TbspRpgApi.Controllers
         public async Task<IActionResult> GetLatestContentForGame(Guid gameId)
         {
             if(!CanAccessGame(gameId))
-                return BadRequest(new { message = "not your game" });
+                return BadRequest(new { message = NotYourGameErrorMessage });
             var contentViewModel = await _contentsService.GetLatestForGame(gameId);
             return Ok(contentViewModel);
         }
@@ -35,7 +35,7 @@ namespace TbspRpgApi.Controllers
         [Authorize, HttpGet("filter")]
         public async Task<IActionResult> GetPartialContentForGame(Guid gameId, [FromQuery] ContentFilterRequest filterRequest) {
             if(!CanAccessGame(gameId))
-                return BadRequest(new { message = "not your game" });
+                return BadRequest(new { message = NotYourGameErrorMessage });
             try
             {
                 var contentViewModel = await _contentsService.GetPartialContentForGame(gameId, filterRequest);
@@ -51,7 +51,7 @@ namespace TbspRpgApi.Controllers
         public async Task<IActionResult> GetContentForGameAfterPosition(Guid gameId, ulong position)
         {
             if(!CanAccessGame(gameId))
-                return BadRequest(new { message = "not your game" });
+                return BadRequest(new { message = NotYourGameErrorMessage });
             var contentViewModel = await _contentsService.GetContentForGameAfterPosition(gameId, position);
             return Ok(contentViewModel);
         }
@@ -59,7 +59,7 @@ namespace TbspRpgApi.Controllers
         [Authorize, HttpGet("source/{key:guid}")]
         public async Task<IActionResult> GetSourceForKey(Guid gameId, Guid key) {
             if(!CanAccessGame(gameId))
-                return BadRequest(new { message = "not your game" });
+                return BadRequest(new { message = NotYourGameErrorMessage });
             try
             {
                 var source = await _contentsService.GetSourceForKey(gameId, key);
