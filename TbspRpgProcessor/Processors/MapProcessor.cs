@@ -53,19 +53,28 @@ namespace TbspRpgProcessor.Processors
             {
                 throw new Exception("game not in location it should be");
             }
-            
+
             // for now assume the check passed
             var secondsSinceEpoch = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds();
             game.LocationId = route.DestinationLocationId;
             game.LocationUpdateTimeStamp = secondsSinceEpoch;
             
-            // create content entry for the initial location source key
+            // create content entry for the route
             await _contentsService.AddContent(new Content()
             {
                 Id = Guid.NewGuid(),
                 GameId = game.Id,
                 Position = (ulong)secondsSinceEpoch,
                 SourceKey = route.SuccessSourceKey
+            });
+            
+            // create content entry for the new location
+            await _contentsService.AddContent(new Content()
+            {
+                Id = Guid.NewGuid(),
+                GameId = game.Id,
+                Position = (ulong)secondsSinceEpoch + 1,
+                SourceKey = route.DestinationLocation.SourceKey
             });
 
             // save context changes

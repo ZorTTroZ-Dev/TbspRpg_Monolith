@@ -29,7 +29,9 @@ namespace TbspRpgDataLayer.Repositories
 
         public Task<Route> GetRouteById(Guid routeId)
         {
-            return _databaseContext.Routes.AsQueryable().FirstOrDefaultAsync(route => route.Id == routeId);
+            return _databaseContext.Routes.AsQueryable().
+                Include(route => route.DestinationLocation).
+                FirstOrDefaultAsync(route => route.Id == routeId);
         }
     }
 }

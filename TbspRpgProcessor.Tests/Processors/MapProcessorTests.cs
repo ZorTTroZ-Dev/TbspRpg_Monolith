@@ -114,11 +114,17 @@ namespace TbspRpgProcessor.Tests.Processors
         public async void ChangeLocationViaRoute_Valid_LocationUpdated()
         {
             // arrange
+            var testDestinationLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                SourceKey = Guid.NewGuid()
+            };
             var testRoute = new Route()
             {
                 Id = Guid.NewGuid(),
                 LocationId = Guid.NewGuid(),
-                DestinationLocationId = Guid.NewGuid(),
+                DestinationLocationId = testDestinationLocation.Id,
+                DestinationLocation = testDestinationLocation,
                 SuccessSourceKey = Guid.NewGuid()
             };
             var testGames = new List<Game>()
@@ -145,7 +151,7 @@ namespace TbspRpgProcessor.Tests.Processors
             var game = testGames[0];
             Assert.Equal(testRoute.DestinationLocationId, game.LocationId);
             Assert.True(game.LocationUpdateTimeStamp > 0);
-            Assert.Single(testContents);
+            Assert.Equal(2, testContents.Count);
             Assert.Equal(testContents[0].SourceKey, testRoute.SuccessSourceKey);
         }
 

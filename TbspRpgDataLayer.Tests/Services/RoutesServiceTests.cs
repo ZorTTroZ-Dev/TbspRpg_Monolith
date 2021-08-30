@@ -107,13 +107,19 @@ namespace TbspRpgDataLayer.Tests.Services
         public async void GetRouteById_Valid_ReturnRoute()
         {
             // arrange
+            var testDestinationLocation = new Location()
+            {
+                Id = Guid.NewGuid()
+            };
             var testRoute = new Route()
             {
                 Id = Guid.NewGuid(),
-                Name = "test route"
+                Name = "test route",
+                DestinationLocationId = testDestinationLocation.Id
             };
             await using var context = new DatabaseContext(DbContextOptions);
             context.Routes.Add(testRoute);
+            context.Locations.Add(testDestinationLocation);
             await context.SaveChangesAsync();
             var service = CreateService(context);
             
