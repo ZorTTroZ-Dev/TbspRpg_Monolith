@@ -38,7 +38,7 @@ namespace TbspRpgDataLayer.Tests
             var adventuresService = new Mock<IAdventuresService>();
 
             adventuresService.Setup(service =>
-                    service.GetAllAdventures())
+                    service.GetAllAdventures(It.IsAny<AdventureFilter>()))
                 .ReturnsAsync(adventures.ToList());
             
             adventuresService.Setup(service =>

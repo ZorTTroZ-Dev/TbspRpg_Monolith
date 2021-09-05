@@ -1,13 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TbspRpgApi.Adapters;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 
 namespace TbspRpgApi.Services
 {
     public interface IAdventuresService
     {
-        Task<List<AdventureViewModel>> GetAllAdventures();
+        Task<List<AdventureViewModel>> GetAllAdventures(AdventureFilterRequest filters);
         Task<AdventureViewModel> GetAdventureByName(string name);
     }
     
@@ -20,9 +22,10 @@ namespace TbspRpgApi.Services
             _adventuresService = adventuresService;
         }
 
-        public async Task<List<AdventureViewModel>> GetAllAdventures()
+        public async Task<List<AdventureViewModel>> GetAllAdventures(AdventureFilterRequest filters)
         {
-            var adventures = await _adventuresService.GetAllAdventures();
+            var adventures = await _adventuresService.GetAllAdventures(
+                AdventureFilterAdapter.ToDataLayerFilter(filters));
             return adventures.Select(adventure => new AdventureViewModel(adventure)).ToList();
         }
 

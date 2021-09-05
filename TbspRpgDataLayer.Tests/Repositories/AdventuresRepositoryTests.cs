@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Repositories;
 using Xunit;
 
@@ -34,7 +35,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var adventureRepository = new AdventuresRepository(context);
             
             //act
-            var adventures = await adventureRepository.GetAllAdventures();
+            var adventures = await adventureRepository.GetAllAdventures(new AdventureFilter());
             
             //assert
             Assert.Equal(2, adventures.Count);

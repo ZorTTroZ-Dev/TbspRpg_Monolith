@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Controllers;
 using TbspRpgApi.Entities;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using Xunit;
 
@@ -42,7 +43,7 @@ namespace TbspRpgApi.Tests.Controllers
             var controller = CreateController(testAdventures);
             
             // act
-            var response = await controller.GetAllAdventures();
+            var response = await controller.GetAllAdventures(new AdventureFilterRequest());
             
             // assert
             var okObjectResult = response as OkObjectResult;

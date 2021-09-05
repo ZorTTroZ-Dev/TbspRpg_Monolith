@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Adapters" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\TbspRpgDataLayer\TbspRpgDataLayer.csproj" />
     <ProjectReference Include="..\TbspRpgProcessor\TbspRpgProcessor.csproj" />
   </ItemGroup>

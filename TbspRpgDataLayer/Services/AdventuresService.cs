@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Repositories;
 
 namespace TbspRpgDataLayer.Services
 {
     public interface IAdventuresService
     {
-        Task<List<Adventure>> GetAllAdventures();
+        Task<List<Adventure>> GetAllAdventures(AdventureFilter filters);
         Task<Adventure> GetAdventureByName(string name);
         Task<Adventure> GetAdventureById(Guid adventureId);
     }
@@ -26,9 +27,9 @@ namespace TbspRpgDataLayer.Services
             _logger = logger;
         }
 
-        public Task<List<Adventure>> GetAllAdventures()
+        public Task<List<Adventure>> GetAllAdventures(AdventureFilter filters)
         {
-            return _adventuresRepository.GetAllAdventures();
+            return _adventuresRepository.GetAllAdventures(filters);
         }
 
         public Task<Adventure> GetAdventureByName(string name)

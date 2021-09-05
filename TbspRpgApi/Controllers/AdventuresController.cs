@@ -1,6 +1,8 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.Services;
 
 namespace TbspRpgApi.Controllers
@@ -20,10 +22,16 @@ namespace TbspRpgApi.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> GetAllAdventures()
+        public async Task<IActionResult> GetAllAdventures([FromQuery]AdventureFilterRequest filters)
         {
-            var adventures = await _adventuresService.GetAllAdventures();
+            var adventures = await _adventuresService.GetAllAdventures(filters);
             return Ok(adventures);
+        }
+        
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetAdventureById(Guid id)
+        {
+            return Ok("get by id");
         }
         
         [HttpGet("{name}")]

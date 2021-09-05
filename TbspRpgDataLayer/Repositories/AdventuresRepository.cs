@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.ArgumentModels;
 
 namespace TbspRpgDataLayer.Repositories
 {
     public interface IAdventuresRepository
     {
-        Task<List<Adventure>> GetAllAdventures();
+        Task<List<Adventure>> GetAllAdventures(AdventureFilter filters);
         Task<Adventure> GetAdventureByName(string name);
         Task<Adventure> GetAdventureById(Guid adventureId);
     }
@@ -23,7 +24,7 @@ namespace TbspRpgDataLayer.Repositories
             _databaseContext = databaseContext;
         }
 
-        public Task<List<Adventure>> GetAllAdventures()
+        public Task<List<Adventure>> GetAllAdventures(AdventureFilter filters)
         {
             return _databaseContext.Adventures.AsQueryable().ToListAsync();
         }

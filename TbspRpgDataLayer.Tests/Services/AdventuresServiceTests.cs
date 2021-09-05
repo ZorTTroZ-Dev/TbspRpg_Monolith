@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Repositories;
 using TbspRpgDataLayer.Services;
 using Xunit;
@@ -41,7 +42,7 @@ namespace TbspRpgDataLayer.Tests.Services
             var service = CreateService(context);
             
             // act
-            var adventures = await service.GetAllAdventures();
+            var adventures = await service.GetAllAdventures(new AdventureFilter());
             
             // assert
             Assert.Equal(2, adventures.Count);

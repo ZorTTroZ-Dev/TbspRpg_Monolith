@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TbspRpgApi.Entities;
+using TbspRpgApi.RequestModels;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Services
@@ -31,7 +32,7 @@ namespace TbspRpgApi.Tests.Services
             var service = CreateAdventuresService(testAdventures);
             
             // act
-            var adventures = await service.GetAllAdventures();
+            var adventures = await service.GetAllAdventures(new AdventureFilterRequest());
             
             // assert
             Assert.Equal(2, adventures.Count);
