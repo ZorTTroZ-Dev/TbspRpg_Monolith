@@ -48,6 +48,69 @@ namespace TbspRpgDataLayer.Tests.Services
             Assert.Equal(2, adventures.Count);
             Assert.Equal(testAdventure.Id, adventures.First().Id);
         }
+        
+        [Fact]
+        public async void GetAllAdventures_FilterCreatedBy_ReturnAdventures()
+        {
+            //  arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "TestOne",
+                CreatedByUserId = Guid.NewGuid()
+            };
+            var testAdventureTwo = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "TestTwo",
+                CreatedByUserId = Guid.NewGuid()
+            };
+            context.Adventures.AddRange(testAdventure, testAdventureTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var adventures = await service.GetAllAdventures(new AdventureFilter()
+            {
+                CreatedBy = testAdventure.CreatedByUserId
+            });
+            
+            // assert
+            Assert.Single(adventures);
+            Assert.Equal(testAdventure.Id, adventures.First().Id);
+        }
+        
+        [Fact]
+        public async void GetAllAdventures_FilterCreatedByNone_ReturnEmpty()
+        {
+            //  arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "TestOne",
+                CreatedByUserId = Guid.NewGuid()
+            };
+            var testAdventureTwo = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "TestTwo",
+                CreatedByUserId = Guid.NewGuid()
+            };
+            context.Adventures.AddRange(testAdventure, testAdventureTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var adventures = await service.GetAllAdventures(new AdventureFilter()
+            {
+                CreatedBy = Guid.NewGuid()
+            });
+            
+            // assert
+            Assert.Empty(adventures);
+        }
 
         #endregion
 

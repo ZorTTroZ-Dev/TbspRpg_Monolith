@@ -26,7 +26,12 @@ namespace TbspRpgDataLayer.Repositories
 
         public Task<List<Adventure>> GetAllAdventures(AdventureFilter filters)
         {
-            return _databaseContext.Adventures.AsQueryable().ToListAsync();
+            var query = _databaseContext.Adventures.AsQueryable();
+            if (filters != null && filters.CreatedBy != Guid.Empty)
+            {
+                query = query.Where(a => a.CreatedByUserId == filters.CreatedBy);
+            }
+            return query.ToListAsync();
         }
 
         public Task<Adventure> GetAdventureByName(string name)
