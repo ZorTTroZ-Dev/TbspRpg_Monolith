@@ -10,5 +10,6 @@ namespace TbspRpgApi.Entities
         public string Password { get; set; }
         
         public ICollection<Game> Games { get; set; }
+        public ICollection<Adventure> Adventures { get; set; } 
     }
 }
