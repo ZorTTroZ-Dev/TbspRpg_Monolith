@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace TbspRpgApi.Services
     {
         Task<List<AdventureViewModel>> GetAllAdventures(AdventureFilterRequest filters);
         Task<AdventureViewModel> GetAdventureByName(string name);
+        Task<AdventureViewModel> GetAdventureById(Guid adventureId);
     }
     
     public class AdventuresService : IAdventuresService
@@ -32,6 +34,12 @@ namespace TbspRpgApi.Services
         public async Task<AdventureViewModel> GetAdventureByName(string name)
         {
             var adventure = await _adventuresService.GetAdventureByName(name);
+            return adventure != null ? new AdventureViewModel(adventure) : null;
+        }
+
+        public async Task<AdventureViewModel> GetAdventureById(Guid adventureId)
+        {
+            var adventure = await _adventuresService.GetAdventureById(adventureId);
             return adventure != null ? new AdventureViewModel(adventure) : null;
         }
     }

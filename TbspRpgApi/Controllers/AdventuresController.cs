@@ -31,7 +31,8 @@ namespace TbspRpgApi.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetAdventureById(Guid id)
         {
-            return Ok("get by id");
+            var adventure = await _adventuresService.GetAdventureById(id);
+            return Ok(adventure);
         }
         
         [HttpGet("{name}")]
