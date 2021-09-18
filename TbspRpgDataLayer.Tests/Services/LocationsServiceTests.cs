@@ -89,5 +89,39 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region GetLocationsForAdventure
+
+        [Fact]
+        public async void GetLocationsForAdventure_ReturnsLocations()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Initial = false
+            };
+            var testLocationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Initial = false
+            };
+            context.Locations.Add(testLocation);
+            context.Locations.Add(testLocationTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var locations = await service.GetLocationsForAdventure(testLocation.AdventureId);
+            
+            // assert
+            Assert.Single(locations);
+            Assert.Equal(testLocation.Id, locations[0].Id);
+        }
+
+        #endregion
     }
 }

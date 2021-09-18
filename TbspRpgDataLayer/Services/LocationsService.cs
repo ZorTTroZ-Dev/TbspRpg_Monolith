@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
@@ -9,6 +10,7 @@ namespace TbspRpgDataLayer.Services
     public interface ILocationsService
     {
         Task<Location> GetInitialLocationForAdventure(Guid adventureId);
+        Task<List<Location>> GetLocationsForAdventure(Guid adventureId);
     }
     
     public class LocationsService : ILocationsService
@@ -27,6 +29,11 @@ namespace TbspRpgDataLayer.Services
         public Task<Location> GetInitialLocationForAdventure(Guid adventureId)
         {
             return _locationsRepository.GetInitialForAdventure(adventureId);
+        }
+
+        public Task<List<Location>> GetLocationsForAdventure(Guid adventureId)
+        {
+            return _locationsRepository.GetLocationsForAdventure(adventureId);
         }
     }
 }

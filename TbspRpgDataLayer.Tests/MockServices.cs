@@ -86,6 +86,11 @@ namespace TbspRpgDataLayer.Tests
                     service.GetInitialLocationForAdventure(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid adventureId) =>
                     locations.FirstOrDefault(l => l.AdventureId == adventureId && l.Initial));
+            
+            locationsService.Setup(service =>
+                    service.GetLocationsForAdventure(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId) =>
+                    locations.Where(l => l.AdventureId == adventureId).ToList());
 
             return locationsService.Object;
         }

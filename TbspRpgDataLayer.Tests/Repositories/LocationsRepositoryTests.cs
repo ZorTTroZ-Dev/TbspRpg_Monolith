@@ -150,5 +150,62 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+
+        #region GetLocationsForAdventure
+
+        [Fact]
+        public async void GetLocationsForAdventure_ReturnsLocations()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventureId = Guid.NewGuid();
+            var testAdventure = new Adventure
+            {
+                Id = testAdventureId,
+                Locations = new List<Location>()
+                {
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Initial = true,
+                        AdventureId = testAdventureId
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Initial = false,
+                        AdventureId = testAdventureId
+                    }
+                },
+                Name = "TestOne"
+            };
+            Guid testAdventureIdTwo = Guid.NewGuid();
+            var testAdventureTwo = new Adventure
+            {
+                Id = testAdventureIdTwo,
+                Locations = new List<Location>()
+                {
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Initial = true,
+                        AdventureId = testAdventureIdTwo
+                    }
+                },
+                Name = "TestTwo"
+            };
+            context.Adventures.Add(testAdventure);
+            context.Adventures.Add(testAdventureTwo);
+            await context.SaveChangesAsync();
+            var locationRepository = new LocationsRepository(context);
+            
+            // act
+            var locations = await locationRepository.GetLocationsForAdventure(testAdventure.Id);
+            
+            // assert
+            Assert.Equal(2, locations.Count);
+        }
+
+        #endregion
     }
 }
