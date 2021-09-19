@@ -7,6 +7,7 @@ namespace TbspRpgApi.Controllers
     public class BaseController : ControllerBase
     {
         protected const string NotYourGameErrorMessage = "not your game";
+        protected const string NotYourAdventureErrorMessage = "not your adventure";
 
         public BaseController() {}
 
@@ -18,6 +19,11 @@ namespace TbspRpgApi.Controllers
         protected bool CanAccessGame(Guid gameId)
         {
             return true;
-        } 
+        }
+
+        protected bool CanAccessAdventure(Guid adventureId)
+        {
+            return true;
+        }
     }
 }
