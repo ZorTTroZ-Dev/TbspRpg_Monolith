@@ -60,6 +60,7 @@ namespace TbspRpgApi.Controllers
         public async Task<IActionResult> GetSourceForKey(Guid gameId, Guid key) {
             if(!CanAccessGame(gameId))
                 return BadRequest(new { message = NotYourGameErrorMessage });
+            // TODO: Make sure the key is part of the game content
             try
             {
                 var source = await _contentsService.GetSourceForKey(gameId, key);

@@ -9,7 +9,7 @@ namespace TbspRpgDataLayer.Repositories
 {
     public interface ISourcesRepository
     {
-        Task<string> GetSourceForKey(Guid key, string language = null);
+        Task<string> GetSourceTextForKey(Guid key, string language = null);
     }
     
     public class SourcesRepository : ISourcesRepository
@@ -21,7 +21,7 @@ namespace TbspRpgDataLayer.Repositories
             _databaseContext = databaseContext;
         }
 
-        public Task<string> GetSourceForKey(Guid key, string language = null)
+        public Task<string> GetSourceTextForKey(Guid key, string language = null)
         {
             IQueryable<Source> query = null;
             if (language == null || language == Languages.ENGLISH)

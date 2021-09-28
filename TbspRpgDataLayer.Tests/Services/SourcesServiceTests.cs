@@ -20,7 +20,7 @@ namespace TbspRpgDataLayer.Tests.Services
                 NullLogger<SourcesService>.Instance);
         }
 
-        #region GetSourceForKey
+        #region GetSourceTextForKey
 
         [Fact]
         public async void GetSourceForKey_NullLanguage_ReturnDefault()
@@ -47,7 +47,7 @@ namespace TbspRpgDataLayer.Tests.Services
             var service = CreateService(context);
             
             // act
-            var source = await service.GetSourceForKey(testEn.Key);
+            var source = await service.GetSourceTextForKey(testEn.Key);
             
             // assert
             Assert.Equal(testEn.Text, source);
@@ -78,7 +78,7 @@ namespace TbspRpgDataLayer.Tests.Services
             var service = CreateService(context);
             
             // act
-            var source = await service.GetSourceForKey(Guid.NewGuid());
+            var source = await service.GetSourceTextForKey(Guid.NewGuid());
             
             // assert
             Assert.Null(source);
@@ -109,7 +109,7 @@ namespace TbspRpgDataLayer.Tests.Services
             var service = CreateService(context);
             
             // act
-            Task Act() => service.GetSourceForKey(testEn.Key, "banana");
+            Task Act() => service.GetSourceTextForKey(testEn.Key, "banana");
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
@@ -140,7 +140,7 @@ namespace TbspRpgDataLayer.Tests.Services
             var service = CreateService(context);
             
             // act
-            var source = await service.GetSourceForKey(testEn.Key, Languages.SPANISH);
+            var source = await service.GetSourceTextForKey(testEn.Key, Languages.SPANISH);
             
             // assert
             Assert.Equal(testEsp.Text, source);

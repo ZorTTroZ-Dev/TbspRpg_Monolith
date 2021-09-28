@@ -30,7 +30,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var repository = new SourcesRepository(context);
             
             //act
-            var text = await repository.GetSourceForKey(testSource.Key);
+            var text = await repository.GetSourceTextForKey(testSource.Key);
             
             //assert
             Assert.Equal(testSource.Text, text);
@@ -53,7 +53,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var repository = new SourcesRepository(context);
             
             //act
-            var text = await repository.GetSourceForKey(Guid.NewGuid());
+            var text = await repository.GetSourceTextForKey(Guid.NewGuid());
             
             //assert
             Assert.Null(text);
@@ -76,7 +76,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var repository = new SourcesRepository(context);
             
             //act
-            var text = await repository.GetSourceForKey(testSource.Key, Languages.SPANISH);
+            var text = await repository.GetSourceTextForKey(testSource.Key, Languages.SPANISH);
             
             //assert
             Assert.Equal(testSource.Text, text);
@@ -99,7 +99,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var repository = new SourcesRepository(context);
         
             //act
-            Task Act() => repository.GetSourceForKey(testSource.Key, "banana");
+            Task Act() => repository.GetSourceTextForKey(testSource.Key, "banana");
         
             //assert
             await Assert.ThrowsAsync<ArgumentException>(Act);

@@ -8,7 +8,7 @@ namespace TbspRpgDataLayer.Services
 {
     public interface ISourcesService
     {
-        Task<string> GetSourceForKey(Guid key, string language = null);
+        Task<string> GetSourceTextForKey(Guid key, string language = null);
     }
     
     public class SourcesService : ISourcesService
@@ -23,10 +23,10 @@ namespace TbspRpgDataLayer.Services
             _sourcesRepository = sourcesRepository;
         }
 
-        public Task<string> GetSourceForKey(Guid key, string language = null)
+        public Task<string> GetSourceTextForKey(Guid key, string language = null)
         {
             language ??= Languages.DEFAULT;
-            return _sourcesRepository.GetSourceForKey(key, language);
+            return _sourcesRepository.GetSourceTextForKey(key, language);
         }
     }
 }

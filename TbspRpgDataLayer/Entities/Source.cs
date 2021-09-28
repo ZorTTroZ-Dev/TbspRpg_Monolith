@@ -8,5 +8,6 @@ namespace TbspRpgApi.Entities
         public Guid Key { get; set; }
         public string Name { get; set; }
         public string Text { get; set; }
+        public Guid AdventureId { get; set; }
     }
 }

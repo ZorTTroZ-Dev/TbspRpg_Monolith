@@ -36,7 +36,7 @@ namespace TbspRpgProcessor.Processors
             if (game == null)
                 throw new ArgumentException("invalid game id");
 
-            return await _sourcesService.GetSourceForKey(sourceKey, game.Language);
+            return await _sourcesService.GetSourceTextForKey(sourceKey, game.Language);
         }
     }
 }

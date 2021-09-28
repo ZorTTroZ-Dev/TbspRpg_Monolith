@@ -115,7 +115,7 @@ namespace TbspRpgDataLayer.Tests
             var sourcesService = new Mock<ISourcesService>();
 
             sourcesService.Setup(service =>
-                    service.GetSourceForKey(It.IsAny<Guid>(), It.IsAny<string>()))
+                    service.GetSourceTextForKey(It.IsAny<Guid>(), It.IsAny<string>()))
                 .ReturnsAsync((Guid key, string language) =>
                 {
                     var source = sources.FirstOrDefault(s => s.Key == key);
