@@ -23,7 +23,7 @@ namespace TbspRpgDataLayer.Tests.Services
         #region GetSourceTextForKey
 
         [Fact]
-        public async void GetSourceForKey_NullLanguage_ReturnDefault()
+        public async void GetSourceTextForKey_NullLanguage_ReturnDefault()
         {
             // arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -54,7 +54,7 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         [Fact]
-        public async void GetSourceForKey_InvalidKey_ReturnNull()
+        public async void GetSourceTextForKey_InvalidKey_ReturnNull()
         {
             // arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -85,7 +85,7 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         [Fact]
-        public async void GetSourceForKey_InvalidLanguage_ThrowException()
+        public async void GetSourceTextForKey_InvalidLanguage_ThrowException()
         {
             // arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -116,7 +116,7 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         [Fact]
-        public async void GetSourceForKey_Valid_ReturnSource()
+        public async void GetSourceTextForKey_Valid_ReturnSource()
         {
             // arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -144,6 +144,45 @@ namespace TbspRpgDataLayer.Tests.Services
             
             // assert
             Assert.Equal(testEsp.Text, source);
+        }
+
+        #endregion
+
+        #region GetSourceForKey
+
+        [Fact]
+        public async void GetSourceForKey_Valid_ReturnSource()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "english",
+                Text = "english"
+            };
+            var testEsp = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = testEn.Key,
+                AdventureId = testEn.AdventureId,
+                Name = "spanish",
+                Text = "spanish"
+            };
+            context.SourcesEn.Add(testEn);
+            context.SourcesEsp.Add(testEsp);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var source = await service.GetSourceForKey(testEn.Key, testEn.AdventureId, Languages.SPANISH);
+            
+            // assert
+            Assert.NotNull(source);
+            Assert.Equal(testEsp.Id, source.Id);
+            Assert.Equal(testEsp.Text, source.Text);
         }
 
         #endregion

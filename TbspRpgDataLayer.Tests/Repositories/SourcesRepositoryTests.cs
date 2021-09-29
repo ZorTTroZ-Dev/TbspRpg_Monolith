@@ -11,10 +11,10 @@ namespace TbspRpgDataLayer.Tests.Repositories
     {
         public SourcesRepositoryTests() : base("SourceRepositoryTests") { }
 
-        #region GetSourceForKey
+        #region GetSourceTextForKey
 
         [Fact]
-        public async void GetSourceForKey_Valid_SourceReturned()
+        public async void GetSourceTextForKey_Valid_SourceReturned()
         {
             //arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -37,7 +37,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         [Fact]
-        public async void GetSourceForKey_InvalidKey_ReturnNone()
+        public async void GetSourceTextForKey_InvalidKey_ReturnNone()
         {
             //arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -60,7 +60,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
         
         [Fact]
-        public async void GetSourceForKey_ChangeLanguage_SourceReturnedInLanguage()
+        public async void GetSourceTextForKey_ChangeLanguage_SourceReturnedInLanguage()
         {
             //arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -83,7 +83,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
         
         [Fact]
-        public async void GetSourceForKey_InvalidLanguage_ThrowException()
+        public async void GetSourceTextForKey_InvalidLanguage_ThrowException()
         {
             //arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -100,6 +100,146 @@ namespace TbspRpgDataLayer.Tests.Repositories
         
             //act
             Task Act() => repository.GetSourceTextForKey(testSource.Key, "banana");
+        
+            //assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        #endregion
+
+        #region GetSourceForKey
+
+        [Fact]
+        public async void GetSourceForKey_InvalidAdventureId_ReturnNull()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            context.SourcesEsp.Add(testSource);
+            await context.SaveChangesAsync();
+            var repository = new SourcesRepository(context);
+        
+            //act
+            var source = await repository.GetSourceForKey(
+                testSource.Key, Guid.NewGuid(), Languages.SPANISH);
+            
+            // assert
+            Assert.Null(source);
+        }
+        
+        [Fact]
+        public async void GetSourceForKey_NullLanguage_ReturnEnglish()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = testSource.AdventureId,
+                Name = "test source",
+                Text = "test source"
+            };
+            context.SourcesEsp.Add(testSource);
+            context.SourcesEn.Add(testSourceEn);
+            await context.SaveChangesAsync();
+            var repository = new SourcesRepository(context);
+        
+            //act
+            var source = await repository.GetSourceForKey(
+                testSource.Key, testSource.AdventureId, null);
+            
+            // assert
+            Assert.NotNull(source);
+            Assert.Equal(testSourceEn.Id, source.Id);
+        }
+        
+        [Fact]
+        public async void GetSourceForKey_InvalidKey_ReturnNull()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            context.SourcesEsp.Add(testSource);
+            await context.SaveChangesAsync();
+            var repository = new SourcesRepository(context);
+        
+            //act
+            var source = await repository.GetSourceForKey(
+                Guid.NewGuid(), testSource.AdventureId, Languages.SPANISH);
+            
+            // assert
+            Assert.Null(source);
+        }
+        
+        [Fact]
+        public async void GetSourceForKey_Valid_ReturnSource()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            context.SourcesEsp.Add(testSource);
+            await context.SaveChangesAsync();
+            var repository = new SourcesRepository(context);
+        
+            //act
+            var source = await repository.GetSourceForKey(
+                testSource.Key, testSource.AdventureId, Languages.SPANISH);
+            
+            // assert
+            Assert.NotNull(source);
+            Assert.Equal(testSource.Id, source.Id);
+        }
+        
+        [Fact]
+        public async void GetSourceForKey_InValidLanguage_ThrowException()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            context.SourcesEn.Add(testSource);
+            await context.SaveChangesAsync();
+            var repository = new SourcesRepository(context);
+        
+            //act
+            Task Act() => repository.GetSourceForKey(
+                testSource.Key, testSource.AdventureId,"banana");
         
             //assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
