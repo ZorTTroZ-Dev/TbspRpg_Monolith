@@ -46,6 +46,7 @@ namespace TbspRpgApi
             services.AddScoped<IContentsService, ContentsService>();
             services.AddScoped<IMapsService, MapsService>();
             services.AddScoped<ILocationsService, LocationsService>();
+            services.AddScoped<ISourcesService, SourcesService>();
 
             // swagger
             services.AddSwaggerGen(c =>
