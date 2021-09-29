@@ -69,5 +69,13 @@ namespace TbspRpgApi.Tests
                 dlLocationsService,
                 NullLogger<LocationsService>.Instance);
         }
+
+        protected static SourcesService CreateSourcesService(ICollection<En> sources)
+        {
+            var dlSourcesService = MockServices.MockDataLayerSourcesService(sources);
+            return new SourcesService(
+                dlSourcesService,
+                NullLogger<SourcesService>.Instance);
+        }
     }
 }
