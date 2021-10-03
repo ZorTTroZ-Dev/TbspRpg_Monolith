@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TbspRpgApi.Entities;
+using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgSettings.Settings;
 
 namespace TbspRpgDataLayer.Repositories
@@ -11,6 +12,7 @@ namespace TbspRpgDataLayer.Repositories
     {
         Task<string> GetSourceTextForKey(Guid key, string language = null);
         Task<Source> GetSourceForKey(Guid key, Guid adventureId, string language);
+        Task AddSource(Source source, string language);
     }
     
     public class SourcesRepository : ISourcesRepository
@@ -54,6 +56,15 @@ namespace TbspRpgDataLayer.Repositories
                 return query.FirstOrDefaultAsync(source => 
                     source.Key == key && source.AdventureId == adventureId);
             
+            throw new ArgumentException($"invalid language {language}");
+        }
+
+        public async Task AddSource(Source source, string language)
+        {
+            if(language == Languages.ENGLISH || language == null)
+                await _databaseContext.SourcesEn.AddAsync((En)source);
+            if (language == Languages.SPANISH)
+                await _databaseContext.SourcesEsp.AddAsync((Esp) source);
             throw new ArgumentException($"invalid language {language}");
         }
     }

@@ -7,10 +7,11 @@ using TbspRpgApi.Entities;
 
 namespace TbspRpgDataLayer.Repositories
 {
-    public interface ILocationsRepository
+    public interface ILocationsRepository : IBaseRepository
     {
         Task<Location> GetInitialForAdventure(Guid adventureId);
         Task<List<Location>> GetLocationsForAdventure(Guid adventureId);
+        Task<Location> GetLocationById(Guid locationId);
     }
     
     public class LocationsRepository: ILocationsRepository
@@ -34,6 +35,17 @@ namespace TbspRpgDataLayer.Repositories
             return _databaseContext.Locations.AsQueryable()
                 .Where(location => location.AdventureId == adventureId)
                 .ToListAsync();
+        }
+
+        public Task<Location> GetLocationById(Guid locationId)
+        {
+            return _databaseContext.Locations.AsQueryable()
+                .FirstOrDefaultAsync(location => location.Id == locationId);
+        }
+
+        public async Task SaveChanges()
+        {
+            await _databaseContext.SaveChangesAsync();
         }
     }
 }

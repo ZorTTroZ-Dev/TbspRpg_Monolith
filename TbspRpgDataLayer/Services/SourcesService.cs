@@ -11,6 +11,7 @@ namespace TbspRpgDataLayer.Services
     {
         Task<string> GetSourceTextForKey(Guid key, string language = null);
         Task<Source> GetSourceForKey(Guid key, Guid adventureId, string language);
+        Task AddSource(Source source, string language = null);
     }
     
     public class SourcesService : ISourcesService
@@ -34,6 +35,11 @@ namespace TbspRpgDataLayer.Services
         public Task<Source> GetSourceForKey(Guid key, Guid adventureId, string language)
         {
             return _sourcesRepository.GetSourceForKey(key, adventureId, language);
+        }
+        
+        public async Task AddSource(Source source, string language = null)
+        {
+            await _sourcesRepository.AddSource(source, language);
         }
     }
 }

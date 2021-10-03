@@ -7,10 +7,11 @@ using TbspRpgDataLayer.Repositories;
 
 namespace TbspRpgDataLayer.Services
 {
-    public interface ILocationsService
+    public interface ILocationsService : IBaseService
     {
         Task<Location> GetInitialLocationForAdventure(Guid adventureId);
         Task<List<Location>> GetLocationsForAdventure(Guid adventureId);
+        Task<Location> GetLocationById(Guid locationId);
     }
     
     public class LocationsService : ILocationsService
@@ -34,6 +35,16 @@ namespace TbspRpgDataLayer.Services
         public Task<List<Location>> GetLocationsForAdventure(Guid adventureId)
         {
             return _locationsRepository.GetLocationsForAdventure(adventureId);
+        }
+
+        public Task<Location> GetLocationById(Guid locationId)
+        {
+            return _locationsRepository.GetLocationById(locationId);
+        }
+
+        public async Task SaveChanges()
+        {
+            await _locationsRepository.SaveChanges();
         }
     }
 }

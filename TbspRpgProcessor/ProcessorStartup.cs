@@ -11,6 +11,7 @@ namespace TbspRpgProcessor
             services.AddScoped<IGameProcessor, GameProcessor>();
             services.AddScoped<IContentProcessor, ContentProcessor>();
             services.AddScoped<IMapProcessor, MapProcessor>();
+            services.AddScoped<ILocationProcessor, LocationProcessor>();
         }
     }
 }

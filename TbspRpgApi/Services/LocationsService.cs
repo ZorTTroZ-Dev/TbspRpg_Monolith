@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 
 namespace TbspRpgApi.Services
@@ -10,6 +11,7 @@ namespace TbspRpgApi.Services
     public interface ILocationsService
     {
         Task<List<LocationViewModel>> GetLocationsForAdventure(Guid adventureId);
+        Task UpdateLocationAndSource(UpdateLocationRequest updateRequest);
     }
     
     public class LocationsService: ILocationsService
@@ -28,6 +30,11 @@ namespace TbspRpgApi.Services
         {
             var locations = await _locationsService.GetLocationsForAdventure(adventureId);
             return locations.Select(location => new LocationViewModel(location)).ToList();
+        }
+
+        public Task UpdateLocationAndSource(UpdateLocationRequest updateRequest)
+        {
+            throw new NotImplementedException();
         }
     }
 }

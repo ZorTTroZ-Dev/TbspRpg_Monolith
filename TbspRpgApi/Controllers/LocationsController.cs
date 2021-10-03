@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.JwtAuthorization;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.Services;
 
 namespace TbspRpgApi.Controllers
@@ -35,6 +36,25 @@ namespace TbspRpgApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new {message = ex.Message});
+            }
+        }
+
+        [HttpPut, Authorize]
+        public async Task<IActionResult> UpdateLocationAndSource([FromBody] UpdateLocationRequest updateRequest)
+        {
+            if (!CanAccessAdventure(updateRequest.location.AdventureId))
+            {
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            }
+
+            try
+            {
+                await _locationsService.UpdateLocationAndSource(updateRequest);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest((new {message = ex.Message}));
             }
         }
     }
