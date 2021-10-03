@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Repositories;
 using TbspRpgSettings.Settings;
@@ -240,6 +241,69 @@ namespace TbspRpgDataLayer.Tests.Repositories
             //act
             Task Act() => repository.GetSourceForKey(
                 testSource.Key, testSource.AdventureId,"banana");
+        
+            //assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        #endregion
+
+        #region AddSource
+
+        [Fact]
+        public async void AddSource_NoLanguage_AddEnglish()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var source = new Source()
+            {
+                Id = Guid.NewGuid(),
+                Text = "default"
+            };
+            var repository = new SourcesRepository(context);
+            
+            // act
+            await repository.AddSource(source, null);
+            await context.SaveChangesAsync();
+
+            // assert
+            Assert.Single(context.SourcesEn);
+        }
+
+        [Fact]
+        public async void AddSource_English_AddEnglish()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var source = new Source()
+            {
+                Id = Guid.NewGuid(),
+                Text = "default"
+            };
+            var repository = new SourcesRepository(context);
+            
+            // act
+            await repository.AddSource(source, Languages.ENGLISH);
+            await context.SaveChangesAsync();
+
+            // assert
+            Assert.Single(context.SourcesEn);
+        }
+
+        [Fact]
+        public async void AddSource_BadLanguage_ThrowException()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var source = new Source()
+            {
+                Id = Guid.NewGuid(),
+                Text = "default"
+            };
+            var repository = new SourcesRepository(context);
+            
+            // act
+            Task Act() => repository.AddSource(source, "banana");
         
             //assert
             await Assert.ThrowsAsync<ArgumentException>(Act);

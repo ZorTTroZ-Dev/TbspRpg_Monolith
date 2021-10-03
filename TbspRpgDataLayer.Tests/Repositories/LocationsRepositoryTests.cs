@@ -207,5 +207,76 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+
+        #region GetLocationById
+
+        [Fact]
+        public async void GetLocationById_NotExist_ReturnNull()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location"
+            };
+            context.Locations.Add(testLocation);
+            await context.SaveChangesAsync();
+            var repository = new LocationsRepository(context);
+            
+            // act
+            var location = await repository.GetLocationById(Guid.NewGuid());
+            
+            // assert
+            Assert.Null(location);
+        }
+
+        [Fact]
+        public async void GetLocationById_Exists_ReturnLocation()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location"
+            };
+            context.Locations.Add(testLocation);
+            await context.SaveChangesAsync();
+            var repository = new LocationsRepository(context);
+            
+            // act
+            var location = await repository.GetLocationById(testLocation.Id);
+            
+            // assert
+            Assert.NotNull(location);
+            Assert.Equal(testLocation.Id, location.Id);
+        }
+
+        #endregion
+
+        #region SaveChanges
+
+        [Fact]
+        public async void SaveChanges_ChangesAreSaved()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location"
+            };
+            context.Locations.Add(testLocation);
+            var repository = new LocationsRepository(context);
+            
+            // act
+            await repository.SaveChanges();
+            
+            // assert
+            Assert.Single(context.Locations);
+        }
+
+        #endregion
     }
 }

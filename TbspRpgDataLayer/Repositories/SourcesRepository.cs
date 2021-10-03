@@ -59,12 +59,44 @@ namespace TbspRpgDataLayer.Repositories
             throw new ArgumentException($"invalid language {language}");
         }
 
+        private En SourceToEn(Source source)
+        {
+            return new En()
+            {
+                Id = source.Id,
+                Key = source.Key,
+                AdventureId = source.AdventureId,
+                Name = source.Name,
+                Text = source.Text
+            };
+        }
+
+        private Esp SourcetoEsp(Source source)
+        {
+            return new Esp()
+            {
+                Id = source.Id,
+                Key = source.Key,
+                AdventureId = source.AdventureId,
+                Name = source.Name,
+                Text = source.Text
+            };
+        }
+
         public async Task AddSource(Source source, string language)
         {
-            if(language == Languages.ENGLISH || language == null)
-                await _databaseContext.SourcesEn.AddAsync((En)source);
+            if (language == Languages.ENGLISH || language == null)
+            {
+                await _databaseContext.SourcesEn.AddAsync(SourceToEn(source));
+                return;
+            }
+
             if (language == Languages.SPANISH)
-                await _databaseContext.SourcesEsp.AddAsync((Esp) source);
+            {
+                await _databaseContext.SourcesEsp.AddAsync(SourcetoEsp(source));
+                return;
+            }
+
             throw new ArgumentException($"invalid language {language}");
         }
     }
