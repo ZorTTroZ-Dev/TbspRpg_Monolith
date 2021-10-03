@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
+using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Repositories;
 using TbspRpgDataLayer.Services;
@@ -183,6 +184,30 @@ namespace TbspRpgDataLayer.Tests.Services
             Assert.NotNull(source);
             Assert.Equal(testEsp.Id, source.Id);
             Assert.Equal(testEsp.Text, source.Text);
+        }
+
+        #endregion
+
+        #region AddSource
+
+        [Fact]
+        public async void AddSource_SourceAdded()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var source = new Source()
+            {
+                Id = Guid.NewGuid(),
+                Text = "source text"
+            };
+            var service = CreateService(context);
+            
+            // act
+            await service.AddSource(source, Languages.ENGLISH);
+            await context.SaveChangesAsync();
+
+            // assert
+            Assert.Single(context.SourcesEn);
         }
 
         #endregion

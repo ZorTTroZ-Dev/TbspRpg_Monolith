@@ -92,6 +92,10 @@ namespace TbspRpgDataLayer.Tests
                 .ReturnsAsync((Guid adventureId) =>
                     locations.Where(l => l.AdventureId == adventureId).ToList());
 
+            locationsService.Setup(service =>
+                    service.GetLocationById(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid locationId) => locations.FirstOrDefault(l => l.Id == locationId));
+
             return locationsService.Object;
         }
 
@@ -129,6 +133,10 @@ namespace TbspRpgDataLayer.Tests
                     var source = sources.FirstOrDefault(s => s.Key == key && s.AdventureId == adventureId);
                     return source;
                 });
+            
+            sourcesService.Setup(service =>
+                    service.AddSource(It.IsAny<En>(), It.IsAny<string>()))
+                .Callback((En source, string language) => sources.Add(source));
 
             return sourcesService.Object;
         }

@@ -123,5 +123,55 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region GetLocationById
+
+        [Fact]
+        public async void GetLocationById_Exists_ReturnLocation()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var location = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location"
+            };
+            context.Locations.Add(location);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var dblocation = await service.GetLocationById(location.Id);
+            
+            // assert
+            Assert.NotNull(dblocation);
+            Assert.Equal(location.Id, dblocation.Id);
+        }
+
+        #endregion
+
+        #region SaveChanges
+
+        [Fact]
+        public async void SaveChanges_SavesChanges()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var location = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location"
+            };
+            context.Locations.Add(location);
+            var service = CreateService(context);
+            
+            // act
+            await service.SaveChanges();
+            
+            // assert
+            Assert.Single(context.Locations);
+        }
+
+        #endregion
     }
 }
