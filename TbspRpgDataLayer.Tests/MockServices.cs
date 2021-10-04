@@ -135,8 +135,15 @@ namespace TbspRpgDataLayer.Tests
                 });
             
             sourcesService.Setup(service =>
-                    service.AddSource(It.IsAny<En>(), It.IsAny<string>()))
-                .Callback((En source, string language) => sources.Add(source));
+                    service.AddSource(It.IsAny<Source>(), It.IsAny<string>()))
+                .Callback((Source source, string language) => sources.Add(new En()
+                {
+                    Id = source.Id,
+                    Key = source.Key,
+                    AdventureId = source.AdventureId,
+                    Name = source.Name,
+                    Text = source.Text
+                }));
 
             return sourcesService.Object;
         }

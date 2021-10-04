@@ -45,6 +45,7 @@ namespace TbspRpgProcessor.Processors
                     Name = location.Name,
                     Text = source.Text
                 };
+                dbLocation.SourceKey = newSource.Key;
                 await _sourcesService.AddSource(newSource);
             }
             else // existing source object

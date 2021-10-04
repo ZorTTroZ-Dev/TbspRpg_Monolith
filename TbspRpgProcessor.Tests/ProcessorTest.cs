@@ -33,6 +33,16 @@ namespace TbspRpgProcessor.Tests
                 NullLogger<GameProcessor>.Instance);
         }
 
+        protected static ILocationProcessor CreateLocationProcessor(
+            ICollection<Location> locations = null,
+            ICollection<En> sources = null)
+        {
+            var locationService = MockServices.MockDataLayerLocationsService(locations);
+            var sourceService = MockServices.MockDataLayerSourcesService(sources);
+            return new LocationProcessor(locationService,
+                sourceService, NullLogger<LocationProcessor>.Instance);
+        }
+
         protected static IContentProcessor CreateContentProcessor(
             ICollection<Game> games = null,
             ICollection<En> sources = null)
