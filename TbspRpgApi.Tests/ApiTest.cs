@@ -62,11 +62,14 @@ namespace TbspRpgApi.Tests
                 NullLogger<MapsService>.Instance);
         }
 
-        protected static LocationsService CreateLocationsService(ICollection<Location> locations)
+        protected static LocationsService CreateLocationsService(ICollection<Location> locations,
+            Guid? updateLocationExceptionId = null)
         {
             var dlLocationsService = MockServices.MockDataLayerLocationsService(locations);
+            var locationProcessor = ProcessorTest.MockLocationProcessor(updateLocationExceptionId.GetValueOrDefault());
             return new LocationsService(
                 dlLocationsService,
+                locationProcessor,
                 NullLogger<LocationsService>.Instance);
         }
 

@@ -84,6 +84,22 @@ namespace TbspRpgProcessor.Tests
             
             return gameProcessor.Object;
         }
+
+        public static ILocationProcessor MockLocationProcessor(Guid updateLocationExceptionId)
+        {
+            var locationProcessor = new Mock<ILocationProcessor>();
+
+            locationProcessor.Setup(service =>
+                    service.UpdateLocation(It.IsAny<Location>(), It.IsAny<Source>(), It.IsAny<string>()))
+                .Callback((Location location, Source source, string language) =>
+                {
+                    if (location.Id == updateLocationExceptionId)
+                    {
+                        throw new ArgumentException("can't update location");
+                    }
+                });
+            return locationProcessor.Object;
+        }
         
         public static IMapProcessor MockMapProcessor(Guid changeLocationViaRouteExceptionId)
         {

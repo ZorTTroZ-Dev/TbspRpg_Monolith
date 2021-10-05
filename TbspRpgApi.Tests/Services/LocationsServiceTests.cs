@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TbspRpgApi.Entities;
+using TbspRpgApi.RequestModels;
+using TbspRpgApi.ViewModels;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Services
@@ -30,6 +33,57 @@ namespace TbspRpgApi.Tests.Services
             // assert
             Assert.Single(locations);
             Assert.Equal("test", locations[0].Name);
+        }
+
+        #endregion
+
+        #region UpdateLocation
+
+        [Fact]
+        public async void UpdateLocation_Valid_LocationUpdated()
+        {
+            // arrange
+            var service = CreateLocationsService(new List<Location>(), Guid.NewGuid());
+            // act
+            await service.UpdateLocationAndSource(new UpdateLocationRequest()
+            {
+                location = new LocationViewModel(new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    SourceKey = Guid.NewGuid(),
+                    AdventureId = Guid.NewGuid(),
+                    Name = "test location",
+                    Initial = true
+                }),
+                source = new SourceViewModel("test source")
+            });
+            
+            // assert
+        }
+        
+        [Fact]
+        public async void UpdateLocation_InValid_ExceptionThrown()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var service = CreateLocationsService(new List<Location>(), exceptionId);
+            
+            // act
+            Task Act() => service.UpdateLocationAndSource(new UpdateLocationRequest()
+            {
+                location = new LocationViewModel(new Location()
+                {
+                    Id = exceptionId,
+                    SourceKey = Guid.NewGuid(),
+                    AdventureId = Guid.NewGuid(),
+                    Name = "test location",
+                    Initial = true
+                }),
+                source = new SourceViewModel("test source")
+            });
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
         }
 
         #endregion
