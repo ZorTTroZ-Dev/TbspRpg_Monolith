@@ -5,11 +5,13 @@ namespace TbspRpgApi.ViewModels
 {
     public class LocationViewModel
     {
-        public Guid Id { get; }
-        public string Name { get; }
-        public bool Initial { get; }
-        public Guid SourceKey { get; }
-        public Guid AdventureId { get; }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public bool Initial { get; set; }
+        public Guid SourceKey { get; set; }
+        public Guid AdventureId { get; set; }
+
+        public LocationViewModel() {}
 
         public LocationViewModel(Location location)
         {

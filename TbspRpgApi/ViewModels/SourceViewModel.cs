@@ -5,11 +5,13 @@ namespace TbspRpgApi.ViewModels
 {
     public class SourceViewModel
     {
-        public Guid Id { get; }
-        public Guid Key { get; }
-        public Guid AdventureId { get; }
-        public string Text { get; }
-        public string Language { get; }
+        public Guid Id { get; set; }
+        public Guid Key { get; set; }
+        public Guid AdventureId { get; set; }
+        public string Text { get; set; }
+        public string Language { get; set; }
+        
+        public SourceViewModel() {}
 
         public SourceViewModel(string text)
         {

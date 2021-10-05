@@ -50,7 +50,7 @@ namespace TbspRpgApi.Controllers
             try
             {
                 await _locationsService.UpdateLocationAndSource(updateRequest);
-                return Ok();
+                return Ok(null);
             }
             catch (Exception ex)
             {
