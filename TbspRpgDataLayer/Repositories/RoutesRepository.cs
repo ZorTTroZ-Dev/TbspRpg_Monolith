@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.ArgumentModels;
 
 namespace TbspRpgDataLayer.Repositories
 {
@@ -20,6 +21,11 @@ namespace TbspRpgDataLayer.Repositories
         public RoutesRepository(DatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
+        }
+
+        public Task<List<Route>> GetRoutes(RouteFilterRequest routeFilterRequest)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<List<Route>> GetRoutesForLocation(Guid locationId)
