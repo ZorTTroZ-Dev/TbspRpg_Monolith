@@ -75,7 +75,7 @@ namespace TbspRpgApi.Tests.Controllers
             
             // assert
             var okObjectResult = response as OkObjectResult;
-            Assert.Null(okObjectResult);
+            Assert.NotNull(okObjectResult);
         }
 
         [Fact]
