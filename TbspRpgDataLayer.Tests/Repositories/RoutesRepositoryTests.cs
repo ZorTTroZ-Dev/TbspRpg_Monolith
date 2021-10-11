@@ -146,7 +146,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var repository = new RoutesRepository(context);
             
             // act
-            var routes = await repository.GetRoutes(new RouteFilterRequest()
+            var routes = await repository.GetRoutes(new RouteFilter()
             {
                 Id = testroute.Id,
                 LocationId = null
@@ -179,7 +179,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var repository = new RoutesRepository(context);
             
             // act
-            var routes = await repository.GetRoutes(new RouteFilterRequest()
+            var routes = await repository.GetRoutes(new RouteFilter()
             {
                 Id = null,
                 LocationId = testroute.LocationId

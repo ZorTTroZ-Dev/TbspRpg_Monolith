@@ -179,7 +179,7 @@ namespace TbspRpgDataLayer.Tests.Services
             var service = CreateService(context);
             
             // act
-            var routes = await service.GetRoutes(new RouteFilterRequest()
+            var routes = await service.GetRoutes(new RouteFilter()
             {
                 Id = testroute.Id,
                 LocationId = null
@@ -212,7 +212,7 @@ namespace TbspRpgDataLayer.Tests.Services
             var service = CreateService(context);
 
             // act
-            var routes = await service.GetRoutes(new RouteFilterRequest()
+            var routes = await service.GetRoutes(new RouteFilter()
             {
                 Id = null,
                 LocationId = testroute.LocationId

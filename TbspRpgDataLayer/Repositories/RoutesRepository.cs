@@ -12,7 +12,7 @@ namespace TbspRpgDataLayer.Repositories
     {
         Task<List<Route>> GetRoutesForLocation(Guid locationId);
         Task<Route> GetRouteById(Guid routeId);
-        Task<List<Route>> GetRoutes(RouteFilterRequest routeFilterRequest);
+        Task<List<Route>> GetRoutes(RouteFilter routeFilter);
     }
     
     public class RoutesRepository : IRoutesRepository
@@ -24,19 +24,19 @@ namespace TbspRpgDataLayer.Repositories
             _databaseContext = databaseContext;
         }
 
-        public Task<List<Route>> GetRoutes(RouteFilterRequest routeFilterRequest)
+        public Task<List<Route>> GetRoutes(RouteFilter routeFilter)
         {
             var query = _databaseContext.Routes.AsQueryable();
-            if (routeFilterRequest != null)
+            if (routeFilter != null)
             {
-                if (routeFilterRequest.Id != null)
+                if (routeFilter.Id != null)
                 {
-                    query = query.Where(route => route.Id == routeFilterRequest.Id);
+                    query = query.Where(route => route.Id == routeFilter.Id);
                 }
 
-                if (routeFilterRequest.LocationId != null)
+                if (routeFilter.LocationId != null)
                 {
-                    query = query.Where(route => route.LocationId == routeFilterRequest.LocationId);
+                    query = query.Where(route => route.LocationId == routeFilter.LocationId);
                 }    
             }
             return query.ToListAsync();
@@ -44,7 +44,7 @@ namespace TbspRpgDataLayer.Repositories
 
         public Task<List<Route>> GetRoutesForLocation(Guid locationId)
         {
-            return this.GetRoutes(new RouteFilterRequest()
+            return this.GetRoutes(new RouteFilter()
             {
                 Id = null,
                 LocationId = locationId
