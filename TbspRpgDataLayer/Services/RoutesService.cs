@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Repositories;
 
 namespace TbspRpgDataLayer.Services
@@ -11,6 +12,7 @@ namespace TbspRpgDataLayer.Services
     {
         Task<List<Route>> GetRoutesForLocation(Guid locationId);
         Task<Route> GetRouteById(Guid routeId);
+        Task<List<Route>> GetRoutes(RouteFilterRequest routeFilterRequest);
     }
     
     public class RoutesService : IRoutesService
@@ -32,6 +34,11 @@ namespace TbspRpgDataLayer.Services
         public Task<Route> GetRouteById(Guid routeId)
         {
             return _routesRepository.GetRouteById(routeId);
+        }
+
+        public Task<List<Route>> GetRoutes(RouteFilterRequest routeFilterRequest)
+        {
+            return _routesRepository.GetRoutes(routeFilterRequest);
         }
     }
 }

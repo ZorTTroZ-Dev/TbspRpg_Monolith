@@ -2,6 +2,7 @@ using System;
 using System.Data.Common;
 using System.Linq;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Repositories;
 using Xunit;
 
@@ -117,6 +118,104 @@ namespace TbspRpgDataLayer.Tests.Repositories
             
             // assert
             Assert.Null(route);
+        }
+
+        #endregion
+
+        #region GetRoutes
+
+        [Fact]
+        public async void GetRoutes_FilterById_ReturnsRoutes()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testroute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid(),
+                Name = "test route"
+            };
+            var testroute2 = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid(),
+                Name = "test route two"
+            };
+            context.Routes.AddRange(testroute, testroute2);
+            await context.SaveChangesAsync();
+            var repository = new RoutesRepository(context);
+            
+            // act
+            var routes = await repository.GetRoutes(new RouteFilterRequest()
+            {
+                Id = testroute.Id,
+                LocationId = null
+            });
+            
+            // assert
+            Assert.Single(routes);
+            Assert.Equal("test route", routes[0].Name);
+        }
+        
+        [Fact]
+        public async void GetRoutes_FilterByLocationId_ReturnsRoutes()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testroute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid(),
+                Name = "test route"
+            };
+            var testroute2 = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid(),
+                Name = "test route two"
+            };
+            context.Routes.AddRange(testroute, testroute2);
+            await context.SaveChangesAsync();
+            var repository = new RoutesRepository(context);
+            
+            // act
+            var routes = await repository.GetRoutes(new RouteFilterRequest()
+            {
+                Id = null,
+                LocationId = testroute.LocationId
+            });
+            
+            // assert
+            Assert.Single(routes);
+            Assert.Equal("test route", routes[0].Name);
+        }
+        
+        [Fact]
+        public async void GetRoutes_NoFilter_ReturnsAll()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testroute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid(),
+                Name = "test route"
+            };
+            var testroute2 = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid(),
+                Name = "test route two"
+            };
+            context.Routes.AddRange(testroute, testroute2);
+            await context.SaveChangesAsync();
+            var repository = new RoutesRepository(context);
+            
+            // act
+            var routes = await repository.GetRoutes(null);
+            
+            // assert
+            Assert.Equal(2, routes.Count);
         }
 
         #endregion
