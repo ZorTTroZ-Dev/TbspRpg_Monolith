@@ -17,5 +17,12 @@ namespace TbspRpgApi.ViewModels
             SourceKey = route.SourceKey;
             TimeStamp = game.LocationUpdateTimeStamp;
         }
+
+        public RouteViewModel(Route route)
+        {
+            Id = route.Id;
+            Name = route.Name;
+            SourceKey = route.SourceKey;
+        }
     }
 }

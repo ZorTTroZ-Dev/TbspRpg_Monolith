@@ -111,6 +111,17 @@ namespace TbspRpgDataLayer.Tests
                     service.GetRouteById(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid routeId) => routes.FirstOrDefault(r => r.Id == routeId));
 
+            routesService.Setup(service =>
+                    service.GetRoutes(It.IsAny<RouteFilter>()))
+                .ReturnsAsync((RouteFilter filter) =>
+                {
+                    if (filter.Id != null)
+                        return routes.Where(r => r.Id == filter.Id).ToList();
+                    if (filter.LocationId != null)
+                        return routes.Where(r => r.LocationId == filter.LocationId).ToList();
+                    return routes.ToList();
+                });
+
             return routesService.Object;
         }
 
