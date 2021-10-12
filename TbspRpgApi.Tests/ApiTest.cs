@@ -80,5 +80,13 @@ namespace TbspRpgApi.Tests
                 dlSourcesService,
                 NullLogger<SourcesService>.Instance);
         }
+
+        protected static RoutesService CreateRoutesService(ICollection<Route> routes)
+        {
+            var dlRoutesService = MockServices.MockDataLayerRoutesService(routes);
+            return new RoutesService(
+                dlRoutesService,
+                NullLogger<RoutesService>.Instance);
+        }
     }
 }

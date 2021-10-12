@@ -29,9 +29,6 @@ namespace TbspRpgApi.Services
         
         public async Task<List<RouteViewModel>> GetRoutes(RouteFilterRequest routefilterRequest)
         {
-            // TODO: Add security to return only routes associated with owned adventures
-            // Included the Location and the destination location in the results
-            // the filter out routes that aren't in their owned adventures
             var routes = await _routesService.GetRoutes(
                 RouteFilterAdapter.ToDataLayerFilter(routefilterRequest));
             return routes.Select(route => new RouteViewModel(route)).ToList();
@@ -40,7 +37,7 @@ namespace TbspRpgApi.Services
         public async Task<RouteViewModel> GetRouteById(Guid routeId)
         {
             var route = await _routesService.GetRouteById(routeId);
-            return new RouteViewModel(route);
+            return route != null ? new RouteViewModel(route) : null;
         }
     }
 }
