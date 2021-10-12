@@ -9,7 +9,8 @@ namespace TbspRpgApi.Adapters
         {
             return new RouteFilter()
             {
-                LocationId = routeFilterRequest.LocationId
+                LocationId = routeFilterRequest.LocationId,
+                DestinationLocationId = routeFilterRequest.DestinationLocationId
             };
         }
     }

@@ -8,6 +8,7 @@ namespace TbspRpgApi.Controllers
     {
         protected const string NotYourGameErrorMessage = "not your game";
         protected const string NotYourAdventureErrorMessage = "not your adventure";
+        protected const string NotYourRouteErrorMessage = "not your route";
 
         public BaseController() {}
 
@@ -22,6 +23,11 @@ namespace TbspRpgApi.Controllers
         }
 
         protected bool CanAccessAdventure(Guid adventureId)
+        {
+            return true;
+        }
+
+        protected bool CanAccessLocation(Guid locationId)
         {
             return true;
         }

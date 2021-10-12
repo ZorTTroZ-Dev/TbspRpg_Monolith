@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -11,6 +12,7 @@ namespace TbspRpgApi.Services
     public interface IRoutesService
     {
         Task<List<RouteViewModel>> GetRoutes(RouteFilterRequest routeFilterRequest);
+        Task<RouteViewModel> GetRouteById(Guid routeId);
     }
     
     public class RoutesService : IRoutesService
@@ -33,6 +35,12 @@ namespace TbspRpgApi.Services
             var routes = await _routesService.GetRoutes(
                 RouteFilterAdapter.ToDataLayerFilter(routefilterRequest));
             return routes.Select(route => new RouteViewModel(route)).ToList();
+        }
+
+        public async Task<RouteViewModel> GetRouteById(Guid routeId)
+        {
+            var route = await _routesService.GetRouteById(routeId);
+            return new RouteViewModel(route);
         }
     }
 }
