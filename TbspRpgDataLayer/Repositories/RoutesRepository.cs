@@ -29,11 +29,6 @@ namespace TbspRpgDataLayer.Repositories
             var query = _databaseContext.Routes.AsQueryable();
             if (routeFilter != null)
             {
-                if (routeFilter.Id != null)
-                {
-                    query = query.Where(route => route.Id == routeFilter.Id);
-                }
-
                 if (routeFilter.LocationId != null)
                 {
                     query = query.Where(route => route.LocationId == routeFilter.LocationId);
@@ -46,7 +41,6 @@ namespace TbspRpgDataLayer.Repositories
         {
             return this.GetRoutes(new RouteFilter()
             {
-                Id = null,
                 LocationId = locationId
             });
         }
