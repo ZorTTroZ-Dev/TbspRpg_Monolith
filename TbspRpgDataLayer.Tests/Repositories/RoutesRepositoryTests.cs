@@ -123,6 +123,40 @@ namespace TbspRpgDataLayer.Tests.Repositories
         #endregion
 
         #region GetRoutes
+        
+        [Fact]
+        public async void GetRoutes_FilterByDestinationLocationId_ReturnsRoutes()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testroute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid(),
+                DestinationLocationId = Guid.NewGuid(),
+                Name = "test route"
+            };
+            var testroute2 = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid(),
+                DestinationLocationId = Guid.NewGuid(),
+                Name = "test route two"
+            };
+            context.Routes.AddRange(testroute, testroute2);
+            await context.SaveChangesAsync();
+            var repository = new RoutesRepository(context);
+            
+            // act
+            var routes = await repository.GetRoutes(new RouteFilter()
+            {
+                DestinationLocationId = testroute.DestinationLocationId
+            });
+            
+            // assert
+            Assert.Single(routes);
+            Assert.Equal("test route", routes[0].Name);
+        }
 
         [Fact]
         public async void GetRoutes_FilterByLocationId_ReturnsRoutes()
