@@ -27,7 +27,7 @@ namespace TbspRpgApi.Controllers
         {
             var route = await _routesService.GetRouteById(routeId);
 
-            if (!CanAccessLocation(route.LocationId))
+            if (route != null && !CanAccessLocation(route.LocationId))
             {
                 return BadRequest(new { message = NotYourRouteErrorMessage });
             }
