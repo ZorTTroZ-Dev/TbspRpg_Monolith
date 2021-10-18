@@ -38,12 +38,12 @@ namespace TbspRpgApi.Controllers
             }
             
             // key is missing call a different method one that returns all sources for an adventure
-            if (filters.Key == Guid.Empty)
+            if (filters.Key == null)
             {
                 return BadRequest(new {message = "operation not supported yet."});
             }
             
-            var source = await _sourcesService.GetSourceForKey(filters.Key, adventureId, filters.Language);
+            var source = await _sourcesService.GetSourceForKey(filters.Key.GetValueOrDefault(), adventureId, filters.Language);
             return Ok(source);
         }
     }
