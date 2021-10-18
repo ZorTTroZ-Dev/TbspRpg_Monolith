@@ -84,7 +84,7 @@ namespace TbspRpgApi.Tests.Controllers
             
             // act
             var response = await controller.GetSourcesForAdventure(
-                sources[0].AdventureId, new SourceFilterRequest()
+                Guid.NewGuid(), new SourceFilterRequest()
                 {
                     Key = Guid.Empty,
                     Language = Languages.ENGLISH

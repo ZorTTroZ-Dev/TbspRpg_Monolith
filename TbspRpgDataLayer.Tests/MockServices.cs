@@ -141,7 +141,11 @@ namespace TbspRpgDataLayer.Tests
                     service.GetSourceForKey(It.IsAny<Guid>(), It.IsAny<Guid>(),It.IsAny<string>()))
                 .ReturnsAsync((Guid key, Guid adventureId, string language) =>
                 {
-                    var source = sources.FirstOrDefault(s => s.Key == key && s.AdventureId == adventureId);
+                    En source = null;
+                    if (key == Guid.Empty)
+                        source = sources.FirstOrDefault(s => s.Key == key);
+                    else
+                        source = sources.FirstOrDefault(s => s.Key == key && s.AdventureId == adventureId);
                     return source;
                 });
             

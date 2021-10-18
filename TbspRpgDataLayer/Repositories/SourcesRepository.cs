@@ -52,9 +52,12 @@ namespace TbspRpgDataLayer.Repositories
         public Task<Source> GetSourceForKey(Guid key, Guid adventureId, string language)
         {
             var query = GetQueryRoot(language);
-            if(query != null)
+            if(query != null && key != Guid.Empty)
                 return query.FirstOrDefaultAsync(source => 
                     source.Key == key && source.AdventureId == adventureId);
+            if(query != null && key == Guid.Empty) 
+                return query.FirstOrDefaultAsync(source => 
+                    source.Key == key);
             
             throw new ArgumentException($"invalid language {language}");
         }

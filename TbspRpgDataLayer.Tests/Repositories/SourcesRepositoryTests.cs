@@ -196,6 +196,32 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
         
         [Fact]
+        public async void GetSourceForKey_EmptyGuidKey_ReturnSource()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.Empty,
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            context.SourcesEsp.Add(testSource);
+            await context.SaveChangesAsync();
+            var repository = new SourcesRepository(context);
+        
+            //act
+            var source = await repository.GetSourceForKey(
+                testSource.Key, Guid.NewGuid(), Languages.SPANISH);
+            
+            // assert
+            Assert.NotNull(source);
+            Assert.Equal(testSource.Id, source.Id);
+        }
+        
+        [Fact]
         public async void GetSourceForKey_Valid_ReturnSource()
         {
             //arrange
