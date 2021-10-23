@@ -3,7 +3,7 @@ using TbspRpgApi.ViewModels;
 
 namespace TbspRpgApi.Adapters
 {
-    public class LocationAdapter
+    public static class LocationAdapter
     {
         public static Location ToEntity(LocationViewModel viewModel)
         {

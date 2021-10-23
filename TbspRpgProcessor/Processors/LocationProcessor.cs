@@ -35,26 +35,11 @@ namespace TbspRpgProcessor.Processors
             dbLocation.Initial = location.Initial;
 
             // update the source
-            if (source.Key == Guid.Empty)
-            {
-                // we need to create a new source object and save it
-                var newSource = new Source()
-                {
-                    Key = Guid.NewGuid(),
-                    AdventureId = location.AdventureId,
-                    Name = location.Name,
-                    Text = source.Text
-                };
-                dbLocation.SourceKey = newSource.Key;
-                await _sourcesService.AddSource(newSource);
-            }
-            else // existing source object
-            {
-                var dbSource = await _sourcesService.GetSourceForKey(source.Key, source.AdventureId, language);
-                if(dbSource == null)
-                    throw new ArgumentException("invalid source key");
-                dbSource.Text = source.Text;
-            }
+            source.AdventureId = location.AdventureId;
+            if (string.IsNullOrEmpty(source.Name))
+                source.Name = location.Name;
+            var dbSource = await _sourcesService.CreateOrUpdateSource(source, language);
+            location.SourceKey = dbSource.Key;
             
             // save the changes
             await _locationsService.SaveChanges();

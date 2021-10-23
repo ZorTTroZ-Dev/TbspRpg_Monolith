@@ -3,7 +3,7 @@ using TbspRpgApi.ViewModels;
 
 namespace TbspRpgApi.Adapters
 {
-    public class SourceAdapter
+    public static class SourceAdapter
     {
         public static Source ToEntity(SourceViewModel viewModel)
         {

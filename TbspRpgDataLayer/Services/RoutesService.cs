@@ -8,11 +8,12 @@ using TbspRpgDataLayer.Repositories;
 
 namespace TbspRpgDataLayer.Services
 {
-    public interface IRoutesService
+    public interface IRoutesService: IBaseService
     {
         Task<List<Route>> GetRoutesForLocation(Guid locationId);
         Task<Route> GetRouteById(Guid routeId);
         Task<List<Route>> GetRoutes(RouteFilter routeFilter);
+        Task RemoveRoute(Route route);
     }
     
     public class RoutesService : IRoutesService
@@ -39,6 +40,16 @@ namespace TbspRpgDataLayer.Services
         public Task<List<Route>> GetRoutes(RouteFilter routeFilter)
         {
             return _routesRepository.GetRoutes(routeFilter);
+        }
+
+        public Task RemoveRoute(Route route)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SaveChanges()
+        {
+            throw new NotImplementedException();
         }
     }
 }
