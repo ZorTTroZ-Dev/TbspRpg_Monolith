@@ -39,7 +39,7 @@ namespace TbspRpgProcessor.Processors
             if (string.IsNullOrEmpty(source.Name))
                 source.Name = location.Name;
             var dbSource = await _sourcesService.CreateOrUpdateSource(source, language);
-            location.SourceKey = dbSource.Key;
+            dbLocation.SourceKey = dbSource.Key;
             
             // save the changes
             await _locationsService.SaveChanges();

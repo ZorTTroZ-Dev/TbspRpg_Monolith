@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Entities;
@@ -234,6 +235,99 @@ namespace TbspRpgDataLayer.Tests.Services
 
             // assert
             Assert.Single(context.SourcesEn);
+        }
+
+        #endregion
+
+        #region CreateOrUpdateSource
+
+        [Fact]
+        public async void CreateOrUpdateSource_BadSourceId_ThrowException()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid()
+            };
+            await context.SourcesEn.AddAsync(testEn);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            Task Act() => service.CreateOrUpdateSource(new Source()
+            {
+                Id = testEn.Id,
+                AdventureId = testEn.AdventureId,
+                Key = Guid.NewGuid()
+            }, Languages.ENGLISH);
+
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        [Fact]
+        public async void CreateOrUpdateSource_EmptyKey_CreateNewSource()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid()
+            };
+            await context.SourcesEn.AddAsync(testEn);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var dbSource = await service.CreateOrUpdateSource(new Source()
+            {
+                AdventureId = testEn.AdventureId,
+                Key = Guid.Empty,
+                Text = "new source"
+            }, Languages.ENGLISH);
+            
+            // assert
+            await context.SaveChangesAsync();
+            Assert.NotNull(dbSource);
+            Assert.Equal(2, context.SourcesEn.Count());
+            Assert.Equal("new source", dbSource.Text);
+            Assert.NotEqual(Guid.Empty, dbSource.Key);
+        }
+
+        [Fact]
+        public async void CreateOrUpdateSource_ExistingSource_UpdateKey()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = "original text"
+            };
+            await context.SourcesEn.AddAsync(testEn);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var dbSource = await service.CreateOrUpdateSource(new Source()
+            {
+                Id = testEn.Id,
+                Key = testEn.Key,
+                AdventureId = testEn.AdventureId,
+                Text = "updated text"
+            }, Languages.ENGLISH);
+            
+            // assert
+            await context.SaveChangesAsync();
+            Assert.Single(context.SourcesEn);
+            Assert.Equal("updated text", dbSource.Text);
         }
 
         #endregion

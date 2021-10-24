@@ -160,6 +160,24 @@ namespace TbspRpgDataLayer.Tests
                     Text = source.Text
                 }));
 
+            sourcesService.Setup(service =>
+                    service.CreateOrUpdateSource(It.IsAny<En>(), It.IsAny<string>()))
+                .ReturnsAsync((En source, string language) =>
+                {
+                    if (source.Key == Guid.Empty)
+                    {
+                        source.Key = Guid.NewGuid();
+                        sources.Add(source);
+                        return source;
+                    }
+                    if (sources.FirstOrDefault(src => src.Key == source.Key) == null)
+                        throw new ArgumentException("invalid source key");
+
+                    var dbSource = sources.First(src => src.Id == source.Id);
+                    dbSource.Text = source.Text;
+                    return dbSource;
+                });
+
             return sourcesService.Object;
         }
 
