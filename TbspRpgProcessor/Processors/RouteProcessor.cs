@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Services;
 using TbspRpgProcessor.Entities;
 
@@ -16,35 +17,88 @@ namespace TbspRpgProcessor.Processors
     
     public class RouteProcessor: IRouteProcessor
     {
+        private readonly ISourceProcessor _sourceProcessor;
         private readonly IRoutesService _routesService;
         private readonly ILocationsService _locationsService;
-        private readonly ISourcesService _sourcesService;
         private readonly ILogger<RouteProcessor> _logger;
 
-        public RouteProcessor(IRoutesService routesService,
+        public RouteProcessor(
+            ISourceProcessor sourceProcessor,
+            IRoutesService routesService,
             ILocationsService locationsService,
-            ISourcesService sourcesService,
             ILogger<RouteProcessor> logger)
         {
+            _sourceProcessor = sourceProcessor;
             _routesService = routesService;
             _locationsService = locationsService;
-            _sourcesService = sourcesService;
             _logger = logger;
         }
         
-        public Task UpdateRoute(RouteUpdateModel routeUpdateModel)
+        public async Task UpdateRoute(RouteUpdateModel routeUpdateModel)
         {
-            // load the route from the database
-            // if it fails throw an exception
-            // if the route id is empty create a new route
-            // update/populate route name
+            // load the location
+            var dbLocation = await _locationsService.GetLocationById(routeUpdateModel.route.LocationId);
+            if (dbLocation == null)
+                throw new ArgumentException("route has invalid location id");
+            
+            // update/create route object
+            Route route = null;
+            if (routeUpdateModel.route.Id == Guid.Empty)
+            {
+                route = new Route()
+                {
+                    Name = routeUpdateModel.route.Name,
+                    LocationId = routeUpdateModel.route.LocationId
+                };
+                await _routesService.AddRoute(route);
+            }
+            else
+            {
+                var dbRoute = await _routesService.GetRouteById(routeUpdateModel.route.Id);
+                if (dbRoute == null)
+                    throw new ArgumentException("invalid route id");
+                dbRoute.Name = routeUpdateModel.route.Name;
+                route = dbRoute;
+            }
             
             // create update source set sourceKey
+            routeUpdateModel.source.AdventureId = dbLocation.AdventureId;
+            // TODO: fix source objects having empty name from interface
+            if (string.IsNullOrEmpty(routeUpdateModel.source.Name))
+                routeUpdateModel.source.Name = routeUpdateModel.route.Name;
+            var dbSource = await _sourceProcessor.CreateOrUpdateSource(
+                routeUpdateModel.source,
+                routeUpdateModel.language);
+            route.SourceKey = dbSource.Key;
             
             // create update successSource set successSourceKey
+            routeUpdateModel.successSource.AdventureId = dbLocation.AdventureId;
+            if (string.IsNullOrEmpty(routeUpdateModel.successSource.Name))
+                routeUpdateModel.successSource.Name = routeUpdateModel.route.Name;
+            var dbSuccessSource = await _sourceProcessor.CreateOrUpdateSource(
+                routeUpdateModel.successSource,
+                routeUpdateModel.language);
+            route.SuccessSourceKey = dbSuccessSource.Key;
             
             // create update destination location set destinationLocationId
-            throw new NotImplementedException();
+            if (!string.IsNullOrEmpty(routeUpdateModel.newDestinationLocationName))
+            {
+                var destinationLocation = new Location()
+                {
+                    Name = routeUpdateModel.newDestinationLocationName,
+                    SourceKey = Guid.Empty,
+                    AdventureId = dbLocation.AdventureId,
+                    Initial = false
+                };
+                await _locationsService.AddLocation(destinationLocation);
+                route.DestinationLocation = destinationLocation;
+            }
+            else if(routeUpdateModel.route.DestinationLocationId != Guid.Empty)
+            {
+                route.DestinationLocationId = routeUpdateModel.route.DestinationLocationId;
+            }
+
+            await _routesService.SaveChanges();
         }
 
         public async Task RemoveRoutes(List<Guid> currentRouteIds, Guid locationId)

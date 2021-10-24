@@ -14,6 +14,7 @@ namespace TbspRpgDataLayer.Services
         Task<Route> GetRouteById(Guid routeId);
         Task<List<Route>> GetRoutes(RouteFilter routeFilter);
         Task RemoveRoute(Route route);
+        Task AddRoute(Route route);
     }
     
     public class RoutesService : IRoutesService
@@ -43,6 +44,11 @@ namespace TbspRpgDataLayer.Services
         }
 
         public Task RemoveRoute(Route route)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddRoute(Route route)
         {
             throw new NotImplementedException();
         }
