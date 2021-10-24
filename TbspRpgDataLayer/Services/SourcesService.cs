@@ -12,7 +12,6 @@ namespace TbspRpgDataLayer.Services
         Task<string> GetSourceTextForKey(Guid key, string language = null);
         Task<Source> GetSourceForKey(Guid key, Guid adventureId, string language);
         Task AddSource(Source source, string language = null);
-        Task<Source> CreateOrUpdateSource(Source source, string language);
     }
     
     public class SourcesService : ISourcesService
@@ -41,28 +40,6 @@ namespace TbspRpgDataLayer.Services
         public async Task AddSource(Source source, string language = null)
         {
             await _sourcesRepository.AddSource(source, language);
-        }
-
-        public async Task<Source> CreateOrUpdateSource(Source source, string language)
-        {
-            if (source.Key == Guid.Empty)
-            {
-                // we need to create a new source object and save it
-                var newSource = new Source()
-                {
-                    Key = Guid.NewGuid(),
-                    AdventureId = source.AdventureId,
-                    Name = source.Name,
-                    Text = source.Text
-                };
-                await AddSource(newSource);
-                return newSource;
-            }
-            var dbSource = await GetSourceForKey(source.Key, source.AdventureId, language);
-            if(dbSource == null)
-                throw new ArgumentException("invalid source key");
-            dbSource.Text = source.Text;
-            return dbSource;
         }
     }
 }

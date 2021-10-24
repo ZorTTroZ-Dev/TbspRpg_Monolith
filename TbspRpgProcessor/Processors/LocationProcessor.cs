@@ -13,15 +13,17 @@ namespace TbspRpgProcessor.Processors
     
     public class LocationProcessor : ILocationProcessor
     {
+        private readonly ISourceProcessor _sourceProcessor;
         private readonly ILocationsService _locationsService;
-        private readonly ISourcesService _sourcesService;
         private readonly ILogger<LocationProcessor> _logger;
 
-        public LocationProcessor(ILocationsService locationsService,
-            ISourcesService sourcesService, ILogger<LocationProcessor> logger)
+        public LocationProcessor(
+            ISourceProcessor sourceProcessor,
+            ILocationsService locationsService,
+            ILogger<LocationProcessor> logger)
         {
+            _sourceProcessor = sourceProcessor;
             _locationsService = locationsService;
-            _sourcesService = sourcesService;
             _logger = logger;
         }
         
@@ -38,7 +40,7 @@ namespace TbspRpgProcessor.Processors
             source.AdventureId = location.AdventureId;
             if (string.IsNullOrEmpty(source.Name))
                 source.Name = location.Name;
-            var dbSource = await _sourcesService.CreateOrUpdateSource(source, language);
+            var dbSource = await _sourceProcessor.CreateOrUpdateSource(source, language);
             dbLocation.SourceKey = dbSource.Key;
             
             // save the changes

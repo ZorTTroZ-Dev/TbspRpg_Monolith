@@ -37,10 +37,12 @@ namespace TbspRpgProcessor.Tests
             ICollection<Location> locations = null,
             ICollection<En> sources = null)
         {
+            var sourceProcessor = CreateSourceProcessor(sources);
             var locationService = MockServices.MockDataLayerLocationsService(locations);
-            var sourceService = MockServices.MockDataLayerSourcesService(sources);
-            return new LocationProcessor(locationService,
-                sourceService, NullLogger<LocationProcessor>.Instance);
+            return new LocationProcessor(
+                sourceProcessor,
+                locationService,
+                NullLogger<LocationProcessor>.Instance);
         }
 
         protected static IContentProcessor CreateContentProcessor(
@@ -61,6 +63,13 @@ namespace TbspRpgProcessor.Tests
             var routesService = MockServices.MockDataLayerRoutesService(routes);
             var contentsService = MockServices.MockDataLayerContentsService(contents);
             return new MapProcessor(gamesService, routesService, contentsService, NullLogger<MapProcessor>.Instance);
+        }
+
+        protected static ISourceProcessor CreateSourceProcessor(
+            ICollection<En> sources = null)
+        {
+            var sourcesService = MockServices.MockDataLayerSourcesService(sources);
+            return new SourceProcessor(sourcesService, NullLogger<SourceProcessor>.Instance);
         }
 
         public static IGameProcessor MockGameProcessor(Guid startGameExceptionId)

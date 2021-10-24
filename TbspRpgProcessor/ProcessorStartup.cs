@@ -13,6 +13,7 @@ namespace TbspRpgProcessor
             services.AddScoped<IMapProcessor, MapProcessor>();
             services.AddScoped<ILocationProcessor, LocationProcessor>();
             services.AddScoped<IRouteProcessor, RouteProcessor>();
+            services.AddScoped<ISourceProcessor, SourceProcessor>();
         }
     }
 }
