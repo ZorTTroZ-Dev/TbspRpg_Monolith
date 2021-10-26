@@ -97,7 +97,11 @@ namespace TbspRpgDataLayer.Tests
             
             locationsService.Setup(service =>
                     service.AddLocation(It.IsAny<Location>()))
-                .Callback((Location location) => locations.Add(location));
+                .Callback((Location location) =>
+                {
+                    location.Id = Guid.NewGuid();
+                    locations.Add(location);
+                });
 
             return locationsService.Object;
         }
@@ -127,7 +131,11 @@ namespace TbspRpgDataLayer.Tests
 
             routesService.Setup(service =>
                     service.AddRoute(It.IsAny<Route>()))
-                .Callback((Route route) => routes.Add(route));
+                .Callback((Route route) =>
+                {
+                    route.Id = Guid.NewGuid();
+                    routes.Add(route);
+                });
             
             routesService.Setup(service =>
                     service.RemoveRoute(It.IsAny<Route>()))
@@ -164,7 +172,7 @@ namespace TbspRpgDataLayer.Tests
                     service.AddSource(It.IsAny<Source>(), It.IsAny<string>()))
                 .Callback((Source source, string language) => sources.Add(new En()
                 {
-                    Id = source.Id,
+                    Id = Guid.NewGuid(),
                     Key = source.Key,
                     AdventureId = source.AdventureId,
                     Name = source.Name,
