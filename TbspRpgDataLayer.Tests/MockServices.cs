@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Moq;
 using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
@@ -78,7 +77,7 @@ namespace TbspRpgDataLayer.Tests
             return gamesService.Object;
         }
 
-        public static ILocationsService MockDataLayerLocationsService(IEnumerable<Location> locations)
+        public static ILocationsService MockDataLayerLocationsService(ICollection<Location> locations)
         {
             var locationsService = new Mock<ILocationsService>();
             
@@ -95,6 +94,10 @@ namespace TbspRpgDataLayer.Tests
             locationsService.Setup(service =>
                     service.GetLocationById(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid locationId) => locations.FirstOrDefault(l => l.Id == locationId));
+            
+            locationsService.Setup(service =>
+                    service.AddLocation(It.IsAny<Location>()))
+                .Callback((Location location) => locations.Add(location));
 
             return locationsService.Object;
         }
@@ -121,6 +124,14 @@ namespace TbspRpgDataLayer.Tests
                         return routes.Where(r => r.LocationId == filter.LocationId).ToList();
                     return routes.ToList();
                 });
+
+            routesService.Setup(service =>
+                    service.AddRoute(It.IsAny<Route>()))
+                .Callback((Route route) => routes.Add(route));
+            
+            routesService.Setup(service =>
+                    service.RemoveRoute(It.IsAny<Route>()))
+                .Callback((Route route) => routes.Remove(route));
 
             return routesService.Object;
         }

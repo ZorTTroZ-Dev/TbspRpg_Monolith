@@ -17,7 +17,7 @@ namespace TbspRpgProcessor.Tests
             IEnumerable<User> users = null,
             IEnumerable<Adventure> adventures = null,
             ICollection<Game> games = null,
-            IEnumerable<Location> locations = null,
+            ICollection<Location> locations = null,
             ICollection<Content> contents = null)
         {
             var usersService = MockServices.MockDataLayerUsersService(users);
@@ -70,6 +70,21 @@ namespace TbspRpgProcessor.Tests
         {
             var sourcesService = MockServices.MockDataLayerSourcesService(sources);
             return new SourceProcessor(sourcesService, NullLogger<SourceProcessor>.Instance);
+        }
+
+        protected static IRouteProcessor CreateRouteProcessor(
+            ICollection<Route> routes = null,
+            ICollection<Location> locations = null,
+            ICollection<En> sources = null)
+        {
+            var routesService = MockServices.MockDataLayerRoutesService(routes);
+            var sourceProcessor = CreateSourceProcessor(sources);
+            var locationService = MockServices.MockDataLayerLocationsService(locations);
+            return new RouteProcessor(
+                sourceProcessor,
+                routesService,
+                locationService,
+                NullLogger<RouteProcessor>.Instance);
         }
 
         public static IGameProcessor MockGameProcessor(Guid startGameExceptionId)
