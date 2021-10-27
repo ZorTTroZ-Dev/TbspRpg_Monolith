@@ -282,7 +282,7 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.NotNull(testSources.FirstOrDefault(source => source.Key == testRoute.SuccessSourceKey));
             var source = testSources.First(source => source.Key == testRoute.SourceKey);
             Assert.Equal("updated source text", source.Text);
-            var successSource = testSources.First(source => source.Key == testRoute.SuccessSourceKey);
+            var successSource = testSources.First(src => src.Key == testRoute.SuccessSourceKey);
             Assert.Equal("updated success source text", successSource.Text);
         }
 
@@ -346,7 +346,7 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.NotEqual(Guid.Empty, testRoute.SuccessSourceKey);
             Assert.NotNull(testSources.FirstOrDefault(source => source.Key == testRoute.SourceKey));
             Assert.NotNull(testSources.FirstOrDefault(source => source.Key == testRoute.SuccessSourceKey));
-            var source = testSources.FirstOrDefault(source => source.Key == testRoute.SourceKey);
+            var source = testSources.First(source => source.Key == testRoute.SourceKey);
             Assert.Equal("source text", source.Text);
         }
 
@@ -482,13 +482,80 @@ namespace TbspRpgProcessor.Tests.Processors
         [Fact]
         public async void RemoveRoutes_RoutesExist_RoutesRemoved()
         {
+            // arrange
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "existing route",
+                LocationId = Guid.NewGuid()
+            };
+            var testRouteTwo = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "existing route two",
+                LocationId = testRoute.LocationId
+            };
+            var testRoutes = new List<Route>() {testRoute, testRouteTwo};
+            var processor = CreateRouteProcessor(testRoutes);
             
+            // act
+            await processor.RemoveRoutes(new List<Guid>() {testRouteTwo.Id}, testRoute.LocationId);
+            
+            // assert
+            Assert.Single(testRoutes);
+            Assert.Equal("existing route two", testRoutes[0].Name);
         }
 
         [Fact]
-        public async void RemoveRoutes_RoutesNotExist_NoRoutesRemoved()
+        public async void RemoveRoutes_NoExtraRoutes_NoRoutesRemoved()
         {
+            // arrange
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "existing route",
+                LocationId = Guid.NewGuid()
+            };
+            var testRouteTwo = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "existing route two",
+                LocationId = testRoute.LocationId
+            };
+            var testRoutes = new List<Route>() {testRoute, testRouteTwo};
+            var processor = CreateRouteProcessor(testRoutes);
             
+            // act
+            await processor.RemoveRoutes(new List<Guid>() {testRoute.Id, testRouteTwo.Id}, testRoute.LocationId);
+            
+            // assert
+            Assert.Equal(2, testRoutes.Count);
+        }
+        
+        [Fact]
+        public async void RemoveRoutes_NoRoutes_AllRoutesRemoved()
+        {
+            // arrange
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "existing route",
+                LocationId = Guid.NewGuid()
+            };
+            var testRouteTwo = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "existing route two",
+                LocationId = testRoute.LocationId
+            };
+            var testRoutes = new List<Route>() {testRoute, testRouteTwo};
+            var processor = CreateRouteProcessor(testRoutes);
+            
+            // act
+            await processor.RemoveRoutes(new List<Guid>(), testRoute.LocationId);
+            
+            // assert
+            Assert.Empty(testRoutes);
         }
 
         #endregion
