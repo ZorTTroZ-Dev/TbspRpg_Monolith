@@ -12,6 +12,7 @@ namespace TbspRpgDataLayer.Repositories
         Task<Location> GetInitialForAdventure(Guid adventureId);
         Task<List<Location>> GetLocationsForAdventure(Guid adventureId);
         Task<Location> GetLocationById(Guid locationId);
+        Task AddLocation(Location location);
     }
     
     public class LocationsRepository: ILocationsRepository
@@ -41,6 +42,11 @@ namespace TbspRpgDataLayer.Repositories
         {
             return _databaseContext.Locations.AsQueryable()
                 .FirstOrDefaultAsync(location => location.Id == locationId);
+        }
+
+        public async Task AddLocation(Location location)
+        {
+            await _databaseContext.AddAsync(location);
         }
 
         public async Task SaveChanges()

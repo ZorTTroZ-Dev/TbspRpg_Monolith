@@ -43,9 +43,9 @@ namespace TbspRpgDataLayer.Services
             return _locationsRepository.GetLocationById(locationId);
         }
 
-        public Task AddLocation(Location location)
+        public async Task AddLocation(Location location)
         {
-            throw new NotImplementedException();
+            await _locationsRepository.AddLocation(location);
         }
 
         public async Task SaveChanges()

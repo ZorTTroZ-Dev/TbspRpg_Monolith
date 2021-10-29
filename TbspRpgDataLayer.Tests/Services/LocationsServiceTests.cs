@@ -173,5 +173,29 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region AddLocation
+        
+        [Fact]
+        public async void AddLocation_LocationAdded()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location"
+            };
+            var service = CreateService(context);
+            
+            // act
+            await service.AddLocation(testLocation);
+            await service.SaveChanges();
+            
+            // assert
+            Assert.Single(context.Locations);
+        }
+        
+        #endregion
     }
 }

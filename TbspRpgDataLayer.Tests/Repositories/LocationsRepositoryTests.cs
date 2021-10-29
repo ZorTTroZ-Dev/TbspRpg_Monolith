@@ -278,5 +278,29 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+
+        #region AddLocation
+
+        [Fact]
+        public async void AddLocation_LocationAdded()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location"
+            };
+            var repository = new LocationsRepository(context);
+            
+            // act
+            await repository.AddLocation(testLocation);
+            await repository.SaveChanges();
+            
+            // assert
+            Assert.Single(context.Locations);
+        }
+
+        #endregion
     }
 }
