@@ -8,12 +8,13 @@ using TbspRpgDataLayer.ArgumentModels;
 
 namespace TbspRpgDataLayer.Repositories
 {
-    public interface IRoutesRepository
+    public interface IRoutesRepository : IBaseRepository
     {
         Task<List<Route>> GetRoutesForLocation(Guid locationId);
         Task<Route> GetRouteById(Guid routeId);
         Task<List<Route>> GetRoutes(RouteFilter routeFilter);
         void RemoveRoute(Route route);
+        Task AddRoute(Route route);
     }
     
     public class RoutesRepository : IRoutesRepository
@@ -47,6 +48,11 @@ namespace TbspRpgDataLayer.Repositories
             _databaseContext.Remove(route);
         }
 
+        public async Task AddRoute(Route route)
+        {
+            await _databaseContext.AddAsync(route);
+        }
+
         public Task<List<Route>> GetRoutesForLocation(Guid locationId)
         {
             return GetRoutes(new RouteFilter()
@@ -60,6 +66,11 @@ namespace TbspRpgDataLayer.Repositories
             return _databaseContext.Routes.AsQueryable().
                 Include(route => route.DestinationLocation).
                 FirstOrDefaultAsync(route => route.Id == routeId);
+        }
+
+        public async Task SaveChanges()
+        {
+            await _databaseContext.SaveChangesAsync();
         }
     }
 }

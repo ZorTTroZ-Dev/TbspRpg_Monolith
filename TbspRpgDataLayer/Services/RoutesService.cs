@@ -48,14 +48,14 @@ namespace TbspRpgDataLayer.Services
             _routesRepository.RemoveRoute(route);
         }
 
-        public Task AddRoute(Route route)
+        public async Task AddRoute(Route route)
         {
-            throw new NotImplementedException();
+            await _routesRepository.AddRoute(route);
         }
 
-        public Task SaveChanges()
+        public async Task SaveChanges()
         {
-            throw new NotImplementedException();
+            await _routesRepository.SaveChanges();
         }
     }
 }

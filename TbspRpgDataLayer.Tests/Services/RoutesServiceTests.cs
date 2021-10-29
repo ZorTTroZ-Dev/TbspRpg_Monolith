@@ -282,5 +282,31 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+        
+        #region AddRoute
+
+        [Fact]
+        public async void AddRoute_RouteAdded()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var service = CreateService(context);
+            
+            // act
+            await service.AddRoute(new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route",
+                LocationId = Guid.NewGuid(),
+                SourceKey = Guid.NewGuid()
+            });
+            await service.SaveChanges();
+            
+            // assert
+            Assert.Single(context.Routes);
+            Assert.Equal("test route", context.Routes.First().Name);
+        }
+
+        #endregion
     }
 }
