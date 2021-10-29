@@ -13,6 +13,7 @@ namespace TbspRpgDataLayer.Repositories
         Task<List<Route>> GetRoutesForLocation(Guid locationId);
         Task<Route> GetRouteById(Guid routeId);
         Task<List<Route>> GetRoutes(RouteFilter routeFilter);
+        void RemoveRoute(Route route);
     }
     
     public class RoutesRepository : IRoutesRepository
@@ -39,6 +40,11 @@ namespace TbspRpgDataLayer.Repositories
                 }    
             }
             return query.ToListAsync();
+        }
+
+        public void RemoveRoute(Route route)
+        {
+            _databaseContext.Remove(route);
         }
 
         public Task<List<Route>> GetRoutesForLocation(Guid locationId)

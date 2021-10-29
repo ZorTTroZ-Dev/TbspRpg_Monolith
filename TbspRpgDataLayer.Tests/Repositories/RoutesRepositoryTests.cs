@@ -219,5 +219,42 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+
+        #region RemoveRoute
+
+        [Fact]
+        public async void RemoveRoute_RouteRemoved()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testroute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid(),
+                DestinationLocationId = Guid.NewGuid(),
+                Name = "test route"
+            };
+            var testroute2 = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid(),
+                DestinationLocationId = Guid.NewGuid(),
+                Name = "test route two"
+            };
+            context.Routes.AddRange(testroute, testroute2);
+            await context.SaveChangesAsync();
+            var repository = new RoutesRepository(context);
+            
+            // act
+            var routeToRemove = context.Routes.First(route => route.Id == testroute.Id);
+            repository.RemoveRoute(routeToRemove);
+            
+            // assert
+            await context.SaveChangesAsync();
+            Assert.Single(context.Routes);
+            Assert.Equal("test route two", context.Routes.First().Name);
+        }
+
+        #endregion
     }
 }

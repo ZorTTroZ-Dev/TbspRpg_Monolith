@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Castle.Core;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Entities;
@@ -249,6 +250,35 @@ namespace TbspRpgDataLayer.Tests.Services
             
             // assert
             Assert.Equal(2, routes.Count);
+        }
+
+        #endregion
+
+        #region RemoveRoute
+
+        [Fact]
+        public async void RemoveRoute_RouteRemoved()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testroute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid(),
+                DestinationLocationId = Guid.NewGuid(),
+                Name = "test route"
+            };
+            context.Routes.Add(testroute);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+
+            // act
+            var routeToRemove = context.Routes.First(route => route.Id == testroute.Id);
+            service.RemoveRoute(routeToRemove);
+            
+            // assert
+            await context.SaveChangesAsync();
+            Assert.Empty(context.Routes);
         }
 
         #endregion
