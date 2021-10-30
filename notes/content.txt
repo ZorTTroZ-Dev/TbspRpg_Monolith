@@ -1,0 +1,107 @@
+===============================================================================
+This is the content for my first demo with TbspRpg. Currently, the site only
+supports changing locations via buttons. So, in this demo, you will only be able
+to move around the world, there will be no saved state no conversations and no
+combat.
+===============================================================================
+
+===============================================================================
+L1
+===============================================================================
+You are standing in front of a dilapidated house in the middle of the woods. The
+air is damp from the rain that just stopped and you're surrounded by a fine
+mist. The left side of the house appears to be being swallowed by a forest
+monster, while the right side is leaning precariously to the left, like the
+house is about to fall in upon itself.
+
+The front door is more of a trapazoid than a rectangle, it looks like you could
+push it in if you desired. There is also a window partially ajar.
+
+Routes
+-------------------------------------------------------------------------------
+Open Door - L2
+Climb in Window - L2
+-------------------------------------------------------------------------------
+===============================================================================
+
+===============================================================================
+L2 - L1: Open Door ===============================================================================
+SS: You try to open the door but it will not budge, so you throw all your weight
+in to the door and feel it give.
+
+You are standing in the living room of the dilapidated white house.  There is a
+brown corduroy couch along one wall with an equally ugly green velvet chair on
+the adjacent wall.  In the middle is a mid-century coffee table that has seen
+better days.
+
+On the couch is an opossum gazing at you sleepily.
+
+Straight ahead is a shadowy hallway to your left is a doorway to a bedroom.
+
+Routes
+-------------------------------------------------------------------------------
+Enter Hallway - L4
+Enter Bedroom - L5
+Outside - L1
+-------------------------------------------------------------------------------
+===============================================================================
+
+===============================================================================
+L2 - L1: Climb in window ===============================================================================
+SS: With a little bit of work you manage to jimmy the window open. You reach
+down and find a stick to hold the window open while you climb in.
+
+See L2 - L1: Open Door
+===============================================================================
+
+===============================================================================
+L5 - L2: Enter Bedroom ===============================================================================
+SS: With a little bit of force you manage to open the door to the bedroom.  You
+can't open the door all the way before it gets caught on a branch.
+
+You are in a bedroom that is half bedroom half forest. Vines and trees are
+trying to consume the bedroom from the inside out. In the middle of the front
+wall of the house is what looks to be a bed that has been completely consumed by
+vines. The only reason you know it might be a bed are the vine covered posts
+reaching out of the tangled mass. If you calm yourself and focus it almost
+appears as if the bed is breathing.  On the side of the bedroom that still looks
+like a bedroom is a closet with one of it's sliding doors partially open.
+
+Routes
+------------------------------------------------------------------------------
+Enter Living Room - L2
+-------------------------------------------------------------------------------
+===============================================================================
+
+===============================================================================
+L4 - L2: Enter Hallway
+===============================================================================
+SS: You walk through the living room in to the shadowy hallway.
+
+You're in the hallway of the house. The only light in the hallway is coming from
+a window where the hallway dead-ends. On the wall is a picture of a baseball
+player scrambling to pick up a baseball that presumably went through his legs.
+
+At the end of the hallway there are two doorways, one which goes to the kitchen
+and one that enters a bedroom.  Across from the picture is a doorway to the
+basement.
+
+Routes
+-------------------------------------------------------------------------------
+Enter Kitchen - L6
+Enter Back Bedroom - L7
+Enter Basement - L8
+-------------------------------------------------------------------------------
+===============================================================================
+
+===============================================================================
+L6 - L4: Enter Kitchen
+===============================================================================
+
+===============================================================================
+L7 - L4: Enter Back Bedroom
+===============================================================================
+
+===============================================================================
+L8 - L4: Enter Basement
+===============================================================================
