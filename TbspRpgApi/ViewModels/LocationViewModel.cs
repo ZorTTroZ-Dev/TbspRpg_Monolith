@@ -21,5 +21,17 @@ namespace TbspRpgApi.ViewModels
             SourceKey = location.SourceKey;
             AdventureId = location.AdventureId;
         }
+
+        public Location ToEntity()
+        {
+            return new Location()
+            {
+                Id = Id,
+                AdventureId = AdventureId,
+                Initial = Initial,
+                Name = Name,
+                SourceKey = SourceKey
+            };
+        }
     }
 }

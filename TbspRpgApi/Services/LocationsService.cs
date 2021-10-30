@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TbspRpgApi.Adapters;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using TbspRpgProcessor.Processors;
@@ -39,8 +38,8 @@ namespace TbspRpgApi.Services
 
         public async Task UpdateLocationAndSource(UpdateLocationRequest updateRequest)
         {
-            var location = LocationAdapter.ToEntity(updateRequest.location);
-            var source = SourceAdapter.ToEntity(updateRequest.source);
+            var location = updateRequest.location.ToEntity();
+            var source = updateRequest.source.ToEntity();
             await _locationProcessor.UpdateLocation(location, source, updateRequest.source.Language);
         }
     }

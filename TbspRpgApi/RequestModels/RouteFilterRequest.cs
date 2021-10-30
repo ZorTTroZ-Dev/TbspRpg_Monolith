@@ -1,4 +1,5 @@
 ﻿using System;
+using TbspRpgDataLayer.ArgumentModels;
 
 namespace TbspRpgApi.RequestModels
 {
@@ -6,5 +7,14 @@ namespace TbspRpgApi.RequestModels
     {
         public Guid? LocationId { get; set; }
         public Guid? DestinationLocationId { get; set; }
+
+        public RouteFilter ToRouteFilter()
+        {
+            return new RouteFilter()
+            {
+                LocationId = LocationId,
+                DestinationLocationId = DestinationLocationId
+            };
+        }
     }
 }

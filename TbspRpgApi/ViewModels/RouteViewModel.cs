@@ -1,4 +1,5 @@
 using System;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using TbspRpgApi.Entities;
 
 namespace TbspRpgApi.ViewModels
@@ -29,6 +30,19 @@ namespace TbspRpgApi.ViewModels
             SuccessSourceKey = route.SuccessSourceKey;
             LocationId = route.LocationId;
             DestinationLocationId = route.DestinationLocationId;
+        }
+
+        public Route ToEntity()
+        {
+            return new Route()
+            {
+                Id = Id,
+                Name = Name,
+                SourceKey = SourceKey,
+                SuccessSourceKey = SuccessSourceKey,
+                LocationId = LocationId,
+                DestinationLocationId = DestinationLocationId
+            };
         }
     }
 }

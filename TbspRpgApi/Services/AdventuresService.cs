@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TbspRpgApi.Adapters;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 
@@ -27,7 +26,7 @@ namespace TbspRpgApi.Services
         public async Task<List<AdventureViewModel>> GetAllAdventures(AdventureFilterRequest filters)
         {
             var adventures = await _adventuresService.GetAllAdventures(
-                AdventureFilterAdapter.ToDataLayerFilter(filters));
+                filters.ToAdventureFilter());
             return adventures.Select(adventure => new AdventureViewModel(adventure)).ToList();
         }
 

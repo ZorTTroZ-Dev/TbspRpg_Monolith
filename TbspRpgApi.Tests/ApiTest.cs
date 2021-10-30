@@ -85,6 +85,7 @@ namespace TbspRpgApi.Tests
         {
             var dlRoutesService = MockServices.MockDataLayerRoutesService(routes);
             return new RoutesService(
+                null,
                 dlRoutesService,
                 NullLogger<RoutesService>.Instance);
         }

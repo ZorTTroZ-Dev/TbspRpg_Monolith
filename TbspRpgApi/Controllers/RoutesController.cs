@@ -64,5 +64,27 @@ namespace TbspRpgApi.Controllers
             });
             return Ok(routes);
         }
+        
+        [HttpPut, Authorize]
+        public async Task<IActionResult> UpdateRoutesWithSource([FromBody] UpdateRouteRequest[] updateRouteRequests)
+        {
+            if (updateRouteRequests.Length == 0)
+                return Ok(null);
+            
+            if (!CanAccessAdventure(updateRouteRequests[0].source.AdventureId))
+            {
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            }
+
+            try
+            {
+                await _routesService.UpdateRoutesWithSource(updateRouteRequests);
+                return Ok(null);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest((new {message = ex.Message}));
+            }
+        }
     }
 }
