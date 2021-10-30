@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TbspRpgApi.Entities;
 using TbspRpgApi.RequestModels;
+using TbspRpgApi.ViewModels;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Services
@@ -127,6 +129,62 @@ namespace TbspRpgApi.Tests.Services
             
             // assert
             Assert.Null(route);
+        }
+
+        #endregion
+
+        #region UpdateRoutesWithSource
+
+        [Fact]
+        public async void UpdateRoutesWithSource_NoException_Returns()
+        {
+            // arrange
+            var service = CreateRoutesService(new List<Route>(), Guid.NewGuid());
+            
+            // act
+            await service.UpdateRoutesWithSource(new List<UpdateRouteRequest>()
+            {
+                new()
+                {
+                    route = new RouteViewModel(new Route()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "route name"
+                    }),
+                    newDestinationLocationName = "",
+                    source = new SourceViewModel("source text"),
+                    successSource = new SourceViewModel("success source text")
+                }
+            });
+
+            // assert
+        }
+        
+        [Fact]
+        public async void UpdateRoutesWithSource_InValid_ExceptionThrown()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var service = CreateRoutesService(new List<Route>(), exceptionId);
+            
+            // act
+            Task Act() => service.UpdateRoutesWithSource(new List<UpdateRouteRequest>()
+            {
+                new()
+                {
+                    route = new RouteViewModel(new Route()
+                    {
+                        Id = exceptionId,
+                        Name = "route name"
+                    }),
+                    newDestinationLocationName = "",
+                    source = new SourceViewModel("source text"),
+                    successSource = new SourceViewModel("success source text")
+                }
+            });
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
         }
 
         #endregion

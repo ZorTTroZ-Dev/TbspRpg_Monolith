@@ -7,6 +7,7 @@ using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Services;
 using TbspRpgDataLayer.Tests;
+using TbspRpgProcessor.Entities;
 using TbspRpgProcessor.Processors;
 
 namespace TbspRpgProcessor.Tests
@@ -123,6 +124,25 @@ namespace TbspRpgProcessor.Tests
                     }
                 });
             return locationProcessor.Object;
+        }
+
+        public static IRouteProcessor MockRouteProcessor(Guid updateRouteExceptionId)
+        {
+            var routeProcessor = new Mock<IRouteProcessor>();
+
+            routeProcessor.Setup(service =>
+                    service.UpdateRoute(It.IsAny<RouteUpdateModel>()))
+                .Callback((RouteUpdateModel routeUpdateModel) =>
+                {
+                    if (routeUpdateModel.route.Id == updateRouteExceptionId)
+                        throw new ArgumentException("can't update route");
+                });
+
+            routeProcessor.Setup(service =>
+                    service.RemoveRoutes(It.IsAny <List<Guid>>(), It.IsAny<Guid>()))
+                .Callback((List<Guid> routeIds, Guid locationId) => { });
+
+            return routeProcessor.Object;
         }
         
         public static IMapProcessor MockMapProcessor(Guid changeLocationViaRouteExceptionId)

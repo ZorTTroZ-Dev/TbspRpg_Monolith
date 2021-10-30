@@ -81,11 +81,14 @@ namespace TbspRpgApi.Tests
                 NullLogger<SourcesService>.Instance);
         }
 
-        protected static RoutesService CreateRoutesService(ICollection<Route> routes)
+        protected static RoutesService CreateRoutesService(
+            ICollection<Route> routes = null,
+            Guid? updateRouteExceptionId = null)
         {
+            var routeProcessor = ProcessorTest.MockRouteProcessor(updateRouteExceptionId.GetValueOrDefault());
             var dlRoutesService = MockServices.MockDataLayerRoutesService(routes);
             return new RoutesService(
-                null,
+                routeProcessor,
                 dlRoutesService,
                 NullLogger<RoutesService>.Instance);
         }

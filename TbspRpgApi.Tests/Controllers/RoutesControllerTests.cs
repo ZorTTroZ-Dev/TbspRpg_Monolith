@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Controllers;
 using TbspRpgApi.Entities;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using Xunit;
 
@@ -11,9 +12,9 @@ namespace TbspRpgApi.Tests.Controllers
 {
     public class RoutesControllerTests : ApiTest
     {
-        private RoutesController CreateController(ICollection<Route> routes)
+        private RoutesController CreateController(ICollection<Route> routes, Guid? exceptionId = null)
         {
-            var service = CreateRoutesService(routes);
+            var service = CreateRoutesService(routes, exceptionId);
             return new RoutesController(service, NullLogger<RoutesController>.Instance);
         }
 
@@ -206,6 +207,68 @@ namespace TbspRpgApi.Tests.Controllers
             Assert.NotNull(okObjectResult);
             var routeViewModel = okObjectResult.Value as RouteViewModel;
             Assert.Null(routeViewModel);
+        }
+
+        #endregion
+
+        #region UpdateRoutesWithSource
+
+        [Fact]
+        public async void UpdateLocationAndSource_Valid_ReturnOk()
+        {
+            // arrange
+            var controller = CreateController(new List<Route>(), Guid.NewGuid());
+            
+            // act
+            var response = await controller.UpdateRoutesWithSource(
+                new UpdateRouteRequest[]
+                {
+                    new()
+                    {
+                        route = new RouteViewModel(new Route()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "route name"
+                        }),
+                        newDestinationLocationName = "",
+                        source = new SourceViewModel("source text"),
+                        successSource = new SourceViewModel("success source text")
+                    }
+                });
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+        }
+
+        [Fact]
+        public async void UpdateLocationAndSource_UpdateFails_ReturnBadRequest()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var controller = CreateController(new List<Route>(), exceptionId);
+            
+            // act
+            var response = await controller.UpdateRoutesWithSource(
+                new UpdateRouteRequest[]
+                {
+                    new()
+                    {
+                        route = new RouteViewModel(new Route()
+                        {
+                            Id = exceptionId,
+                            Name = "route name"
+                        }),
+                        newDestinationLocationName = "",
+                        source = new SourceViewModel("source text"),
+                        successSource = new SourceViewModel("success source text")
+                    }
+                });
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
         }
 
         #endregion
