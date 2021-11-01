@@ -14,6 +14,8 @@ namespace TbspRpgApi.ViewModels
         public Guid DestinationLocationId { get; set; }
         public long TimeStamp { get; }
 
+        public RouteViewModel() { }
+
         public RouteViewModel(Route route, Game game)
         {
             Id = route.Id;
