@@ -61,25 +61,6 @@ namespace TbspRpgProcessor.Processors
                 route = dbRoute;
             }
             
-            // create update source set sourceKey
-            routeUpdateModel.source.AdventureId = dbLocation.AdventureId;
-            // TODO: fix source objects having empty name from interface
-            if (string.IsNullOrEmpty(routeUpdateModel.source.Name))
-                routeUpdateModel.source.Name = routeUpdateModel.route.Name;
-            var dbSource = await _sourceProcessor.CreateOrUpdateSource(
-                routeUpdateModel.source,
-                routeUpdateModel.language);
-            route.SourceKey = dbSource.Key;
-            
-            // create update successSource set successSourceKey
-            routeUpdateModel.successSource.AdventureId = dbLocation.AdventureId;
-            if (string.IsNullOrEmpty(routeUpdateModel.successSource.Name))
-                routeUpdateModel.successSource.Name = routeUpdateModel.route.Name;
-            var dbSuccessSource = await _sourceProcessor.CreateOrUpdateSource(
-                routeUpdateModel.successSource,
-                routeUpdateModel.language);
-            route.SuccessSourceKey = dbSuccessSource.Key;
-            
             // create update destination location set destinationLocationId
             if (!string.IsNullOrEmpty(routeUpdateModel.newDestinationLocationName))
             {
@@ -95,8 +76,37 @@ namespace TbspRpgProcessor.Processors
             }
             else if(routeUpdateModel.route.DestinationLocationId != Guid.Empty)
             {
-                route.DestinationLocationId = routeUpdateModel.route.DestinationLocationId;
+                // we should make sure the destination location id is valid
+                var destinationLocation = await _locationsService.GetLocationById(
+                    routeUpdateModel.route.DestinationLocationId);
+                if(destinationLocation != null)
+                    route.DestinationLocationId = routeUpdateModel.route.DestinationLocationId;
+                else
+                    throw new ArgumentException("invalid destination location id");
             }
+            else
+            {
+                // the destination location id is null, we need to throw an exception the route must have a destination
+                throw new ArgumentException("empty destination location id given");
+            }
+            
+            // create update source set sourceKey
+            routeUpdateModel.source.AdventureId = dbLocation.AdventureId;
+            if (string.IsNullOrEmpty(routeUpdateModel.source.Name))
+                routeUpdateModel.source.Name = routeUpdateModel.route.Name;
+            var dbSource = await _sourceProcessor.CreateOrUpdateSource(
+                routeUpdateModel.source,
+                routeUpdateModel.language);
+            route.SourceKey = dbSource.Key;
+            
+            // create update successSource set successSourceKey
+            routeUpdateModel.successSource.AdventureId = dbLocation.AdventureId;
+            if (string.IsNullOrEmpty(routeUpdateModel.successSource.Name))
+                routeUpdateModel.successSource.Name = routeUpdateModel.route.Name;
+            var dbSuccessSource = await _sourceProcessor.CreateOrUpdateSource(
+                routeUpdateModel.successSource,
+                routeUpdateModel.language);
+            route.SuccessSourceKey = dbSuccessSource.Key;
 
             await _routesService.SaveChanges();
         }

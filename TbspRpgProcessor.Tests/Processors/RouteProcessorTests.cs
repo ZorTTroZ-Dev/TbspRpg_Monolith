@@ -474,6 +474,80 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.Equal(newTestDestinationLocation.Id, testRoutes[0].DestinationLocationId);
             Assert.Equal(3, testLocations.Count);
         }
+        
+        [Fact]
+        public async void UpdateRoute_InvalidDestinationLocationId_ThrowsException()
+        {
+            // arrange
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid()
+            };
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = testLocation.Id
+            };
+            var testLocations = new List<Location>() {testLocation};
+            var testRoutes = new List<Route>() {testRoute};
+            var processor = CreateRouteProcessor(testRoutes, testLocations);
+            
+            // act
+            Task Act() => processor.UpdateRoute(new RouteUpdateModel()
+            {
+                language = Languages.ENGLISH,
+                newDestinationLocationName = null,
+                route = new Route()
+                {
+                    Id = testRoute.Id,
+                    LocationId = testRoute.LocationId,
+                    DestinationLocationId = Guid.NewGuid()
+                },
+                source = null,
+                successSource = null
+            });
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+        
+        [Fact]
+        public async void UpdateRoute_EmptyDestinationLocationId_ThrowsException()
+        {
+            // arrange
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid()
+            };
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = testLocation.Id
+            };
+            var testLocations = new List<Location>() {testLocation};
+            var testRoutes = new List<Route>() {testRoute};
+            var processor = CreateRouteProcessor(testRoutes, testLocations);
+            
+            // act
+            Task Act() => processor.UpdateRoute(new RouteUpdateModel()
+            {
+                language = Languages.ENGLISH,
+                newDestinationLocationName = null,
+                route = new Route()
+                {
+                    Id = testRoute.Id,
+                    LocationId = testRoute.LocationId,
+                    DestinationLocationId = Guid.Empty
+                },
+                source = null,
+                successSource = null
+            });
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
 
         #endregion
 
