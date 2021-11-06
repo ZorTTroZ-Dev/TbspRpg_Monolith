@@ -221,7 +221,7 @@ namespace TbspRpgApi.Tests.Controllers
             
             // act
             var response = await controller.UpdateRoutesWithSource(
-                new UpdateRouteRequest[]
+                new RouteUpdateRequest[]
                 {
                     new()
                     {
@@ -250,7 +250,7 @@ namespace TbspRpgApi.Tests.Controllers
             
             // act
             var response = await controller.UpdateRoutesWithSource(
-                new UpdateRouteRequest[]
+                new RouteUpdateRequest[]
                 {
                     new()
                     {

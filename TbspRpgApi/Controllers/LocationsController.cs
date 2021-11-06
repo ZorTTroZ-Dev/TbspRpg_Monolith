@@ -40,16 +40,16 @@ namespace TbspRpgApi.Controllers
         }
 
         [HttpPut, Authorize]
-        public async Task<IActionResult> UpdateLocationAndSource([FromBody] UpdateLocationRequest updateRequest)
+        public async Task<IActionResult> UpdateLocationAndSource([FromBody] LocationUpdateRequest locationUpdateRequest)
         {
-            if (!CanAccessAdventure(updateRequest.location.AdventureId))
+            if (!CanAccessAdventure(locationUpdateRequest.location.AdventureId))
             {
                 return BadRequest(new { message = NotYourAdventureErrorMessage });
             }
 
             try
             {
-                await _locationsService.UpdateLocationAndSource(updateRequest);
+                await _locationsService.UpdateLocationAndSource(locationUpdateRequest);
                 return Ok(null);
             }
             catch (Exception ex)

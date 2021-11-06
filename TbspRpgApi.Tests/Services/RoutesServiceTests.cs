@@ -142,7 +142,7 @@ namespace TbspRpgApi.Tests.Services
             var service = CreateRoutesService(new List<Route>(), Guid.NewGuid());
             
             // act
-            await service.UpdateRoutesWithSource(new List<UpdateRouteRequest>()
+            await service.UpdateRoutesWithSource(new List<RouteUpdateRequest>()
             {
                 new()
                 {
@@ -168,7 +168,7 @@ namespace TbspRpgApi.Tests.Services
             var service = CreateRoutesService(new List<Route>(), exceptionId);
             
             // act
-            Task Act() => service.UpdateRoutesWithSource(new List<UpdateRouteRequest>()
+            Task Act() => service.UpdateRoutesWithSource(new List<RouteUpdateRequest>()
             {
                 new()
                 {

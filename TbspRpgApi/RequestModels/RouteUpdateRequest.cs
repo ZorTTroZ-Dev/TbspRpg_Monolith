@@ -3,7 +3,7 @@ using TbspRpgProcessor.Entities;
 
 namespace TbspRpgApi.RequestModels
 {
-    public class UpdateRouteRequest
+    public class RouteUpdateRequest
     {
         public RouteViewModel route { get; set; }
         public SourceViewModel source { get; set; }

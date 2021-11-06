@@ -66,7 +66,7 @@ namespace TbspRpgApi.Controllers
         }
         
         [HttpPut, Authorize]
-        public async Task<IActionResult> UpdateRoutesWithSource([FromBody] UpdateRouteRequest[] updateRouteRequests)
+        public async Task<IActionResult> UpdateRoutesWithSource([FromBody] RouteUpdateRequest[] updateRouteRequests)
         {
             if (updateRouteRequests.Length == 0)
                 return Ok(null);

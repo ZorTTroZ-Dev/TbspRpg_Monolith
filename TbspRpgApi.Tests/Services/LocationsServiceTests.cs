@@ -45,7 +45,7 @@ namespace TbspRpgApi.Tests.Services
             // arrange
             var service = CreateLocationsService(new List<Location>(), Guid.NewGuid());
             // act
-            await service.UpdateLocationAndSource(new UpdateLocationRequest()
+            await service.UpdateLocationAndSource(new LocationUpdateRequest()
             {
                 location = new LocationViewModel(new Location()
                 {
@@ -69,7 +69,7 @@ namespace TbspRpgApi.Tests.Services
             var service = CreateLocationsService(new List<Location>(), exceptionId);
             
             // act
-            Task Act() => service.UpdateLocationAndSource(new UpdateLocationRequest()
+            Task Act() => service.UpdateLocationAndSource(new LocationUpdateRequest()
             {
                 location = new LocationViewModel(new Location()
                 {

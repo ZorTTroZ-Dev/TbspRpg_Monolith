@@ -60,7 +60,7 @@ namespace TbspRpgApi.Tests.Controllers
             
             // act
             var response = await controller.UpdateLocationAndSource(
-                new UpdateLocationRequest()
+                new LocationUpdateRequest()
                 {
                     location = new LocationViewModel(new Location()
                     {
@@ -87,7 +87,7 @@ namespace TbspRpgApi.Tests.Controllers
             
             // act
             var response = await controller.UpdateLocationAndSource(
-                new UpdateLocationRequest()
+                new LocationUpdateRequest()
                 {
                     location = new LocationViewModel(new Location()
                     {
