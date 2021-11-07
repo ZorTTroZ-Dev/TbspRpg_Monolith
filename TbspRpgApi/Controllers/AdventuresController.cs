@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.Services;
 
@@ -9,7 +10,7 @@ namespace TbspRpgApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AdventuresController : ControllerBase
+    public class AdventuresController: BaseController
     {
         private readonly IAdventuresService _adventuresService;
         private ILogger<AdventuresController> _logger;
@@ -39,6 +40,26 @@ namespace TbspRpgApi.Controllers
         public async Task<IActionResult> GetAdventureByName(string name) {
             var adventure = await _adventuresService.GetAdventureByName(name);
             return Ok(adventure);
+        }
+        
+        [HttpPut, Authorize]
+        public async Task<IActionResult> UpdateAdventureAndSource([FromBody] AdventureUpdateRequest adventureUpdateRequest)
+        {
+            if (adventureUpdateRequest.adventure.Id != Guid.Empty &&
+                !CanAccessAdventure(adventureUpdateRequest.adventure.Id))
+            {
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            }
+
+            try
+            {
+                await _adventuresService.UpdateAdventureAndSource(adventureUpdateRequest, GetUserId().GetValueOrDefault());
+                return Ok(null);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest((new {message = ex.Message}));
+            }
         }
     }
 }

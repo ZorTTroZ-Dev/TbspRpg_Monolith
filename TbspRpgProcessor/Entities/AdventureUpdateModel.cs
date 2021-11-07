@@ -1,12 +1,13 @@
-﻿using TbspRpgApi.Entities;
+﻿using System;
+using TbspRpgApi.Entities;
 
 namespace TbspRpgProcessor.Entities
 {
     public class AdventureUpdateModel
     {
-        public Adventure adventure { get; set; }
-        public Source source { get; set; }
-        public User user { get; set; }
-        public string language { get; set; }
+        public Adventure Adventure { get; set; }
+        public Source Source { get; set; }
+        public Guid UserId { get; set; }
+        public string Language { get; set; }
     }
 }

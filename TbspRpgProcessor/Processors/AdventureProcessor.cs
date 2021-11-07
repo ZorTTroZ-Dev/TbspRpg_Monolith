@@ -31,34 +31,34 @@ namespace TbspRpgProcessor.Processors
         {
             // update/create a new adventure
             Adventure adventure = null;
-            if (adventureUpdateModel.adventure.Id == Guid.Empty)
+            if (adventureUpdateModel.Adventure.Id == Guid.Empty)
             {
                 // create a new adventure
                 adventure = new Adventure()
                 {
-                    Name = adventureUpdateModel.adventure.Name,
+                    Name = adventureUpdateModel.Adventure.Name,
                     SourceKey = Guid.Empty,
-                    CreatedByUserId = adventureUpdateModel.user.Id
+                    CreatedByUserId = adventureUpdateModel.UserId
                 };
                 await _adventuresService.AddAdventure(adventure);
             }
             else
             {
                 // look up the adventure and update the name
-                var dbAdventure = await _adventuresService.GetAdventureById(adventureUpdateModel.adventure.Id);
+                var dbAdventure = await _adventuresService.GetAdventureById(adventureUpdateModel.Adventure.Id);
                 if (dbAdventure == null)
                     throw new ArgumentException("invalid adventure id");
-                dbAdventure.Name = adventureUpdateModel.adventure.Name;
+                dbAdventure.Name = adventureUpdateModel.Adventure.Name;
                 adventure = dbAdventure;
             }
             
             // update/create source
-            adventureUpdateModel.source.AdventureId = adventure.Id;
-            if (string.IsNullOrEmpty(adventureUpdateModel.source.Name))
-                adventureUpdateModel.source.Name = adventureUpdateModel.adventure.Name;
+            adventureUpdateModel.Source.AdventureId = adventure.Id;
+            if (string.IsNullOrEmpty(adventureUpdateModel.Source.Name))
+                adventureUpdateModel.Source.Name = adventureUpdateModel.Adventure.Name;
             var dbSource = await _sourceProcessor.CreateOrUpdateSource(
-                adventureUpdateModel.source,
-                adventureUpdateModel.language);
+                adventureUpdateModel.Source,
+                adventureUpdateModel.Language);
             adventure.SourceKey = dbSource.Key;
 
             await _adventuresService.SaveChanges();

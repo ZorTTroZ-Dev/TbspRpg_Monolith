@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TbspRpgApi.Entities;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
 {
@@ -12,15 +14,19 @@ namespace TbspRpgApi.Services
         Task<List<AdventureViewModel>> GetAllAdventures(AdventureFilterRequest filters);
         Task<AdventureViewModel> GetAdventureByName(string name);
         Task<AdventureViewModel> GetAdventureById(Guid adventureId);
+        Task UpdateAdventureAndSource(AdventureUpdateRequest adventureUpdateRequest, Guid userId);
     }
     
     public class AdventuresService : IAdventuresService
     {
         private readonly TbspRpgDataLayer.Services.IAdventuresService _adventuresService;
+        private readonly IAdventureProcessor _adventureProcessor;
 
-        public AdventuresService(TbspRpgDataLayer.Services.IAdventuresService adventuresService)
+        public AdventuresService(TbspRpgDataLayer.Services.IAdventuresService adventuresService,
+            IAdventureProcessor adventureProcessor)
         {
             _adventuresService = adventuresService;
+            _adventureProcessor = adventureProcessor;
         }
 
         public async Task<List<AdventureViewModel>> GetAllAdventures(AdventureFilterRequest filters)
@@ -40,6 +46,13 @@ namespace TbspRpgApi.Services
         {
             var adventure = await _adventuresService.GetAdventureById(adventureId);
             return adventure != null ? new AdventureViewModel(adventure) : null;
+        }
+
+        public async Task UpdateAdventureAndSource(AdventureUpdateRequest adventureUpdateRequest, Guid userId)
+        {
+            var adventureUpdateModel = adventureUpdateRequest.ToAdventureUpdateModel();
+            adventureUpdateModel.UserId = userId;
+            await _adventureProcessor.UpdateAdventure(adventureUpdateModel);
         }
     }
 }

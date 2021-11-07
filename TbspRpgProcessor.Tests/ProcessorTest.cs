@@ -100,6 +100,21 @@ namespace TbspRpgProcessor.Tests
                 NullLogger<AdventureProcessor>.Instance);
         }
 
+        public static IAdventureProcessor MockAdventureProcessor(Guid updateAdventureExceptionId)
+        {
+            var adventureProcessor = new Mock<IAdventureProcessor>();
+
+            adventureProcessor.Setup(service =>
+                    service.UpdateAdventure(It.IsAny<AdventureUpdateModel>()))
+                .Callback((AdventureUpdateModel adventureUpdateModel) =>
+                {
+                    if (adventureUpdateModel.Adventure.Id == updateAdventureExceptionId)
+                        throw new AggregateException("invalid adventure id");
+                });
+
+            return adventureProcessor.Object;
+        }
+
         public static IGameProcessor MockGameProcessor(Guid startGameExceptionId)
         {
             var gameProcessor = new Mock<IGameProcessor>();

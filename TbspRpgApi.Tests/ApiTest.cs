@@ -22,10 +22,13 @@ namespace TbspRpgApi.Tests
                 });
         }
         
-        protected static AdventuresService CreateAdventuresService(ICollection<Adventure> adventures)
+        protected static AdventuresService CreateAdventuresService(ICollection<Adventure> adventures,
+            Guid? updateAdventureExceptionId = null)
         {
             var dlAdventuresService = MockServices.MockDataLayerAdventuresService(adventures);
-            return new AdventuresService(dlAdventuresService);
+            var adventureProcessor =
+                ProcessorTest.MockAdventureProcessor(updateAdventureExceptionId.GetValueOrDefault());
+            return new AdventuresService(dlAdventuresService, adventureProcessor);
         }
 
         protected static GamesService CreateGamesService(ICollection<Game> games, Guid? startGameExceptionId = null)

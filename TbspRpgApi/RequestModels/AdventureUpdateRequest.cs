@@ -12,9 +12,9 @@ namespace TbspRpgApi.RequestModels
         {
             return new AdventureUpdateModel()
             {
-                adventure = adventure.ToEntity(),
-                source = source.ToEntity(),
-                language = source.Language
+                Adventure = adventure.ToEntity(),
+                Source = source.ToEntity(),
+                Language = source.Language
             };
         }
     }

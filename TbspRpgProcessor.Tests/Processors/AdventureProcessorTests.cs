@@ -38,24 +38,20 @@ namespace TbspRpgProcessor.Tests.Processors
             // act
             Task Act() => processor.UpdateAdventure(new AdventureUpdateModel()
             {
-                adventure = new Adventure()
+                Adventure = new Adventure()
                 {
                     Id = Guid.NewGuid(),
                     Name = "updated_test_adventure"
                 },
-                source = new En()
+                Source = new En()
                 {
                     Id = testSource.Id,
                     Key = testSource.Key,
                     Name = testSource.Name,
                     Text = testSource.Text
                 },
-                user = new User()
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "tester"
-                },
-                language = Languages.ENGLISH
+                UserId = Guid.NewGuid(),
+                Language = Languages.ENGLISH
             });
 
             // assert
@@ -92,19 +88,19 @@ namespace TbspRpgProcessor.Tests.Processors
             // act
             await processor.UpdateAdventure(new AdventureUpdateModel()
             {
-                adventure = new Adventure()
+                Adventure = new Adventure()
                 {
                     Id = Guid.Empty,
                     Name = "new_test_adventure",
                     SourceKey = Guid.Empty
                 },
-                source = new En()
+                Source = new En()
                 {
                     Key = Guid.Empty,
                     Text = "new_test source"
                 },
-                user = testUser,
-                language = Languages.ENGLISH
+                UserId = testUser.Id,
+                Language = Languages.ENGLISH
             });
 
             // assert
@@ -146,22 +142,22 @@ namespace TbspRpgProcessor.Tests.Processors
             // act
             await processor.UpdateAdventure(new AdventureUpdateModel()
             {
-                adventure = new Adventure()
+                Adventure = new Adventure()
                 {
                     Id = testAdventure.Id,
                     Name = "updated_adventure_name",
                     SourceKey = testAdventure.SourceKey,
                     CreatedByUserId = testAdventure.CreatedByUserId
                 },
-                source = new En()
+                Source = new En()
                 {
                     Id = testSource.Id,
                     Key = testSource.Key,
                     Name = testSource.Name,
                     Text = "updated source"
                 },
-                user = testUser,
-                language = Languages.ENGLISH
+                UserId = testUser.Id,
+                Language = Languages.ENGLISH
             });
 
             // assert
