@@ -12,7 +12,7 @@ namespace TbspRpgApi.Tests.Controllers
 {
     public class AdventuresControllerTests : ApiTest
     {
-        private static AdventuresController CreateController(IEnumerable<Adventure> adventures)
+        private static AdventuresController CreateController(ICollection<Adventure> adventures)
         {
             var service = CreateAdventuresService(adventures);
             return new AdventuresController(service,

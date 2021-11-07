@@ -32,7 +32,7 @@ namespace TbspRpgDataLayer.Tests
             return usersService.Object;
         }
 
-        public static IAdventuresService MockDataLayerAdventuresService(IEnumerable<Adventure> adventures)
+        public static IAdventuresService MockDataLayerAdventuresService(ICollection<Adventure> adventures)
         {
             var adventuresService = new Mock<IAdventuresService>();
 
@@ -49,6 +49,14 @@ namespace TbspRpgDataLayer.Tests
                     service.GetAdventureById(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid Id) =>
                     adventures.FirstOrDefault(a => a.Id == Id));
+
+            adventuresService.Setup(service =>
+                    service.AddAdventure(It.IsAny<Adventure>()))
+                .Callback((Adventure adventure) =>
+                {
+                    adventure.Id = Guid.NewGuid();
+                    adventures.Add(adventure);
+                });
 
             return adventuresService.Object;
         }

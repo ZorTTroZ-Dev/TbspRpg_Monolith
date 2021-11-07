@@ -8,11 +8,12 @@ using TbspRpgDataLayer.Repositories;
 
 namespace TbspRpgDataLayer.Services
 {
-    public interface IAdventuresService
+    public interface IAdventuresService: IBaseService
     {
         Task<List<Adventure>> GetAllAdventures(AdventureFilter filters);
         Task<Adventure> GetAdventureByName(string name);
         Task<Adventure> GetAdventureById(Guid adventureId);
+        Task AddAdventure(Adventure adventure);
     }
     
     public class AdventuresService : IAdventuresService
@@ -40,6 +41,16 @@ namespace TbspRpgDataLayer.Services
         public Task<Adventure> GetAdventureById(Guid adventureId)
         {
             return _adventuresRepository.GetAdventureById(adventureId);
+        }
+
+        public Task AddAdventure(Adventure adventure)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SaveChanges()
+        {
+            throw new NotImplementedException();
         }
     }
 }

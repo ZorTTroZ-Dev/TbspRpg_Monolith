@@ -16,7 +16,7 @@ namespace TbspRpgProcessor.Tests
     {
         protected static IGameProcessor CreateGameProcessor(
             IEnumerable<User> users = null,
-            IEnumerable<Adventure> adventures = null,
+            ICollection<Adventure> adventures = null,
             ICollection<Game> games = null,
             ICollection<Location> locations = null,
             ICollection<Content> contents = null)

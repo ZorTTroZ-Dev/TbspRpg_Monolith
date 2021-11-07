@@ -22,7 +22,7 @@ namespace TbspRpgApi.Tests
                 });
         }
         
-        protected static AdventuresService CreateAdventuresService(IEnumerable<Adventure> adventures)
+        protected static AdventuresService CreateAdventuresService(ICollection<Adventure> adventures)
         {
             var dlAdventuresService = MockServices.MockDataLayerAdventuresService(adventures);
             return new AdventuresService(dlAdventuresService);
