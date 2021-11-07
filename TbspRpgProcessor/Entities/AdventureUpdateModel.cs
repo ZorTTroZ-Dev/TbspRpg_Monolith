@@ -6,6 +6,7 @@ namespace TbspRpgProcessor.Entities
     {
         public Adventure adventure { get; set; }
         public Source source { get; set; }
+        public User user { get; set; }
         public string language { get; set; }
     }
 }
