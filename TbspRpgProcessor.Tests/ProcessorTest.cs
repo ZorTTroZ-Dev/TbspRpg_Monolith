@@ -109,7 +109,7 @@ namespace TbspRpgProcessor.Tests
                 .Callback((AdventureUpdateModel adventureUpdateModel) =>
                 {
                     if (adventureUpdateModel.Adventure.Id == updateAdventureExceptionId)
-                        throw new AggregateException("invalid adventure id");
+                        throw new ArgumentException("invalid adventure id");
                 });
 
             return adventureProcessor.Object;

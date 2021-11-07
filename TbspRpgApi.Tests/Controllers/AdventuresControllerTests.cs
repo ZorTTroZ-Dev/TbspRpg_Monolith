@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Controllers;
 using TbspRpgApi.Entities;
+using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using Xunit;
@@ -12,11 +14,23 @@ namespace TbspRpgApi.Tests.Controllers
 {
     public class AdventuresControllerTests : ApiTest
     {
-        private static AdventuresController CreateController(ICollection<Adventure> adventures)
+        private static AdventuresController CreateController(ICollection<Adventure> adventures, Guid? exceptionId = null)
         {
-            var service = CreateAdventuresService(adventures);
-            return new AdventuresController(service,
-                NullLogger<AdventuresController>.Instance);
+            var service = CreateAdventuresService(adventures, exceptionId);
+            var controller = new AdventuresController(service,
+                NullLogger<AdventuresController>.Instance)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext()
+                }
+            };
+            
+            controller.ControllerContext.HttpContext.Items = new Dictionary<object, object>()
+            {
+                { AuthorizeAttribute.USER_ID_CONTEXT_KEY, Guid.NewGuid() }
+            };
+            return controller;
         }
 
         #region GetAllAdventures
@@ -187,6 +201,60 @@ namespace TbspRpgApi.Tests.Controllers
             var adventureViewModel = okObjectResult.Value as AdventureViewModel;
             Assert.Null(adventureViewModel);
             //Assert.Equal(testAdventures[0].Id, adventureViewModel.Id);
+        }
+
+        #endregion
+
+        #region UpdateAdventureAndSource
+        
+        [Fact]
+        public async void UpdateLocationAndSource_Valid_ReturnOk()
+        {
+            // arrange
+            var controller = CreateController(new List<Adventure>(), Guid.NewGuid());
+            
+            // act
+            var response = await controller.UpdateAdventureAndSource(
+                new AdventureUpdateRequest()
+                {
+                    adventure = new AdventureViewModel(new Adventure()
+                    {
+                        Id = Guid.NewGuid(),
+                        SourceKey = Guid.NewGuid(),
+                        Name = "test location"
+                    }),
+                    source = new SourceViewModel("test source")
+                });
+
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+        }
+
+        [Fact]
+        public async void UpdateLocationAndSource_UpdateFails_ReturnBadRequest()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var controller = CreateController(new List<Adventure>(), exceptionId);
+            
+            // act
+            var response = await controller.UpdateAdventureAndSource(
+                new AdventureUpdateRequest()
+                {
+                    adventure = new AdventureViewModel(new Adventure()
+                    {
+                        Id = exceptionId,
+                        SourceKey = Guid.NewGuid(),
+                        Name = "test location"
+                    }),
+                    source = new SourceViewModel("test source")
+                });
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
         }
 
         #endregion

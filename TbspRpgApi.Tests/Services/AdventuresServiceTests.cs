@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TbspRpgApi.Entities;
 using TbspRpgApi.RequestModels;
+using TbspRpgApi.ViewModels;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Services
@@ -123,6 +125,54 @@ namespace TbspRpgApi.Tests.Services
             
             // assert
             Assert.Null(adventureViewModel);
+        }
+
+        #endregion
+
+        #region UpdateAdventureAndSource
+
+        [Fact]
+        public async void UpdateAdventureAndSource_Invalid_ExceptionThrown()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var service = CreateAdventuresService(new List<Adventure>(), exceptionId);
+            
+            // act
+            Task Act() => service.UpdateAdventureAndSource(new AdventureUpdateRequest()
+            {
+                adventure = new AdventureViewModel(new Adventure()
+                {
+                    Id = exceptionId,
+                    SourceKey = Guid.NewGuid(),
+                    Name = "test location"
+                }),
+                source = new SourceViewModel("test source")
+            }, Guid.NewGuid());
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        [Fact]
+        public async void UpdateAdventureAndSource_Valid_AdventureUpdated()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var service = CreateAdventuresService(new List<Adventure>(), exceptionId);
+            
+            // act
+            await service.UpdateAdventureAndSource(new AdventureUpdateRequest()
+            {
+                adventure = new AdventureViewModel(new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    SourceKey = Guid.NewGuid(),
+                    Name = "test location"
+                }),
+                source = new SourceViewModel("test source")
+            }, Guid.NewGuid());
+            
         }
 
         #endregion
