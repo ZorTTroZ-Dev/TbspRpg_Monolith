@@ -229,5 +229,31 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region AddAdventure
+
+        [Fact]
+        public async void AddAdventure_AdventureAdded()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var newAdventure = new Adventure()
+            {
+                Name = "test_adventure",
+                CreatedByUserId = Guid.NewGuid(),
+                SourceKey = Guid.Empty
+            };
+            var service = CreateService(context);
+        
+            // act
+            await service.AddAdventure(newAdventure);
+            await service.SaveChanges();
+        
+            // assert
+            Assert.Single(context.Adventures);
+            Assert.Equal("test_adventure", context.Adventures.First().Name);
+        }
+
+        #endregion
     }
 }

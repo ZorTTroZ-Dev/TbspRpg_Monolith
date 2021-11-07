@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.ArgumentModels;
@@ -194,6 +195,32 @@ namespace TbspRpgDataLayer.Tests.Repositories
             Assert.Null(adventure);
         }
         
+        #endregion
+
+        #region AddAdventure
+
+        [Fact]
+        public async void AddAdventure_AdventureAdded()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var newAdventure = new Adventure()
+            {
+                Name = "test_adventure",
+                CreatedByUserId = Guid.NewGuid(),
+                SourceKey = Guid.Empty
+            };
+            var repository = new AdventuresRepository(context);
+            
+            // act
+            await repository.AddAdventure(newAdventure);
+            await repository.SaveChanges();
+            
+            // assert
+            Assert.Single(context.Adventures);
+            Assert.Equal("test_adventure", context.Adventures.First().Name);
+        }
+
         #endregion
     }
 }

@@ -43,14 +43,14 @@ namespace TbspRpgDataLayer.Services
             return _adventuresRepository.GetAdventureById(adventureId);
         }
 
-        public Task AddAdventure(Adventure adventure)
+        public async Task AddAdventure(Adventure adventure)
         {
-            throw new NotImplementedException();
+            await _adventuresRepository.AddAdventure(adventure);
         }
 
-        public Task SaveChanges()
+        public async Task SaveChanges()
         {
-            throw new NotImplementedException();
+            await _adventuresRepository.SaveChanges();
         }
     }
 }

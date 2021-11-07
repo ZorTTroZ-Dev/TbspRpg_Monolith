@@ -8,11 +8,12 @@ using TbspRpgDataLayer.ArgumentModels;
 
 namespace TbspRpgDataLayer.Repositories
 {
-    public interface IAdventuresRepository
+    public interface IAdventuresRepository: IBaseRepository
     {
         Task<List<Adventure>> GetAllAdventures(AdventureFilter filters);
         Task<Adventure> GetAdventureByName(string name);
         Task<Adventure> GetAdventureById(Guid adventureId);
+        Task AddAdventure(Adventure adventure);
     }
     
     public class AdventuresRepository : IAdventuresRepository
@@ -46,6 +47,16 @@ namespace TbspRpgDataLayer.Repositories
             return _databaseContext.Adventures.AsQueryable().
                 Where(a => a.Id == adventureId).
                 FirstOrDefaultAsync();
+        }
+
+        public async Task AddAdventure(Adventure adventure)
+        {
+            await _databaseContext.AddAsync(adventure);
+        }
+
+        public async Task SaveChanges()
+        {
+            await _databaseContext.SaveChangesAsync();
         }
     }
 }
