@@ -57,7 +57,7 @@ namespace TbspRpgApi.Services
         public async Task<SourceViewModel> GetSourceForKey(Guid gameId, Guid sourceKey)
         {
             var text = await _contentProcessor.GetSourceForKey(gameId, sourceKey);
-            return text == null ? null : new SourceViewModel(text);
+            return text == null ? null : new SourceViewModel(sourceKey, text);
         }
     }
 }

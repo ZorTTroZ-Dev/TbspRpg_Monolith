@@ -55,7 +55,7 @@ namespace TbspRpgApi.Tests.Services
                     Name = "test location",
                     Initial = true
                 }),
-                source = new SourceViewModel("test source")
+                source = new SourceViewModel(Guid.Empty, "test source")
             });
             
             // assert
@@ -79,7 +79,7 @@ namespace TbspRpgApi.Tests.Services
                     Name = "test location",
                     Initial = true
                 }),
-                source = new SourceViewModel("test source")
+                source = new SourceViewModel(Guid.Empty,"test source")
             });
             
             // assert

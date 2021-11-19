@@ -223,7 +223,7 @@ namespace TbspRpgApi.Tests.Controllers
                         SourceKey = Guid.NewGuid(),
                         Name = "test location"
                     }),
-                    source = new SourceViewModel("test source")
+                    source = new SourceViewModel(Guid.Empty, "test source")
                 });
 
             // assert
@@ -248,7 +248,7 @@ namespace TbspRpgApi.Tests.Controllers
                         SourceKey = Guid.NewGuid(),
                         Name = "test location"
                     }),
-                    source = new SourceViewModel("test source")
+                    source = new SourceViewModel(Guid.Empty, "test source")
                 });
             
             // assert

@@ -14,8 +14,9 @@ namespace TbspRpgApi.ViewModels
         
         public SourceViewModel() {}
 
-        public SourceViewModel(string text)
+        public SourceViewModel(Guid key, string text)
         {
+            Key = key;
             Text = text;
         }
 

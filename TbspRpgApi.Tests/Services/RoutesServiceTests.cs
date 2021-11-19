@@ -152,8 +152,8 @@ namespace TbspRpgApi.Tests.Services
                         Name = "route name"
                     }),
                     newDestinationLocationName = "",
-                    source = new SourceViewModel("source text"),
-                    successSource = new SourceViewModel("success source text")
+                    source = new SourceViewModel(Guid.Empty,"source text"),
+                    successSource = new SourceViewModel(Guid.Empty,"success source text")
                 }
             });
 
@@ -178,8 +178,8 @@ namespace TbspRpgApi.Tests.Services
                         Name = "route name"
                     }),
                     newDestinationLocationName = "",
-                    source = new SourceViewModel("source text"),
-                    successSource = new SourceViewModel("success source text")
+                    source = new SourceViewModel(Guid.Empty,"source text"),
+                    successSource = new SourceViewModel(Guid.Empty,"success source text")
                 }
             });
             
