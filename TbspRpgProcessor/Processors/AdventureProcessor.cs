@@ -37,7 +37,7 @@ namespace TbspRpgProcessor.Processors
                 adventure = new Adventure()
                 {
                     Name = adventureUpdateModel.Adventure.Name,
-                    SourceKey = Guid.Empty,
+                    InitialSourceKey = Guid.Empty,
                     CreatedByUserId = adventureUpdateModel.UserId
                 };
                 await _adventuresService.AddAdventure(adventure);
@@ -59,7 +59,7 @@ namespace TbspRpgProcessor.Processors
             var dbSource = await _sourceProcessor.CreateOrUpdateSource(
                 adventureUpdateModel.Source,
                 adventureUpdateModel.Language);
-            adventure.SourceKey = dbSource.Key;
+            adventure.InitialSourceKey = dbSource.Key;
 
             await _adventuresService.SaveChanges();
         }

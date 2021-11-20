@@ -22,12 +22,12 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 Id = Guid.NewGuid(),
                 Name = "test_adventure",
-                SourceKey = Guid.NewGuid()
+                InitialSourceKey = Guid.NewGuid()
             };
             var testSource = new En()
             {
                 Id = Guid.NewGuid(),
-                Key = testAdventure.SourceKey,
+                Key = testAdventure.InitialSourceKey,
                 Name = "test_adventure",
                 Text = "test source"
             };
@@ -66,12 +66,12 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 Id = Guid.NewGuid(),
                 Name = "test_adventure",
-                SourceKey = Guid.NewGuid()
+                InitialSourceKey = Guid.NewGuid()
             };
             var testSource = new En()
             {
                 Id = Guid.NewGuid(),
-                Key = testAdventure.SourceKey,
+                Key = testAdventure.InitialSourceKey,
                 Name = "test_adventure",
                 Text = "test source",
                 AdventureId = testAdventure.Id
@@ -92,7 +92,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 {
                     Id = Guid.Empty,
                     Name = "new_test_adventure",
-                    SourceKey = Guid.Empty
+                    InitialSourceKey = Guid.Empty
                 },
                 Source = new En()
                 {
@@ -124,13 +124,13 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 Id = Guid.NewGuid(),
                 Name = "test_adventure",
-                SourceKey = Guid.NewGuid(),
+                InitialSourceKey = Guid.NewGuid(),
                 CreatedByUserId = testUser.Id
             };
             var testSource = new En()
             {
                 Id = Guid.NewGuid(),
-                Key = testAdventure.SourceKey,
+                Key = testAdventure.InitialSourceKey,
                 Name = "test_adventure",
                 Text = "test source",
                 AdventureId = testAdventure.Id
@@ -146,7 +146,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 {
                     Id = testAdventure.Id,
                     Name = "updated_adventure_name",
-                    SourceKey = testAdventure.SourceKey,
+                    InitialSourceKey = testAdventure.InitialSourceKey,
                     CreatedByUserId = testAdventure.CreatedByUserId
                 },
                 Source = new En()

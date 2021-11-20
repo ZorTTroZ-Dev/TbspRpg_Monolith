@@ -164,7 +164,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 {
                     Id = Guid.NewGuid(),
                     Name = "test adventure",
-                    SourceKey = Guid.NewGuid()
+                    InitialSourceKey = Guid.NewGuid()
                 }
             };
             var testUsers = new List<User>()
@@ -206,7 +206,7 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.Equal(testUsers[0].Id, game.UserId);
             Assert.Equal(testLocations[0].Id, game.LocationId);
             Assert.Equal(2, testContents.Count);
-            Assert.NotNull(testContents.FirstOrDefault(c => c.SourceKey == testAdventures[0].SourceKey));
+            Assert.NotNull(testContents.FirstOrDefault(c => c.SourceKey == testAdventures[0].InitialSourceKey));
             Assert.NotNull(testContents.FirstOrDefault(c => c.SourceKey == testLocations[0].SourceKey));
         }
 

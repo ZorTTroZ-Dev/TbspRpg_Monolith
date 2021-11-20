@@ -45,13 +45,13 @@ namespace TbspRpgApi.Tests.Controllers
                 {
                     Id = Guid.NewGuid(),
                     Name = "test",
-                    SourceKey = Guid.NewGuid()
+                    InitialSourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     Name = "test two",
-                    SourceKey = Guid.NewGuid()
+                    InitialSourceKey = Guid.NewGuid()
                 }
             };
             var controller = CreateController(testAdventures);
@@ -81,13 +81,13 @@ namespace TbspRpgApi.Tests.Controllers
                 {
                     Id = Guid.NewGuid(),
                     Name = "test",
-                    SourceKey = Guid.NewGuid()
+                    InitialSourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     Name = "test two",
-                    SourceKey = Guid.NewGuid()
+                    InitialSourceKey = Guid.NewGuid()
                 }
             };
             var controller = CreateController(testAdventures);
@@ -113,13 +113,13 @@ namespace TbspRpgApi.Tests.Controllers
                 {
                     Id = Guid.NewGuid(),
                     Name = "test",
-                    SourceKey = Guid.NewGuid()
+                    InitialSourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     Name = "test two",
-                    SourceKey = Guid.NewGuid()
+                    InitialSourceKey = Guid.NewGuid()
                 }
             };
             var controller = CreateController(testAdventures);
@@ -149,13 +149,13 @@ namespace TbspRpgApi.Tests.Controllers
                 {
                     Id = Guid.NewGuid(),
                     Name = "test",
-                    SourceKey = Guid.NewGuid()
+                    InitialSourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     Name = "test two",
-                    SourceKey = Guid.NewGuid()
+                    InitialSourceKey = Guid.NewGuid()
                 }
             };
             var controller = CreateController(testAdventures);
@@ -181,13 +181,13 @@ namespace TbspRpgApi.Tests.Controllers
                 {
                     Id = Guid.NewGuid(),
                     Name = "test",
-                    SourceKey = Guid.NewGuid()
+                    InitialSourceKey = Guid.NewGuid()
                 },
                 new()
                 {
                     Id = Guid.NewGuid(),
                     Name = "test two",
-                    SourceKey = Guid.NewGuid()
+                    InitialSourceKey = Guid.NewGuid()
                 }
             };
             var controller = CreateController(testAdventures);
@@ -220,7 +220,7 @@ namespace TbspRpgApi.Tests.Controllers
                     adventure = new AdventureViewModel(new Adventure()
                     {
                         Id = Guid.NewGuid(),
-                        SourceKey = Guid.NewGuid(),
+                        InitialSourceKey = Guid.NewGuid(),
                         Name = "test location"
                     }),
                     source = new SourceViewModel(Guid.Empty, "test source")
@@ -245,7 +245,7 @@ namespace TbspRpgApi.Tests.Controllers
                     adventure = new AdventureViewModel(new Adventure()
                     {
                         Id = exceptionId,
-                        SourceKey = Guid.NewGuid(),
+                        InitialSourceKey = Guid.NewGuid(),
                         Name = "test location"
                     }),
                     source = new SourceViewModel(Guid.Empty, "test source")

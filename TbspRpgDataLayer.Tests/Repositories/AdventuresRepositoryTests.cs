@@ -208,7 +208,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             {
                 Name = "test_adventure",
                 CreatedByUserId = Guid.NewGuid(),
-                SourceKey = Guid.Empty
+                InitialSourceKey = Guid.Empty
             };
             var repository = new AdventuresRepository(context);
             

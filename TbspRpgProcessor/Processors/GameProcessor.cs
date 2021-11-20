@@ -74,7 +74,7 @@ namespace TbspRpgProcessor.Processors
                 Id = Guid.NewGuid(),
                 GameId = game.Id,
                 Position = (ulong)secondsSinceEpoch,
-                SourceKey = adventure.SourceKey
+                SourceKey = adventure.InitialSourceKey
             });
             
             // create content entry for the initial location source key

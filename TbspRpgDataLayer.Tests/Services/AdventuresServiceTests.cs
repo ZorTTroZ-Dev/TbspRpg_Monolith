@@ -241,7 +241,7 @@ namespace TbspRpgDataLayer.Tests.Services
             {
                 Name = "test_adventure",
                 CreatedByUserId = Guid.NewGuid(),
-                SourceKey = Guid.Empty
+                InitialSourceKey = Guid.Empty
             };
             var service = CreateService(context);
         
