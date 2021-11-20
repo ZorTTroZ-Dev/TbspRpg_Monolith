@@ -9,6 +9,7 @@ namespace TbspRpgApi.ViewModels
         public Guid Id { get; set; }
         public string Name { get; set; }
         public Guid InitialSourceKey { get; set; }
+        public Guid DescriptionSourceKey { get; set; }
         public Guid CreatedByUserId { get; set; }
 
         public AdventureViewModel() { }
@@ -18,6 +19,7 @@ namespace TbspRpgApi.ViewModels
             Id = adventure.Id;
             Name = adventure.Name;
             InitialSourceKey = adventure.InitialSourceKey;
+            DescriptionSourceKey = adventure.DescriptionSourceKey;
             CreatedByUserId = adventure.CreatedByUserId;
         }
 
@@ -28,6 +30,7 @@ namespace TbspRpgApi.ViewModels
                 Id = Id,
                 Name = Name,
                 InitialSourceKey = InitialSourceKey,
+                DescriptionSourceKey = DescriptionSourceKey,
                 CreatedByUserId = CreatedByUserId
             };
         }

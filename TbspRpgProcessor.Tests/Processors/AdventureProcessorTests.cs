@@ -43,7 +43,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     Id = Guid.NewGuid(),
                     Name = "updated_test_adventure"
                 },
-                Source = new En()
+                InitialSource = new En()
                 {
                     Id = testSource.Id,
                     Key = testSource.Key,
@@ -66,7 +66,8 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 Id = Guid.NewGuid(),
                 Name = "test_adventure",
-                InitialSourceKey = Guid.NewGuid()
+                InitialSourceKey = Guid.NewGuid(),
+                DescriptionSourceKey = Guid.NewGuid()
             };
             var testSource = new En()
             {
@@ -76,13 +77,21 @@ namespace TbspRpgProcessor.Tests.Processors
                 Text = "test source",
                 AdventureId = testAdventure.Id
             };
+            var testDescriptionSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testAdventure.DescriptionSourceKey,
+                Name = "description_test_adventure",
+                Text = "test description source",
+                AdventureId = testAdventure.Id
+            };
             var testUser = new User()
             {
                 Id = Guid.NewGuid(),
                 UserName = "tester"
             };
             var adventures = new List<Adventure>() { testAdventure };
-            var sources = new List<En>() {testSource};
+            var sources = new List<En>() {testSource, testDescriptionSource};
             var processor = CreateAdventureProcessor(adventures, sources);
             
             // act
@@ -94,10 +103,15 @@ namespace TbspRpgProcessor.Tests.Processors
                     Name = "new_test_adventure",
                     InitialSourceKey = Guid.Empty
                 },
-                Source = new En()
+                InitialSource = new En()
                 {
                     Key = Guid.Empty,
                     Text = "new_test source"
+                },
+                DescriptionSource = new En()
+                {
+                    Key = Guid.Empty,
+                    Text = "new_test description source"
                 },
                 UserId = testUser.Id,
                 Language = Languages.ENGLISH
@@ -108,7 +122,7 @@ namespace TbspRpgProcessor.Tests.Processors
             var newAdventure = adventures.FirstOrDefault(adv => adv.Name == "new_test_adventure");
             Assert.NotNull(newAdventure);
             Assert.Equal(testUser.Id, newAdventure.CreatedByUserId);
-            Assert.Equal(2, sources.Count);
+            Assert.Equal(4, sources.Count);
         }
 
         [Fact]
@@ -125,7 +139,16 @@ namespace TbspRpgProcessor.Tests.Processors
                 Id = Guid.NewGuid(),
                 Name = "test_adventure",
                 InitialSourceKey = Guid.NewGuid(),
+                DescriptionSourceKey = Guid.NewGuid(),
                 CreatedByUserId = testUser.Id
+            };
+            var testDescriptionSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testAdventure.DescriptionSourceKey,
+                Name = "description_test_adventure",
+                Text = "test description source",
+                AdventureId = testAdventure.Id
             };
             var testSource = new En()
             {
@@ -136,7 +159,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 AdventureId = testAdventure.Id
             };
             var adventures = new List<Adventure>() { testAdventure };
-            var sources = new List<En>() {testSource};
+            var sources = new List<En>() {testSource, testDescriptionSource};
             var processor = CreateAdventureProcessor(adventures, sources);
             
             // act
@@ -147,14 +170,22 @@ namespace TbspRpgProcessor.Tests.Processors
                     Id = testAdventure.Id,
                     Name = "updated_adventure_name",
                     InitialSourceKey = testAdventure.InitialSourceKey,
+                    DescriptionSourceKey = testAdventure.DescriptionSourceKey,
                     CreatedByUserId = testAdventure.CreatedByUserId
                 },
-                Source = new En()
+                InitialSource = new En()
                 {
                     Id = testSource.Id,
                     Key = testSource.Key,
                     Name = testSource.Name,
                     Text = "updated source"
+                },
+                DescriptionSource = new En()
+                {
+                    Id = testDescriptionSource.Id,
+                    Key = testDescriptionSource.Key,
+                    Name = testDescriptionSource.Name,
+                    Text = "updated description source"
                 },
                 UserId = testUser.Id,
                 Language = Languages.ENGLISH
@@ -163,8 +194,11 @@ namespace TbspRpgProcessor.Tests.Processors
             // assert
             Assert.Single(adventures);
             Assert.Equal("updated_adventure_name", adventures[0].Name);
-            Assert.Single(sources);
-            Assert.Equal("updated source", sources[0].Text);
+            Assert.Equal(2, sources.Count);
+            Assert.Equal("updated source", sources.
+                First(source => source.Id == testSource.Id).Text);
+            Assert.Equal("updated description source", sources.
+                First(source => source.Id == testDescriptionSource.Id).Text);
         }
 
         #endregion
