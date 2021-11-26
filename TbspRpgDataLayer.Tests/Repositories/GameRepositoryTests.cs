@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Repositories;
 using Xunit;
 
@@ -187,6 +188,64 @@ namespace TbspRpgDataLayer.Tests.Repositories
             Assert.Equal(testLocationId, game.Location.Id);
         }
 
+        #endregion
+
+        #region GetGames
+
+        [Fact]
+        public async void GetGames_FilterByAdventureId_ReturnsGames()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGame = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            var testGameTwo = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            await context.Games.AddAsync(testGame);
+            await context.Games.AddAsync(testGameTwo);
+            await context.SaveChangesAsync();
+            var repository = new GameRepository(context);
+            
+            // act
+            var games = await repository.GetGames(new GameFilter()
+            {
+                AdventureId = testGame.AdventureId
+            });
+            
+            // assert
+            Assert.Single(games);
+            Assert.Equal(testGame.AdventureId, games[0].AdventureId);
+        }
+
+        [Fact]
+        public async void GetGames_NoFilter_ReturnsAll()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGame = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            var testGameTwo = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            await context.Games.AddAsync(testGame);
+            await context.Games.AddAsync(testGameTwo);
+            await context.SaveChangesAsync();
+            var repository = new GameRepository(context);
+            
+            // act
+            var games = await repository.GetGames(null);
+            
+            // assert
+            Assert.Equal(2, games.Count);
+        }
+        
         #endregion
     }
 }

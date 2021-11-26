@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.ArgumentModels;
 
 namespace TbspRpgDataLayer.Repositories
 {
@@ -10,6 +13,7 @@ namespace TbspRpgDataLayer.Repositories
         Task<Game> GetGameById(Guid gameId);
         Task<Game> GetGameByIdWithLocation(Guid gameId);
         Task<Game> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId);
+        Task<List<Game>> GetGames(GameFilter filters);
         Task AddGame(Game game);
     }
     
@@ -37,6 +41,19 @@ namespace TbspRpgDataLayer.Repositories
         {
             return _databaseContext.Games.AsQueryable()
                 .FirstOrDefaultAsync(g => g.AdventureId == adventureId && g.UserId == userId);
+        }
+
+        public Task<List<Game>> GetGames(GameFilter filters)
+        {
+            var query = _databaseContext.Games.AsQueryable();
+
+            if (filters == null) return query.ToListAsync();
+            
+            if (filters.AdventureId != Guid.Empty)
+                query = query.Where(game => game.AdventureId == filters.AdventureId);
+            if (filters.UserId != Guid.Empty)
+                query = query.Where(game => game.UserId == filters.UserId);
+            return query.ToListAsync();
         }
 
         public async Task AddGame(Game game)
