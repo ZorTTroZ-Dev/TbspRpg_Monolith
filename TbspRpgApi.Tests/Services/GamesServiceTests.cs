@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities;
+using TbspRpgApi.RequestModels;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Services
@@ -81,6 +82,33 @@ namespace TbspRpgApi.Tests.Services
             
             // assert
             Assert.Null(gameViewModel);
+        }
+
+        #endregion
+
+        #region GetGames
+
+        [Fact]
+        public async void GetGames_ReturnsGames()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                UserId = Guid.NewGuid()
+            };
+            var service = CreateGamesService(new List<Game>() {testGame});
+            
+            // act
+            var games = await service.GetGames(new GameFilterRequest()
+            {
+                AdventureId = testGame.AdventureId,
+                UserId = testGame.UserId
+            });
+            
+            // assert
+            Assert.Single(games);
         }
 
         #endregion

@@ -82,6 +82,11 @@ namespace TbspRpgDataLayer.Tests
                     service.GetGameById(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid gameId) => games.FirstOrDefault(g => g.Id == gameId));
 
+            // doesn't do any actual filtering
+            gamesService.Setup(service =>
+                    service.GetGames(It.IsAny<GameFilter>()))
+                .ReturnsAsync((GameFilter filter) => games.ToList());
+
             return gamesService.Object;
         }
 

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Controllers;
 using TbspRpgApi.Entities;
 using TbspRpgApi.JwtAuthorization;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using Xunit;
 
@@ -151,6 +152,63 @@ namespace TbspRpgApi.Tests.Controllers
             var badRequestResult = response as BadRequestObjectResult;
             Assert.NotNull(badRequestResult);
             Assert.Equal(400, badRequestResult.StatusCode);
+        }
+
+        #endregion
+
+        #region GetGames
+
+        [Fact]
+        public async void GetGames_ReturnsGames()
+        {
+            // arrange
+            var userId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                UserId = userId
+            };
+            var controller = CreateGamesController(new List<Game>()
+            {
+                testGame
+            }, Guid.NewGuid(), userId);
+            
+            // act
+            var response = await controller.GetGames(new GameFilterRequest()
+            {
+                AdventureId = testGame.AdventureId,
+                UserId = userId
+            });
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var gameViewModels = okObjectResult.Value as List<GameViewModel>;
+            Assert.NotNull(gameViewModels);
+            Assert.Equal(testGame.Id, gameViewModels[0].Id);
+        }
+        
+        [Fact]
+        public async void GetGames_NoGames_ReturnsEmptyList()
+        {
+            // arrange
+            var userId = Guid.NewGuid();
+            var controller = CreateGamesController(new List<Game>(){}, Guid.NewGuid(), userId);
+            
+            // act
+            var response = await controller.GetGames(new GameFilterRequest()
+            {
+                AdventureId = Guid.NewGuid(),
+                UserId = userId
+            });
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var gameViewModels = okObjectResult.Value as List<GameViewModel>;
+            Assert.NotNull(gameViewModels);
+            Assert.Empty(gameViewModels);
         }
 
         #endregion

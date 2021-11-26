@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.JwtAuthorization;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.Services;
 
 namespace TbspRpgApi.Controllers
@@ -19,6 +20,16 @@ namespace TbspRpgApi.Controllers
         {
             _gamesService = gamesService;
             _logger = logger;
+        }
+
+        [HttpGet]
+        [Authorize(new [] {"admin"})]
+        public async Task<IActionResult> GetGames([FromQuery] GameFilterRequest gameFilterRequest)
+        {
+            // in the future we'll relax the admin requirement
+            // if the user isn't an admin well return a game view model that doesn't contain user information
+            var games = await _gamesService.GetGames(gameFilterRequest);
+            return Ok(games);
         }
 
         [HttpGet("adventure/{adventureId:guid}")]
