@@ -196,5 +196,64 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region GetGames
+
+        [Fact]
+        public async void GetGames_NoFilters_ReturnsAll()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGame = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            var testGameTwo = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            await context.Games.AddAsync(testGame);
+            await context.Games.AddAsync(testGameTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var games = await service.GetGames(null);
+            
+            // assert
+            Assert.Equal(2, games.Count);
+        }
+
+        #endregion
+
+        #region GetGamesByAdventureId
+
+        [Fact]
+        public async void GetGamesByAdventureId_ValidAdventureId_ReturnsGames()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGame = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            var testGameTwo = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            await context.Games.AddAsync(testGame);
+            await context.Games.AddAsync(testGameTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var games = await service.GetGamesByAdventureId(testGame.AdventureId);
+            
+            // assert
+            Assert.Single(games);
+            Assert.Equal(testGame.AdventureId, games[0].AdventureId);
+        }
+
+        #endregion
     }
 }

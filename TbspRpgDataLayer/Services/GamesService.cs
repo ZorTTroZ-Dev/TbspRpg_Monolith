@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Repositories;
 
 namespace TbspRpgDataLayer.Services
@@ -12,6 +14,8 @@ namespace TbspRpgDataLayer.Services
         Task AddGame(Game game);
         Task<Game> GetGameByIdIncludeLocation(Guid gameId);
         Task<Game> GetGameById(Guid gameId);
+        Task<List<Game>> GetGamesByAdventureId(Guid adventureId);
+        Task<List<Game>> GetGames(GameFilter filters);
     }
     
     public class GamesService : IGamesService
@@ -44,6 +48,19 @@ namespace TbspRpgDataLayer.Services
         public Task<Game> GetGameById(Guid gameId)
         {
             return _gameRepository.GetGameById(gameId);
+        }
+
+        public Task<List<Game>> GetGamesByAdventureId(Guid adventureId)
+        {
+            return GetGames(new GameFilter()
+            {
+                AdventureId = adventureId
+            });
+        }
+
+        public Task<List<Game>> GetGames(GameFilter filters)
+        {
+            return _gameRepository.GetGames(filters);
         }
 
         public async Task SaveChanges()
