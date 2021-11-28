@@ -18,7 +18,7 @@ namespace TbspRpgApi.JwtAuthorization
         
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var userId = (string)context.HttpContext.Items[USER_ID_CONTEXT_KEY];
+            var userId = (Guid?)context.HttpContext.Items[USER_ID_CONTEXT_KEY];
             
             if (userId == null)
             {
