@@ -17,6 +17,7 @@ namespace TbspRpgDataLayer.Services
         Task<Content> GetLatestForGame(Guid gameId);
         Task<List<Content>> GetContentForGameAfterPosition(Guid gameId, ulong position);
         Task<List<Content>> GetPartialContentForGame(Guid gameId, ContentFilterRequest filterRequest);
+        void RemoveContents(IEnumerable<Content> contents);
     }
     
     public class ContentsService : IContentsService
@@ -88,6 +89,11 @@ namespace TbspRpgDataLayer.Services
             }
 
             return contents;
+        }
+
+        public void RemoveContents(IEnumerable<Content> contents)
+        {
+            throw new NotImplementedException();
         }
     }
 }

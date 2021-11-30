@@ -3,12 +3,14 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Services;
+using TbspRpgProcessor.Entities;
 
 namespace TbspRpgProcessor.Processors
 {
     public interface IGameProcessor
     {
         Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
+        Task DeleteGame(GameDeleteModel gameDeleteModel);
     }
     
     public class GameProcessor : IGameProcessor
@@ -89,6 +91,20 @@ namespace TbspRpgProcessor.Processors
             // save context changes
             await _gamesService.SaveChanges();
             return game;
+        }
+
+        public async Task DeleteGame(GameDeleteModel gameDeleteModel)
+        {
+            var game = await _gamesService.GetGameById(gameDeleteModel.GameId);
+            if(game == null)
+                throw new ArgumentException("invalid game id");
+            
+            // delete any associated content
+            var contents = await _contentsService.GetAllContentForGame(game.Id);
+            _contentsService.RemoveContents(contents);
+            // delete the game row
+            _gamesService.RemoveGame(game);
+            await _gamesService.SaveChanges();
         }
     }
 }

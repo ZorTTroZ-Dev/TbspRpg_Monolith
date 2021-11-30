@@ -16,6 +16,7 @@ namespace TbspRpgDataLayer.Services
         Task<Game> GetGameById(Guid gameId);
         Task<List<Game>> GetGamesByAdventureId(Guid adventureId);
         Task<List<Game>> GetGames(GameFilter filters);
+        void RemoveGame(Game game);
     }
     
     public class GamesService : IGamesService
@@ -61,6 +62,11 @@ namespace TbspRpgDataLayer.Services
         public Task<List<Game>> GetGames(GameFilter filters)
         {
             return _gameRepository.GetGames(filters);
+        }
+
+        public void RemoveGame(Game game)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task SaveChanges()

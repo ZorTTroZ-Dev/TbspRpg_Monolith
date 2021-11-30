@@ -32,6 +32,22 @@ namespace TbspRpgApi.Controllers
             return Ok(games);
         }
 
+        [HttpDelete("{gameId:guid}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteGame(Guid gameId)
+        {
+            // make sure the user either is the game's owner or the user is an admin
+            try
+            {
+                await _gamesService.DeleteGame(gameId);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest(new { message = "couldn't start game" });
+            }
+        }
+
         [HttpGet("adventure/{adventureId:guid}")]
         [Authorize]
         public async Task<IActionResult> GetGameByAdventure(Guid adventureId)

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor.Entities;
 using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
@@ -14,6 +15,7 @@ namespace TbspRpgApi.Services
         Task StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
         Task<GameViewModel> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId);
         Task<List<GameViewModel>> GetGames(GameFilterRequest gameFilterRequest);
+        Task DeleteGame(Guid gameId);
     }
     
     public class GamesService : IGamesService
@@ -49,6 +51,14 @@ namespace TbspRpgApi.Services
         {
             var games = await _gamesService.GetGames(gameFilterRequest.ToGameFilter());
             return games.Select(game => new GameViewModel(game)).ToList();
+        }
+
+        public async Task DeleteGame(Guid gameId)
+        {
+            await _gameProcessor.DeleteGame(new GameDeleteModel()
+            {
+                GameId = gameId
+            });
         }
     }
 }
