@@ -55,7 +55,7 @@ namespace TbspRpgApi.Services
 
         public async Task DeleteGame(Guid gameId)
         {
-            await _gameProcessor.DeleteGame(new GameDeleteModel()
+            await _gameProcessor.RemoveGame(new GameRemoveModel()
             {
                 GameId = gameId
             });

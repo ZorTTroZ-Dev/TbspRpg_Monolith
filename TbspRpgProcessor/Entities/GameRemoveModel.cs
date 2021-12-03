@@ -2,7 +2,7 @@
 
 namespace TbspRpgProcessor.Entities
 {
-    public class GameDeleteModel
+    public class GameRemoveModel
     {
         public Guid GameId { get; set; }
     }

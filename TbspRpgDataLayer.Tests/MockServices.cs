@@ -237,7 +237,10 @@ namespace TbspRpgDataLayer.Tests
                     service.RemoveContents(It.IsAny<IEnumerable<Content>>()))
                 .Callback((IEnumerable<Content> contentsToRemove) =>
                 {
-                    contentsToRemove.Select(ctr => contents.Remove(ctr));
+                    foreach (var ctr in contentsToRemove)
+                    {
+                        contents.Remove(ctr);
+                    }
                 });
 
             contentsService.Setup(service =>

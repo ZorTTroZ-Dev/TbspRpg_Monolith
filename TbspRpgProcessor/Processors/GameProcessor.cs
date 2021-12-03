@@ -10,7 +10,7 @@ namespace TbspRpgProcessor.Processors
     public interface IGameProcessor
     {
         Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
-        Task DeleteGame(GameDeleteModel gameDeleteModel);
+        Task RemoveGame(GameRemoveModel gameRemoveModel);
     }
     
     public class GameProcessor : IGameProcessor
@@ -93,9 +93,9 @@ namespace TbspRpgProcessor.Processors
             return game;
         }
 
-        public async Task DeleteGame(GameDeleteModel gameDeleteModel)
+        public async Task RemoveGame(GameRemoveModel gameRemoveModel)
         {
-            var game = await _gamesService.GetGameById(gameDeleteModel.GameId);
+            var game = await _gamesService.GetGameById(gameRemoveModel.GameId);
             if(game == null)
                 throw new ArgumentException("invalid game id");
             
