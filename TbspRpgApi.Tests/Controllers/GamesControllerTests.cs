@@ -212,5 +212,41 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+        
+        #region DeleteGame
+
+        [Fact]
+        public async void DeleteGame_ExceptionThrown_BadRequest()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var controller = CreateGamesController(new List<Game>(), exceptionId, exceptionId);
+            
+            // act
+            var response = await controller.DeleteGame(exceptionId);
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+
+        [Fact]
+        public async void DeleteGame_Valid_Accepted()
+        {
+            // arrange
+            var userId = Guid.NewGuid();
+            var controller = CreateGamesController(new List<Game>(), Guid.NewGuid(), userId);
+            
+            // act
+            var response = await controller.DeleteGame(Guid.NewGuid());
+            
+            // assert
+            var okResult = response as OkResult;
+            Assert.NotNull(okResult);
+            Assert.Equal(200, okResult.StatusCode);
+        }
+
+        #endregion
     }
 }

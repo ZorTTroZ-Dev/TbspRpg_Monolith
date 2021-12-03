@@ -134,6 +134,16 @@ namespace TbspRpgProcessor.Tests
                     };
                 });
             
+            gameProcessor.Setup(service =>
+                    service.RemoveGame(It.IsAny<GameRemoveModel>()))
+                .Callback((GameRemoveModel gameRemoveModel) =>
+                {
+                    if (gameRemoveModel.GameId == startGameExceptionId)
+                    {
+                        throw new ArgumentException("can't remove game");
+                    }
+                });
+            
             return gameProcessor.Object;
         }
 

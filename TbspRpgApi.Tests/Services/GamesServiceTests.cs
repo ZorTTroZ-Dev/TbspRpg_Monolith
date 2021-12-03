@@ -112,5 +112,36 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+
+        #region RemoveGame
+
+        [Fact]
+        public async void RemoveGame_InvalidGameId_ThrowException()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var service = CreateGamesService(new List<Game>(), exceptionId);
+            
+            // act
+            Task Act() => service.DeleteGame(exceptionId);
+
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+        
+        [Fact]
+        public async void RemoveGame_GameRemoved()
+        {
+            // arrange
+            var service = CreateGamesService(new List<Game>());
+            
+            // act
+            await service.DeleteGame(Guid.NewGuid());
+            
+            // assert
+            
+        }
+
+        #endregion
     }
 }
