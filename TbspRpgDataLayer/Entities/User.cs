@@ -11,5 +11,6 @@ namespace TbspRpgDataLayer.Entities
         
         public ICollection<Game> Games { get; set; }
         public ICollection<Adventure> Adventures { get; set; } 
+        public ICollection<Group> Groups { get; set; }
     }
 }

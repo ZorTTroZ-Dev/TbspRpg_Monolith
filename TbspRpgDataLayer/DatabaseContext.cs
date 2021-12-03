@@ -12,6 +12,7 @@ namespace TbspRpgDataLayer
         #region User
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Group> Groups { get; set; }
 
         #endregion
 
@@ -42,6 +43,13 @@ namespace TbspRpgDataLayer
 
             modelBuilder.Entity<User>().HasKey(u => u.Id);
             modelBuilder.Entity<User>().Property(u => u.Id)
+                .HasColumnType("uuid")
+                .HasDefaultValueSql("uuid_generate_v4()");
+            
+            modelBuilder.Entity<Group>().ToTable("groups");
+
+            modelBuilder.Entity<Group>().HasKey(g => g.Id);
+            modelBuilder.Entity<Group>().Property(g => g.Id)
                 .HasColumnType("uuid")
                 .HasDefaultValueSql("uuid_generate_v4()");
 
@@ -133,6 +141,10 @@ namespace TbspRpgDataLayer
                 .HasMany(u => u.Games)
                 .WithOne(g => g.User)
                 .HasForeignKey(g => g.UserId);
+
+            modelBuilder.Entity<Group>()
+                .HasMany(g => g.Users)
+                .WithMany(u => u.Groups);
             
             modelBuilder.Entity<Adventure>()
                 .HasMany(a => a.Games)
