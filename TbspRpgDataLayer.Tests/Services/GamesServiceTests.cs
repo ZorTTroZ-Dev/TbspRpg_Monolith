@@ -255,5 +255,35 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region RemoveGame
+
+        [Fact]
+        public async void RemoveGame_GameRemoved()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGame = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            var testGameTwo = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            await context.Games.AddAsync(testGame);
+            await context.Games.AddAsync(testGameTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            service.RemoveGame(testGame);
+            await service.SaveChanges();
+
+            // assert
+            Assert.Single(context.Games);
+        }
+
+        #endregion
     }
 }

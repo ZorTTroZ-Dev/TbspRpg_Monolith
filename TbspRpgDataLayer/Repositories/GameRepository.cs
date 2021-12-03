@@ -15,6 +15,7 @@ namespace TbspRpgDataLayer.Repositories
         Task<Game> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId);
         Task<List<Game>> GetGames(GameFilter filters);
         Task AddGame(Game game);
+        void RemoveGame(Game game);
     }
     
     public class GameRepository : IGameRepository
@@ -59,6 +60,11 @@ namespace TbspRpgDataLayer.Repositories
         public async Task AddGame(Game game)
         {
             await _databaseContext.Games.AddAsync(game);
+        }
+
+        public void RemoveGame(Game game)
+        {
+            _databaseContext.Remove(game);
         }
 
         public async Task SaveChanges()
