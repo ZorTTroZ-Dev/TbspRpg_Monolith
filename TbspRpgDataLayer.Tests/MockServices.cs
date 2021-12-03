@@ -230,6 +230,13 @@ namespace TbspRpgDataLayer.Tests
                         Where(c => c.GameId == gameId && c.Position > position).ToList());
 
             contentsService.Setup(service =>
+                    service.RemoveContents(It.IsAny<IEnumerable<Content>>()))
+                .Callback((IEnumerable<Content> contentsToRemove) =>
+                {
+                    contentsToRemove.Select(ctr => contents.Remove(ctr));
+                });
+
+            contentsService.Setup(service =>
                     service.GetPartialContentForGame(It.IsAny<Guid>(), It.IsAny<ContentFilterRequest>()))
                 .ReturnsAsync((Guid gameId, ContentFilterRequest cfr) =>
                 {
