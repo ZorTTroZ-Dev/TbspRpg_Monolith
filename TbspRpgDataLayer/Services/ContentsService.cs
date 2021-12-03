@@ -93,7 +93,7 @@ namespace TbspRpgDataLayer.Services
 
         public void RemoveContents(IEnumerable<Content> contents)
         {
-            throw new NotImplementedException();
+            _contentsRepository.RemoveContents(contents);
         }
     }
 }

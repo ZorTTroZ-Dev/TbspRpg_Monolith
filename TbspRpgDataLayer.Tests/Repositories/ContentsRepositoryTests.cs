@@ -521,5 +521,48 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+
+        #region RemoveContents
+
+        [Fact]
+        public async void RemoveContents_ContentsRemoved()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 1
+                }
+            };
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            // act
+            repository.RemoveContents(testContents);
+            
+            // assert
+            await repository.SaveChanges();
+            Assert.Empty(context.Contents);
+        }
+
+        #endregion
     }
 }
