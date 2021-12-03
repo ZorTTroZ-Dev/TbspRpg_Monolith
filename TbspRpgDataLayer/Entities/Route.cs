@@ -1,6 +1,6 @@
 using System;
 
-namespace TbspRpgApi.Entities
+namespace TbspRpgDataLayer.Entities
 {
     public class Route
     {

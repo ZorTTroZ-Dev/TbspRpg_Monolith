@@ -7,6 +7,7 @@ using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgDataLayer.Entities;
 using TbspRpgSettings.Settings;
 using Xunit;
 

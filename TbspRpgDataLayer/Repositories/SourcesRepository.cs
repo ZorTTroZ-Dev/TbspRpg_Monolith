@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
+using TbspRpgDataLayer.Entities;
 using TbspRpgSettings.Settings;
 
 namespace TbspRpgDataLayer.Repositories

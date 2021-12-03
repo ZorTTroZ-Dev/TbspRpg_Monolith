@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TbspRpgApi.Entities
+namespace TbspRpgDataLayer.Entities
 {
     public class User
     {

@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Repositories;
 using TbspRpgDataLayer.Services;
 using Xunit;

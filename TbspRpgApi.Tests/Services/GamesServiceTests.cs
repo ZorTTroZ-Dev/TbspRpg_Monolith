@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities;
 using TbspRpgApi.RequestModels;
+using TbspRpgDataLayer.Entities;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Services

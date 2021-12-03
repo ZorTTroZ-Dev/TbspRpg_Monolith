@@ -1,6 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.Entities;
 
 namespace TbspRpgApi.ViewModels
 {

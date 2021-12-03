@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
+using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
 using TbspRpgDataLayer.Tests;
 using TbspRpgProcessor.Entities;

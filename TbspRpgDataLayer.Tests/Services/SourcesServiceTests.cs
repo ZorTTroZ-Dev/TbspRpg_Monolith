@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
+using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Repositories;
 using TbspRpgDataLayer.Services;
 using TbspRpgSettings.Settings;

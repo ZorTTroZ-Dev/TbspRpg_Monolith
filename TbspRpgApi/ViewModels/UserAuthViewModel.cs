@@ -1,5 +1,6 @@
 using TbspRpgApi.Entities;
 using TbspRpgApi.JwtAuthorization;
+using TbspRpgDataLayer.Entities;
 
 namespace TbspRpgApi.ViewModels
 {

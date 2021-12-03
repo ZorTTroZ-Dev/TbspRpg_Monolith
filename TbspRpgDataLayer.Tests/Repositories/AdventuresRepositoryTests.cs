@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.ArgumentModels;
+using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Repositories;
 using Xunit;
 

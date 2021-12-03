@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
 
 namespace TbspRpgProcessor.Processors

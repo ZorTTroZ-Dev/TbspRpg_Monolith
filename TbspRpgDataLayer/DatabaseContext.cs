@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
+using TbspRpgDataLayer.Entities;
 
 namespace TbspRpgDataLayer
 {

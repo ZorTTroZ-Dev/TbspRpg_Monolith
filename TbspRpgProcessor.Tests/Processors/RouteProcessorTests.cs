@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
+using TbspRpgDataLayer.Entities;
 using TbspRpgProcessor.Entities;
 using TbspRpgSettings.Settings;
 using Xunit;

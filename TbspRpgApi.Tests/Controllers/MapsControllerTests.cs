@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Controllers;
 using TbspRpgApi.Entities;
 using TbspRpgApi.ViewModels;
+using TbspRpgDataLayer.Entities;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Controllers

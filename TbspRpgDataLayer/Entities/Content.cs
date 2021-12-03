@@ -1,6 +1,7 @@
 using System;
+using TbspRpgApi.Entities;
 
-namespace TbspRpgApi.Entities
+namespace TbspRpgDataLayer.Entities
 {
     public class Content
     {

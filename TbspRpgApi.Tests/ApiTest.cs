@@ -5,6 +5,7 @@ using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.Services;
+using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Tests;
 using TbspRpgProcessor.Tests;
 

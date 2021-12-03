@@ -1,5 +1,6 @@
 using System;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.Entities;
 
 namespace TbspRpgApi.ViewModels
 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgApi.RequestModels;
+using TbspRpgDataLayer.Entities;
 using TbspRpgSettings.Settings;
 using Xunit;
 

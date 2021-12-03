@@ -1,5 +1,6 @@
 using System;
 using TbspRpgApi.Entities;
+using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Repositories;
 using Xunit;
 

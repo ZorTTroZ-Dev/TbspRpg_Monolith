@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TbspRpgApi.Entities;
 using TbspRpgApi.Services;
+using TbspRpgDataLayer.Entities;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Services
