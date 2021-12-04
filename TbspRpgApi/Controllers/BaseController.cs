@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.Services;
+using TbspRpgApi.ViewModels;
 using TbspRpgDataLayer.Entities;
 
 namespace TbspRpgApi.Controllers
@@ -12,7 +14,7 @@ namespace TbspRpgApi.Controllers
         protected const string NotYourGameErrorMessage = "not your game";
         protected const string NotYourAdventureErrorMessage = "not your adventure";
         protected const string NotYourRouteErrorMessage = "not your route";
-        protected User RequestUser { get; set; }
+        protected UserViewModel RequestUser { get; set; }
         private readonly IUsersService _usersService;
 
         public BaseController(IUsersService usersService)
@@ -27,10 +29,7 @@ namespace TbspRpgApi.Controllers
 
         protected async Task LoadUser()
         {
-            if (RequestUser == null)
-            {
-                // RequestUser = _usersService
-            }
+            RequestUser ??= await _usersService.GetUserById(GetUserId().GetValueOrDefault());
         }
 
         protected bool CanAccessGame(Guid gameId)
@@ -48,9 +47,11 @@ namespace TbspRpgApi.Controllers
             return true;
         }
 
-        protected bool IsInGroup(string groupName)
+        protected async Task<bool> IsInGroup(string groupName)
         {
-            return true;
+            await LoadUser();
+            return RequestUser.Groups.Any(group =>
+                string.Equals(group.Name, groupName, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

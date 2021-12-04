@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.ViewModels;
@@ -7,6 +8,7 @@ namespace TbspRpgApi.Services
     public interface IUsersService
     {
         Task<UserViewModel> Authenticate(string userName, string password);
+        Task<UserViewModel> GetUserById(Guid userId);
     }
     
     public class UsersService : IUsersService
@@ -26,6 +28,12 @@ namespace TbspRpgApi.Services
             if (user == null) return null;
             var token = _jwtHelper.GenerateToken(user.Id.ToString());
             return new UserAuthViewModel(user, token);
+        }
+
+        public async Task<UserViewModel> GetUserById(Guid userId)
+        {
+            var user = await _usersService.GetById(userId);
+            return new UserViewModel(user);
         }
     }
 }

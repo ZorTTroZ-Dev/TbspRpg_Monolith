@@ -55,5 +55,15 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+
+        #region GetUserById
+
+        [Fact]
+        public async void GetUserById_Valid_ReturnsUserWithGroups()
+        {
+            
+        }
+
+        #endregion
     }
 }

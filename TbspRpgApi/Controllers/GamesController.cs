@@ -27,7 +27,8 @@ namespace TbspRpgApi.Controllers
         [Authorize]
         public async Task<IActionResult> GetGames([FromQuery] GameFilterRequest gameFilterRequest)
         {
-            if(!IsInGroup("admin"))
+            var isAdmin = await IsInGroup("admin");
+            if(!isAdmin)
                 return BadRequest(new { message = NotYourGameErrorMessage });
             
             // in the future we'll relax the admin requirement
