@@ -13,13 +13,15 @@ namespace TbspRpgApi.Controllers
     public class ContentsController : BaseController
     {
         private readonly IContentsService _contentsService;
+        private readonly IPermissionService _permissionService;
         private readonly ILogger<ContentsController> _logger;
 
         public ContentsController(IContentsService contentsService,
-            IUsersService usersService,
-            ILogger<ContentsController> logger): base(usersService)
+            IPermissionService permissionService,
+            ILogger<ContentsController> logger)
         {
             _contentsService = contentsService;
+            _permissionService = permissionService;
             _logger = logger;
         }
         
@@ -27,7 +29,10 @@ namespace TbspRpgApi.Controllers
         [Authorize]
         public async Task<IActionResult> GetLatestContentForGame(Guid gameId)
         {
-            if(!CanAccessGame(gameId))
+            var canAccessGame = await _permissionService.CanAccessGame(
+                GetUserId().GetValueOrDefault(),
+                gameId);
+            if(!canAccessGame)
                 return BadRequest(new { message = NotYourGameErrorMessage });
             var contentViewModel = await _contentsService.GetLatestForGame(gameId);
             return Ok(contentViewModel);
@@ -35,7 +40,10 @@ namespace TbspRpgApi.Controllers
         
         [Authorize, HttpGet("filter")]
         public async Task<IActionResult> GetPartialContentForGame(Guid gameId, [FromQuery] ContentFilterRequest filterRequest) {
-            if(!CanAccessGame(gameId))
+            var canAccessGame = await _permissionService.CanAccessGame(
+                GetUserId().GetValueOrDefault(),
+                gameId);
+            if(!canAccessGame)
                 return BadRequest(new { message = NotYourGameErrorMessage });
             try
             {
@@ -51,7 +59,10 @@ namespace TbspRpgApi.Controllers
         [Authorize, HttpGet("after/{position}")]
         public async Task<IActionResult> GetContentForGameAfterPosition(Guid gameId, ulong position)
         {
-            if(!CanAccessGame(gameId))
+            var canAccessGame = await _permissionService.CanAccessGame(
+                GetUserId().GetValueOrDefault(),
+                gameId);
+            if(!canAccessGame)
                 return BadRequest(new { message = NotYourGameErrorMessage });
             var contentViewModel = await _contentsService.GetContentForGameAfterPosition(gameId, position);
             return Ok(contentViewModel);
@@ -59,7 +70,10 @@ namespace TbspRpgApi.Controllers
         
         [Authorize, HttpGet("source/{key:guid}")]
         public async Task<IActionResult> GetSourceForKey(Guid gameId, Guid key) {
-            if(!CanAccessGame(gameId))
+            var canAccessGame = await _permissionService.CanAccessGame(
+                GetUserId().GetValueOrDefault(),
+                gameId);
+            if(!canAccessGame)
                 return BadRequest(new { message = NotYourGameErrorMessage });
             // TODO: Make sure the key is part of the game content
             try

@@ -13,13 +13,15 @@ namespace TbspRpgApi.Controllers
     public class RoutesController : BaseController
     {
         private readonly IRoutesService _routesService;
+        private readonly IPermissionService _permissionService;
         private ILogger<RoutesController> _logger;
 
         public RoutesController(IRoutesService routesService,
-            IUsersService usersService,
-            ILogger<RoutesController> logger): base(usersService)
+            IPermissionService permissionService,
+            ILogger<RoutesController> logger)
         {
             _routesService = routesService;
+            _permissionService = permissionService;
             _logger = logger;
         }
 
@@ -27,8 +29,10 @@ namespace TbspRpgApi.Controllers
         public async Task<IActionResult> GetRouteById(Guid routeId)
         {
             var route = await _routesService.GetRouteById(routeId);
-
-            if (route != null && !CanAccessLocation(route.LocationId))
+            var canAccessLocation = await _permissionService.CanAccessLocation(
+                GetUserId().GetValueOrDefault(),
+                route.LocationId);
+            if (route != null && !canAccessLocation)
             {
                 return BadRequest(new { message = NotYourRouteErrorMessage });
             }
@@ -39,7 +43,10 @@ namespace TbspRpgApi.Controllers
         [HttpGet("location/{locationId:guid}"), Authorize]
         public async Task<IActionResult> GetRoutesForLocation(Guid locationId)
         {
-            if (!CanAccessLocation(locationId))
+            var canAccessLocation = await _permissionService.CanAccessLocation(
+                GetUserId().GetValueOrDefault(),
+                locationId);
+            if (!canAccessLocation)
             {
                 return BadRequest(new { message = NotYourRouteErrorMessage });
             }
@@ -54,7 +61,10 @@ namespace TbspRpgApi.Controllers
         [HttpGet("destination/{locationId:guid}"), Authorize]
         public async Task<IActionResult> GetRoutesWithDestination(Guid locationId)
         {
-            if (!CanAccessLocation(locationId))
+            var canAccessLocation = await _permissionService.CanAccessLocation(
+                GetUserId().GetValueOrDefault(),
+                locationId);
+            if (!canAccessLocation)
             {
                 return BadRequest(new { message = NotYourRouteErrorMessage });
             }
@@ -71,8 +81,11 @@ namespace TbspRpgApi.Controllers
         {
             if (updateRouteRequests.Length == 0)
                 return Ok(null);
-            
-            if (!CanAccessAdventure(updateRouteRequests[0].source.AdventureId))
+
+            var canAccessAdventure = await _permissionService.CanAccessAdventure(
+                GetUserId().GetValueOrDefault(),
+                updateRouteRequests[0].source.AdventureId);
+            if (!canAccessAdventure)
             {
                 return BadRequest(new { message = NotYourAdventureErrorMessage });
             }

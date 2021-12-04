@@ -13,19 +13,24 @@ namespace TbspRpgApi.Controllers
     public class LocationsController: BaseController
     {
         private readonly ILocationsService _locationsService;
+        private readonly IPermissionService _permissionService;
         private readonly ILogger<LocationsController> _logger;
 
         public LocationsController(ILocationsService locationsService,
-            IUsersService usersService,
-            ILogger<LocationsController> logger): base(usersService)
+            IPermissionService permissionService,
+            ILogger<LocationsController> logger)
         {
             _locationsService = locationsService;
+            _permissionService = permissionService;
             _logger = logger;
         }
         
         [HttpGet("{adventureId:guid}"), Authorize]
         public async Task<IActionResult> GetLocationsForAdventure(Guid adventureId) {
-            if(!CanAccessAdventure(adventureId))
+            var canAccessAdventure = await _permissionService.CanAccessAdventure(
+                GetUserId().GetValueOrDefault(),
+                adventureId);
+            if(!canAccessAdventure)
             {
                 return BadRequest(new { message = NotYourAdventureErrorMessage });
             }
@@ -44,7 +49,10 @@ namespace TbspRpgApi.Controllers
         [HttpPut, Authorize]
         public async Task<IActionResult> UpdateLocationAndSource([FromBody] LocationUpdateRequest locationUpdateRequest)
         {
-            if (!CanAccessAdventure(locationUpdateRequest.location.AdventureId))
+            var canAccessAdventure = await _permissionService.CanAccessAdventure(
+                GetUserId().GetValueOrDefault(),
+                locationUpdateRequest.location.AdventureId);
+            if (!canAccessAdventure)
             {
                 return BadRequest(new { message = NotYourAdventureErrorMessage });
             }

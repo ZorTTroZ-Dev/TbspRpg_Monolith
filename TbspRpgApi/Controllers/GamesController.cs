@@ -13,13 +13,15 @@ namespace TbspRpgApi.Controllers
     public class GamesController : BaseController
     {
         private readonly IGamesService _gamesService;
+        private readonly IPermissionService _permissionService;
         private readonly ILogger<GamesController> _logger;
 
         public GamesController(IGamesService gamesService,
-            IUsersService usersService,
-            ILogger<GamesController> logger): base(usersService)
+            IPermissionService permissionService,
+            ILogger<GamesController> logger)
         {
             _gamesService = gamesService;
+            _permissionService = permissionService;
             _logger = logger;
         }
 
@@ -27,7 +29,7 @@ namespace TbspRpgApi.Controllers
         [Authorize]
         public async Task<IActionResult> GetGames([FromQuery] GameFilterRequest gameFilterRequest)
         {
-            var isAdmin = await IsInGroup("admin");
+            var isAdmin = await _permissionService.IsInGroup(GetUserId().GetValueOrDefault(), "admin");
             if(!isAdmin)
                 return BadRequest(new { message = NotYourGameErrorMessage });
             
@@ -41,8 +43,9 @@ namespace TbspRpgApi.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteGame(Guid gameId)
         {
+            var canAccessGame = await _permissionService.CanAccessGame(GetUserId().GetValueOrDefault(), gameId);
             // make sure the user either is the game's owner or the user is an admin
-            if(!CanAccessGame(gameId))
+            if(!canAccessGame)
                 return BadRequest(new { message = NotYourGameErrorMessage });
             
             try

@@ -13,13 +13,15 @@ namespace TbspRpgApi.Controllers
     public class SourcesController : BaseController
     {
         private readonly ISourcesService _sourcesService;
+        private readonly IPermissionService _permissionService;
         private readonly ILogger<SourcesController> _logger;
 
         public SourcesController(ISourcesService sourcesService,
-            IUsersService usersService,
-            ILogger<SourcesController> logger): base(usersService)
+            IPermissionService permissionService,
+            ILogger<SourcesController> logger)
         {
             _sourcesService = sourcesService;
+            _permissionService = permissionService;
             _logger = logger;
         }
         
@@ -27,7 +29,10 @@ namespace TbspRpgApi.Controllers
         [Authorize]
         public async Task<IActionResult> GetSourcesForAdventure(Guid adventureId, [FromQuery]SourceFilterRequest filters)
         {
-            if(!CanAccessAdventure(adventureId))
+            var canAccessAdventure = await _permissionService.CanAccessAdventure(
+                GetUserId().GetValueOrDefault(),
+                adventureId);
+            if(!canAccessAdventure)
             {
                 return BadRequest(new { message = NotYourAdventureErrorMessage });
             }

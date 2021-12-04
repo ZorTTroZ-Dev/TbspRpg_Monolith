@@ -2,13 +2,14 @@ using System;
 using System.Threading.Tasks;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.ViewModels;
+using TbspRpgDataLayer.Entities;
 
 namespace TbspRpgApi.Services
 {
     public interface IUsersService
     {
         Task<UserViewModel> Authenticate(string userName, string password);
-        Task<UserViewModel> GetUserById(Guid userId);
+        Task<User> GetUserEntityById(Guid userId);
     }
     
     public class UsersService : IUsersService
@@ -30,10 +31,9 @@ namespace TbspRpgApi.Services
             return new UserAuthViewModel(user, token);
         }
 
-        public async Task<UserViewModel> GetUserById(Guid userId)
+        public Task<User> GetUserEntityById(Guid userId)
         {
-            var user = await _usersService.GetById(userId);
-            return new UserViewModel(user);
+            return _usersService.GetById(userId);
         }
     }
 }

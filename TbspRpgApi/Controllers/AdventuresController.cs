@@ -13,13 +13,15 @@ namespace TbspRpgApi.Controllers
     public class AdventuresController: BaseController
     {
         private readonly IAdventuresService _adventuresService;
+        private readonly IPermissionService _permissionService;
         private ILogger<AdventuresController> _logger;
 
         public AdventuresController(IAdventuresService adventuresService,
-            IUsersService usersService,
-            ILogger<AdventuresController> logger): base(usersService)
+            IPermissionService permissionService,
+            ILogger<AdventuresController> logger)
         {
             _adventuresService = adventuresService;
+            _permissionService = permissionService;
             _logger = logger;
         }
         
@@ -46,8 +48,11 @@ namespace TbspRpgApi.Controllers
         [HttpPut, Authorize]
         public async Task<IActionResult> UpdateAdventureAndSource([FromBody] AdventureUpdateRequest adventureUpdateRequest)
         {
-            if (adventureUpdateRequest.adventure.Id != Guid.Empty &&
-                !CanAccessAdventure(adventureUpdateRequest.adventure.Id))
+            var canAccessAdventure = await _permissionService.CanAccessAdventure(
+                GetUserId().GetValueOrDefault(),
+                adventureUpdateRequest.adventure.Id);
+            
+            if (adventureUpdateRequest.adventure.Id != Guid.Empty && !canAccessAdventure)
             {
                 return BadRequest(new { message = NotYourAdventureErrorMessage });
             }

@@ -12,19 +12,22 @@ namespace TbspRpgApi.Controllers
     public class MapsController : BaseController
     {
         private readonly IMapsService _mapsService;
+        private readonly IPermissionService _permissionService;
         private readonly ILogger<MapsController> _logger;
 
         public MapsController(IMapsService mapsService,
-            IUsersService usersService,
-            ILogger<MapsController> logger): base(usersService)
+            IPermissionService permissionService,
+            ILogger<MapsController> logger)
         {
             _mapsService = mapsService;
+            _permissionService = permissionService;
             _logger = logger;
         }
         
         [HttpGet("location"), Authorize]
         public async Task<IActionResult> GetCurrentLocationForGame(Guid gameId) {
-            if(!CanAccessGame(gameId))
+            var canAccessGame = await _permissionService.CanAccessGame(GetUserId().GetValueOrDefault(), gameId);
+            if(!canAccessGame)
             {
                 return BadRequest(new { message = NotYourGameErrorMessage });
             }
@@ -42,7 +45,8 @@ namespace TbspRpgApi.Controllers
         
         [HttpGet("changelocation/{routeId:guid}"), Authorize]
         public async Task<IActionResult> ChangeLocationViaRoute(Guid gameId, Guid routeId) {
-            if(!CanAccessGame(gameId))
+            var canAccessGame = await _permissionService.CanAccessGame(GetUserId().GetValueOrDefault(), gameId);
+            if(!canAccessGame)
                 return BadRequest(new { message = NotYourGameErrorMessage });
             try
             {
@@ -57,7 +61,8 @@ namespace TbspRpgApi.Controllers
         
         [HttpGet("routes"), Authorize]
         public async Task<IActionResult> GetCurrentRoutesForGame(Guid gameId) {
-            if(!CanAccessGame(gameId))
+            var canAccessGame = await _permissionService.CanAccessGame(GetUserId().GetValueOrDefault(), gameId);
+            if(!canAccessGame)
                 return BadRequest(new { message = NotYourGameErrorMessage });
             try
             {
@@ -72,7 +77,8 @@ namespace TbspRpgApi.Controllers
         
         [HttpGet("routes/after/{timeStamp}"), Authorize]
         public async Task<IActionResult> GetRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp) {
-            if(!CanAccessGame(gameId))
+            var canAccessGame = await _permissionService.CanAccessGame(GetUserId().GetValueOrDefault(), gameId);
+            if(!canAccessGame)
                 return BadRequest(new { message = NotYourGameErrorMessage });
             try
             {
