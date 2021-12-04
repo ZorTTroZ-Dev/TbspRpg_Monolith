@@ -10,12 +10,13 @@ namespace TbspRpgApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseController
     {
         private readonly IUsersService _usersService;
         private readonly ILogger<UsersController> _logger;
         
-        public UsersController(IUsersService usersService, ILogger<UsersController> logger)
+        public UsersController(IUsersService usersService,
+            ILogger<UsersController> logger): base(usersService)
         {
             _usersService = usersService;
             _logger = logger;

@@ -16,7 +16,8 @@ namespace TbspRpgApi.Controllers
         private ILogger<RoutesController> _logger;
 
         public RoutesController(IRoutesService routesService,
-            ILogger<RoutesController> logger)
+            IUsersService usersService,
+            ILogger<RoutesController> logger): base(usersService)
         {
             _routesService = routesService;
             _logger = logger;

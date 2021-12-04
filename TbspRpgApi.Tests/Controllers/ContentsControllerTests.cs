@@ -21,7 +21,9 @@ namespace TbspRpgApi.Tests.Controllers
             ICollection<En> sources = null)
         {
             var service = CreateContentsService(contents, games, sources);
-            return new ContentsController(service, NullLogger<ContentsController>.Instance);
+            return new ContentsController(service,
+                null,
+                NullLogger<ContentsController>.Instance);
         }
         
         #region GetLatestContentForGame

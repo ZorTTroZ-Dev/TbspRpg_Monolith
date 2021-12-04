@@ -16,7 +16,9 @@ namespace TbspRpgApi.Tests.Controllers
         private RoutesController CreateController(ICollection<Route> routes, Guid? exceptionId = null)
         {
             var service = CreateRoutesService(routes, exceptionId);
-            return new RoutesController(service, NullLogger<RoutesController>.Instance);
+            return new RoutesController(service,
+                null,
+                NullLogger<RoutesController>.Instance);
         }
 
         #region GetRoutesForLocation

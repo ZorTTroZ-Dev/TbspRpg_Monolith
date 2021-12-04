@@ -18,7 +18,9 @@ namespace TbspRpgApi.Tests.Controllers
             Guid? changeLocationViaRouteExceptionId = null)
         {
             var mapsService = CreateMapsService(games, routes, changeLocationViaRouteExceptionId);
-            return new MapsController(mapsService, NullLogger<MapsController>.Instance);
+            return new MapsController(mapsService,
+                null,
+                NullLogger<MapsController>.Instance);
         }
 
         #region GetCurrentLocationForGame

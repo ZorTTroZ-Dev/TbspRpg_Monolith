@@ -16,7 +16,9 @@ namespace TbspRpgApi.Tests.Controllers
         private SourcesController CreateController(ICollection<En> sources)
         {
             var service = CreateSourcesService(sources);
-            return new SourcesController(service, NullLogger<SourcesController>.Instance);
+            return new SourcesController(service,
+                null,
+                NullLogger<SourcesController>.Instance);
         }
 
         #region GetSourcesForAdventure

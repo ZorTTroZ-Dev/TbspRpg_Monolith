@@ -23,7 +23,10 @@ namespace TbspRpgDataLayer.Repositories
         
         public Task<User> GetUserById(Guid id)
         {
-            return _databaseContext.Users.AsQueryable().Where(user => user.Id == id).FirstOrDefaultAsync();
+            return _databaseContext.Users.AsQueryable()
+                .Where(user => user.Id == id)
+                .Include(user => user.Groups)
+                .FirstOrDefaultAsync();
         }
 
         public Task<User> GetUserByUsernameAndPassword(string userName, string password)

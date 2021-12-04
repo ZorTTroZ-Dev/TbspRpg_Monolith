@@ -14,7 +14,9 @@ namespace TbspRpgApi.Controllers
         private readonly IMapsService _mapsService;
         private readonly ILogger<MapsController> _logger;
 
-        public MapsController(IMapsService mapsService, ILogger<MapsController> logger)
+        public MapsController(IMapsService mapsService,
+            IUsersService usersService,
+            ILogger<MapsController> logger): base(usersService)
         {
             _mapsService = mapsService;
             _logger = logger;

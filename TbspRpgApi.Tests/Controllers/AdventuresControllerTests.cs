@@ -19,6 +19,7 @@ namespace TbspRpgApi.Tests.Controllers
         {
             var service = CreateAdventuresService(adventures, exceptionId);
             var controller = new AdventuresController(service,
+                null,
                 NullLogger<AdventuresController>.Instance)
             {
                 ControllerContext = new ControllerContext

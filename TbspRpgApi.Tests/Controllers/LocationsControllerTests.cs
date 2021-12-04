@@ -18,7 +18,9 @@ namespace TbspRpgApi.Tests.Controllers
             Guid? updateLocationExceptionId = null)
         {
             var locationsService = CreateLocationsService(locations, updateLocationExceptionId);
-            return new LocationsController(locationsService, NullLogger<LocationsController>.Instance);
+            return new LocationsController(locationsService,
+                null,
+                NullLogger<LocationsController>.Instance);
         }
 
         #region GetLocationsForAdventure

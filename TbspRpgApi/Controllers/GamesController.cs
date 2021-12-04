@@ -16,16 +16,20 @@ namespace TbspRpgApi.Controllers
         private readonly ILogger<GamesController> _logger;
 
         public GamesController(IGamesService gamesService,
-            ILogger<GamesController> logger)
+            IUsersService usersService,
+            ILogger<GamesController> logger): base(usersService)
         {
             _gamesService = gamesService;
             _logger = logger;
         }
 
         [HttpGet]
-        [Authorize(new [] {"admin"})]
+        [Authorize]
         public async Task<IActionResult> GetGames([FromQuery] GameFilterRequest gameFilterRequest)
         {
+            if(!IsInGroup("admin"))
+                return BadRequest(new { message = NotYourGameErrorMessage });
+            
             // in the future we'll relax the admin requirement
             // if the user isn't an admin well return a game view model that doesn't contain user information
             var games = await _gamesService.GetGames(gameFilterRequest);

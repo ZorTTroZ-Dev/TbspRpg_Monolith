@@ -16,7 +16,8 @@ namespace TbspRpgApi.Controllers
         private readonly ILogger<ContentsController> _logger;
 
         public ContentsController(IContentsService contentsService,
-            ILogger<ContentsController> logger)
+            IUsersService usersService,
+            ILogger<ContentsController> logger): base(usersService)
         {
             _contentsService = contentsService;
             _logger = logger;

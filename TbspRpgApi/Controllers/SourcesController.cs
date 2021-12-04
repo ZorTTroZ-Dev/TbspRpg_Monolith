@@ -16,7 +16,8 @@ namespace TbspRpgApi.Controllers
         private readonly ILogger<SourcesController> _logger;
 
         public SourcesController(ISourcesService sourcesService,
-            ILogger<SourcesController> logger)
+            IUsersService usersService,
+            ILogger<SourcesController> logger): base(usersService)
         {
             _sourcesService = sourcesService;
             _logger = logger;

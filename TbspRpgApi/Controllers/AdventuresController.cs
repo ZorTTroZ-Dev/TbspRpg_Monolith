@@ -16,7 +16,8 @@ namespace TbspRpgApi.Controllers
         private ILogger<AdventuresController> _logger;
 
         public AdventuresController(IAdventuresService adventuresService,
-            ILogger<AdventuresController> logger)
+            IUsersService usersService,
+            ILogger<AdventuresController> logger): base(usersService)
         {
             _adventuresService = adventuresService;
             _logger = logger;

@@ -19,7 +19,9 @@ namespace TbspRpgApi.Tests.Controllers
             ICollection<Game> games, Guid startGameExceptionId, Guid? userId)
         {
             var service = CreateGamesService(games, startGameExceptionId);
-            var controller = new GamesController(service, NullLogger<GamesController>.Instance)
+            var controller = new GamesController(service,
+                null,
+                NullLogger<GamesController>.Instance)
             {
                 ControllerContext = new ControllerContext
                 {

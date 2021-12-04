@@ -15,7 +15,9 @@ namespace TbspRpgApi.Controllers
         private readonly ILocationsService _locationsService;
         private readonly ILogger<LocationsController> _logger;
 
-        public LocationsController(ILocationsService locationsService, ILogger<LocationsController> logger)
+        public LocationsController(ILocationsService locationsService,
+            IUsersService usersService,
+            ILogger<LocationsController> logger): base(usersService)
         {
             _locationsService = locationsService;
             _logger = logger;
