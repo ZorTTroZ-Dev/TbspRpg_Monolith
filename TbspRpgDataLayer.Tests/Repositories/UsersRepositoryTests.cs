@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Repositories;
@@ -52,10 +53,15 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         [Fact]
-        public async void GetUserById_Valid_GroupsIncluded()
+        public async void GetUserById_Valid_GroupsAndPermissionsIncluded()
         {
             //arrange
             await using var context = new DatabaseContext(DbContextOptions);
+            var adminPermission = new Permission()
+            {
+                Id = Guid.NewGuid(),
+                Name = "admin specific permission"
+            };
             var testUser = new User()
             {
                 Id = Guid.NewGuid(),
@@ -66,12 +72,25 @@ namespace TbspRpgDataLayer.Tests.Repositories
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Name = "Admin"
+                        Name = "Admin",
+                        Permissions = new List<Permission>()
+                        {
+                            adminPermission
+                        }
                     },
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Name = "Super Admin"
+                        Name = "Super Admin",
+                        Permissions = new List<Permission>()
+                        {
+                            adminPermission,
+                            new()
+                            {
+                                Id = Guid.NewGuid(),
+                                Name = "super admin specific permission"
+                            }
+                        }
                     }
                 }
             };
@@ -87,6 +106,8 @@ namespace TbspRpgDataLayer.Tests.Repositories
             Assert.Equal(testUser.Id, user.Id);
             Assert.Equal(testUser.UserName, user.UserName);
             Assert.Equal(2, testUser.Groups.Count);
+            Assert.Single(testUser.Groups.First().Permissions);
+            Assert.Equal(2, testUser.Groups.Last().Permissions.Count);
         }
 
         #endregion

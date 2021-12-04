@@ -26,6 +26,7 @@ namespace TbspRpgDataLayer.Repositories
             return _databaseContext.Users.AsQueryable()
                 .Where(user => user.Id == id)
                 .Include(user => user.Groups)
+                .ThenInclude(group => group.Permissions)
                 .FirstOrDefaultAsync();
         }
 
