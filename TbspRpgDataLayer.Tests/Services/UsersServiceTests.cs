@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
@@ -71,6 +72,44 @@ namespace TbspRpgDataLayer.Tests.Services
             
             // assert
             Assert.Null(user);
+        }
+        
+        [Fact]
+        public async void GetUserById_Valid_GroupsIncluded()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testUser = new User()
+            {
+                Id = Guid.NewGuid(),
+                UserName = "test",
+                Password = "test",
+                Groups = new List<Group>()
+                {
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Admin"
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Super Admin"
+                    }
+                }
+            };
+            context.Users.Add(testUser);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            //act
+            var user = await service.GetById(testUser.Id);
+
+            //assert
+            Assert.NotNull(user);
+            Assert.Equal(testUser.Id, user.Id);
+            Assert.Equal(testUser.UserName, user.UserName);
+            Assert.Equal(2, testUser.Groups.Count);
         }
 
         #endregion
