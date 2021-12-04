@@ -17,7 +17,7 @@ namespace TbspRpgApi.Tests.Controllers
         {
             var service = CreateRoutesService(routes, exceptionId);
             return new RoutesController(service,
-                null,
+                MockPermissionService(),
                 NullLogger<RoutesController>.Instance);
         }
 

@@ -19,7 +19,7 @@ namespace TbspRpgApi.Tests.Controllers
         {
             var locationsService = CreateLocationsService(locations, updateLocationExceptionId);
             return new LocationsController(locationsService,
-                null,
+                MockPermissionService(),
                 NullLogger<LocationsController>.Instance);
         }
 

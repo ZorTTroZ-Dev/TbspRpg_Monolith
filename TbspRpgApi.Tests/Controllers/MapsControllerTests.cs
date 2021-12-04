@@ -19,7 +19,7 @@ namespace TbspRpgApi.Tests.Controllers
         {
             var mapsService = CreateMapsService(games, routes, changeLocationViaRouteExceptionId);
             return new MapsController(mapsService,
-                null,
+                MockPermissionService(),
                 NullLogger<MapsController>.Instance);
         }
 

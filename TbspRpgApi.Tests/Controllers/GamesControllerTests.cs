@@ -20,7 +20,7 @@ namespace TbspRpgApi.Tests.Controllers
         {
             var service = CreateGamesService(games, startGameExceptionId);
             var controller = new GamesController(service,
-                null,
+                MockPermissionService(),
                 NullLogger<GamesController>.Instance)
             {
                 ControllerContext = new ControllerContext

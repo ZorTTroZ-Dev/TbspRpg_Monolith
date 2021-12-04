@@ -29,12 +29,13 @@ namespace TbspRpgApi.Controllers
         public async Task<IActionResult> GetRouteById(Guid routeId)
         {
             var route = await _routesService.GetRouteById(routeId);
-            var canAccessLocation = await _permissionService.CanAccessLocation(
-                GetUserId().GetValueOrDefault(),
-                route.LocationId);
-            if (route != null && !canAccessLocation)
+            if (route != null)
             {
-                return BadRequest(new { message = NotYourRouteErrorMessage });
+                var canAccessLocation = await _permissionService.CanAccessLocation(
+                    GetUserId().GetValueOrDefault(),
+                    route.LocationId);
+                if(!canAccessLocation)
+                    return BadRequest(new { message = NotYourRouteErrorMessage });
             }
 
             return Ok(route);

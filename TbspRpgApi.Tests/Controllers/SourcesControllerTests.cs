@@ -17,7 +17,7 @@ namespace TbspRpgApi.Tests.Controllers
         {
             var service = CreateSourcesService(sources);
             return new SourcesController(service,
-                null,
+                MockPermissionService(),
                 NullLogger<SourcesController>.Instance);
         }
 

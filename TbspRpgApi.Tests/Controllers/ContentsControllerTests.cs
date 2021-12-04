@@ -22,7 +22,7 @@ namespace TbspRpgApi.Tests.Controllers
         {
             var service = CreateContentsService(contents, games, sources);
             return new ContentsController(service,
-                null,
+                MockPermissionService(),
                 NullLogger<ContentsController>.Instance);
         }
         

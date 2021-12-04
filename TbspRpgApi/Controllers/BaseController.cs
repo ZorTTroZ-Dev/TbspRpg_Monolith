@@ -13,7 +13,9 @@ namespace TbspRpgApi.Controllers
 
         protected Guid? GetUserId()
         {
-            return (Guid?) HttpContext.Items[AuthorizeAttribute.USER_ID_CONTEXT_KEY];
+            if(HttpContext != null)
+                return (Guid?) HttpContext.Items[AuthorizeAttribute.USER_ID_CONTEXT_KEY];
+            return Guid.Empty;
         }
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging.Abstractions;
-using TbspRpgApi.Entities;
+using Moq;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.Services;
@@ -13,6 +13,34 @@ namespace TbspRpgApi.Tests
 {
     public class ApiTest
     {
+        protected static IPermissionService MockPermissionService()
+        {
+            // return true for all permissions
+            var permissionService = new Mock<IPermissionService>();
+            
+            permissionService.Setup(service =>
+                    service.HasPermission(It.IsAny<Guid>(), It.IsAny<string>()))
+                .ReturnsAsync((Guid userId, string permissionName) => true);
+            
+            permissionService.Setup(service =>
+                    service.IsInGroup(It.IsAny<Guid>(), It.IsAny<string>()))
+                .ReturnsAsync((Guid userId, string permissionName) => true);
+            
+            permissionService.Setup(service =>
+                    service.CanAccessLocation(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid userId, Guid locationId) => true);
+            
+            permissionService.Setup(service =>
+                    service.CanAccessAdventure(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid userId, Guid locationId) => true);
+            
+            permissionService.Setup(service =>
+                    service.CanAccessGame(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid userId, Guid locationId) => true);
+            
+            return permissionService.Object;
+        }
+        
         protected static UsersService CreateUsersService(IEnumerable<User> users)
         {
             var dlUsersService = MockServices.MockDataLayerUsersService(users);
