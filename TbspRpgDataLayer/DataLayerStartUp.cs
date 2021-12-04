@@ -18,6 +18,7 @@ namespace TbspRpgDataLayer
             services.AddScoped<IAdventuresRepository, AdventuresRepository>();
             services.AddScoped<IGameRepository, GameRepository>();
             services.AddScoped<IContentsRepository, ContentsRepository>();
+            services.AddScoped<IGroupsRepository, GroupsRepository>();
             
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IAdventuresService, AdventuresService>();
@@ -26,6 +27,7 @@ namespace TbspRpgDataLayer
             services.AddScoped<IContentsService, ContentsService>();
             services.AddScoped<IRoutesService, RoutesService>();
             services.AddScoped<ISourcesService, SourcesService>();
+            services.AddScoped<IGroupsService, GroupsService>();
             
             // setup the database connection
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
