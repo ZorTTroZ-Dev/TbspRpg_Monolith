@@ -1,7 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 using TbspRpgApi.JwtAuthorization;
-using TbspRpgApi.Services;
 
 namespace TbspRpgApi.Controllers
 {

@@ -40,6 +40,13 @@ namespace TbspRpgApi.Tests
             
             return permissionService.Object;
         }
+
+        protected static PermissionService CreatePermissionService(IEnumerable<User> users)
+        {
+            var usersService = CreateUsersService(users);
+            return new PermissionService(usersService,
+                NullLogger<PermissionService>.Instance);
+        }
         
         protected static UsersService CreateUsersService(IEnumerable<User> users)
         {
