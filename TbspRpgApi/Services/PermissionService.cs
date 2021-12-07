@@ -19,7 +19,7 @@ namespace TbspRpgApi.Services
     public class PermissionService: IPermissionService
     {
         private User User { get; set; }
-        private List<string> Permissions { get; set; }
+        private HashSet<string> Permissions { get; set; }
         private readonly IUsersService _usersService;
         private readonly ILogger<PermissionService> _logger;
 
@@ -40,6 +40,7 @@ namespace TbspRpgApi.Services
                 return;
             
             await LoadUser(userId);
+            Permissions = new HashSet<string>();
             foreach (var group in User.Groups)
             {
                 foreach (var permission in group.Permissions)
