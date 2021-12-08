@@ -26,7 +26,7 @@ namespace TbspRpgApi.Controllers
         
         [HttpGet("location"), Authorize]
         public async Task<IActionResult> GetCurrentLocationForGame(Guid gameId) {
-            var canAccessGame = await _permissionService.CanAccessGame(GetUserId().GetValueOrDefault(), gameId);
+            var canAccessGame = await _permissionService.CanReadGame(GetUserId().GetValueOrDefault(), gameId);
             if(!canAccessGame)
             {
                 return BadRequest(new { message = NotYourGameErrorMessage });
@@ -45,7 +45,7 @@ namespace TbspRpgApi.Controllers
         
         [HttpGet("changelocation/{routeId:guid}"), Authorize]
         public async Task<IActionResult> ChangeLocationViaRoute(Guid gameId, Guid routeId) {
-            var canAccessGame = await _permissionService.CanAccessGame(GetUserId().GetValueOrDefault(), gameId);
+            var canAccessGame = await _permissionService.CanReadGame(GetUserId().GetValueOrDefault(), gameId);
             if(!canAccessGame)
                 return BadRequest(new { message = NotYourGameErrorMessage });
             try
@@ -61,7 +61,7 @@ namespace TbspRpgApi.Controllers
         
         [HttpGet("routes"), Authorize]
         public async Task<IActionResult> GetCurrentRoutesForGame(Guid gameId) {
-            var canAccessGame = await _permissionService.CanAccessGame(GetUserId().GetValueOrDefault(), gameId);
+            var canAccessGame = await _permissionService.CanReadGame(GetUserId().GetValueOrDefault(), gameId);
             if(!canAccessGame)
                 return BadRequest(new { message = NotYourGameErrorMessage });
             try
@@ -77,7 +77,7 @@ namespace TbspRpgApi.Controllers
         
         [HttpGet("routes/after/{timeStamp}"), Authorize]
         public async Task<IActionResult> GetRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp) {
-            var canAccessGame = await _permissionService.CanAccessGame(GetUserId().GetValueOrDefault(), gameId);
+            var canAccessGame = await _permissionService.CanReadGame(GetUserId().GetValueOrDefault(), gameId);
             if(!canAccessGame)
                 return BadRequest(new { message = NotYourGameErrorMessage });
             try

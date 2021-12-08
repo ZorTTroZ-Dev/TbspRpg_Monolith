@@ -27,7 +27,7 @@ namespace TbspRpgApi.Controllers
         
         [HttpGet("{adventureId:guid}"), Authorize]
         public async Task<IActionResult> GetLocationsForAdventure(Guid adventureId) {
-            var canAccessAdventure = await _permissionService.CanAccessAdventure(
+            var canAccessAdventure = await _permissionService.CanReadAdventure(
                 GetUserId().GetValueOrDefault(),
                 adventureId);
             if(!canAccessAdventure)
@@ -49,7 +49,7 @@ namespace TbspRpgApi.Controllers
         [HttpPut, Authorize]
         public async Task<IActionResult> UpdateLocationAndSource([FromBody] LocationUpdateRequest locationUpdateRequest)
         {
-            var canAccessAdventure = await _permissionService.CanAccessAdventure(
+            var canAccessAdventure = await _permissionService.CanReadAdventure(
                 GetUserId().GetValueOrDefault(),
                 locationUpdateRequest.location.AdventureId);
             if (!canAccessAdventure)

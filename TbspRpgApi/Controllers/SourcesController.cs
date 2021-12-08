@@ -29,7 +29,7 @@ namespace TbspRpgApi.Controllers
         [Authorize]
         public async Task<IActionResult> GetSourcesForAdventure(Guid adventureId, [FromQuery]SourceFilterRequest filters)
         {
-            var canAccessAdventure = await _permissionService.CanAccessAdventure(
+            var canAccessAdventure = await _permissionService.CanReadAdventure(
                 GetUserId().GetValueOrDefault(),
                 adventureId);
             if(!canAccessAdventure)

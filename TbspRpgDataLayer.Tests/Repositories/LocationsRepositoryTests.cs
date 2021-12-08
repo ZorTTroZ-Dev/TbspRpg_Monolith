@@ -240,7 +240,11 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var testLocation = new Location()
             {
                 Id = Guid.NewGuid(),
-                Name = "test location"
+                Name = "test location",
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid()
+                }
             };
             context.Locations.Add(testLocation);
             await context.SaveChangesAsync();

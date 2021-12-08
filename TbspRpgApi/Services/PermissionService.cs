@@ -11,9 +11,12 @@ namespace TbspRpgApi.Services
     {
         Task<bool> HasPermission(Guid userId, string permissionName);
         Task<bool> IsInGroup(Guid userId, string groupName);
-        Task<bool> CanAccessLocation(Guid userId, Guid locationId);
-        Task<bool> CanAccessAdventure(Guid userId, Guid adventureId);
-        Task<bool> CanAccessGame(Guid userId, Guid gameId);
+        Task<bool> CanReadLocation(Guid userId, Guid locationId);
+        Task<bool> CanWriteLocation(Guid userId, Guid locationId);
+        Task<bool> CanReadAdventure(Guid userId, Guid adventureId);
+        Task<bool> CanWriteAdventure(Guid userId, Guid adventureId);
+        Task<bool> CanReadGame(Guid userId, Guid gameId);
+        Task<bool> CanWriteGame(Guid userId, Guid gameId);
     }
     
     public class PermissionService: IPermissionService
@@ -21,13 +24,16 @@ namespace TbspRpgApi.Services
         private User User { get; set; }
         private HashSet<string> Permissions { get; set; }
         private readonly TbspRpgDataLayer.Services.IUsersService _usersService;
+        private readonly TbspRpgDataLayer.Services.ILocationsService _locationsService;
         private readonly ILogger<PermissionService> _logger;
 
         public PermissionService(
             TbspRpgDataLayer.Services.IUsersService usersService,
+            TbspRpgDataLayer.Services.ILocationsService locationsService,
             ILogger<PermissionService> logger)
         {
             _usersService = usersService;
+            _locationsService = locationsService;
             _logger = logger;
         }
         
@@ -65,19 +71,46 @@ namespace TbspRpgApi.Services
                 string.Equals(group.Name, groupName, StringComparison.CurrentCultureIgnoreCase));
         }
 
+        private async Task<bool> CanAccessLocation(Guid userId, Guid locationId)
+        {
+            var location = await _locationsService.GetLocationById(locationId);
+            if (location == null)
+                return false;
+
+            return location.Adventure.CreatedByUserId == userId;
+        }
+
         // they can access a location if they own the adventure that owns the route
-        public async Task<bool> CanAccessLocation(Guid userId, Guid locationId)
+        public async Task<bool> CanReadLocation(Guid userId, Guid locationId)
         {
-            // look up the location
+            return await HasPermission(userId, 
+                       TbspRpgSettings.Settings.Permissions.READ_LOCATION) || 
+                   await CanAccessLocation(userId, locationId);
+        }
+
+        public async Task<bool> CanWriteLocation(Guid userId, Guid locationId)
+        {
+            return await HasPermission(userId,
+                       TbspRpgSettings.Settings.Permissions.WRITE_LOCATION) || 
+                   await CanAccessLocation(userId, locationId);
+        }
+
+        public async Task<bool> CanReadAdventure(Guid userId, Guid adventureId)
+        {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> CanAccessAdventure(Guid userId, Guid adventureId)
+        public async Task<bool> CanWriteAdventure(Guid userId, Guid adventureId)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> CanAccessGame(Guid userId, Guid gameId)
+        public async Task<bool> CanReadGame(Guid userId, Guid gameId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> CanWriteGame(Guid userId, Guid gameId)
         {
             throw new NotImplementedException();
         }

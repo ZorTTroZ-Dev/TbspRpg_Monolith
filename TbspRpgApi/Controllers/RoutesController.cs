@@ -31,7 +31,7 @@ namespace TbspRpgApi.Controllers
             var route = await _routesService.GetRouteById(routeId);
             if (route != null)
             {
-                var canAccessLocation = await _permissionService.CanAccessLocation(
+                var canAccessLocation = await _permissionService.CanReadLocation(
                     GetUserId().GetValueOrDefault(),
                     route.LocationId);
                 if(!canAccessLocation)
@@ -44,7 +44,7 @@ namespace TbspRpgApi.Controllers
         [HttpGet("location/{locationId:guid}"), Authorize]
         public async Task<IActionResult> GetRoutesForLocation(Guid locationId)
         {
-            var canAccessLocation = await _permissionService.CanAccessLocation(
+            var canAccessLocation = await _permissionService.CanReadLocation(
                 GetUserId().GetValueOrDefault(),
                 locationId);
             if (!canAccessLocation)
@@ -62,7 +62,7 @@ namespace TbspRpgApi.Controllers
         [HttpGet("destination/{locationId:guid}"), Authorize]
         public async Task<IActionResult> GetRoutesWithDestination(Guid locationId)
         {
-            var canAccessLocation = await _permissionService.CanAccessLocation(
+            var canAccessLocation = await _permissionService.CanReadLocation(
                 GetUserId().GetValueOrDefault(),
                 locationId);
             if (!canAccessLocation)
@@ -82,10 +82,10 @@ namespace TbspRpgApi.Controllers
         {
             if (updateRouteRequests.Length == 0)
                 return Ok(null);
-
-            var canAccessAdventure = await _permissionService.CanAccessAdventure(
+            
+            var canAccessAdventure = await _permissionService.CanWriteLocation(
                 GetUserId().GetValueOrDefault(),
-                updateRouteRequests[0].source.AdventureId);
+                updateRouteRequests[0].route.LocationId);
             if (!canAccessAdventure)
             {
                 return BadRequest(new { message = NotYourAdventureErrorMessage });

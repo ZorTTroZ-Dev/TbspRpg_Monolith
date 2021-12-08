@@ -43,7 +43,7 @@ namespace TbspRpgApi.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteGame(Guid gameId)
         {
-            var canAccessGame = await _permissionService.CanAccessGame(GetUserId().GetValueOrDefault(), gameId);
+            var canAccessGame = await _permissionService.CanReadGame(GetUserId().GetValueOrDefault(), gameId);
             // make sure the user either is the game's owner or the user is an admin
             if(!canAccessGame)
                 return BadRequest(new { message = NotYourGameErrorMessage });

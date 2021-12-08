@@ -42,6 +42,7 @@ namespace TbspRpgDataLayer.Repositories
         public Task<Location> GetLocationById(Guid locationId)
         {
             return _databaseContext.Locations.AsQueryable()
+                .Include(location => location.Adventure)
                 .FirstOrDefaultAsync(location => location.Id == locationId);
         }
 

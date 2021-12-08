@@ -27,24 +27,40 @@ namespace TbspRpgApi.Tests
                 .ReturnsAsync((Guid userId, string permissionName) => true);
             
             permissionService.Setup(service =>
-                    service.CanAccessLocation(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                    service.CanReadLocation(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((Guid userId, Guid locationId) => true);
             
             permissionService.Setup(service =>
-                    service.CanAccessAdventure(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                    service.CanWriteLocation(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((Guid userId, Guid locationId) => true);
             
             permissionService.Setup(service =>
-                    service.CanAccessGame(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                    service.CanReadAdventure(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid userId, Guid locationId) => true);
+            
+            permissionService.Setup(service =>
+                    service.CanWriteAdventure(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid userId, Guid locationId) => true);
+            
+            permissionService.Setup(service =>
+                    service.CanReadGame(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid userId, Guid locationId) => true);
+            
+            permissionService.Setup(service =>
+                    service.CanWriteGame(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((Guid userId, Guid locationId) => true);
             
             return permissionService.Object;
         }
 
-        protected static PermissionService CreatePermissionService(IEnumerable<User> users)
+        protected static PermissionService CreatePermissionService(
+            IEnumerable<User> users,
+            ICollection<Location> locations = null)
         {
             var dlUsersService = MockServices.MockDataLayerUsersService(users);
+            var dlLocationsService = MockServices.MockDataLayerLocationsService(locations);
             return new PermissionService(dlUsersService,
+                dlLocationsService,
                 NullLogger<PermissionService>.Instance);
         }
         

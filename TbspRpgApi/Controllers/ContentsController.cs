@@ -29,7 +29,7 @@ namespace TbspRpgApi.Controllers
         [Authorize]
         public async Task<IActionResult> GetLatestContentForGame(Guid gameId)
         {
-            var canAccessGame = await _permissionService.CanAccessGame(
+            var canAccessGame = await _permissionService.CanReadGame(
                 GetUserId().GetValueOrDefault(),
                 gameId);
             if(!canAccessGame)
@@ -40,7 +40,7 @@ namespace TbspRpgApi.Controllers
         
         [Authorize, HttpGet("filter")]
         public async Task<IActionResult> GetPartialContentForGame(Guid gameId, [FromQuery] ContentFilterRequest filterRequest) {
-            var canAccessGame = await _permissionService.CanAccessGame(
+            var canAccessGame = await _permissionService.CanReadGame(
                 GetUserId().GetValueOrDefault(),
                 gameId);
             if(!canAccessGame)
@@ -59,7 +59,7 @@ namespace TbspRpgApi.Controllers
         [Authorize, HttpGet("after/{position}")]
         public async Task<IActionResult> GetContentForGameAfterPosition(Guid gameId, ulong position)
         {
-            var canAccessGame = await _permissionService.CanAccessGame(
+            var canAccessGame = await _permissionService.CanReadGame(
                 GetUserId().GetValueOrDefault(),
                 gameId);
             if(!canAccessGame)
@@ -70,7 +70,7 @@ namespace TbspRpgApi.Controllers
         
         [Authorize, HttpGet("source/{key:guid}")]
         public async Task<IActionResult> GetSourceForKey(Guid gameId, Guid key) {
-            var canAccessGame = await _permissionService.CanAccessGame(
+            var canAccessGame = await _permissionService.CanReadGame(
                 GetUserId().GetValueOrDefault(),
                 gameId);
             if(!canAccessGame)
