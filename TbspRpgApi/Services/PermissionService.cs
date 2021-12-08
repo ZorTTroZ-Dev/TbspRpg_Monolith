@@ -25,15 +25,18 @@ namespace TbspRpgApi.Services
         private HashSet<string> Permissions { get; set; }
         private readonly TbspRpgDataLayer.Services.IUsersService _usersService;
         private readonly TbspRpgDataLayer.Services.ILocationsService _locationsService;
+        private readonly TbspRpgDataLayer.Services.IAdventuresService _adventuresService;
         private readonly ILogger<PermissionService> _logger;
 
         public PermissionService(
             TbspRpgDataLayer.Services.IUsersService usersService,
             TbspRpgDataLayer.Services.ILocationsService locationsService,
+            TbspRpgDataLayer.Services.IAdventuresService adventuresService,
             ILogger<PermissionService> logger)
         {
             _usersService = usersService;
             _locationsService = locationsService;
+            _adventuresService = adventuresService;
             _logger = logger;
         }
         
@@ -80,7 +83,7 @@ namespace TbspRpgApi.Services
             return location.Adventure.CreatedByUserId == userId;
         }
 
-        // they can access a location if they own the adventure that owns the route
+        // they can access a location if they own the adventure that owns the location
         public async Task<bool> CanReadLocation(Guid userId, Guid locationId)
         {
             return await HasPermission(userId, 
@@ -95,14 +98,27 @@ namespace TbspRpgApi.Services
                    await CanAccessLocation(userId, locationId);
         }
 
+        private async Task<bool> CanAccessAdventure(Guid userId, Guid adventureId)
+        {
+            var adventure = await _adventuresService.GetAdventureById(adventureId);
+            if (adventure == null)
+                return false;
+
+            return adventure.CreatedByUserId == userId;
+        }
+
         public async Task<bool> CanReadAdventure(Guid userId, Guid adventureId)
         {
-            throw new NotImplementedException();
+            return await HasPermission(userId,
+                       TbspRpgSettings.Settings.Permissions.READ_ADVENTURE) ||
+                   await CanAccessAdventure(userId, adventureId);
         }
 
         public async Task<bool> CanWriteAdventure(Guid userId, Guid adventureId)
         {
-            throw new NotImplementedException();
+            return await HasPermission(userId,
+                       TbspRpgSettings.Settings.Permissions.WRITE_ADVENTURE) ||
+                   await CanAccessAdventure(userId, adventureId);
         }
 
         public async Task<bool> CanReadGame(Guid userId, Guid gameId)

@@ -233,9 +233,371 @@ namespace TbspRpgApi.Tests.Services
 
         #endregion
 
-        #region CanAccessAdventure
+        #region CanReadAdventure
 
+        [Fact]
+        public async void CanReadAdventure_OwnAdventure_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = users[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures);
+            
+            // act
+            var canRead = await service.CanReadAdventure(users[0].Id, adventures[0].Id);
+            
+            // assert
+            Assert.True(canRead);
+        }
+
+        [Fact]
+        public async void CanReadAdventure_HasPermission_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = TbspRpgSettings.Settings.Permissions.READ_ADVENTURE
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures);
+            
+            // act
+            var canRead = await service.CanReadAdventure(users[0].Id, adventures[0].Id);
+            
+            // assert
+            Assert.True(canRead);
+        }
+
+        [Fact]
+        public async void CanReadAdventure_NoOwnNoPermission_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "bananas"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures);
+            
+            // act
+            var canRead = await service.CanReadAdventure(users[0].Id, adventures[0].Id);
+            
+            // assert
+            Assert.False(canRead);
+        }
+
+        [Fact]
+        public async void CanReadAdventure_BadAdventureId_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "bananas"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures);
+            
+            // act
+            var canRead = await service.CanReadAdventure(users[0].Id, Guid.NewGuid());
+            
+            // assert
+            Assert.False(canRead);
+        }
+
+        #endregion
         
+        #region CanWriteAdventure
+
+        [Fact]
+        public async void CanWriteAdventure_OwnAdventure_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = users[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures);
+            
+            // act
+            var canWrite = await service.CanWriteAdventure(users[0].Id, adventures[0].Id);
+            
+            // assert
+            Assert.True(canWrite);
+        }
+        
+        [Fact]
+        public async void CanWriteAdventure_HasPermission_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = TbspRpgSettings.Settings.Permissions.WRITE_ADVENTURE
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures);
+            
+            // act
+            var canWrite = await service.CanWriteAdventure(users[0].Id, adventures[0].Id);
+            
+            // assert
+            Assert.True(canWrite);
+        }
+        
+        [Fact]
+        public async void CanWriteAdventure_NoOwnerNoPermission_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "bananas"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures);
+            
+            // act
+            var canWrite = await service.CanWriteAdventure(users[0].Id, adventures[0].Id);
+            
+            // assert
+            Assert.False(canWrite);
+        }
+        
+        [Fact]
+        public async void CanWriteAdventure_BadAdventureId_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "bananas"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = users[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures);
+            
+            // act
+            var canWrite = await service.CanWriteAdventure(users[0].Id, Guid.NewGuid());
+            
+            // assert
+            Assert.False(canWrite);
+        }
 
         #endregion
 

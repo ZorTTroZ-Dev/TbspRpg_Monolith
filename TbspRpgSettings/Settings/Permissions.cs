@@ -6,13 +6,17 @@ namespace TbspRpgSettings.Settings
     {
         public static readonly string READ_LOCATION = "read_location";
         public static readonly string WRITE_LOCATION = "write_location";
+        public static readonly string READ_ADVENTURE = "read_adventure";
+        public static readonly string WRITE_ADVENTURE = "write_adventure";
 
         public static List<string> GetAllPermissionNames()
         {
             return new List<string>()
             {
                 READ_LOCATION,
-                WRITE_LOCATION
+                WRITE_LOCATION,
+                READ_ADVENTURE,
+                WRITE_ADVENTURE
             };
         }
     }
