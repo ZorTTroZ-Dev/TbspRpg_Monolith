@@ -20,10 +20,12 @@ namespace TbspRpgApi.Services
     {
         private User User { get; set; }
         private HashSet<string> Permissions { get; set; }
-        private readonly IUsersService _usersService;
+        private readonly TbspRpgDataLayer.Services.IUsersService _usersService;
         private readonly ILogger<PermissionService> _logger;
 
-        public PermissionService(IUsersService usersService, ILogger<PermissionService> logger)
+        public PermissionService(
+            TbspRpgDataLayer.Services.IUsersService usersService,
+            ILogger<PermissionService> logger)
         {
             _usersService = usersService;
             _logger = logger;
@@ -31,7 +33,7 @@ namespace TbspRpgApi.Services
         
         private async Task LoadUser(Guid userId)
         {
-            User ??= await _usersService.GetUserEntityById(userId);
+            User ??= await _usersService.GetById(userId);
         }
 
         protected async Task LoadPermissions(Guid userId)
@@ -63,8 +65,10 @@ namespace TbspRpgApi.Services
                 string.Equals(group.Name, groupName, StringComparison.CurrentCultureIgnoreCase));
         }
 
+        // they can access a location if they own the adventure that owns the route
         public async Task<bool> CanAccessLocation(Guid userId, Guid locationId)
         {
+            // look up the location
             throw new NotImplementedException();
         }
 

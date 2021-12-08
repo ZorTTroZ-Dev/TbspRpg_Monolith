@@ -43,8 +43,8 @@ namespace TbspRpgApi.Tests
 
         protected static PermissionService CreatePermissionService(IEnumerable<User> users)
         {
-            var usersService = CreateUsersService(users);
-            return new PermissionService(usersService,
+            var dlUsersService = MockServices.MockDataLayerUsersService(users);
+            return new PermissionService(dlUsersService,
                 NullLogger<PermissionService>.Instance);
         }
         

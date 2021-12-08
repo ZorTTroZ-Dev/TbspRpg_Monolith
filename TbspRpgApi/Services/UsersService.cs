@@ -9,7 +9,6 @@ namespace TbspRpgApi.Services
     public interface IUsersService
     {
         Task<UserViewModel> Authenticate(string userName, string password);
-        Task<User> GetUserEntityById(Guid userId);
     }
     
     public class UsersService : IUsersService
@@ -29,11 +28,6 @@ namespace TbspRpgApi.Services
             if (user == null) return null;
             var token = _jwtHelper.GenerateToken(user.Id.ToString());
             return new UserAuthViewModel(user, token);
-        }
-
-        public Task<User> GetUserEntityById(Guid userId)
-        {
-            return _usersService.GetById(userId);
         }
     }
 }
