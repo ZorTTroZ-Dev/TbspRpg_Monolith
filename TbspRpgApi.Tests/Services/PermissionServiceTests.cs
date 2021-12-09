@@ -227,9 +227,371 @@ namespace TbspRpgApi.Tests.Services
 
         #endregion
 
-        #region CanAccessGame
+        #region CanReadGame
 
+        [Fact]
+        public async void CanReadGame_OwnsGame_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var games = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = users[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, null, games);
+            
+            // act
+            var can = await service.CanReadGame(users[0].Id, games[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
         
+        [Fact]
+        public async void CanReadGame_HasPermission_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = TbspRpgSettings.Settings.Permissions.READ_GAME
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var games = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = Guid.NewGuid()
+                }
+            };
+            var service = CreatePermissionService(users, null, null, games);
+            
+            // act
+            var can = await service.CanReadGame(users[0].Id, games[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanReadGame_NoOwnNoPermission_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var games = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = Guid.NewGuid()
+                }
+            };
+            var service = CreatePermissionService(users, null, null, games);
+            
+            // act
+            var can = await service.CanReadGame(users[0].Id, games[0].Id);
+            
+            // assert
+            Assert.False(can);
+        }
+        
+        [Fact]
+        public async void CanReadGame_BadGameId_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var games = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = users[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, null, games);
+            
+            // act
+            var can = await service.CanReadGame(users[0].Id, Guid.NewGuid());
+            
+            // assert
+            Assert.False(can);
+        }
+
+        #endregion
+
+        #region CanWriteGame
+
+        [Fact]
+        public async void CanWriteGame_OwnsGame_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var games = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = users[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, null, games);
+            
+            // act
+            var can = await service.CanWriteGame(users[0].Id, games[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanWriteGame_HasPermission_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = TbspRpgSettings.Settings.Permissions.WRITE_GAME
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var games = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = Guid.NewGuid()
+                }
+            };
+            var service = CreatePermissionService(users, null, null, games);
+            
+            // act
+            var can = await service.CanWriteGame(users[0].Id, games[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanWriteGame_NoOwnNoPermission_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var games = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = Guid.NewGuid()
+                }
+            };
+            var service = CreatePermissionService(users, null, null, games);
+            
+            // act
+            var can = await service.CanWriteGame(users[0].Id, games[0].Id);
+            
+            // assert
+            Assert.False(can);
+        }
+        
+        [Fact]
+        public async void CanWriteGame_BadGameIdPermissionOverride_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = TbspRpgSettings.Settings.Permissions.WRITE_GAME
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var games = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = users[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, null, games);
+            
+            // act
+            var can = await service.CanWriteGame(users[0].Id, Guid.NewGuid());
+            
+            // assert
+            Assert.True(can);
+        }
 
         #endregion
 

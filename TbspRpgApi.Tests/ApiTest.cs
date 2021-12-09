@@ -56,17 +56,21 @@ namespace TbspRpgApi.Tests
         protected static PermissionService CreatePermissionService(
             IEnumerable<User> users,
             ICollection<Location> locations = null,
-            ICollection<Adventure> adventures = null)
+            ICollection<Adventure> adventures = null,
+            ICollection<Game> games = null)
         {
-            if (adventures == null)
-                adventures = new List<Adventure>();
+            locations ??= new List<Location>();
+            adventures ??= new List<Adventure>();
+            games ??= new List<Game>();
             
             var dlUsersService = MockServices.MockDataLayerUsersService(users);
             var dlLocationsService = MockServices.MockDataLayerLocationsService(locations);
             var dlAdventuresService = MockServices.MockDataLayerAdventuresService(adventures);
+            var dlGamesService = MockServices.MockDataLayerGamesService(games);
             return new PermissionService(dlUsersService,
                 dlLocationsService,
                 dlAdventuresService,
+                dlGamesService,
                 NullLogger<PermissionService>.Instance);
         }
         
