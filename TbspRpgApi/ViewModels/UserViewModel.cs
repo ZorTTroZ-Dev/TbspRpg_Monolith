@@ -13,6 +13,8 @@ namespace TbspRpgApi.ViewModels
         public string Username { get; set; }
         
         public List<GroupViewModel> Groups { get; set; }
+        
+        public List<string> Permissions { get; set; }
 
         public UserViewModel(User user)
         {
@@ -20,7 +22,16 @@ namespace TbspRpgApi.ViewModels
             Username = user.UserName;
             if (user.Groups != null)
             {
-                Groups = user.Groups.Select(group => new GroupViewModel(group)).ToList();
+                Groups = new List<GroupViewModel>();
+                Permissions = new List<string>();
+                foreach (var group in user.Groups)
+                {
+                  Groups.Add(new GroupViewModel(group));
+                  foreach (var permission in group.Permissions)
+                  {
+                      Permissions.Add(permission.Name);
+                  }
+                }
             }
         }
     }

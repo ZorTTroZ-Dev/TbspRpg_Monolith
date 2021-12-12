@@ -48,7 +48,7 @@ namespace TbspRpgApi.Controllers
         [HttpPut, Authorize]
         public async Task<IActionResult> UpdateAdventureAndSource([FromBody] AdventureUpdateRequest adventureUpdateRequest)
         {
-            var canAccessAdventure = await _permissionService.CanReadAdventure(
+            var canAccessAdventure = await _permissionService.CanWriteAdventure(
                 GetUserId().GetValueOrDefault(),
                 adventureUpdateRequest.adventure.Id);
             
