@@ -101,6 +101,46 @@ namespace TbspRpgProcessor.Tests
                 NullLogger<AdventureProcessor>.Instance);
         }
 
+        protected static IUserProcessor CreateUserProcessor(
+            ICollection<User> users = null)
+        {
+            var usersService = MockServices.MockDataLayerUsersService(users);
+            return new UserProcessor(
+                usersService,
+                NullLogger<UserProcessor>.Instance);
+        }
+
+        public static IUserProcessor MockUserProcessor(string exceptionEmail)
+        {
+            var userProcessor = new Mock<IUserProcessor>();
+
+            userProcessor.Setup(processor =>
+                    processor.RegisterUser(It.IsAny<UserRegisterModel>()))
+                .ReturnsAsync((UserRegisterModel userRegisterModel) =>
+                {
+                    if (userRegisterModel.Email == exceptionEmail)
+                        throw new ArgumentException("can't register user");
+                    return new User()
+                    {
+                        Id = Guid.NewGuid()
+                    };
+                });
+
+            userProcessor.Setup(processor =>
+                    processor.VerifyUserRegistration(It.IsAny<UserVerifyRegisterModel>()))
+                .ReturnsAsync((UserVerifyRegisterModel userVerifyRegisterModel) =>
+                {
+                    if (userVerifyRegisterModel.RegistrationKey == exceptionEmail)
+                        throw new ArgumentException("can't verify registration");
+                    return new User()
+                    {
+                        Id = Guid.NewGuid()
+                    };
+                });
+
+            return userProcessor.Object;
+        }
+
         public static IAdventureProcessor MockAdventureProcessor(Guid updateAdventureExceptionId)
         {
             var adventureProcessor = new Mock<IAdventureProcessor>();
