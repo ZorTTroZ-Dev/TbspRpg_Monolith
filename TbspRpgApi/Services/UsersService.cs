@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using TbspRpgApi.JwtAuthorization;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using TbspRpgDataLayer.Entities;
 
@@ -9,6 +10,8 @@ namespace TbspRpgApi.Services
     public interface IUsersService
     {
         Task<UserViewModel> Authenticate(string userName, string password);
+        Task<UserViewModel> Register(UsersRegisterRequest registerRequest);
+        Task<UserViewModel> VerifyRegistration(string registrationKey);
     }
     
     public class UsersService : IUsersService
@@ -28,6 +31,16 @@ namespace TbspRpgApi.Services
             if (user == null) return null;
             var token = _jwtHelper.GenerateToken(user.Id.ToString());
             return new UserAuthViewModel(user, token);
+        }
+
+        public async Task<UserViewModel> Register(UsersRegisterRequest registerRequest)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<UserViewModel> VerifyRegistration(string registrationKey)
+        {
+            throw new NotImplementedException();
         }
     }
 }
