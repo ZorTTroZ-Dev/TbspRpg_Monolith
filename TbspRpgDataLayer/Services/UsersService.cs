@@ -9,11 +9,13 @@ using TbspRpgSettings.Settings;
 
 namespace TbspRpgDataLayer.Services
 {
-    public interface IUsersService {
+    public interface IUsersService: IBaseService {
         Task<User> GetById(Guid id);
         Task<User> Authenticate(string email, string password);
         string HashPassword(string password);
         Task<User> GetUserByEmailAndPassword(string email, string password);
+        Task<User> GetUserByEmail(string email);
+        Task AddUser(User user);
     }
     
     public class UsersService : IUsersService
@@ -56,6 +58,21 @@ namespace TbspRpgDataLayer.Services
         public Task<User> GetUserByEmailAndPassword(string email, string password)
         {
             return _usersRepository.GetUserByEmailAndPassword(email, password);
+        }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task AddUser(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task SaveChanges()
+        {
+            throw new NotImplementedException();
         }
     }
 }

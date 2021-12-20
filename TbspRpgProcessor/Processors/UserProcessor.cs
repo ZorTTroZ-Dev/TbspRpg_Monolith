@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
@@ -26,12 +27,45 @@ namespace TbspRpgProcessor.Processors
 
         public async Task<User> RegisterUser(UserRegisterModel userRegisterModel)
         {
-            throw new System.NotImplementedException();
+            var dbUser = await _usersService.GetUserByEmail(userRegisterModel.Email);
+            if (dbUser != null)
+                throw new ArgumentException("email already exists");
+
+            var randomNumber = new Random();
+            var registrationKeyInt = randomNumber.Next(1000000);
+            var registrationKey = registrationKeyInt.ToString("000000");
+            var user = new User()
+            {
+                Email = userRegisterModel.Email,
+                Password = _usersService.HashPassword(userRegisterModel.Password),
+                RegistrationKey = registrationKey,
+                RegistrationComplete = false,
+                DateCreated = DateTime.UtcNow
+            };
+            await _usersService.AddUser(user);
+            await _usersService.SaveChanges();
+            
+            // send an email to the user's address with the code
+            
+            return user;
         }
 
         public async Task<User> VerifyUserRegistration(UserVerifyRegisterModel userVerifyRegisterModel)
         {
-            throw new System.NotImplementedException();
+            var dbUser = await _usersService.GetById(userVerifyRegisterModel.UserId);
+            if (dbUser == null)
+                throw new ArgumentException("invalid user id");
+
+            if (dbUser.RegistrationComplete)
+                throw new Exception("registration already complete");
+
+            if (dbUser.RegistrationKey != userVerifyRegisterModel.RegistrationKey)
+                return null;
+
+            dbUser.RegistrationComplete = true;
+            dbUser.RegistrationKey = null;
+            await _usersService.SaveChanges();
+            return dbUser;
         }
     }
 }
