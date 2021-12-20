@@ -28,7 +28,7 @@ namespace TbspRpgApi.Tests.Controllers
             var testUser = new User
             {
                 Id = Guid.NewGuid(),
-                UserName = "test",
+                Email = "test",
                 Password = "test"
             };
             var controller = CreateController(new List<User>() { testUser });
@@ -58,7 +58,7 @@ namespace TbspRpgApi.Tests.Controllers
             var testUser = new User
             {
                 Id = Guid.NewGuid(),
-                UserName = "test",
+                Email = "test",
                 Password = "test"
             };
             var controller = CreateController(new List<User>() { testUser });

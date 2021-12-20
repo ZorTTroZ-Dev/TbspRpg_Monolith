@@ -22,7 +22,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var testUser = new User()
             {
                 Id = Guid.NewGuid(),
-                UserName = "test",
+                Email = "test",
                 Password = "test"
             };
             context.Users.Add(testUser);
@@ -35,7 +35,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             //assert
             Assert.NotNull(user);
             Assert.Equal(testUser.Id, user.Id);
-            Assert.Equal(testUser.UserName, user.UserName);
+            Assert.Equal(testUser.Email, user.Email);
         }
         
         [Fact]
@@ -65,7 +65,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var testUser = new User()
             {
                 Id = Guid.NewGuid(),
-                UserName = "test",
+                Email = "test",
                 Password = "test",
                 Groups = new List<Group>()
                 {
@@ -104,7 +104,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             //assert
             Assert.NotNull(user);
             Assert.Equal(testUser.Id, user.Id);
-            Assert.Equal(testUser.UserName, user.UserName);
+            Assert.Equal(testUser.Email, user.Email);
             Assert.Equal(2, testUser.Groups.Count);
             Assert.Single(testUser.Groups.First().Permissions);
             Assert.Equal(2, testUser.Groups.Last().Permissions.Count);
@@ -122,7 +122,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var testUser = new User()
             {
                 Id = Guid.NewGuid(),
-                UserName = "test",
+                Email = "test",
                 Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
             };
             context.Users.Add(testUser);
@@ -136,7 +136,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             //assert
             Assert.NotNull(user);
             Assert.Equal(testUser.Id, user.Id);
-            Assert.Equal(testUser.UserName, user.UserName);
+            Assert.Equal(testUser.Email, user.Email);
         }
         
         [Fact]
@@ -147,7 +147,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var testUser = new User()
             {
                 Id = Guid.NewGuid(),
-                UserName = "test",
+                Email = "test",
                 Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
             };
             context.Users.Add(testUser);
@@ -170,7 +170,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var testUser = new User()
             {
                 Id = Guid.NewGuid(),
-                UserName = "test",
+                Email = "test",
                 Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
             };
             context.Users.Add(testUser);
@@ -193,7 +193,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var testUser = new User()
             {
                 Id = Guid.NewGuid(),
-                UserName = "test",
+                Email = "test",
                 Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
             };
             context.Users.Add(testUser);

@@ -30,7 +30,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "test"
+                    Email = "test"
                 }
             };
             var processor = CreateGameProcessor(
@@ -62,7 +62,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "test"
+                    Email = "test"
                 }
             };
             var processor = CreateGameProcessor(
@@ -94,7 +94,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "test"
+                    Email = "test"
                 }
             };
             var testGames = new List<Game>()
@@ -139,7 +139,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "test"
+                    Email = "test"
                 }
             };
             var processor = CreateGameProcessor(
@@ -174,7 +174,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "test"
+                    Email = "test"
                 }
             };
             var testLocations = new List<Location>()
@@ -233,7 +233,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "test"
+                    Email = "test"
                 }
             };
             var testGames = new List<Game>()
@@ -277,7 +277,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "test"
+                    Email = "test"
                 }
             };
             var testGames = new List<Game>()
@@ -323,7 +323,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "test"
+                    Email = "test"
                 }
             };
             var testGames = new List<Game>()

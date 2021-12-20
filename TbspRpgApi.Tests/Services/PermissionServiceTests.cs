@@ -23,7 +23,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -76,7 +76,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -133,7 +133,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -186,7 +186,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -238,7 +238,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -283,7 +283,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -328,7 +328,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -373,7 +373,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -422,7 +422,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -467,7 +467,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -512,7 +512,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -557,7 +557,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -606,7 +606,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -651,7 +651,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -696,7 +696,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -741,7 +741,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -790,7 +790,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -835,7 +835,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -880,7 +880,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -925,7 +925,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -974,7 +974,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -1026,7 +1026,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -1078,7 +1078,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -1130,7 +1130,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -1186,7 +1186,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -1238,7 +1238,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -1290,7 +1290,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()
@@ -1342,7 +1342,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "admin",
+                    Email = "admin",
                     Groups = new List<Group>()
                     {
                         new()

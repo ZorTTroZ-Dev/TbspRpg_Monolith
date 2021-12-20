@@ -33,7 +33,7 @@ namespace TbspRpgDataLayer.Repositories
         public Task<User> GetUserByUsernameAndPassword(string userName, string password)
         {
             return _databaseContext.Users.AsQueryable().Where(user =>
-                user.UserName == userName &&
+                user.Email == userName &&
                 user.Password == password).FirstOrDefaultAsync();
         }
     }

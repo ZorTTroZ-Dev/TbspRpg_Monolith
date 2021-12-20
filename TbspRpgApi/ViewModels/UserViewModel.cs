@@ -19,7 +19,7 @@ namespace TbspRpgApi.ViewModels
         public UserViewModel(User user)
         {
             Id = user.Id;
-            Username = user.UserName;
+            Username = user.Email;
             if (user.Groups != null)
             {
                 Groups = new List<GroupViewModel>();

@@ -20,7 +20,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "test",
+                    Email = "test",
                     Password = "test"
                 }
             });
@@ -42,7 +42,7 @@ namespace TbspRpgApi.Tests.Services
                 new()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "test",
+                    Email = "test",
                     Password = "test"
                 }
             });

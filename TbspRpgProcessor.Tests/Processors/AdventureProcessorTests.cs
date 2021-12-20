@@ -89,7 +89,7 @@ namespace TbspRpgProcessor.Tests.Processors
             var testUser = new User()
             {
                 Id = Guid.NewGuid(),
-                UserName = "tester"
+                Email = "tester"
             };
             var adventures = new List<Adventure>() { testAdventure };
             var sources = new List<En>() {testSource, testDescriptionSource};
@@ -133,7 +133,7 @@ namespace TbspRpgProcessor.Tests.Processors
             var testUser = new User()
             {
                 Id = Guid.NewGuid(),
-                UserName = "tester"
+                Email = "tester"
             };
             var testAdventure = new Adventure()
             {

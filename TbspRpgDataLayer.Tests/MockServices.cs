@@ -20,7 +20,7 @@ namespace TbspRpgDataLayer.Tests
                 service.Authenticate(It.IsAny<string>(), It.IsAny<string>())
             ).ReturnsAsync((string userName, string password) =>
             {
-                return users.FirstOrDefault(user => user.UserName == userName && user.Password == password);
+                return users.FirstOrDefault(user => user.Email == userName && user.Password == password);
             });
             
             usersService.Setup(service =>
