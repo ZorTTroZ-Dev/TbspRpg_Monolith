@@ -25,14 +25,14 @@ namespace TbspRpgApi.Controllers
         public async Task<IActionResult> Authenticate(UsersAuthenticateRequest model)
         {
             var userViewModel = await _usersService.Authenticate(
-                model.UserName, model.Password);
+                model.Email, model.Password);
 
             if (userViewModel != null)
             {
                 return Ok(userViewModel);
             }
             
-            _logger.LogDebug("authentication failed for {Username}", model.UserName);
+            _logger.LogDebug("authentication failed for {Username}", model.Email);
             return BadRequest(new {message = "Username or password is incorrect"});
         }
         

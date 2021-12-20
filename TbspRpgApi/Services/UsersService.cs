@@ -9,7 +9,7 @@ namespace TbspRpgApi.Services
 {
     public interface IUsersService
     {
-        Task<UserViewModel> Authenticate(string userName, string password);
+        Task<UserViewModel> Authenticate(string email, string password);
         Task<UserViewModel> Register(UsersRegisterRequest registerRequest);
         Task<UserViewModel> VerifyRegistration(string registrationKey);
     }
@@ -25,9 +25,9 @@ namespace TbspRpgApi.Services
             _jwtHelper = new JwtHelper(jwtSettings.Secret);
         }
 
-        public async Task<UserViewModel> Authenticate(string userName, string password)
+        public async Task<UserViewModel> Authenticate(string email, string password)
         {
-            var user = await _usersService.Authenticate(userName, password);
+            var user = await _usersService.Authenticate(email, password);
             if (user == null) return null;
             var token = _jwtHelper.GenerateToken(user.Id.ToString());
             return new UserAuthViewModel(user, token);

@@ -11,9 +11,9 @@ namespace TbspRpgDataLayer.Services
 {
     public interface IUsersService {
         Task<User> GetById(Guid id);
-        Task<User> Authenticate(string userName, string password);
+        Task<User> Authenticate(string email, string password);
         string HashPassword(string password);
-        Task<User> GetUserByUserNameAndPassword(string userName, string password);
+        Task<User> GetUserByEmailAndPassword(string email, string password);
     }
     
     public class UsersService : IUsersService
@@ -37,10 +37,10 @@ namespace TbspRpgDataLayer.Services
             return _usersRepository.GetUserById(id);
         }
 
-        public Task<User> Authenticate(string userName, string password)
+        public Task<User> Authenticate(string email, string password)
         {
             var hashedPassword = HashPassword(password);
-            return GetUserByUserNameAndPassword(userName, hashedPassword);
+            return GetUserByEmailAndPassword(email, hashedPassword);
         }
 
         public string HashPassword(string password)
@@ -53,9 +53,9 @@ namespace TbspRpgDataLayer.Services
                 256 / 8));
         }
 
-        public Task<User> GetUserByUserNameAndPassword(string userName, string password)
+        public Task<User> GetUserByEmailAndPassword(string email, string password)
         {
-            return _usersRepository.GetUserByUsernameAndPassword(userName, password);
+            return _usersRepository.GetUserByEmailAndPassword(email, password);
         }
     }
 }

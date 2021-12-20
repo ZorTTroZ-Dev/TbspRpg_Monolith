@@ -30,7 +30,7 @@ namespace TbspRpgApi.Tests.Services
             
             //assert
             Assert.NotNull(user);
-            Assert.Equal("test", user.Username);
+            Assert.Equal("test", user.Email);
         }
         
         [Fact]

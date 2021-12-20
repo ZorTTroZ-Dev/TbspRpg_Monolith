@@ -34,7 +34,7 @@ namespace TbspRpgApi.Tests.Controllers
             var controller = CreateController(new List<User>() { testUser });
             var authRequest = new UsersAuthenticateRequest()
             {
-                UserName = "test",
+                Email = "test",
                 Password = "test"
             };
             
@@ -46,7 +46,7 @@ namespace TbspRpgApi.Tests.Controllers
             Assert.NotNull(okObjectResult);
             var authResponse = okObjectResult.Value as UserAuthViewModel;
             Assert.NotNull(authResponse);
-            Assert.Equal("test", authResponse.Username);
+            Assert.Equal("test", authResponse.Email);
             Assert.Equal(testUser.Id, authResponse.Id);
             Assert.NotNull(authResponse.Token);
         }
@@ -64,7 +64,7 @@ namespace TbspRpgApi.Tests.Controllers
             var controller = CreateController(new List<User>() { testUser });
             var authRequest = new UsersAuthenticateRequest()
             {
-                UserName = "test",
+                Email = "test",
                 Password = "testy"
             };
             

@@ -10,7 +10,7 @@ namespace TbspRpgApi.ViewModels
     {
         public Guid Id { get; set; }
         
-        public string Username { get; set; }
+        public string Email { get; set; }
         
         public List<GroupViewModel> Groups { get; set; }
         
@@ -19,7 +19,7 @@ namespace TbspRpgApi.ViewModels
         public UserViewModel(User user)
         {
             Id = user.Id;
-            Username = user.Email;
+            Email = user.Email;
             if (user.Groups != null)
             {
                 Groups = new List<GroupViewModel>();

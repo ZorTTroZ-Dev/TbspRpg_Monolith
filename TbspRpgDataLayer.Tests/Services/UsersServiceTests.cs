@@ -114,7 +114,7 @@ namespace TbspRpgDataLayer.Tests.Services
 
         #endregion
 
-        #region GetUserByUserNameAndPassword
+        #region GetUserByEmailAndPassword
 
         [Fact]
         public async void Authenticate_Valid_ReturnUser()

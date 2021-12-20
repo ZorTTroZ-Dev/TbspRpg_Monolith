@@ -112,10 +112,10 @@ namespace TbspRpgDataLayer.Tests.Repositories
 
         #endregion
 
-        #region GetUserByUserNameAndPassword
+        #region GetUserByEmailAndPassword
 
         [Fact]
-        public async void GetUserByUsernameAndPassword_Valid_ReturnOne()
+        public async void GetUserByEmailAndPassword_Valid_ReturnOne()
         {
             //arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -130,7 +130,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var repo = new UsersRepository(context);
             
             //act
-            var user = await repo.GetUserByUsernameAndPassword(
+            var user = await repo.GetUserByEmailAndPassword(
                 "test", "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4=");
 
             //assert
@@ -140,7 +140,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
         
         [Fact]
-        public async void GetUserByUsernameAndPassword_InValidUsername_ReturnNone()
+        public async void GetUserByEmailAndPassword_InValidUsername_ReturnNone()
         {
             //arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -155,7 +155,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var repo = new UsersRepository(context);
             
             //act
-            var user = await repo.GetUserByUsernameAndPassword(
+            var user = await repo.GetUserByEmailAndPassword(
                 "tEsT", "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4=");
 
             //assert
@@ -163,7 +163,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
         
         [Fact]
-        public async void GetUserByUsernameAndPassword_InValidPassword_ReturnNone()
+        public async void GetUserByEmailAndPassword_InValidPassword_ReturnNone()
         {
             //arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -178,7 +178,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var repo = new UsersRepository(context);
             
             //act
-            var user = await repo.GetUserByUsernameAndPassword(
+            var user = await repo.GetUserByEmailAndPassword(
                 "test", "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4");
         
             //assert
@@ -186,7 +186,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
         
         [Fact]
-        public async void GetUserByUsernameAndPassword_InValidBoth_ReturnNone()
+        public async void GetUserByEmailAndPassword_InValidBoth_ReturnNone()
         {
             //arrange
             await using var context = new DatabaseContext(DbContextOptions);
@@ -201,7 +201,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             var repo = new UsersRepository(context);
             
             //act
-            var user = await repo.GetUserByUsernameAndPassword(
+            var user = await repo.GetUserByEmailAndPassword(
                 "tESt", "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4");
 
             //assert

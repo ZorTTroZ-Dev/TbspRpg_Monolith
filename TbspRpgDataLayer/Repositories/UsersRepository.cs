@@ -9,7 +9,7 @@ namespace TbspRpgDataLayer.Repositories
 {
     public interface IUsersRepository {
         Task<User> GetUserById(Guid id);
-        Task<User> GetUserByUsernameAndPassword(string userName, string password);
+        Task<User> GetUserByEmailAndPassword(string email, string password);
     }
     
     public class UsersRepository : IUsersRepository
@@ -30,10 +30,10 @@ namespace TbspRpgDataLayer.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public Task<User> GetUserByUsernameAndPassword(string userName, string password)
+        public Task<User> GetUserByEmailAndPassword(string email, string password)
         {
             return _databaseContext.Users.AsQueryable().Where(user =>
-                user.Email == userName &&
+                user.Email == email &&
                 user.Password == password).FirstOrDefaultAsync();
         }
     }
