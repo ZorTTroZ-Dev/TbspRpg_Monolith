@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Entities;
 using TbspRpgProcessor.Entities;
-using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgProcessor.Tests.Processors
