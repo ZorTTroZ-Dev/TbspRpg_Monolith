@@ -191,13 +191,46 @@ namespace TbspRpgDataLayer.Tests.Services
         [Fact]
         public async void GetUserByEmail_Exists_ReturnUser()
         {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testUser = new User
+            {
+                Id = Guid.NewGuid(),
+                Email = "test@test.com",
+                Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
+            };
+            context.Users.Add(testUser);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
             
+            // act
+            var user = await service.GetUserByEmail("test@test.com");
+            
+            // assert
+            Assert.NotNull(user);
+            Assert.Equal(testUser.Id, user.Id);
         }
 
         [Fact]
         public async void GetUserByEmail_UserNotExist_ReturnNull()
         {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testUser = new User
+            {
+                Id = Guid.NewGuid(),
+                Email = "test@test.com",
+                Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
+            };
+            context.Users.Add(testUser);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
             
+            // act
+            var user = await service.GetUserByEmail("testx@testx.com");
+            
+            // assert
+            Assert.Null(user);
         }
 
         #endregion
@@ -207,7 +240,22 @@ namespace TbspRpgDataLayer.Tests.Services
         [Fact]
         public async void AddUser_UserAdded()
         {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testUser = new User
+            {
+                Id = Guid.NewGuid(),
+                Email = "test@test.com",
+                Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
+            };
+            var service = CreateService(context);
             
+            // act
+            await service.AddUser(testUser);
+            await service.SaveChanges();
+
+            // assert
+            Assert.Single(context.Users);
         }
 
         #endregion

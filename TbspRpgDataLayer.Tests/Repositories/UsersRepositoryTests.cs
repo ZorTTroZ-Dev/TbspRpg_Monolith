@@ -240,19 +240,69 @@ namespace TbspRpgDataLayer.Tests.Repositories
         [Fact]
         public async void GetUserByEmail_EmailExists_ReturnUser()
         {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testUser = new User()
+            {
+                Id = Guid.NewGuid(),
+                Email = "test@test.com",
+                Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
+            };
+            context.Users.Add(testUser);
+            await context.SaveChangesAsync();
+            var repository = new UsersRepository(context);
             
+            // act
+            var user = await repository.GetUserByEmail("test@test.com");
+            
+            // assert
+            Assert.NotNull(user);
+            Assert.Equal(testUser.Id, user.Id);
         }
 
         [Fact]
         public async void GetUserByEmail_EmailExistsWrongCase_ReturnUser()
         {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testUser = new User()
+            {
+                Id = Guid.NewGuid(),
+                Email = "test@test.com",
+                Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
+            };
+            context.Users.Add(testUser);
+            await context.SaveChangesAsync();
+            var repository = new UsersRepository(context);
             
+            // act
+            var user = await repository.GetUserByEmail("Test@Test.com");
+            
+            // assert
+            Assert.NotNull(user);
+            Assert.Equal(testUser.Id, user.Id);
         }
 
         [Fact]
         public async void GetUserByEmail_EmailNotExist_ReturnNull()
         {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testUser = new User()
+            {
+                Id = Guid.NewGuid(),
+                Email = "test@test.com",
+                Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
+            };
+            context.Users.Add(testUser);
+            await context.SaveChangesAsync();
+            var repository = new UsersRepository(context);
             
+            // act
+            var user = await repository.GetUserByEmail("testx@testx.com");
+            
+            // assert
+            Assert.Null(user);
         }
 
         #endregion
@@ -262,7 +312,22 @@ namespace TbspRpgDataLayer.Tests.Repositories
         [Fact]
         public async void AddUser_UserAdded()
         {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testUser = new User()
+            {
+                Id = Guid.NewGuid(),
+                Email = "test@test.com",
+                Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
+            };
+            var repository = new UsersRepository(context);
             
+            // act
+            await repository.AddUser(testUser);
+            await repository.SaveChanges();
+            
+            // assert
+            Assert.Single(context.Users);
         }
 
         #endregion
