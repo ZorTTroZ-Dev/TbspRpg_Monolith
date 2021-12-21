@@ -156,7 +156,7 @@ namespace TbspRpgDataLayer.Tests.Repositories
             
             //act
             var user = await repo.GetUserByEmailAndPassword(
-                "tEsT", "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4=");
+                "tEsTX", "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4=");
 
             //assert
             Assert.Null(user);
@@ -202,10 +202,42 @@ namespace TbspRpgDataLayer.Tests.Repositories
             
             //act
             var user = await repo.GetUserByEmailAndPassword(
-                "tESt", "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4");
+                "tEStX", "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4");
 
             //assert
             Assert.Null(user);
+        }
+
+        #endregion
+
+        #region GetUserByEmail
+
+        [Fact]
+        public async void GetUserByEmail_EmailExists_ReturnUser()
+        {
+            
+        }
+
+        [Fact]
+        public async void GetUserByEmail_EmailExistsWrongCase_ReturnUser()
+        {
+            
+        }
+
+        [Fact]
+        public async void GetUserByEmail_EmailNotExist_ReturnNull()
+        {
+            
+        }
+
+        #endregion
+
+        #region AddUser/SaveChanges
+
+        [Fact]
+        public async void AddUser_UserAdded()
+        {
+            
         }
 
         #endregion

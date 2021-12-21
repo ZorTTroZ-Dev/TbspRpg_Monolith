@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Entities;
-using TbspRpgDataLayer.Services;
 using TbspRpgDataLayer.Tests;
 using TbspRpgProcessor.Entities;
 using TbspRpgProcessor.Processors;
@@ -17,7 +13,7 @@ namespace TbspRpgProcessor.Tests
     public class ProcessorTest
     {
         protected static IGameProcessor CreateGameProcessor(
-            IEnumerable<User> users = null,
+            ICollection<User> users = null,
             ICollection<Adventure> adventures = null,
             ICollection<Game> games = null,
             ICollection<Location> locations = null,

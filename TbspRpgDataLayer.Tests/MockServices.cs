@@ -12,7 +12,7 @@ namespace TbspRpgDataLayer.Tests
 {
     public static class MockServices
     {
-        public static IUsersService MockDataLayerUsersService(IEnumerable<User> users)
+        public static IUsersService MockDataLayerUsersService(ICollection<User> users)
         {
             var usersService = new Mock<IUsersService>();
             
@@ -28,6 +28,21 @@ namespace TbspRpgDataLayer.Tests
             ).ReturnsAsync((Guid userId) =>
             {
                 return users.FirstOrDefault(user => user.Id == userId);
+            });
+
+            usersService.Setup(service =>
+                service.GetUserByEmail(It.IsAny<string>())
+            ).ReturnsAsync((string email) =>
+            {
+                return users.FirstOrDefault(user => user.Email == email);
+            });
+
+            usersService.Setup(service =>
+                service.AddUser(It.IsAny<User>())
+            ).Callback((User user) =>
+            {
+                user.Id = Guid.NewGuid();
+                users.Add(user);
             });
 
             return usersService.Object;

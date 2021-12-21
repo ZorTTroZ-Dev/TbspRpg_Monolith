@@ -13,7 +13,7 @@ namespace TbspRpgApi.Tests.Controllers
 {
     public class UsersControllerTests : ApiTest
     {
-        private static UsersController CreateController(IEnumerable<User> users)
+        private static UsersController CreateController(ICollection<User> users)
         {
             return new UsersController(CreateUsersService(users),
                 NullLogger<UsersController>.Instance);

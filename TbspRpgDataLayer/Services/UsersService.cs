@@ -60,19 +60,19 @@ namespace TbspRpgDataLayer.Services
             return _usersRepository.GetUserByEmailAndPassword(email, password);
         }
 
-        public async Task<User> GetUserByEmail(string email)
+        public Task<User> GetUserByEmail(string email)
         {
-            throw new NotImplementedException();
+            return _usersRepository.GetUserByEmail(email);
         }
 
         public async Task AddUser(User user)
         {
-            throw new NotImplementedException();
+            await _usersRepository.AddUser(user);
         }
 
         public async Task SaveChanges()
         {
-            throw new NotImplementedException();
+            await _usersRepository.SaveChanges();
         }
     }
 }

@@ -185,5 +185,31 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region GetUserByEmail
+
+        [Fact]
+        public async void GetUserByEmail_Exists_ReturnUser()
+        {
+            
+        }
+
+        [Fact]
+        public async void GetUserByEmail_UserNotExist_ReturnNull()
+        {
+            
+        }
+
+        #endregion
+
+        #region AddUser/SaveChanges
+
+        [Fact]
+        public async void AddUser_UserAdded()
+        {
+            
+        }
+
+        #endregion
     }
 }

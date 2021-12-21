@@ -2,14 +2,15 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
 
 namespace TbspRpgDataLayer.Repositories
 {
-    public interface IUsersRepository {
+    public interface IUsersRepository: IBaseRepository {
         Task<User> GetUserById(Guid id);
         Task<User> GetUserByEmailAndPassword(string email, string password);
+        Task<User> GetUserByEmail(string email);
+        Task AddUser(User user);
     }
     
     public class UsersRepository : IUsersRepository
@@ -33,8 +34,24 @@ namespace TbspRpgDataLayer.Repositories
         public Task<User> GetUserByEmailAndPassword(string email, string password)
         {
             return _databaseContext.Users.AsQueryable().Where(user =>
-                user.Email == email &&
+                user.Email.ToLower() == email.ToLower() &&
                 user.Password == password).FirstOrDefaultAsync();
+        }
+
+        public Task<User> GetUserByEmail(string email)
+        {
+            return _databaseContext.Users.AsQueryable().FirstOrDefaultAsync(
+                user => user.Email.ToLower() == email.ToLower());
+        }
+
+        public async Task AddUser(User user)
+        {
+            await _databaseContext.Users.AddAsync(user);
+        }
+
+        public async Task SaveChanges()
+        {
+            await _databaseContext.SaveChangesAsync();
         }
     }
 }

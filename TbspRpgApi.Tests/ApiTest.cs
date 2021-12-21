@@ -54,7 +54,7 @@ namespace TbspRpgApi.Tests
         }
 
         protected static PermissionService CreatePermissionService(
-            IEnumerable<User> users,
+            ICollection<User> users,
             ICollection<Location> locations = null,
             ICollection<Adventure> adventures = null,
             ICollection<Game> games = null)
@@ -74,7 +74,7 @@ namespace TbspRpgApi.Tests
                 NullLogger<PermissionService>.Instance);
         }
         
-        protected static UsersService CreateUsersService(IEnumerable<User> users)
+        protected static UsersService CreateUsersService(ICollection<User> users)
         {
             var dlUsersService = MockServices.MockDataLayerUsersService(users);
             return new UsersService(dlUsersService,
