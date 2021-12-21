@@ -16,12 +16,15 @@ namespace TbspRpgProcessor.Processors
     public class UserProcessor : IUserProcessor
     {
         private readonly IUsersService _usersService;
+        private readonly IMailClient _mailClient;
         private readonly ILogger<UserProcessor> _logger;
 
         public UserProcessor(IUsersService usersService,
+            IMailClient mailClient,
             ILogger<UserProcessor> logger)
         {
             _usersService = usersService;
+            _mailClient = mailClient;
             _logger = logger;
         }
 
@@ -45,7 +48,7 @@ namespace TbspRpgProcessor.Processors
             await _usersService.AddUser(user);
             await _usersService.SaveChanges();
             
-            // send an email to the user's address with the code
+            await _mailClient.SendRegistrationVerificationMail(user.Email, user.RegistrationKey);
             
             return user;
         }

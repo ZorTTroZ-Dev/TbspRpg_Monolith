@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -107,7 +108,17 @@ namespace TbspRpgProcessor.Tests
             var usersService = MockServices.MockDataLayerUsersService(users);
             return new UserProcessor(
                 usersService,
+                MockMailClient(),
                 NullLogger<UserProcessor>.Instance);
+        }
+
+        public static IMailClient MockMailClient()
+        {
+            var mailClient = new Mock<IMailClient>();
+            mailClient.Setup(client =>
+                    client.SendRegistrationVerificationMail(It.IsAny<string>(), It.IsAny<string>()))
+                .Callback((string email, string registrationKey) => { });
+            return mailClient.Object;
         }
 
         public static IUserProcessor MockUserProcessor(string exceptionEmail)
