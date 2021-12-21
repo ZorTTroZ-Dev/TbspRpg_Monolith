@@ -140,6 +140,31 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
         
         [Fact]
+        public async void GetUserByEmailAndPassword_EmailCaseInsensitive_ReturnOne()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testUser = new User()
+            {
+                Id = Guid.NewGuid(),
+                Email = "test",
+                Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4="
+            };
+            context.Users.Add(testUser);
+            await context.SaveChangesAsync();
+            var repo = new UsersRepository(context);
+            
+            //act
+            var user = await repo.GetUserByEmailAndPassword(
+                "tEST", "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4=");
+
+            //assert
+            Assert.NotNull(user);
+            Assert.Equal(testUser.Id, user.Id);
+            Assert.Equal(testUser.Email, user.Email);
+        }
+        
+        [Fact]
         public async void GetUserByEmailAndPassword_InValidUsername_ReturnNone()
         {
             //arrange
