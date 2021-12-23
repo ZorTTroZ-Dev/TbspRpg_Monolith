@@ -37,7 +37,7 @@ namespace TbspRpgApi.Controllers
         }
         
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UsersRegisterRequest registerRequest)
+        public async Task<IActionResult> Register([FromBody]UsersRegisterRequest registerRequest)
         {
             try
             {
@@ -50,12 +50,12 @@ namespace TbspRpgApi.Controllers
             }
         }
 
-        [HttpGet("register/verify/{registrationKey}")]
-        public async Task<IActionResult> RegisterVerify(string registrationKey)
+        [HttpPost("register/verify")]
+        public async Task<IActionResult> RegisterVerify([FromBody]UsersRegisterVerifyRequest verifyRequest)
         {
             try
             {
-                var user = await _usersService.VerifyRegistration(registrationKey);
+                var user = await _usersService.VerifyRegistration(verifyRequest);
                 return Ok(user);
             }
             catch
@@ -63,17 +63,5 @@ namespace TbspRpgApi.Controllers
                 return BadRequest(new {message = "could not verify registration"});
             }
         }
-        
-        // registration process
-        // on receive register request
-        // check if there is already a user with that email address, if so bad request
-        // insert user in to the database table populate a row called registration key
-        // the registration key is the hash of the email and password
-        // Send an email that instructs the user to click a link to register/verify/{regkey}
-        // Until user clicks on email link the site will let them login but when they try to go somewhere show complete
-        //  registration page
-        // on request to register/verify/{regkey} find the user with that registration key and remove the key from
-        //  their user row to complete registration
-        // have a process that purges any users that have have a regkey and were created more than a week ago
     }
 }

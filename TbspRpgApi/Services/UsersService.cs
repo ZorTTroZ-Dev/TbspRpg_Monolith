@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
-using TbspRpgDataLayer.Entities;
+using TbspRpgProcessor.Entities;
+using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
 {
@@ -11,17 +12,22 @@ namespace TbspRpgApi.Services
     {
         Task<UserViewModel> Authenticate(string email, string password);
         Task<UserViewModel> Register(UsersRegisterRequest registerRequest);
-        Task<UserViewModel> VerifyRegistration(string registrationKey);
+        Task<UserViewModel> VerifyRegistration(UsersRegisterVerifyRequest verifyRequest);
     }
     
     public class UsersService : IUsersService
     {
         private readonly TbspRpgDataLayer.Services.IUsersService _usersService;
+        private readonly IUserProcessor _userProcessor;
         private readonly IJwtHelper _jwtHelper;
 
-        public UsersService(TbspRpgDataLayer.Services.IUsersService usersService, IJwtSettings jwtSettings)
+        public UsersService(
+            TbspRpgDataLayer.Services.IUsersService usersService,
+            IUserProcessor userProcessor,
+            IJwtSettings jwtSettings)
         {
             _usersService = usersService;
+            _userProcessor = userProcessor;
             _jwtHelper = new JwtHelper(jwtSettings.Secret);
         }
 
@@ -35,12 +41,14 @@ namespace TbspRpgApi.Services
 
         public async Task<UserViewModel> Register(UsersRegisterRequest registerRequest)
         {
-            throw new NotImplementedException();
+            var user = await _userProcessor.RegisterUser(registerRequest.ToUserRegisterModel());
+            return new UserViewModel(user);
         }
 
-        public async Task<UserViewModel> VerifyRegistration(string registrationKey)
+        public async Task<UserViewModel> VerifyRegistration(UsersRegisterVerifyRequest verifyRequest)
         {
-            throw new NotImplementedException();
+            var user = await _userProcessor.VerifyUserRegistration(verifyRequest.ToUserVerifyRegisterModel());
+            return user == null ? null : new UserViewModel(user);
         }
     }
 }
