@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TbspRpgApi.Entities;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.Services;
+using TbspRpgApi.ViewModels;
 using TbspRpgDataLayer.Entities;
 using Xunit;
 
@@ -56,12 +59,78 @@ namespace TbspRpgApi.Tests.Services
 
         #endregion
 
-        #region GetUserById
+        #region Register
 
         [Fact]
-        public async void GetUserById_Valid_ReturnsUserWithGroups()
+        public async void Register_Valid_ReturnUserViewModel()
         {
+            // arrange
+            var usersService = CreateUsersService(new List<User>());
             
+            // act
+            var user = await usersService.Register(new UsersRegisterRequest()
+            {
+                Email = "test@test.com",
+                Password = "test"
+            });
+            
+            // assert
+            Assert.NotNull(user);
+        }
+
+        [Fact]
+        public async void Register_Invalid_ExceptionThrown()
+        {
+            // arrange
+            var usersService = CreateUsersService(new List<User>(), "test@test.com");
+            
+            // act
+            Task Act() => usersService.Register(new UsersRegisterRequest()
+            {
+                Email = "test@test.com",
+                Password = "test"
+            });
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        #endregion
+
+        #region VerifyRegistration
+
+        [Fact]
+        public async void VerifyRegistration_Valid_ReturnUserViewModel()
+        {
+            // arrange
+            var usersService = CreateUsersService(new List<User>());
+            
+            // act
+            var user = await usersService.VerifyRegistration(new UsersRegisterVerifyRequest()
+            {
+                UserId = Guid.NewGuid(),
+                RegistrationKey = "000000"
+            });
+            
+            // assert
+            Assert.NotNull(user);
+        }
+
+        [Fact]
+        public async void VerifyRegistration_Invalid_ExceptionThrown()
+        {
+            // arrange
+            var usersService = CreateUsersService(new List<User>(), "000000");
+            
+            // act
+            Task Act() => usersService.VerifyRegistration(new UsersRegisterVerifyRequest()
+            {
+                UserId = Guid.NewGuid(),
+                RegistrationKey = "000000"
+            });
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
         }
 
         #endregion
