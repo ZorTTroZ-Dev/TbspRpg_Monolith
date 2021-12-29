@@ -39,6 +39,7 @@ namespace TbspRpgProcessor.Processors
             var registrationKey = registrationKeyInt.ToString("000000");
             var user = new User()
             {
+                Id = Guid.NewGuid(),
                 Email = userRegisterModel.Email,
                 Password = _usersService.HashPassword(userRegisterModel.Password),
                 RegistrationKey = registrationKey,
@@ -48,7 +49,7 @@ namespace TbspRpgProcessor.Processors
             await _usersService.AddUser(user);
             await _usersService.SaveChanges();
             
-            await _mailClient.SendRegistrationVerificationMail(user.Email, user.RegistrationKey);
+            // await _mailClient.SendRegistrationVerificationMail(user.Email, user.RegistrationKey);
             
             return user;
         }
