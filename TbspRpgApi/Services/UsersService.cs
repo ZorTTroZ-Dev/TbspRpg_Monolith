@@ -48,7 +48,9 @@ namespace TbspRpgApi.Services
         public async Task<UserViewModel> VerifyRegistration(UsersRegisterVerifyRequest verifyRequest)
         {
             var user = await _userProcessor.VerifyUserRegistration(verifyRequest.ToUserVerifyRegisterModel());
-            return user == null ? null : new UserViewModel(user);
+            if (user == null) return null;
+            var token = _jwtHelper.GenerateToken(user.Id.ToString());
+            return new UserAuthViewModel(user, token);
         }
     }
 }
