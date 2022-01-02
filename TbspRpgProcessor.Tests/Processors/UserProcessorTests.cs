@@ -176,5 +176,88 @@ namespace TbspRpgProcessor.Tests.Processors
         }
 
         #endregion
+
+        #region ResendUserRegistration
+
+        [Fact]
+        public async void ResendUserRegistration_InvalidUserId_ThrowException()
+        {
+            // arrange
+            var testUsers = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test@test.com",
+                    RegistrationComplete = false,
+                    RegistrationKey = "000000"
+                }
+            };
+            var processor = CreateUserProcessor(testUsers);
+            
+            // act
+            Task Act() => processor.ResendUserRegistration(new UserRegisterResendModel()
+            {
+                UserId = Guid.NewGuid()
+            });
+
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        [Fact]
+        public async void ResendUserRegistration_AlreadyRegistered_ThrowException()
+        {
+            // arrange
+            var testUsers = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test@test.com",
+                    RegistrationComplete = true,
+                    RegistrationKey = "000000"
+                }
+            };
+            var processor = CreateUserProcessor(testUsers);
+            
+            // act
+            Task Act() => processor.ResendUserRegistration(new UserRegisterResendModel()
+            {
+                UserId = testUsers[0].Id
+            });
+
+            // assert
+            await Assert.ThrowsAsync<Exception>(Act);
+        }
+
+        [Fact]
+        public async void ResendUserRegistration_Vald_ResendRegistration()
+        {
+            // arrange
+            var testUsers = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test@test.com",
+                    RegistrationComplete = false,
+                    RegistrationKey = "000000"
+                }
+            };
+            var processor = CreateUserProcessor(testUsers);
+            
+            // act
+            var user = await processor.ResendUserRegistration(new UserRegisterResendModel()
+            {
+                UserId = testUsers[0].Id
+            });
+            
+            // assert
+            Assert.NotNull(user);
+            Assert.NotEqual("000000", user.RegistrationKey);
+        }
+
+        #endregion
     }
 }
