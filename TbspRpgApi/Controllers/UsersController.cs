@@ -48,6 +48,20 @@ namespace TbspRpgApi.Controllers
                 return BadRequest(new { message = "registration failed" });
             }
         }
+        
+        [HttpPost("register/resend")]
+        public async Task<IActionResult> RegisterResend([FromBody]UsersRegisterResendRequest registerRequest)
+        {
+            try
+            {
+                var user = await _usersService.RegisterResend(registerRequest);
+                return Ok(user);
+            }
+            catch
+            {
+                return BadRequest(new { message = "registration resend failed" });
+            }
+        }
 
         [HttpPost("register/verify")]
         public async Task<IActionResult> RegisterVerify([FromBody]UsersRegisterVerifyRequest verifyRequest)

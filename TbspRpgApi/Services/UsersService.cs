@@ -13,6 +13,7 @@ namespace TbspRpgApi.Services
         Task<UserViewModel> Authenticate(string email, string password);
         Task<UserViewModel> Register(UsersRegisterRequest registerRequest);
         Task<UserViewModel> VerifyRegistration(UsersRegisterVerifyRequest verifyRequest);
+        Task<UserViewModel> RegisterResend(UsersRegisterResendRequest registerRequest);
     }
     
     public class UsersService : IUsersService
@@ -51,6 +52,12 @@ namespace TbspRpgApi.Services
             if (user == null) return null;
             var token = _jwtHelper.GenerateToken(user.Id.ToString());
             return new UserAuthViewModel(user, token);
+        }
+
+        public async Task<UserViewModel> RegisterResend(UsersRegisterResendRequest registerRequest)
+        {
+            var user = await _userProcessor.ResendUserRegistration(registerRequest.ToUserRegisterResendModel());
+            return user == null ? null : new UserViewModel(user);
         }
     }
 }

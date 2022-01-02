@@ -11,6 +11,7 @@ namespace TbspRpgProcessor.Processors
     {
         Task<User> RegisterUser(UserRegisterModel userRegisterModel);
         Task<User> VerifyUserRegistration(UserVerifyRegisterModel userVerifyRegisterModel);
+        Task<User> ResendUserRegistration(UserRegisterResendModel userRegisterResendModel);
     }
     
     public class UserProcessor : IUserProcessor
@@ -28,28 +29,31 @@ namespace TbspRpgProcessor.Processors
             _logger = logger;
         }
 
+        private string GenerateRegistrationKey()
+        {
+            var randomNumber = new Random();
+            var registrationKeyInt = randomNumber.Next(1000000);
+            return registrationKeyInt.ToString("000000");
+        }
+
         public async Task<User> RegisterUser(UserRegisterModel userRegisterModel)
         {
             var dbUser = await _usersService.GetUserByEmail(userRegisterModel.Email);
             if (dbUser != null)
                 throw new ArgumentException("email already exists");
-
-            var randomNumber = new Random();
-            var registrationKeyInt = randomNumber.Next(1000000);
-            var registrationKey = registrationKeyInt.ToString("000000");
+            
             var user = new User()
             {
                 Id = Guid.NewGuid(),
                 Email = userRegisterModel.Email,
                 Password = _usersService.HashPassword(userRegisterModel.Password),
-                RegistrationKey = registrationKey,
+                RegistrationKey = GenerateRegistrationKey(),
                 RegistrationComplete = false,
                 DateCreated = DateTime.UtcNow
             };
             await _usersService.AddUser(user);
             await _usersService.SaveChanges();
-            
-            // await _mailClient.SendRegistrationVerificationMail(user.Email, user.RegistrationKey);
+            await _mailClient.SendRegistrationVerificationMail(user.Email, user.RegistrationKey);
             
             return user;
         }
@@ -69,6 +73,22 @@ namespace TbspRpgProcessor.Processors
             dbUser.RegistrationComplete = true;
             dbUser.RegistrationKey = null;
             await _usersService.SaveChanges();
+            return dbUser;
+        }
+
+        public async Task<User> ResendUserRegistration(UserRegisterResendModel userRegisterResendModel)
+        {
+            var dbUser = await _usersService.GetById(userRegisterResendModel.UserId);
+            if (dbUser == null)
+                throw new ArgumentException("invalid user id");
+
+            if (dbUser.RegistrationComplete)
+                throw new Exception("registration already complete");
+
+            dbUser.RegistrationKey = GenerateRegistrationKey();
+            await _usersService.SaveChanges();
+            await _mailClient.SendRegistrationVerificationMail(dbUser.Email, dbUser.RegistrationKey);
+
             return dbUser;
         }
     }
