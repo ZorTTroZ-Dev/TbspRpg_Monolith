@@ -29,6 +29,10 @@ namespace TbspRpgApi
             services.AddControllers();
             
             // settings objects
+            services.Configure<SmtpSettings>(Configuration.GetSection("Smtp"));
+            services.AddSingleton<ISmtpSettings>(sp =>
+                sp.GetRequiredService<IOptions<SmtpSettings>>().Value);
+            
             services.Configure<DatabaseSettings>(Configuration.GetSection("Database"));
             services.AddSingleton<IDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);

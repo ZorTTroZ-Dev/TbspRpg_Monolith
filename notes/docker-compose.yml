@@ -31,6 +31,10 @@ services:
     environment:
       - 'JwtSettings__Secret=${JWTSECRET}'
       - 'Database__Salt=${DBSALT}'
+      - 'Smtp__Server=${SMTPSERVER}'
+      - 'Smtp__Port=${SMTPPORT}'
+      - 'Smtp__Username=${SMTPUSER}'
+      - 'Smtp__Password=${SMTPPASSWORD}'
       - 'CONNECTION_STRING=User ID=${POSTGRESUSER};Password=${POSTGRESPASSWORD};Server=${POSTGRESURL};Port=5432;Database=tbsprpgapi;Integrated Security=true;Pooling=true;'
     command: dotnet watch run
     depends_on: 
