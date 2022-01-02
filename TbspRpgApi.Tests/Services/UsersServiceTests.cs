@@ -134,5 +134,42 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+        
+        #region RegisterResend
+
+        [Fact]
+        public async void RegisterResend_Valid_ReturnUserViewModel()
+        {
+            // arrange
+            var usersService = CreateUsersService(new List<User>());
+            
+            // act
+            var user = await usersService.RegisterResend(new UsersRegisterResendRequest()
+            {
+                UserId = Guid.NewGuid()
+            });
+            
+            // assert
+            Assert.NotNull(user);
+        }
+
+        [Fact]
+        public async void RegisterResend_Invalid_ExceptionThrown()
+        {
+            // arrange
+            var exceptionGuid = Guid.NewGuid();
+            var usersService = CreateUsersService(new List<User>(), exceptionGuid.ToString());
+            
+            // act
+            Task Act() => usersService.RegisterResend(new UsersRegisterResendRequest()
+            {
+                UserId = exceptionGuid
+            });
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        #endregion
     }
 }

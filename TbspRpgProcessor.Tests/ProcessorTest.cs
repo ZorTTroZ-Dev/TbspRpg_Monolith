@@ -144,6 +144,18 @@ namespace TbspRpgProcessor.Tests
                         Id = Guid.NewGuid()
                     };
                 });
+            
+            userProcessor.Setup(processor =>
+                    processor.ResendUserRegistration(It.IsAny<UserRegisterResendModel>()))
+                .ReturnsAsync((UserRegisterResendModel userRegisterResendModel) =>
+                {
+                    if (userRegisterResendModel.UserId.ToString() == exceptionEmail)
+                        throw new ArgumentException("can't resend registration");
+                    return new User()
+                    {
+                        Id = Guid.NewGuid()
+                    };
+                });
 
             return userProcessor.Object;
         }

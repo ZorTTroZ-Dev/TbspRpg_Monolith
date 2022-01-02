@@ -164,5 +164,47 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+        
+        #region RegisterResend
+
+        [Fact]
+        public async void RegisterResend_Valid_ReturnOk()
+        {
+            // arrange
+            var controller = CreateController(new List<User>());
+            
+            // act
+            var response = await controller.RegisterResend(new UsersRegisterResendRequest()
+            {
+                UserId = Guid.NewGuid()
+            });
+
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var userViewModel = okObjectResult.Value as UserViewModel;
+            Assert.NotNull(userViewModel);
+        }
+
+        [Fact]
+        public async void RegisterResend_Fails_ReturnBadRequest()
+        {
+            // arrange
+            Guid exceptionGuid = Guid.NewGuid();
+            var controller = CreateController(new List<User>(), exceptionGuid.ToString());
+            
+            // act
+            var response = await controller.RegisterResend(new UsersRegisterResendRequest()
+            {
+                UserId = exceptionGuid
+            });
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+
+        #endregion
     }
 }
