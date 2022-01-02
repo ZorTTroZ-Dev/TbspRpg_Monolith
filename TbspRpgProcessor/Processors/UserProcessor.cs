@@ -49,7 +49,7 @@ namespace TbspRpgProcessor.Processors
             await _usersService.AddUser(user);
             await _usersService.SaveChanges();
             
-            await _mailClient.SendRegistrationVerificationMail(user.Email, user.RegistrationKey);
+            // await _mailClient.SendRegistrationVerificationMail(user.Email, user.RegistrationKey);
             
             return user;
         }
