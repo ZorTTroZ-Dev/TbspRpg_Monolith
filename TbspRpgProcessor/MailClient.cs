@@ -38,6 +38,8 @@ I just wanted to let you know that Monica and I were going to go play some paint
 
         private async Task SendMail(MimeMessage mail)
         {
+            if (!_smtpSettings.SendMail)
+                return;
             using var client = new SmtpClient ();
             await client.ConnectAsync(_smtpSettings.Server, _smtpSettings.Port, false);
             await client.AuthenticateAsync(_smtpSettings.Username, _smtpSettings.Password);

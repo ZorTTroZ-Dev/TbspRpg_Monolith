@@ -35,6 +35,7 @@ services:
       - 'Smtp__Port=${SMTPPORT}'
       - 'Smtp__Username=${SMTPUSER}'
       - 'Smtp__Password=${SMTPPASSWORD}'
+      - 'Smtp__SendMail=false'
       - 'CONNECTION_STRING=User ID=${POSTGRESUSER};Password=${POSTGRESPASSWORD};Server=${POSTGRESURL};Port=5432;Database=tbsprpgapi;Integrated Security=true;Pooling=true;'
     command: dotnet watch run
     depends_on: 
