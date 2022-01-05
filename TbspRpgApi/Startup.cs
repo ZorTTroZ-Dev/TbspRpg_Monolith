@@ -66,20 +66,19 @@ namespace TbspRpgApi
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TbspRpgApi v1"));
             }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
 
             app.UseSerilogRequestLogging();
-            
             app.UseHttpsRedirection();
-
             app.UseRouting();
-            
             app.UseMiddleware<JwtMiddleware>();
-
-            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

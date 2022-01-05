@@ -1,6 +1,5 @@
 using System;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Serilog;
 using Serilog.Events;
 
@@ -19,7 +18,13 @@ namespace TbspRpgApi
             try
             {
                 Log.Information("Starting web host");
-                CreateHostBuilder(args).Build().Run();
+                var builder = WebApplication.CreateBuilder(args);
+                builder.Host.UseSerilog();
+                var startup = new Startup(builder.Configuration);
+                startup.ConfigureServices(builder.Services);
+                var app = builder.Build();
+                startup.Configure(app, app.Environment);
+                app.Run();
                 return 0;
             }
             catch (Exception ex)
@@ -32,13 +37,5 @@ namespace TbspRpgApi
                 Log.CloseAndFlush();
             }
         }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSerilog()
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
     }
 }
