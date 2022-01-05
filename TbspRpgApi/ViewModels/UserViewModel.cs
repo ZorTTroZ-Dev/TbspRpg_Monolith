@@ -12,6 +12,8 @@ namespace TbspRpgApi.ViewModels
         
         public string Email { get; set; }
         
+        public bool RegistrationComplete { get; set; }
+        
         public List<GroupViewModel> Groups { get; set; }
         
         public List<string> Permissions { get; set; }
@@ -20,6 +22,7 @@ namespace TbspRpgApi.ViewModels
         {
             Id = user.Id;
             Email = user.Email;
+            RegistrationComplete = user.RegistrationComplete;
             if (user.Groups != null)
             {
                 Groups = new List<GroupViewModel>();
