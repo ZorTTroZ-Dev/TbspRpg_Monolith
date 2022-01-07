@@ -7,12 +7,21 @@ on:
     branches: [ main ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
+          
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile.prod --tag tbsprpgapi:$(date +%s)
+    - name: Build and Tag the Docker image
+      run: docker build . --file Dockerfile.prod --tag registry.digitalocean.com/tbsprpg/tbsprpgapi:$(date +%s)
+      
+    - name: Log in to DigitalOcean Container Registry with short-lived credentials
+      run: doctl registry login --expiry-seconds 1200
+      
+    - name: Push image to DO Container Registry 
+      run: docker push registry.digitalocean.com/tbsprpg/tbsprpgapi:$(date +%s)
