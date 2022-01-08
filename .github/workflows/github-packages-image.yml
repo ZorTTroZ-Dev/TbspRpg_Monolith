@@ -2,8 +2,7 @@ name: Docker Image CI
 
 on:
   release:
-    types:
-      - created
+    types: [created]
 
 env:
   REGISTRY: ghcr.io
