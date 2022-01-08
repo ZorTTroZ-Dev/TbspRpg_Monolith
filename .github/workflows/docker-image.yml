@@ -2,9 +2,11 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: ['release']
+    
+env:
+  REGISTRY: registry.digitalocean.com
+  IMAGE_NAME: tbsprpgapi
 
 jobs:
   build:
@@ -15,13 +17,19 @@ jobs:
       uses: digitalocean/action-doctl@v2
       with:
         token: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
+        
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      with:
+        images: ${{ env.REGISTRY }}/tbsprpg/${{ env.IMAGE_NAME }}
           
     - uses: actions/checkout@v2
     - name: Build and Tag the Docker image
-      run: docker build . --file Dockerfile.prod --tag registry.digitalocean.com/tbsprpg/tbsprpgapi:$(echo $GITHUB_SHA | head -c7)
+      run: docker build . --file Dockerfile.prod --tag ${{ steps.meta.outputs.tags }}
       
     - name: Log in to DigitalOcean Container Registry with short-lived credentials
       run: doctl registry login --expiry-seconds 1200
       
     - name: Push image to DO Container Registry 
-      run: docker push registry.digitalocean.com/tbsprpg/tbsprpgapi:$(echo $GITHUB_SHA | head -c7)
+      run: docker push ${{ steps.meta.outputs.tags }}
