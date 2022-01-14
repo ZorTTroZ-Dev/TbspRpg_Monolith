@@ -7,7 +7,7 @@ services:
     volumes:
       - './TBSPRPG_UI/tbsprpg:/app'
       - /app/node_modules
-    command: ng serve --host 0.0.0.0 --port 4200
+    command: ng serve --host 0.0.0.0 --port 4200 --poll 5000
     depends_on:
       - api
 
