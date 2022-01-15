@@ -9,6 +9,9 @@ on:
 
 env:
   CONNECTION_STRING: ${{ secrets.DIGITAL_OCEAN_PROD_DB_CONNECTION_STRING }}
+  DATABASE_SALT: ${{ secrets.PROD_DATABASE_SALT }}
+  ADMIN_PASSWORD: ${{ secrets.PROD_ADMIN_PASSWORD }}
+  TEST_PASSWORD: ${{ secrets.PROD_TEST_PASSWORD }}
 
 jobs:
   build:
