@@ -35,7 +35,10 @@ namespace TbspRpgDataLayer.Repositories
         {
             return _databaseContext.Users.AsQueryable().Where(user =>
                 user.Email.ToLower() == email.ToLower() &&
-                user.Password == password).FirstOrDefaultAsync();
+                user.Password == password)
+                .Include(user => user.Groups)
+                .ThenInclude(group => group.Permissions)
+                .FirstOrDefaultAsync();
         }
 
         public Task<User> GetUserByEmail(string email)
