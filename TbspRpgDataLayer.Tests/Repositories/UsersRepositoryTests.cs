@@ -105,14 +105,72 @@ namespace TbspRpgDataLayer.Tests.Repositories
             Assert.NotNull(user);
             Assert.Equal(testUser.Id, user.Id);
             Assert.Equal(testUser.Email, user.Email);
-            Assert.Equal(2, testUser.Groups.Count);
-            Assert.Single(testUser.Groups.First().Permissions);
-            Assert.Equal(2, testUser.Groups.Last().Permissions.Count);
+            Assert.Equal(2, user.Groups.Count);
+            Assert.Single(user.Groups.First().Permissions);
+            Assert.Equal(2, user.Groups.Last().Permissions.Count);
         }
 
         #endregion
 
         #region GetUserByEmailAndPassword
+
+        [Fact]
+        public async void GetUserByEmailAndPassword_GroupsAndPermissionsIncluded()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var adminPermission = new Permission()
+            {
+                Id = Guid.NewGuid(),
+                Name = "admin specific permission"
+            };
+            var testUser = new User()
+            {
+                Id = Guid.NewGuid(),
+                Email = "test",
+                Password = "test",
+                Groups = new List<Group>()
+                {
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Admin",
+                        Permissions = new List<Permission>()
+                        {
+                            adminPermission
+                        }
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Super Admin",
+                        Permissions = new List<Permission>()
+                        {
+                            adminPermission,
+                            new()
+                            {
+                                Id = Guid.NewGuid(),
+                                Name = "super admin specific permission"
+                            }
+                        }
+                    }
+                }
+            };
+            context.Users.Add(testUser);
+            await context.SaveChangesAsync();
+            var repo = new UsersRepository(context);
+            
+            // act
+            var user = await repo.GetUserByEmailAndPassword("test", "test");
+            
+            // assert
+            Assert.NotNull(user);
+            Assert.Equal(testUser.Id, user.Id);
+            Assert.Equal(testUser.Email, user.Email);
+            Assert.Equal(2, user.Groups.Count);
+            Assert.Single(user.Groups.First().Permissions);
+            Assert.Equal(2, user.Groups.Last().Permissions.Count);
+        }
 
         [Fact]
         public async void GetUserByEmailAndPassword_Valid_ReturnOne()
