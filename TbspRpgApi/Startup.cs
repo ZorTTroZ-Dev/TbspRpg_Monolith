@@ -59,6 +59,8 @@ namespace TbspRpgApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TbspRpgApi", Version = "v1" });
             });
+            
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,6 +76,11 @@ namespace TbspRpgApi
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+            
+            app.UseCors (x => x
+                .AllowAnyOrigin ()
+                .AllowAnyMethod ()
+                .AllowAnyHeader ());
 
             app.UseSerilogRequestLogging();
             app.UseRouting();
