@@ -76,7 +76,6 @@ namespace TbspRpgApi
             }
 
             app.UseSerilogRequestLogging();
-            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseMiddleware<JwtMiddleware>();
 
