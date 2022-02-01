@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using MailKit.Net.Smtp;
+using MailKit.Security;
 using MimeKit;
 using TbspRpgSettings.Settings;
 
@@ -22,16 +23,16 @@ namespace TbspRpgProcessor
         public async Task SendRegistrationVerificationMail(string email, string registrationKey)
         {
             var message = new MimeMessage ();
-            // message.From.Add (new MailboxAddress ("Joey Tribbiani", "joey@friends.com"));
-            message.To.Add (new MailboxAddress (email, email));
-            message.Subject = "How you doin'?";
+            message.To.Add(MailboxAddress.Parse(email));
+            message.From.Add(MailboxAddress.Parse("no-reply@zorttroz.com"));
+            message.Subject = "TbspRpg Registration Code";
 
             message.Body = new TextPart ("plain") {
-                Text = @"Hey Chandler,
+                Text = $@"Your TbspRpg registration code is:
 
-I just wanted to let you know that Monica and I were going to go play some paintball, you in?
+{registrationKey}
 
--- Joey"
+Have splendid adventures!"
             };
             await SendMail(message);
         }
@@ -41,7 +42,7 @@ I just wanted to let you know that Monica and I were going to go play some paint
             if (!_smtpSettings.SendMail)
                 return;
             using var client = new SmtpClient ();
-            await client.ConnectAsync(_smtpSettings.Server, _smtpSettings.Port, false);
+            await client.ConnectAsync(_smtpSettings.Server, _smtpSettings.Port,  SecureSocketOptions.StartTls);
             await client.AuthenticateAsync(_smtpSettings.Username, _smtpSettings.Password);
             await client.SendAsync(mail);
             await client.DisconnectAsync(true);

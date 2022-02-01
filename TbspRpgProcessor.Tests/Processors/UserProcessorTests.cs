@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TbspRpgDataLayer.Entities;
 using TbspRpgProcessor.Entities;
+using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgProcessor.Tests.Processors
@@ -256,6 +257,26 @@ namespace TbspRpgProcessor.Tests.Processors
             // assert
             Assert.NotNull(user);
             Assert.NotEqual("000000", user.RegistrationKey);
+        }
+
+        #endregion
+
+        #region MailTest
+
+        [Fact]
+        public async void SendMailTest()
+        {
+            var mailClient = new MailClient(
+                new SmtpSettings()
+                {
+                    Server = "smtp-relay.gmail.com",
+                    Port = 587,
+                    Username = "",
+                    Password = "",
+                    SendMail = true
+                });
+
+            await mailClient.SendRegistrationVerificationMail("cdavid.vanhorn@gmail.com", "000000");
         }
 
         #endregion
