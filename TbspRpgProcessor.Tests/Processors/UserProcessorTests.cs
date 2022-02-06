@@ -266,17 +266,17 @@ namespace TbspRpgProcessor.Tests.Processors
         [Fact]
         public async void SendMailTest()
         {
-            var mailClient = new MailClient(
-                new SmtpSettings()
-                {
-                    Server = "smtp-relay.gmail.com",
-                    Port = 587,
-                    Username = "",
-                    Password = "",
-                    SendMail = true
-                });
-
-            await mailClient.SendRegistrationVerificationMail("cdavid.vanhorn@gmail.com", "000000");
+            // var mailClient = new MailClient(
+            //     new SmtpSettings()
+            //     {
+            //         Server = "smtp-relay.gmail.com",
+            //         Port = 587,
+            //         Username = "",
+            //         Password = "",
+            //         SendMail = true
+            //     });
+            //
+            // await mailClient.SendRegistrationVerificationMail("cdavid.vanhorn@gmail.com", "000000");
         }
 
         #endregion
