@@ -24,6 +24,25 @@ namespace TbspRpgApi.Controllers
             _permissionService = permissionService;
             _logger = logger;
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetSourceForKey([FromQuery] SourceFilterRequest filters)
+        {
+            // this will only work with the empty source id
+            if (filters.Key != Guid.Empty)
+            {
+                return BadRequest(new {message = "use adventure specific request to get source for your key"});
+            }
+
+            if (filters.Language == null)
+            {
+                return BadRequest(new {message = "language required"});
+            }
+            
+            var source = await _sourcesService.GetSourceForKey(filters.Key.GetValueOrDefault(), Guid.Empty, filters.Language);
+            return Ok(source);
+        }
         
         [HttpGet("adventure/{adventureId:guid}")]
         [Authorize]
