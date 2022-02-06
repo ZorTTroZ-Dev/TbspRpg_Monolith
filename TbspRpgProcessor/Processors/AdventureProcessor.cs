@@ -37,6 +37,7 @@ namespace TbspRpgProcessor.Processors
                 // create a new adventure
                 adventure = new Adventure()
                 {
+                    Id = Guid.NewGuid(),
                     Name = adventureUpdateModel.Adventure.Name,
                     InitialSourceKey = Guid.Empty,
                     CreatedByUserId = adventureUpdateModel.UserId
