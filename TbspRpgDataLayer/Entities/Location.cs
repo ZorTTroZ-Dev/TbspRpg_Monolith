@@ -9,6 +9,7 @@ namespace TbspRpgDataLayer.Entities
         public Guid Id { get; set; }
         public string Name { get; set; }
         public bool Initial { get; set; }
+        public bool Final { get; set; }
         public Guid SourceKey { get; set; }
         public Guid AdventureId { get; set; }
         

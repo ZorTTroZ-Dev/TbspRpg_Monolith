@@ -92,7 +92,13 @@ namespace TbspRpgApi.Tests.Services
             var testGame = new Game()
             {
                 Id = Guid.NewGuid(),
-                LocationId = testLocationId
+                LocationId = testLocationId,
+                Location = new Location()
+                {
+                    Id = testLocationId,
+                    Name = "test location",
+                    Initial = true
+                }
             };
             var testRoutes = new List<Route>()
             {
@@ -115,8 +121,8 @@ namespace TbspRpgApi.Tests.Services
             var routes = await service.GetCurrentRoutesForGame(testGame.Id);
             
             // assert
-            Assert.Equal(2, routes.Count);
-            Assert.NotNull(routes.FirstOrDefault(r => r.Name == "route1"));
+            Assert.Equal(2, routes.Routes.Count);
+            Assert.NotNull(routes.Routes.FirstOrDefault(r => r.Name == "route1"));
         }
         
         [Fact]
@@ -127,7 +133,7 @@ namespace TbspRpgApi.Tests.Services
             var testGame = new Game()
             {
                 Id = Guid.NewGuid(),
-                LocationId = testLocationId
+                LocationId = testLocationId,
             };
             var testRoutes = new List<Route>()
             {
@@ -199,7 +205,13 @@ namespace TbspRpgApi.Tests.Services
             {
                 Id = Guid.NewGuid(),
                 LocationId = testLocationId,
-                LocationUpdateTimeStamp = 42
+                LocationUpdateTimeStamp = 42,
+                Location = new Location()
+                {
+                    Id = testLocationId,
+                    Name = "test location",
+                    Initial = false
+                }
             };
             var testRoutes = new List<Route>()
             {
@@ -223,8 +235,8 @@ namespace TbspRpgApi.Tests.Services
                 await service.GetCurrentRoutesForGameAfterTimeStamp(testGame.Id, 15);
             
             // assert
-            Assert.Equal(2, routes.Count);
-            Assert.NotNull(routes.FirstOrDefault(r => r.Name == "route1"));
+            Assert.Equal(2, routes.Routes.Count);
+            Assert.NotNull(routes.Routes.FirstOrDefault(r => r.Name == "route1"));
         }
         
         [Fact]
@@ -236,7 +248,13 @@ namespace TbspRpgApi.Tests.Services
             {
                 Id = Guid.NewGuid(),
                 LocationId = testLocationId,
-                LocationUpdateTimeStamp = 42
+                LocationUpdateTimeStamp = 42,
+                Location = new Location()
+                {
+                    Id = testLocationId,
+                    Name = "test location",
+                    Initial = true
+                }
             };
             var testRoutes = new List<Route>()
             {
@@ -260,7 +278,7 @@ namespace TbspRpgApi.Tests.Services
                 await service.GetCurrentRoutesForGameAfterTimeStamp(testGame.Id, 50);
             
             // assert
-            Assert.Empty(routes);
+            Assert.Empty(routes.Routes);
         }
 
         #endregion

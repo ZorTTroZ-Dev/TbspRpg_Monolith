@@ -38,6 +38,7 @@ namespace TbspRpgProcessor.Processors
                     Id = Guid.NewGuid(),
                     Name = location.Name,
                     Initial = location.Initial,
+                    Final = location.Final,
                     AdventureId = location.AdventureId
                 };
                 await _locationsService.AddLocation(dbLocation);
@@ -50,6 +51,7 @@ namespace TbspRpgProcessor.Processors
                     throw new ArgumentException("invalid location id");
                 dbLocation.Name = location.Name;
                 dbLocation.Initial = location.Initial;
+                dbLocation.Final = location.Final;
             }
             
             // update the source
