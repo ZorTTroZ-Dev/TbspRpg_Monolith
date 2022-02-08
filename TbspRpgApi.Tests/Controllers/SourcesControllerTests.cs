@@ -138,5 +138,87 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+        
+        #region GetSourceForKey
+
+        [Fact]
+        public async void GetSourceForKey_NonEmptyKey_ReturnBadRequest()
+        {
+            // arrange
+            var sources = new List<En>();
+            var controller = CreateController(sources);
+            
+            // act
+            var response = await controller.GetSourceForKey(
+                new SourceFilterRequest()
+                {
+                    Key = Guid.NewGuid(),
+                    Language = Languages.ENGLISH
+                });
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+        
+        [Fact]
+        public async void GetSourceKey_NoLanguage_ReturnBadRequest()
+        {
+            // arrange
+            var sources = new List<En>();
+            var controller = CreateController(sources);
+            
+            // act
+            var response = await controller.GetSourceForKey(
+                new SourceFilterRequest()
+                {
+                    Key = Guid.Empty
+                });
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+        
+        [Fact]
+        public async void GetSourceKey_EmptyGuidKey_ReturnSource()
+        {
+            // arrange
+            var sources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.Empty
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                }
+            };
+            var controller = CreateController(sources);
+            
+            // act
+            var response = await controller.GetSourceForKey(
+                new SourceFilterRequest()
+                {
+                    Key = Guid.Empty,
+                    Language = Languages.ENGLISH
+                });
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var sourceViewModel = okObjectResult.Value as SourceViewModel;
+            Assert.NotNull(sourceViewModel);
+            Assert.Equal(sources[0].Id, sourceViewModel.Id);
+        }
+        
+        #endregion
     }
 }
