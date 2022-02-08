@@ -174,6 +174,36 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.Equal("updated source", sources[0].Text);
         }
 
+        [Fact]
+        public async void UpdateLocation_EmptyLocaitonId_CreateNewLocation()
+        {
+            // arrange
+            var locations = new List<Location>();
+            var sources = new List<En>();
+            var processor = CreateLocationProcessor(locations, sources);
+            
+            // act
+            await processor.UpdateLocation(new Location()
+            {
+                Id = Guid.Empty,
+                Name = "new location name",
+                Initial = false,
+                SourceKey = Guid.Empty
+            }, new En()
+            {
+                Key = Guid.Empty,
+                Name = "new location name",
+                Text = "updated source"
+            }, Languages.ENGLISH);
+            
+            // assert
+            Assert.Single(sources);
+            Assert.Single(locations);
+            Assert.False(locations[0].Initial);
+            Assert.Equal("new location name", locations[0].Name);
+            Assert.Equal("updated source", sources[0].Text);
+        }
+
         #endregion
     }
 }
