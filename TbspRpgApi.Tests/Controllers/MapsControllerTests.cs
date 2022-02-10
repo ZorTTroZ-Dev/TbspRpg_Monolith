@@ -112,7 +112,13 @@ namespace TbspRpgApi.Tests.Controllers
             var testGame = new Game()
             {
                 Id = Guid.NewGuid(),
-                LocationId = testLocationId
+                LocationId = testLocationId,
+                Location = new Location()
+                {
+                    Id = testLocationId,
+                    Name = "test location",
+                    Initial = true
+                }
             };
             var testRoutes = new List<Route>()
             {
@@ -137,9 +143,9 @@ namespace TbspRpgApi.Tests.Controllers
             // assert
             var okObjectResult = response as OkObjectResult;
             Assert.NotNull(okObjectResult);
-            var routeViewModels = okObjectResult.Value as List<RouteViewModel>;
+            var routeViewModels = okObjectResult.Value as RouteListViewModel;
             Assert.NotNull(routeViewModels);
-            Assert.Equal(2, routeViewModels.Count);
+            Assert.Equal(2, routeViewModels.Routes.Count);
         }
         
         [Fact]
@@ -225,7 +231,13 @@ namespace TbspRpgApi.Tests.Controllers
             {
                 Id = Guid.NewGuid(),
                 LocationId = testLocationId,
-                LocationUpdateTimeStamp = 42
+                LocationUpdateTimeStamp = 42,
+                Location = new Location()
+                {
+                    Id = testLocationId,
+                    Name = "test location",
+                    Initial = true
+                }
             };
             var testRoutes = new List<Route>()
             {
@@ -250,9 +262,9 @@ namespace TbspRpgApi.Tests.Controllers
             // assert
             var okObjectResult = response as OkObjectResult;
             Assert.NotNull(okObjectResult);
-            var routeViewModels = okObjectResult.Value as List<RouteViewModel>;
+            var routeViewModels = okObjectResult.Value as RouteListViewModel;
             Assert.NotNull(routeViewModels);
-            Assert.Equal(2, routeViewModels.Count);
+            Assert.Equal(2, routeViewModels.Routes.Count);
         }
         
         [Fact]
@@ -264,7 +276,13 @@ namespace TbspRpgApi.Tests.Controllers
             {
                 Id = Guid.NewGuid(),
                 LocationId = testLocationId,
-                LocationUpdateTimeStamp = 42
+                LocationUpdateTimeStamp = 42,
+                Location = new Location()
+                {
+                    Id = testLocationId,
+                    Name = "test location",
+                    Initial = true
+                }
             };
             var testRoutes = new List<Route>()
             {
@@ -289,9 +307,9 @@ namespace TbspRpgApi.Tests.Controllers
             // assert
             var okObjectResult = response as OkObjectResult;
             Assert.NotNull(okObjectResult);
-            var routeViewModels = okObjectResult.Value as List<RouteViewModel>;
+            var routeViewModels = okObjectResult.Value as RouteListViewModel;
             Assert.NotNull(routeViewModels);
-            Assert.Empty(routeViewModels);
+            Assert.Empty(routeViewModels.Routes);
         }
 
         #endregion

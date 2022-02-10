@@ -70,7 +70,8 @@ namespace TbspRpgProcessor.Processors
                     Name = routeUpdateModel.newDestinationLocationName,
                     SourceKey = Guid.Empty,
                     AdventureId = dbLocation.AdventureId,
-                    Initial = false
+                    Initial = false,
+                    Final = false
                 };
                 await _locationsService.AddLocation(destinationLocation);
                 route.DestinationLocation = destinationLocation;

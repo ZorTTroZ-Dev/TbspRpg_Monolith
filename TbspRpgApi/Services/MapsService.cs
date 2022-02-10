@@ -11,8 +11,8 @@ namespace TbspRpgApi.Services
     public interface IMapsService
     {
         Task<LocationViewModel> GetCurrentLocationForGame(Guid gameId);
-        Task<List<RouteViewModel>> GetCurrentRoutesForGame(Guid gameId);
-        Task<List<RouteViewModel>> GetCurrentRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp);
+        Task<RouteListViewModel> GetCurrentRoutesForGame(Guid gameId);
+        Task<RouteListViewModel> GetCurrentRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp);
         Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp);
     }
     
@@ -44,24 +44,36 @@ namespace TbspRpgApi.Services
 
         // If these prove to be useful, move them in to the data layer service
         // and make them single queries
-        public async Task<List<RouteViewModel>> GetCurrentRoutesForGame(Guid gameId)
+        public async Task<RouteListViewModel> GetCurrentRoutesForGame(Guid gameId)
         {
-            var game = await _gamesService.GetGameById(gameId);
+            var game = await _gamesService.GetGameByIdIncludeLocation(gameId);
             if (game == null || game.LocationId == Guid.Empty)
                 throw new Exception("invalid game id or no location");
             var routes = await _routesService.GetRoutesForLocation(game.LocationId);
-            return routes.Select(route => new RouteViewModel(route, game)).ToList();
+            return new RouteListViewModel()
+            {
+                Location = new LocationViewModel(game.Location),
+                Routes = routes.Select(route => new RouteViewModel(route, game)).ToList()
+            };
         }
         
-        public async Task<List<RouteViewModel>> GetCurrentRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp)
+        public async Task<RouteListViewModel> GetCurrentRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp)
         {
-            var game = await _gamesService.GetGameById(gameId);
+            var game = await _gamesService.GetGameByIdIncludeLocation(gameId);
             if (game == null || game.LocationId == Guid.Empty)
                 throw new Exception("invalid game id or no location");
             if (game.LocationUpdateTimeStamp <= timeStamp)
-                return new List<RouteViewModel>();
+                return new RouteListViewModel()
+                {
+                    Location = new LocationViewModel(game.Location),
+                    Routes = new List<RouteViewModel>()
+                };
             var routes = await _routesService.GetRoutesForLocation(game.LocationId);
-            return routes.Select(route => new RouteViewModel(route, game)).ToList();
+            return new RouteListViewModel()
+            {
+                Location = new LocationViewModel(game.Location),
+                Routes = routes.Select(route => new RouteViewModel(route, game)).ToList()
+            };
         }
 
         public async Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp)
