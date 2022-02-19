@@ -102,7 +102,8 @@ namespace TbspRpgProcessor.Tests.Processors
                 {
                     Id = Guid.Empty,
                     Name = "new_test_adventure",
-                    InitialSourceKey = Guid.Empty
+                    InitialSourceKey = Guid.Empty,
+                    PublishDate = DateTime.UtcNow
                 },
                 InitialSource = new En()
                 {
@@ -172,7 +173,8 @@ namespace TbspRpgProcessor.Tests.Processors
                     Name = "updated_adventure_name",
                     InitialSourceKey = testAdventure.InitialSourceKey,
                     DescriptionSourceKey = testAdventure.DescriptionSourceKey,
-                    CreatedByUserId = testAdventure.CreatedByUserId
+                    CreatedByUserId = testAdventure.CreatedByUserId,
+                    PublishDate = DateTime.UtcNow
                 },
                 InitialSource = new En()
                 {

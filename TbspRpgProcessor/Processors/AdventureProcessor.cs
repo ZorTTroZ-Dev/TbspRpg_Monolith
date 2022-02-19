@@ -40,17 +40,19 @@ namespace TbspRpgProcessor.Processors
                     Id = Guid.NewGuid(),
                     Name = adventureUpdateModel.Adventure.Name,
                     InitialSourceKey = Guid.Empty,
-                    CreatedByUserId = adventureUpdateModel.UserId
+                    CreatedByUserId = adventureUpdateModel.UserId,
+                    PublishDate = adventureUpdateModel.Adventure.PublishDate
                 };
                 await _adventuresService.AddAdventure(adventure);
             }
             else
             {
-                // look up the adventure and update the name
+                // look up the adventure and update the name and publish date
                 var dbAdventure = await _adventuresService.GetAdventureById(adventureUpdateModel.Adventure.Id);
                 if (dbAdventure == null)
                     throw new ArgumentException("invalid adventure id");
                 dbAdventure.Name = adventureUpdateModel.Adventure.Name;
+                dbAdventure.PublishDate = adventureUpdateModel.Adventure.PublishDate;
                 adventure = dbAdventure;
             }
             
