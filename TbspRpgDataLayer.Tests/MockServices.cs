@@ -57,6 +57,10 @@ namespace TbspRpgDataLayer.Tests
                 .ReturnsAsync(adventures.ToList());
             
             adventuresService.Setup(service =>
+                    service.GetPublishedAdventures(It.IsAny<AdventureFilter>()))
+                .ReturnsAsync(adventures.Where(adventure => adventure.PublishDate <= DateTime.UtcNow).ToList());
+            
+            adventuresService.Setup(service =>
                     service.GetAdventureByName(It.IsAny<string>()))
                 .ReturnsAsync((string name) =>
                     adventures.FirstOrDefault(a => a.Name == name));

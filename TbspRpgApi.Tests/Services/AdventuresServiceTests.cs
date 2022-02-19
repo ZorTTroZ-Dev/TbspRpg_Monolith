@@ -43,6 +43,41 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+        
+        #region GetPublishedAdventures
+
+        [Fact]
+        public async void GetPublishedAdventures_ReturnsPublishedAdventures()
+        {
+            // arrange
+            var testAdventures = new List<Adventure>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test",
+                    InitialSourceKey = Guid.NewGuid(),
+                    PublishDate = DateTime.UtcNow
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test two",
+                    InitialSourceKey = Guid.NewGuid(),
+                    PublishDate = DateTime.UtcNow.AddDays(1)
+                }
+            };
+            var service = CreateAdventuresService(testAdventures);
+            
+            // act
+            var adventures = await service.GetPublishedAdventures(new AdventureFilterRequest());
+            
+            // assert
+            Assert.Single(adventures);
+            Assert.Equal(testAdventures[0].Id, adventures[0].Id);
+        }
+
+        #endregion
 
         #region GetAdventureByName
 

@@ -12,6 +12,7 @@ namespace TbspRpgApi.ViewModels
         public Guid InitialSourceKey { get; set; }
         public Guid DescriptionSourceKey { get; set; }
         public Guid CreatedByUserId { get; set; }
+        public DateTime PublishDate { get; set; }
 
         public AdventureViewModel() { }
 
@@ -22,6 +23,7 @@ namespace TbspRpgApi.ViewModels
             InitialSourceKey = adventure.InitialSourceKey;
             DescriptionSourceKey = adventure.DescriptionSourceKey;
             CreatedByUserId = adventure.CreatedByUserId;
+            PublishDate = adventure.PublishDate;
         }
 
         public Adventure ToEntity()
@@ -32,7 +34,8 @@ namespace TbspRpgApi.ViewModels
                 Name = Name,
                 InitialSourceKey = InitialSourceKey,
                 DescriptionSourceKey = DescriptionSourceKey,
-                CreatedByUserId = CreatedByUserId
+                CreatedByUserId = CreatedByUserId,
+                PublishDate = PublishDate
             };
         }
     }

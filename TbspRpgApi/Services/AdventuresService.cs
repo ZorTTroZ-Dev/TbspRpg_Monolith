@@ -12,6 +12,7 @@ namespace TbspRpgApi.Services
     public interface IAdventuresService
     {
         Task<List<AdventureViewModel>> GetAllAdventures(AdventureFilterRequest filters);
+        Task<List<AdventureViewModel>> GetPublishedAdventures(AdventureFilterRequest filters);
         Task<AdventureViewModel> GetAdventureByName(string name);
         Task<AdventureViewModel> GetAdventureById(Guid adventureId);
         Task UpdateAdventureAndSource(AdventureUpdateRequest adventureUpdateRequest, Guid userId);
@@ -32,6 +33,13 @@ namespace TbspRpgApi.Services
         public async Task<List<AdventureViewModel>> GetAllAdventures(AdventureFilterRequest filters)
         {
             var adventures = await _adventuresService.GetAllAdventures(
+                filters.ToAdventureFilter());
+            return adventures.Select(adventure => new AdventureViewModel(adventure)).ToList();
+        }
+
+        public async Task<List<AdventureViewModel>> GetPublishedAdventures(AdventureFilterRequest filters)
+        {
+            var adventures = await _adventuresService.GetPublishedAdventures(
                 filters.ToAdventureFilter());
             return adventures.Select(adventure => new AdventureViewModel(adventure)).ToList();
         }
