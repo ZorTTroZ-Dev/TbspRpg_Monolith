@@ -12,6 +12,7 @@ namespace TbspRpgDataLayer.Repositories
     public interface IAdventuresRepository: IBaseRepository
     {
         Task<List<Adventure>> GetAllAdventures(AdventureFilter filters);
+        Task<List<Adventure>> GetPublishedAdventures(AdventureFilter filters);
         Task<Adventure> GetAdventureByName(string name);
         Task<Adventure> GetAdventureById(Guid adventureId);
         Task AddAdventure(Adventure adventure);
@@ -26,13 +27,26 @@ namespace TbspRpgDataLayer.Repositories
             _databaseContext = databaseContext;
         }
 
-        public Task<List<Adventure>> GetAllAdventures(AdventureFilter filters)
+        private IQueryable<Adventure> GetFilteredQuery(AdventureFilter filters)
         {
             var query = _databaseContext.Adventures.AsQueryable();
             if (filters != null && filters.CreatedBy != Guid.Empty)
             {
                 query = query.Where(a => a.CreatedByUserId == filters.CreatedBy);
             }
+
+            return query;
+        }
+
+        public Task<List<Adventure>> GetAllAdventures(AdventureFilter filters)
+        {
+            return GetFilteredQuery(filters).ToListAsync();
+        }
+
+        public Task<List<Adventure>> GetPublishedAdventures(AdventureFilter filters)
+        {
+            var query = GetFilteredQuery(filters);
+            query = query.Where(a => a.PublishDate <= DateTime.UtcNow);
             return query.ToListAsync();
         }
 
