@@ -12,6 +12,7 @@ namespace TbspRpgDataLayer.Services
     public interface IAdventuresService: IBaseService
     {
         Task<List<Adventure>> GetAllAdventures(AdventureFilter filters);
+        Task<List<Adventure>> GetPublishedAdventures(AdventureFilter filters);
         Task<Adventure> GetAdventureByName(string name);
         Task<Adventure> GetAdventureById(Guid adventureId);
         Task AddAdventure(Adventure adventure);
@@ -32,6 +33,11 @@ namespace TbspRpgDataLayer.Services
         public Task<List<Adventure>> GetAllAdventures(AdventureFilter filters)
         {
             return _adventuresRepository.GetAllAdventures(filters);
+        }
+
+        public Task<List<Adventure>> GetPublishedAdventures(AdventureFilter filters)
+        {
+            return _adventuresRepository.GetPublishedAdventures(filters);
         }
 
         public Task<Adventure> GetAdventureByName(string name)

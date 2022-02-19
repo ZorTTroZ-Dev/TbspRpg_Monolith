@@ -79,6 +79,39 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
         
         #endregion
+
+        #region GetPublishedAdventures
+
+        [Fact]
+        public async Task GetPublishedAdventures_ReturnPublished()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "TestOne",
+                PublishDate = DateTime.UtcNow
+            };
+            var testAdventureTwo = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "TestTwo",
+                PublishDate = DateTime.UtcNow.AddDays(1)
+            };
+            context.Adventures.AddRange(testAdventure, testAdventureTwo);
+            await context.SaveChangesAsync();
+            var adventureRepository = new AdventuresRepository(context);
+            
+            //act
+            var adventures = await adventureRepository.GetPublishedAdventures(new AdventureFilter());
+            
+            //assert
+            Assert.Single(adventures);
+            Assert.Equal("TestOne", adventures[0].Name);
+        }
+
+        #endregion
         
         #region GetAdventureByName
         

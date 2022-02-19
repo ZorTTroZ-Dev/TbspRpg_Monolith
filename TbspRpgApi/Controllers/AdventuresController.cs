@@ -25,10 +25,17 @@ namespace TbspRpgApi.Controllers
             _logger = logger;
         }
         
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<IActionResult> GetAllAdventures([FromQuery]AdventureFilterRequest filters)
         {
             var adventures = await _adventuresService.GetAllAdventures(filters);
+            return Ok(adventures);
+        }
+        
+        [HttpGet("published")]
+        public async Task<IActionResult> GetPublishedAdventures([FromQuery]AdventureFilterRequest filters)
+        {
+            var adventures = await _adventuresService.GetPublishedAdventures(filters);
             return Ok(adventures);
         }
         

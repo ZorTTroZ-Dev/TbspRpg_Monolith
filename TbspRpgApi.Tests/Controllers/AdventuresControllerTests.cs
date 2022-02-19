@@ -70,6 +70,44 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+        
+        #region GetPublishedAdventures
+
+        [Fact]
+        public async void GetPublishedAdventures_ReturnsPublishedAdventures()
+        {
+            // arrange
+            var testAdventures = new List<Adventure>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test",
+                    InitialSourceKey = Guid.NewGuid(),
+                    PublishDate = DateTime.UtcNow
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test two",
+                    InitialSourceKey = Guid.NewGuid(),
+                    PublishDate = DateTime.UtcNow.AddDays(1)
+                }
+            };
+            var controller = CreateController(testAdventures);
+            
+            // act
+            var response = await controller.GetPublishedAdventures(new AdventureFilterRequest());
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var adventureViewModels = okObjectResult.Value as List<AdventureViewModel>;
+            Assert.NotNull(adventureViewModels);
+            Assert.Single(adventureViewModels);
+        }
+
+        #endregion
 
         #region GetAdventureByName
 
