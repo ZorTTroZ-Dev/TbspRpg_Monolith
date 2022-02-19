@@ -35,7 +35,7 @@ namespace TbspRpgApi.ViewModels
                 InitialSourceKey = InitialSourceKey,
                 DescriptionSourceKey = DescriptionSourceKey,
                 CreatedByUserId = CreatedByUserId,
-                PublishDate = PublishDate
+                PublishDate = DateTime.SpecifyKind(PublishDate, DateTimeKind.Utc)
             };
         }
     }
