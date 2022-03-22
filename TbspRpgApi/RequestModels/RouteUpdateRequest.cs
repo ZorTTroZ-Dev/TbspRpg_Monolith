@@ -5,10 +5,9 @@ namespace TbspRpgApi.RequestModels
 {
     public class RouteUpdateRequest
     {
-        public RouteViewModel route { get; set; }
+        public RouteUpdateViewModel route { get; set; }
         public SourceViewModel source { get; set; }
         public SourceViewModel successSource { get; set; }
-        public string newDestinationLocationName { get; set; }
 
         public RouteUpdateModel ToRouteUpdateModel()
         {
@@ -17,7 +16,7 @@ namespace TbspRpgApi.RequestModels
                 route = route.ToEntity(),
                 source = source.ToEntity(),
                 successSource = successSource.ToEntity(),
-                newDestinationLocationName = newDestinationLocationName,
+                newDestinationLocationName = route.newDestinationLocationName,
                 language = source.Language
             };
         }
