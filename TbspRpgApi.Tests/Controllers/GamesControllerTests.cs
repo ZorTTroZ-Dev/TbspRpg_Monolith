@@ -170,7 +170,13 @@ namespace TbspRpgApi.Tests.Controllers
             {
                 Id = Guid.NewGuid(),
                 AdventureId = Guid.NewGuid(),
-                UserId = userId
+                UserId = userId,
+                User = new User()
+                {
+                    Id = userId,
+                    Email = "test@test.com",
+                    RegistrationComplete = true
+                }
             };
             var controller = CreateGamesController(new List<Game>()
             {
@@ -187,9 +193,9 @@ namespace TbspRpgApi.Tests.Controllers
             // assert
             var okObjectResult = response as OkObjectResult;
             Assert.NotNull(okObjectResult);
-            var gameViewModels = okObjectResult.Value as List<GameViewModel>;
+            var gameViewModels = okObjectResult.Value as List<GameUserViewModel>;
             Assert.NotNull(gameViewModels);
-            Assert.Equal(testGame.Id, gameViewModels[0].Id);
+            Assert.Equal(testGame.Id, gameViewModels[0].Game.Id);
         }
         
         [Fact]
@@ -209,7 +215,7 @@ namespace TbspRpgApi.Tests.Controllers
             // assert
             var okObjectResult = response as OkObjectResult;
             Assert.NotNull(okObjectResult);
-            var gameViewModels = okObjectResult.Value as List<GameViewModel>;
+            var gameViewModels = okObjectResult.Value as List<GameUserViewModel>;
             Assert.NotNull(gameViewModels);
             Assert.Empty(gameViewModels);
         }
