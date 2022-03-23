@@ -65,7 +65,7 @@ namespace TbspRpgDataLayer.Repositories
 
         public Task<List<Game>> GetGamesIncludeUsers(GameFilter filters)
         {
-            if (filters == null) return _databaseContext.Games.AsQueryable().ToListAsync();
+            if (filters == null) return _databaseContext.Games.AsQueryable().Include(g => g.User).ToListAsync();
             var query = BuildGamesQuery(filters);
             query = query.Include(g => g.User);
             return query.ToListAsync();
