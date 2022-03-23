@@ -10,6 +10,7 @@ namespace TbspRpgSettings.Settings
         public static readonly string WRITE_ADVENTURE = "write_adventure";
         public static readonly string READ_GAME = "read_game";
         public static readonly string WRITE_GAME = "write_game";
+        public static readonly string ADMIN_GROUP = "admin";
 
         public static List<string> GetAllPermissionNames()
         {
