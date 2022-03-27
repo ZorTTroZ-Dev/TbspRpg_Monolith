@@ -4,21 +4,24 @@ namespace TbspRpgSettings.Settings
 {
     public class Permissions
     {
-        public static readonly string READ_LOCATION = "read_location";
-        public static readonly string WRITE_LOCATION = "write_location";
-        public static readonly string READ_ADVENTURE = "read_adventure";
-        public static readonly string WRITE_ADVENTURE = "write_adventure";
-        public static readonly string READ_GAME = "read_game";
-        public static readonly string WRITE_GAME = "write_game";
+        public const string ReadLocation = "read_location";
+        public const string WriteLocation = "write_location";
+        public const string ReadAdventure = "read_adventure";
+        public const string WriteAdventure = "write_adventure";
+        public const string ReadGame = "read_game";
+        public const string WriteGame = "write_game";
+        public const string AdminGroup = "admin";
 
         public static List<string> GetAllPermissionNames()
         {
             return new List<string>()
             {
-                READ_LOCATION,
-                WRITE_LOCATION,
-                READ_ADVENTURE,
-                WRITE_ADVENTURE
+                ReadLocation,
+                WriteLocation,
+                ReadAdventure,
+                WriteAdventure,
+                ReadGame,
+                WriteGame
             };
         }
     }

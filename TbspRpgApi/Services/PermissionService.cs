@@ -89,13 +89,13 @@ namespace TbspRpgApi.Services
         // they can access a location if they own the adventure that owns the location
         public async Task<bool> CanReadLocation(Guid userId, Guid locationId)
         {
-            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.READ_LOCATION) || 
+            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.ReadLocation) || 
                    await CanAccessLocation(userId, locationId);
         }
 
         public async Task<bool> CanWriteLocation(Guid userId, Guid locationId)
         {
-            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.WRITE_LOCATION) || 
+            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.WriteLocation) || 
                    await CanAccessLocation(userId, locationId);
         }
 
@@ -110,13 +110,14 @@ namespace TbspRpgApi.Services
 
         public async Task<bool> CanReadAdventure(Guid userId, Guid adventureId)
         {
-            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.READ_ADVENTURE) ||
+            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.ReadAdventure) ||
                    await CanAccessAdventure(userId, adventureId);
         }
 
         public async Task<bool> CanWriteAdventure(Guid userId, Guid adventureId)
         {
-            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.WRITE_ADVENTURE) ||
+            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.WriteAdventure) ||
+                   await IsInGroup(userId, TbspRpgSettings.Settings.Permissions.AdminGroup) ||
                    await CanAccessAdventure(userId, adventureId);
         }
 
@@ -131,13 +132,13 @@ namespace TbspRpgApi.Services
 
         public async Task<bool> CanReadGame(Guid userId, Guid gameId)
         {
-            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.READ_GAME) ||
+            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.ReadGame) ||
                    await CanAccessGame(userId, gameId);
         }
 
         public async Task<bool> CanWriteGame(Guid userId, Guid gameId)
         {
-            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.WRITE_GAME) ||
+            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.WriteGame) ||
                    await CanAccessGame(userId, gameId);
         }
     }
