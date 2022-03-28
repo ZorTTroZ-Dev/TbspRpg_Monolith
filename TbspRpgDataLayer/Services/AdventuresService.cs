@@ -15,7 +15,9 @@ namespace TbspRpgDataLayer.Services
         Task<List<Adventure>> GetPublishedAdventures(AdventureFilter filters);
         Task<Adventure> GetAdventureByName(string name);
         Task<Adventure> GetAdventureById(Guid adventureId);
+        Task<Adventure> GetAdventureByIdIncludeAssociatedObjects(Guid adventureId);
         Task AddAdventure(Adventure adventure);
+        Task RemoveAdventure(Adventure adventure);
     }
     
     public class AdventuresService : IAdventuresService
@@ -50,9 +52,19 @@ namespace TbspRpgDataLayer.Services
             return _adventuresRepository.GetAdventureById(adventureId);
         }
 
+        public Task<Adventure> GetAdventureByIdIncludeAssociatedObjects(Guid adventureId)
+        {
+            return _adventuresRepository.GetAdventureByIdIncludeAssociatedObjects(adventureId);
+        }
+
         public async Task AddAdventure(Adventure adventure)
         {
             await _adventuresRepository.AddAdventure(adventure);
+        }
+
+        public Task RemoveAdventure(Adventure adventure)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task SaveChanges()

@@ -14,6 +14,8 @@ namespace TbspRpgDataLayer.Services
         Task<List<Location>> GetLocationsForAdventure(Guid adventureId);
         Task<Location> GetLocationById(Guid locationId);
         Task AddLocation(Location location);
+        void RemoveLocation(Location location);
+        void RemoveLocations(ICollection<Location> locations);
     }
     
     public class LocationsService : ILocationsService
@@ -47,6 +49,16 @@ namespace TbspRpgDataLayer.Services
         public async Task AddLocation(Location location)
         {
             await _locationsRepository.AddLocation(location);
+        }
+
+        public void RemoveLocation(Location location)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveLocations(ICollection<Location> locations)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task SaveChanges()

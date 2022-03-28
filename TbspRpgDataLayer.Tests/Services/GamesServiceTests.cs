@@ -286,5 +286,15 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region RemoveGames
+
+        [Fact]
+        public async void RemoveGames_GamesRemoved()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

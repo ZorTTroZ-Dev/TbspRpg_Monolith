@@ -770,5 +770,27 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region RemoveAllContentsForGame
+
+        [Fact]
+        public async void RemoveAllContentsForGame_NoContents_NothingRemoved()
+        {
+            throw new NotImplementedException();
+        }
+        
+        [Fact]
+        public async void RemoveAllContentsForGame_InvalidGameId_NothingRemoved()
+        {
+            throw new NotImplementedException();
+        }
+        
+        [Fact]
+        public async void RemoveAllContentsForGame_Valid_ContentsRemoved()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

@@ -289,5 +289,15 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region RemoveAdventure
+
+        [Fact]
+        public async void RemoveAdventure_Valid_AdventureRemoved()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

@@ -13,6 +13,7 @@ namespace TbspRpgDataLayer.Services
         Task<string> GetSourceTextForKey(Guid key, string language = null);
         Task<Source> GetSourceForKey(Guid key, Guid adventureId, string language);
         Task AddSource(Source source, string language = null);
+        Task RemoveAllSourceForAdventure(Guid adventureId);
     }
     
     public class SourcesService : ISourcesService
@@ -41,6 +42,11 @@ namespace TbspRpgDataLayer.Services
         public async Task AddSource(Source source, string language = null)
         {
             await _sourcesRepository.AddSource(source, language);
+        }
+
+        public Task RemoveAllSourceForAdventure(Guid adventureId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
