@@ -300,5 +300,21 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+
+        #region DeleteAdventure
+
+        [Fact]
+        public async void DeleteAdventure_InvalidId_BadRequest()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Fact]
+        public async void DeleteAdventure_Valid_Accepted()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

@@ -214,5 +214,21 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+        
+        #region RemoveAdventure
+
+        [Fact]
+        public async void RemoveAdventure_InvalidId_ExceptionThrown()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Fact]
+        public async void RemoveAdventure_Valid_AdventureRemoved()
+        {
+            throw new NotImplementedException();
+        }
+        
+        #endregion
     }
 }
