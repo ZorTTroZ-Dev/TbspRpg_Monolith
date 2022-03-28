@@ -371,5 +371,15 @@ namespace TbspRpgProcessor.Tests.Processors
         }
 
         #endregion
+
+        #region RemoveGames
+
+        [Fact]
+        public async void RemoveGames_AllGamesRemoved()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

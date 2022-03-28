@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
+using TbspRpgProcessor.Entities;
 
 namespace TbspRpgProcessor.Processors
 {
     public interface ILocationProcessor
     {
         Task UpdateLocation(Location location, Source source, string language);
+        Task RemoveLocation(LocationRemoveModel locationRemoveModel);
+        Task RemoveLocation(Location location);
+        Task RemoveLocations(ICollection<Location> locations);
     }
     
     public class LocationProcessor : ILocationProcessor
@@ -63,6 +68,21 @@ namespace TbspRpgProcessor.Processors
             
             // save the changes
             await _locationsService.SaveChanges();
+        }
+
+        public Task RemoveLocation(LocationRemoveModel locationRemoveModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveLocation(Location location)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveLocations(ICollection<Location> locations)
+        {
+            throw new NotImplementedException();
         }
     }
 }

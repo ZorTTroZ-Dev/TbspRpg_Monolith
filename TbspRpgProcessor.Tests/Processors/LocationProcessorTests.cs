@@ -205,5 +205,31 @@ namespace TbspRpgProcessor.Tests.Processors
         }
 
         #endregion
+
+        #region RemoveLocation
+
+        [Fact]
+        public async void RemoveLocation_InvalidLocationId_ExceptionThrown()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Fact]
+        public async void RemoveLocation_Valid_LocationRemoved()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region RemoveLocations
+
+        [Fact]
+        public async void RemoveLocations_LocationsRemoved()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

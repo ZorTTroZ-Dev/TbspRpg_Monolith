@@ -88,13 +88,28 @@ namespace TbspRpgProcessor.Tests
 
         protected static IAdventureProcessor CreateAdventureProcessor(
             ICollection<Adventure> adventures = null,
-            ICollection<En> sources = null)
+            ICollection<En> sources = null,
+            ICollection<User> users = null,
+            ICollection<Game> games = null,
+            ICollection<Location> locations = null,
+            ICollection<Content> contents = null)
         {
             var adventuresService = MockServices.MockDataLayerAdventuresService(adventures);
             var sourceProcessor = CreateSourceProcessor(sources);
+            var gameProcessor = CreateGameProcessor(
+                users,
+                adventures,
+                games,
+                locations,
+                contents);
+            var locationProcessor = CreateLocationProcessor(locations, sources);
+            var sourceService = MockServices.MockDataLayerSourcesService(sources);
             return new AdventureProcessor(
                 sourceProcessor,
+                gameProcessor,
+                locationProcessor,
                 adventuresService,
+                sourceService,
                 NullLogger<AdventureProcessor>.Instance);
         }
 

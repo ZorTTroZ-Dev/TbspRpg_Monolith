@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
@@ -12,6 +13,8 @@ namespace TbspRpgProcessor.Processors
     {
         Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
         Task RemoveGame(GameRemoveModel gameRemoveModel);
+        Task RemoveGame(Game game);
+        Task RemoveGames(ICollection<Game> games);
     }
     
     public class GameProcessor : IGameProcessor
@@ -99,13 +102,23 @@ namespace TbspRpgProcessor.Processors
             var game = await _gamesService.GetGameById(gameRemoveModel.GameId);
             if(game == null)
                 throw new ArgumentException("invalid game id");
-            
+
+            await RemoveGame(game);
+        }
+
+        public async Task RemoveGame(Game game)
+        {
             // delete any associated content
             var contents = await _contentsService.GetAllContentForGame(game.Id);
             _contentsService.RemoveContents(contents);
             // delete the game row
             _gamesService.RemoveGame(game);
             await _gamesService.SaveChanges();
+        }
+
+        public Task RemoveGames(ICollection<Game> games)
+        {
+            throw new NotImplementedException();
         }
     }
 }
