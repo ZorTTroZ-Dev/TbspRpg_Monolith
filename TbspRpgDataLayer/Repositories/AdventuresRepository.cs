@@ -15,6 +15,7 @@ namespace TbspRpgDataLayer.Repositories
         Task<List<Adventure>> GetPublishedAdventures(AdventureFilter filters);
         Task<Adventure> GetAdventureByName(string name);
         Task<Adventure> GetAdventureById(Guid adventureId);
+        Task<Adventure> GetAdventureByIdIncludeAssociatedObjects(Guid adventureId);
         Task AddAdventure(Adventure adventure);
     }
     
@@ -62,6 +63,17 @@ namespace TbspRpgDataLayer.Repositories
             return _databaseContext.Adventures.AsQueryable().
                 Where(a => a.Id == adventureId).
                 FirstOrDefaultAsync();
+        }
+
+        public Task<Adventure> GetAdventureByIdIncludeAssociatedObjects(Guid adventureId)
+        {
+            return _databaseContext.Adventures.AsQueryable()
+                .Include(adventure => adventure.Games)
+                .Include(adventure => adventure.CreatedByUser)
+                .Include(adventure => adventure.Locations)
+                .ThenInclude(location => location.Routes)
+                .Where(adventure => adventure.Id == adventureId)
+                .FirstOrDefaultAsync();
         }
 
         public async Task AddAdventure(Adventure adventure)

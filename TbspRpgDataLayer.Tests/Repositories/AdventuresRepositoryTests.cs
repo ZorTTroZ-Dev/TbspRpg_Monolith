@@ -256,5 +256,15 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+
+        #region GetAdventureByIdIncludeAssociatedObjects
+
+        [Fact]
+        public async void GetAdventureByIdIncludeAssociatedObjects_Valid_ReturnAdventureWithEverything()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }
