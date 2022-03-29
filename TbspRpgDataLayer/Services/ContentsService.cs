@@ -19,7 +19,7 @@ namespace TbspRpgDataLayer.Services
         Task<List<Content>> GetContentForGameAfterPosition(Guid gameId, ulong position);
         Task<List<Content>> GetPartialContentForGame(Guid gameId, ContentFilterRequest filterRequest);
         void RemoveContents(IEnumerable<Content> contents);
-        void RemoveAllContentsForGame(Guid gameId);
+        Task RemoveAllContentsForGame(Guid gameId);
     }
     
     public class ContentsService : IContentsService
@@ -98,9 +98,9 @@ namespace TbspRpgDataLayer.Services
             _contentsRepository.RemoveContents(contents);
         }
 
-        public void RemoveAllContentsForGame(Guid gameId)
+        public async Task RemoveAllContentsForGame(Guid gameId)
         {
-            throw new NotImplementedException();
+            await _contentsRepository.RemoveAllContentsForGame(gameId);
         }
     }
 }

@@ -109,8 +109,7 @@ namespace TbspRpgProcessor.Processors
         public async Task RemoveGame(Game game)
         {
             // delete any associated content
-            var contents = await _contentsService.GetAllContentForGame(game.Id);
-            _contentsService.RemoveContents(contents);
+            await _contentsService.RemoveAllContentsForGame(game.Id);
             // delete the game row
             _gamesService.RemoveGame(game);
             await _gamesService.SaveChanges();
@@ -118,6 +117,9 @@ namespace TbspRpgProcessor.Processors
 
         public Task RemoveGames(ICollection<Game> games)
         {
+            // iterate over list of games
+            // remove all content for each game
+            // remove all of the games
             throw new NotImplementedException();
         }
     }

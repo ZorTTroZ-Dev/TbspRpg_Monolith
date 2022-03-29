@@ -262,6 +262,20 @@ namespace TbspRpgDataLayer.Tests
                         contents.Remove(ctr);
                     }
                 });
+            
+            contentsService.Setup(service =>
+                    service.RemoveAllContentsForGame(It.IsAny<Guid>()))
+                .Callback((Guid gameId) =>
+                {
+                    for (int i = contents.Count - 1; i >= 0; i--)
+                    {
+                        // Do processing here, then...
+                        if (contents.ToArray()[i].GameId == gameId)
+                        {
+                            contents.Remove(contents.ToArray()[i]);
+                        }
+                    }
+                });
 
             contentsService.Setup(service =>
                     service.GetPartialContentForGame(It.IsAny<Guid>(), It.IsAny<ContentFilterRequest>()))
