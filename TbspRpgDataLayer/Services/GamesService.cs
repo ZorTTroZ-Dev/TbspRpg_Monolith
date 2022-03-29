@@ -73,7 +73,7 @@ namespace TbspRpgDataLayer.Services
 
         public void RemoveGames(ICollection<Game> games)
         {
-            throw new NotImplementedException();
+            _gameRepository.RemoveGames(games);
         }
 
         public async Task SaveChanges()
