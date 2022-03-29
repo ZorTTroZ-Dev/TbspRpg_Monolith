@@ -17,6 +17,7 @@ namespace TbspRpgDataLayer.Repositories
         Task<Adventure> GetAdventureById(Guid adventureId);
         Task<Adventure> GetAdventureByIdIncludeAssociatedObjects(Guid adventureId);
         Task AddAdventure(Adventure adventure);
+        void RemoveAdventure(Adventure adventure);
     }
     
     public class AdventuresRepository : IAdventuresRepository
@@ -79,6 +80,11 @@ namespace TbspRpgDataLayer.Repositories
         public async Task AddAdventure(Adventure adventure)
         {
             await _databaseContext.AddAsync(adventure);
+        }
+
+        public void RemoveAdventure(Adventure adventure)
+        {
+            _databaseContext.Remove(adventure);
         }
 
         public async Task SaveChanges()

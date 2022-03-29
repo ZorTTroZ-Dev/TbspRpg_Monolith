@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities;
@@ -262,7 +263,86 @@ namespace TbspRpgDataLayer.Tests.Repositories
         [Fact]
         public async void GetAdventureByIdIncludeAssociatedObjects_Valid_ReturnAdventureWithEverything()
         {
-            throw new NotImplementedException();
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var location = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Initial = true,
+                Routes = new List<Route>()
+                {
+                    new Route()
+                    {
+                        Id = Guid.NewGuid()
+                    }
+                }
+            };
+            var newAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_adventure",
+                CreatedByUser = new User()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test@test.com",
+                    RegistrationComplete = true
+                },
+                InitialSourceKey = Guid.Empty,
+                Games = new List<Game>()
+                {
+                    new Game()
+                    {
+                        Id = Guid.NewGuid()
+                    }
+                },
+                Locations = new List<Location>()
+                {
+                    location
+                }
+            };
+            await context.AddAsync(newAdventure);
+            await context.SaveChangesAsync();
+            var repository = new AdventuresRepository(context);
+            
+            // act
+            var adventure = await repository.GetAdventureByIdIncludeAssociatedObjects(newAdventure.Id);
+
+            // assert
+            Assert.NotNull(adventure);
+            Assert.NotNull(adventure.CreatedByUser);
+            Assert.NotNull(adventure.Games);
+            Assert.Single(adventure.Games);
+            Assert.NotNull(adventure.Locations);
+            Assert.Single(adventure.Locations);
+            Assert.NotNull(adventure.Locations.First().Routes);
+            Assert.Single(adventure.Locations.First().Routes);
+        }
+
+        #endregion
+        
+        #region RemoveAdventure
+
+        [Fact]
+        public async void RemoveAdventure_Valid_AdventureRemoved()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var newAdventure = new Adventure()
+            {
+                Name = "test_adventure",
+                CreatedByUserId = Guid.NewGuid(),
+                InitialSourceKey = Guid.Empty
+            };
+            await context.AddAsync(newAdventure);
+            await context.SaveChangesAsync();
+            var repository = new AdventuresRepository(context);
+            
+            // act
+            repository.RemoveAdventure(newAdventure);
+            await repository.SaveChanges();
+            
+            // assert
+            Assert.Empty(context.Adventures);
         }
 
         #endregion
