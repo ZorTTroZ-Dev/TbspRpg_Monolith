@@ -202,25 +202,5 @@ namespace TbspRpgDataLayer.Tests.Services
         }
         
         #endregion
-        
-        #region RemoveLocation
-
-        [Fact]
-        public async void RemoveLocation_LocationRemoved()
-        {
-            throw new NotImplementedException();
-        }
-        
-        #endregion
-
-        #region RemoveLocations
-
-        [Fact]
-        public async void RemoveLocations_LocationsRemoved()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

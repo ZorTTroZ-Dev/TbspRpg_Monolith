@@ -14,6 +14,8 @@ namespace TbspRpgDataLayer.Repositories
         Task<List<Location>> GetLocationsForAdventure(Guid adventureId);
         Task<Location> GetLocationById(Guid locationId);
         Task AddLocation(Location location);
+        void RemoveLocation(Location location);
+        void RemoveLocations(ICollection<Location> locations);
     }
     
     public class LocationsRepository: ILocationsRepository
@@ -49,6 +51,16 @@ namespace TbspRpgDataLayer.Repositories
         public async Task AddLocation(Location location)
         {
             await _databaseContext.AddAsync(location);
+        }
+
+        public void RemoveLocation(Location location)
+        {
+            _databaseContext.Remove(location);
+        }
+
+        public void RemoveLocations(ICollection<Location> locations)
+        {
+            _databaseContext.RemoveRange(locations);
         }
 
         public async Task SaveChanges()

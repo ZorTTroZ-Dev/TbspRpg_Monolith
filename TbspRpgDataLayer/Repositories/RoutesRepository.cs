@@ -15,6 +15,7 @@ namespace TbspRpgDataLayer.Repositories
         Task<Route> GetRouteById(Guid routeId);
         Task<List<Route>> GetRoutes(RouteFilter routeFilter);
         void RemoveRoute(Route route);
+        void RemoveRoutes(ICollection<Route> routes);
         Task AddRoute(Route route);
     }
     
@@ -47,6 +48,11 @@ namespace TbspRpgDataLayer.Repositories
         public void RemoveRoute(Route route)
         {
             _databaseContext.Remove(route);
+        }
+
+        public void RemoveRoutes(ICollection<Route> routes)
+        {
+            _databaseContext.RemoveRange(routes);
         }
 
         public async Task AddRoute(Route route)

@@ -52,7 +52,7 @@ namespace TbspRpgDataLayer.Services
 
         public void RemoveRoutes(ICollection<Route> routes)
         {
-            throw new NotImplementedException();
+            _routesRepository.RemoveRoutes(routes);
         }
 
         public async Task AddRoute(Route route)

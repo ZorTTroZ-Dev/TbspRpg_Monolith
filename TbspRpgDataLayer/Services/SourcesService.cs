@@ -44,9 +44,9 @@ namespace TbspRpgDataLayer.Services
             await _sourcesRepository.AddSource(source, language);
         }
 
-        public Task RemoveAllSourceForAdventure(Guid adventureId)
+        public async Task RemoveAllSourceForAdventure(Guid adventureId)
         {
-            throw new NotImplementedException();
+            await _sourcesRepository.RemoveAllSourceForAdventure(adventureId);
         }
     }
 }

@@ -239,15 +239,5 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
-
-        #region RemoveAllSourceForAdventure
-
-        [Fact]
-        public async void RemoveAllSourceForAdventure_AllSourceRemoved()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

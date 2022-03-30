@@ -309,15 +309,5 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
-
-        #region RemoveRoutes
-
-        [Fact]
-        public async void RemoveRoutes_RoutesRemoved()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

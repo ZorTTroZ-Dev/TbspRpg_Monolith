@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Repositories;
@@ -304,6 +305,70 @@ namespace TbspRpgDataLayer.Tests.Repositories
             
             // assert
             Assert.Single(context.Locations);
+        }
+
+        #endregion
+        
+        #region RemoveLocation
+
+        [Fact]
+        public async void RemoveLocation_LocationRemoved()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location"
+            };
+            var testLocationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location Two"
+            };
+            context.Locations.Add(testLocation);
+            context.Locations.Add(testLocationTwo);
+            await context.SaveChangesAsync();
+            var repository = new LocationsRepository(context);
+            
+            // act
+            repository.RemoveLocation(testLocation);
+            await repository.SaveChanges();
+            
+            // assert
+            Assert.Single(context.Locations);
+        }
+        
+        #endregion
+
+        #region RemoveLocations
+
+        [Fact]
+        public async void RemoveLocations_LocationsRemoved()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location"
+            };
+            var testLocationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location Two"
+            };
+            context.Locations.Add(testLocation);
+            context.Locations.Add(testLocationTwo);
+            await context.SaveChangesAsync();
+            var repository = new LocationsRepository(context);
+            
+            // act
+            repository.RemoveLocations(new List<Location>() { testLocation, testLocationTwo});
+            await repository.SaveChanges();
+            
+            // assert
+            Assert.Empty(context.Locations);
         }
 
         #endregion

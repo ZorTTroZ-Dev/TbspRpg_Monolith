@@ -53,12 +53,12 @@ namespace TbspRpgDataLayer.Services
 
         public void RemoveLocation(Location location)
         {
-            throw new NotImplementedException();
+            _locationsRepository.RemoveLocation(location);
         }
 
         public void RemoveLocations(ICollection<Location> locations)
         {
-            throw new NotImplementedException();
+            _locationsRepository.RemoveLocations(locations);
         }
 
         public async Task SaveChanges()
