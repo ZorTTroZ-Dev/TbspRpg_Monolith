@@ -13,8 +13,8 @@ namespace TbspRpgProcessor.Processors
     {
         Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
         Task RemoveGame(GameRemoveModel gameRemoveModel);
-        Task RemoveGame(Game game);
-        Task RemoveGames(ICollection<Game> games);
+        Task RemoveGame(Game game, bool save = true);
+        Task RemoveGames(ICollection<Game> games, bool save = true);
     }
     
     public class GameProcessor : IGameProcessor
@@ -106,16 +106,18 @@ namespace TbspRpgProcessor.Processors
             await RemoveGame(game);
         }
 
-        public async Task RemoveGame(Game game)
+        public async Task RemoveGame(Game game, bool save = true)
         {
             // delete any associated content
             await _contentsService.RemoveAllContentsForGame(game.Id);
             // delete the game row
             _gamesService.RemoveGame(game);
-            await _gamesService.SaveChanges();
+            
+            if(save)
+                await _gamesService.SaveChanges();
         }
 
-        public Task RemoveGames(ICollection<Game> games)
+        public Task RemoveGames(ICollection<Game> games, bool save = true)
         {
             // iterate over list of games
             // remove all content for each game
