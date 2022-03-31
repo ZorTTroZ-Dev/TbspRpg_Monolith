@@ -117,12 +117,15 @@ namespace TbspRpgProcessor.Processors
                 await _gamesService.SaveChanges();
         }
 
-        public Task RemoveGames(ICollection<Game> games, bool save = true)
+        public async Task RemoveGames(ICollection<Game> games, bool save = true)
         {
-            // iterate over list of games
-            // remove all content for each game
-            // remove all of the games
-            throw new NotImplementedException();
+            foreach (var game in games)
+            {
+                await RemoveGame(game, false);
+            }
+
+            if (save)
+                await _gamesService.SaveChanges();
         }
     }
 }
