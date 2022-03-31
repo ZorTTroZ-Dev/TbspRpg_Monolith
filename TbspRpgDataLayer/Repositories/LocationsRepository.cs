@@ -13,6 +13,7 @@ namespace TbspRpgDataLayer.Repositories
         Task<Location> GetInitialForAdventure(Guid adventureId);
         Task<List<Location>> GetLocationsForAdventure(Guid adventureId);
         Task<Location> GetLocationById(Guid locationId);
+        Task<Location> GetLocationByIdWithRoutes(Guid locationId);
         Task AddLocation(Location location);
         void RemoveLocation(Location location);
         void RemoveLocations(ICollection<Location> locations);
@@ -45,6 +46,14 @@ namespace TbspRpgDataLayer.Repositories
         {
             return _databaseContext.Locations.AsQueryable()
                 .Include(location => location.Adventure)
+                .FirstOrDefaultAsync(location => location.Id == locationId);
+        }
+
+        public Task<Location> GetLocationByIdWithRoutes(Guid locationId)
+        {
+            return _databaseContext.Locations.AsQueryable()
+                .Include(location => location.Adventure)
+                .Include(location => location.Routes)
                 .FirstOrDefaultAsync(location => location.Id == locationId);
         }
 

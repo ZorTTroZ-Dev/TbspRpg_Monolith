@@ -372,5 +372,50 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+
+        #region GetLocationByIdWithRoutes
+
+        [Fact]
+        public async void GetLocationByIdWithRoutes_ValidId_LocationReturnedWithRoutes()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location",
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid()
+                },
+                Routes = new List<Route>()
+                {
+                    new Route()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "route one"
+                    },
+                    new Route()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "route two"
+                    }
+                }
+            };
+            context.Locations.Add(testLocation);
+            await context.SaveChangesAsync();
+            var repository = new LocationsRepository(context);
+            
+            // act
+            var location = await repository.GetLocationByIdWithRoutes(testLocation.Id);
+            
+            // assert
+            Assert.NotNull(location);
+            Assert.Equal(testLocation.Id, location.Id);
+            Assert.NotNull(location.Routes);
+            Assert.Equal(2, location.Routes.Count);
+        }
+
+        #endregion
     }
 }

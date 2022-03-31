@@ -34,13 +34,16 @@ namespace TbspRpgProcessor.Tests
 
         protected static ILocationProcessor CreateLocationProcessor(
             ICollection<Location> locations = null,
-            ICollection<En> sources = null)
+            ICollection<En> sources = null,
+            ICollection<Route> routes = null)
         {
             var sourceProcessor = CreateSourceProcessor(sources);
             var locationService = MockServices.MockDataLayerLocationsService(locations);
+            var routeService = MockServices.MockDataLayerRoutesService(routes);
             return new LocationProcessor(
                 sourceProcessor,
                 locationService,
+                routeService,
                 NullLogger<LocationProcessor>.Instance);
         }
 

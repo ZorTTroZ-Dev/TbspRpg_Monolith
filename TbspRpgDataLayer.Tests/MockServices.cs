@@ -133,12 +133,20 @@ namespace TbspRpgDataLayer.Tests
                 .ReturnsAsync((Guid locationId) => locations.FirstOrDefault(l => l.Id == locationId));
             
             locationsService.Setup(service =>
+                    service.GetLocationByIdWithRoutes(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid locationId) => locations.FirstOrDefault(l => l.Id == locationId));
+            
+            locationsService.Setup(service =>
                     service.AddLocation(It.IsAny<Location>()))
                 .Callback((Location location) =>
                 {
                     location.Id = Guid.NewGuid();
                     locations.Add(location);
                 });
+            
+            locationsService.Setup(service =>
+                    service.RemoveLocation(It.IsAny<Location>()))
+                .Callback((Location location) => locations.Remove(location));
 
             return locationsService.Object;
         }
@@ -177,6 +185,22 @@ namespace TbspRpgDataLayer.Tests
             routesService.Setup(service =>
                     service.RemoveRoute(It.IsAny<Route>()))
                 .Callback((Route route) => routes.Remove(route));
+            
+            routesService.Setup(service =>
+                    service.RemoveRoutes(It.IsAny<ICollection<Route>>()))
+                .Callback((ICollection<Route> routesToRemove) =>
+                {
+                    for (int i = routes.Count - 1; i >= 0; i--)
+                    {
+                        foreach (var route in routesToRemove)
+                        {
+                            if (routes.ToArray()[i].Id == route.Id)
+                            {
+                                routes.Remove(routes.ToArray()[i]);
+                            }
+                        }
+                    }
+                });
 
             return routesService.Object;
         }

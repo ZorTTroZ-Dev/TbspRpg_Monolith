@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Entities;
+using TbspRpgProcessor.Entities;
 using TbspRpgSettings.Settings;
 using Xunit;
 
@@ -209,15 +210,92 @@ namespace TbspRpgProcessor.Tests.Processors
         #region RemoveLocation
 
         [Fact]
-        public async void RemoveLocation_InvalidLocationId_ExceptionThrown()
+        public async void RemoveLocation_Valid_LocationRemoved()
         {
-            throw new NotImplementedException();
+            // arrange
+            var locationId = Guid.NewGuid();
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route",
+                LocationId = locationId
+            };
+            var testLocation = new Location()
+            {
+                Id = locationId,
+                Name = "test location",
+                Initial = true,
+                SourceKey = Guid.NewGuid(),
+                Routes = new List<Route>()
+                {
+                    testRoute
+                }
+            };
+            var testSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testLocation.SourceKey,
+                Name = "test location",
+                Text = "test source"
+            };
+            var locations = new List<Location>() { testLocation };
+            var sources = new List<En>() {testSource};
+            var routes = new List<Route>() {testRoute};
+            var processor = CreateLocationProcessor(locations, sources, routes);
+            
+            // act
+            await processor.RemoveLocation(new LocationRemoveModel()
+            {
+                LocationId = locationId
+            });
+            
+            // assert
+            Assert.Empty(locations);
+            Assert.Empty(routes);
         }
 
         [Fact]
-        public async void RemoveLocation_Valid_LocationRemoved()
+        public async void RemoveLocation_InvalidLocationId_ExceptionThrown()
         {
-            throw new NotImplementedException();
+            // arrange
+            var locationId = Guid.NewGuid();
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route",
+                LocationId = locationId
+            };
+            var testLocation = new Location()
+            {
+                Id = locationId,
+                Name = "test location",
+                Initial = true,
+                SourceKey = Guid.NewGuid(),
+                Routes = new List<Route>()
+                {
+                    testRoute
+                }
+            };
+            var testSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testLocation.SourceKey,
+                Name = "test location",
+                Text = "test source"
+            };
+            var locations = new List<Location>() { testLocation };
+            var sources = new List<En>() {testSource};
+            var routes = new List<Route>() {testRoute};
+            var processor = CreateLocationProcessor(locations, sources, routes);
+            
+            // act
+            Task Act() => processor.RemoveLocation(new LocationRemoveModel()
+            {
+                LocationId = Guid.NewGuid()
+            });
+
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
         }
 
         #endregion
@@ -227,7 +305,64 @@ namespace TbspRpgProcessor.Tests.Processors
         [Fact]
         public async void RemoveLocations_LocationsRemoved()
         {
-            throw new NotImplementedException();
+            // arrange
+            var locationId = Guid.NewGuid();
+            var locationIdTwo = Guid.NewGuid();
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route",
+                LocationId = locationId
+            };
+            var testRouteTwo = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route two",
+                LocationId = locationId
+            };
+            var testLocation = new Location()
+            {
+                Id = locationId,
+                Name = "test location",
+                Initial = true,
+                SourceKey = Guid.NewGuid(),
+                Routes = new List<Route>()
+                {
+                    testRoute
+                }
+            };
+            var testLocationTwo = new Location()
+            {
+                Id = locationIdTwo,
+                Name = "test location two",
+                Initial = true,
+                SourceKey = Guid.NewGuid(),
+                Routes = new List<Route>()
+                {
+                    testRouteTwo
+                }
+            };
+            var testSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testLocation.SourceKey,
+                Name = "test location",
+                Text = "test source"
+            };
+            var locations = new List<Location>() { testLocation, testLocationTwo };
+            var sources = new List<En>() { testSource };
+            var routes = new List<Route>() { testRoute, testRouteTwo };
+            var processor = CreateLocationProcessor(locations, sources, routes);
+            
+            // act
+            await processor.RemoveLocations(new List<Location>()
+            {
+                testLocation, testLocationTwo
+            });
+            
+            // assert
+            Assert.Empty(locations);
+            Assert.Empty(routes);
         }
 
         #endregion

@@ -73,9 +73,15 @@ namespace TbspRpgProcessor.Processors
             await _locationsService.SaveChanges();
         }
 
-        public Task RemoveLocation(LocationRemoveModel locationRemoveModel)
+        public async Task RemoveLocation(LocationRemoveModel locationRemoveModel)
         {
-            throw new NotImplementedException();
+            var dbLocation = await _locationsService.GetLocationByIdWithRoutes(locationRemoveModel.LocationId);
+            if (dbLocation == null)
+            {
+                throw new ArgumentException("invalid location id");
+            }
+
+            await RemoveLocation(dbLocation);
         }
 
         public async Task RemoveLocation(Location location, bool save = true)
@@ -90,9 +96,15 @@ namespace TbspRpgProcessor.Processors
                 await _locationsService.SaveChanges();
         }
 
-        public Task RemoveLocations(ICollection<Location> locations, bool save = true)
+        public async Task RemoveLocations(ICollection<Location> locations, bool save = true)
         {
-            throw new NotImplementedException();
+            foreach (var location in locations)
+            {
+                await RemoveLocation(location, false);
+            }
+
+            if (save)
+                await _locationsService.SaveChanges();
         }
     }
 }
