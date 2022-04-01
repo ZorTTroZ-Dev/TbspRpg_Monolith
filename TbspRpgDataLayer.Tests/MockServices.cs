@@ -69,6 +69,11 @@ namespace TbspRpgDataLayer.Tests
                     service.GetAdventureById(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid Id) =>
                     adventures.FirstOrDefault(a => a.Id == Id));
+            
+            adventuresService.Setup(service =>
+                    service.GetAdventureByIdIncludeAssociatedObjects(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid Id) =>
+                    adventures.FirstOrDefault(a => a.Id == Id));
 
             adventuresService.Setup(service =>
                     service.AddAdventure(It.IsAny<Adventure>()))
@@ -77,6 +82,10 @@ namespace TbspRpgDataLayer.Tests
                     adventure.Id = Guid.NewGuid();
                     adventures.Add(adventure);
                 });
+            
+            adventuresService.Setup(service =>
+                    service.RemoveAdventure(It.IsAny<Adventure>()))
+                .Callback((Adventure adventure) => adventures.Remove(adventure));
 
             return adventuresService.Object;
         }
@@ -239,6 +248,20 @@ namespace TbspRpgDataLayer.Tests
                     Name = source.Name,
                     Text = source.Text
                 }));
+            
+            sourcesService.Setup(service =>
+                    service.RemoveAllSourceForAdventure(It.IsAny<Guid>()))
+                .Callback((Guid adventureId) =>
+                {
+                    for (int i = sources.Count - 1; i >= 0; i--)
+                    {
+                        // Do processing here, then...
+                        if (sources.ToArray()[i].AdventureId == adventureId)
+                        {
+                            sources.Remove(sources.ToArray()[i]);
+                        }
+                    }
+                });
 
             return sourcesService.Object;
         }

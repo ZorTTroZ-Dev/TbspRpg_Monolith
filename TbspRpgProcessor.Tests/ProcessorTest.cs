@@ -95,7 +95,8 @@ namespace TbspRpgProcessor.Tests
             ICollection<User> users = null,
             ICollection<Game> games = null,
             ICollection<Location> locations = null,
-            ICollection<Content> contents = null)
+            ICollection<Content> contents = null,
+            ICollection<Route> routes = null)
         {
             var adventuresService = MockServices.MockDataLayerAdventuresService(adventures);
             var sourceProcessor = CreateSourceProcessor(sources);
@@ -105,7 +106,7 @@ namespace TbspRpgProcessor.Tests
                 games,
                 locations,
                 contents);
-            var locationProcessor = CreateLocationProcessor(locations, sources);
+            var locationProcessor = CreateLocationProcessor(locations, sources, routes);
             var sourceService = MockServices.MockDataLayerSourcesService(sources);
             return new AdventureProcessor(
                 sourceProcessor,
