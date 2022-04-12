@@ -71,7 +71,6 @@ namespace TbspRpgApi.Services
             {
                 AdventureId = adventureId
             });
-            
         }
     }
 }

@@ -220,13 +220,26 @@ namespace TbspRpgApi.Tests.Services
         [Fact]
         public async void RemoveAdventure_InvalidId_ExceptionThrown()
         {
-            throw new NotImplementedException();
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var service = CreateAdventuresService(new List<Adventure>(), exceptionId);
+            
+            // act
+            Task Act() => service.DeleteAdventure(exceptionId);
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
         }
 
         [Fact]
         public async void RemoveAdventure_Valid_AdventureRemoved()
         {
-            throw new NotImplementedException();
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var service = CreateAdventuresService(new List<Adventure>(), exceptionId);
+            
+            // act
+            await service.DeleteAdventure(Guid.NewGuid());
         }
         
         #endregion

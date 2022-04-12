@@ -190,6 +190,14 @@ namespace TbspRpgProcessor.Tests
                     if (adventureUpdateModel.Adventure.Id == updateAdventureExceptionId)
                         throw new ArgumentException("invalid adventure id");
                 });
+            
+            adventureProcessor.Setup(service =>
+                    service.RemoveAdventure(It.IsAny<AdventureRemoveModel>()))
+                .Callback((AdventureRemoveModel adventureRemoveModel) =>
+                {
+                    if (adventureRemoveModel.AdventureId == updateAdventureExceptionId)
+                        throw new ArgumentException("invalid adventure id");
+                });
 
             return adventureProcessor.Object;
         }
