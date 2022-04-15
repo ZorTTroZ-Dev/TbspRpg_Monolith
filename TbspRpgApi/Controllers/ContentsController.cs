@@ -88,5 +88,26 @@ namespace TbspRpgApi.Controllers
                 return BadRequest(new { message = "invalid source key request" });
             }
         }
+        
+        [Authorize, HttpGet("source/{key:guid}/processed")]
+        public async Task<IActionResult> GetProcessedSourceForKey(Guid gameId, Guid key) {
+            var canAccessGame = await _permissionService.CanReadGame(
+                GetUserId().GetValueOrDefault(),
+                gameId);
+            if(!canAccessGame)
+                return BadRequest(new { message = NotYourGameErrorMessage });
+            // TODO: Make sure the key is part of the game content
+            try
+            {
+                var source = await _contentsService.GetProcessedSourceForKey(gameId, key);
+                if(source == null)
+                    return BadRequest(new { message = "invalid source key request" });
+                return Ok(source);
+            }
+            catch
+            {
+                return BadRequest(new { message = "invalid source key request" });
+            }
+        }
     }
 }

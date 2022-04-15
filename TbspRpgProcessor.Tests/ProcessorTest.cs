@@ -49,8 +49,8 @@ namespace TbspRpgProcessor.Tests
             ICollection<En> sources = null)
         {
             var gamesService = MockServices.MockDataLayerGamesService(games);
-            var sourcesService = MockServices.MockDataLayerSourcesService(sources);
-            return new ContentProcessor(gamesService, sourcesService, NullLogger<ContentProcessor>.Instance);
+            var sourceProcessor = CreateSourceProcessor(sources);
+            return new ContentProcessor(gamesService, sourceProcessor, NullLogger<ContentProcessor>.Instance);
         }
 
         protected static IMapProcessor CreateMapProcessor(
@@ -262,8 +262,8 @@ namespace TbspRpgProcessor.Tests
         public static IContentProcessor MockContentProcessor(ICollection<Game> games, ICollection<En> sources)
         {
             var gamesService = MockServices.MockDataLayerGamesService(games);
-            var sourcesService = MockServices.MockDataLayerSourcesService(sources);
-            return new ContentProcessor(gamesService, sourcesService, NullLogger<ContentProcessor>.Instance);
+            var sourceProcessor = MockSourceProcessor(sources);
+            return new ContentProcessor(gamesService, sourceProcessor, NullLogger<ContentProcessor>.Instance);
         }
         
         public static ISourceProcessor MockSourceProcessor(ICollection<En> sources)

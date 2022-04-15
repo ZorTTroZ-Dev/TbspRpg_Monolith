@@ -156,11 +156,42 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 Key = testEn.Key,
                 AdventureId = testEn.AdventureId,
-                Language = Languages.ENGLISH
+                Language = Languages.ENGLISH,
+                Processed = true
             });
             
             // Assert
             Assert.Equal("<p>This is a text with some <em>emphasis</em></p>", source.Text);
+        }
+        
+        [Fact]
+        public async void GetSourceForKey_ValidNotProcessed_SourceTextNotHtml()
+        {
+            // arrange
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = "This is a text with some *emphasis*"
+            };
+            var sources = new List<En>()
+            {
+                testEn
+            };
+            var processor = CreateSourceProcessor(sources);
+            
+            // act
+            var source = await processor.GetSourceForKey(new SourceForKeyModel()
+            {
+                Key = testEn.Key,
+                AdventureId = testEn.AdventureId,
+                Language = Languages.ENGLISH,
+                Processed = false
+            });
+            
+            // Assert
+            Assert.Equal("This is a text with some *emphasis*", source.Text);
         }
 
         #endregion

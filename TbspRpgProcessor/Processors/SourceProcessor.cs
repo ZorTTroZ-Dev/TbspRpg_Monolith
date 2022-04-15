@@ -54,7 +54,7 @@ namespace TbspRpgProcessor.Processors
             var dbSource = await _sourcesService.GetSourceForKey(
                 sourceForKeyModel.Key, sourceForKeyModel.AdventureId, sourceForKeyModel.Language);
 
-            if (dbSource != null)
+            if (sourceForKeyModel.Processed && dbSource != null)
             {
                 dbSource.Text = Markdown.ToHtml(dbSource.Text).Trim();
             }

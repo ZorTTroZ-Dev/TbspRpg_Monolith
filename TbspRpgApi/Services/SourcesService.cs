@@ -40,7 +40,8 @@ namespace TbspRpgApi.Services
             {
                 Key = key,
                 AdventureId = adventureId,
-                Language = language
+                Language = language,
+                Processed = true
             });
             return source != null ? new SourceViewModel(source, language) : null;
         }
