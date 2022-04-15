@@ -145,8 +145,10 @@ namespace TbspRpgApi.Tests
         protected static SourcesService CreateSourcesService(ICollection<En> sources)
         {
             var dlSourcesService = MockServices.MockDataLayerSourcesService(sources);
+            var sourceProcessor = ProcessorTest.MockSourceProcessor(sources);
             return new SourcesService(
                 dlSourcesService,
+                sourceProcessor,
                 NullLogger<SourcesService>.Instance);
         }
 

@@ -220,5 +220,127 @@ namespace TbspRpgApi.Tests.Controllers
         }
         
         #endregion
+        
+        #region GetProcessedSourcesForAdventure
+
+        [Fact]
+        public async void GetProcessedSourcesForAdventure_NullKey_ReturnBadRequest()
+        {
+            // arrange
+            var sources = new List<En>();
+            var controller = CreateController(sources);
+            
+            // act
+            var response = await controller.GetProcessedSourcesForAdventure(
+                Guid.NewGuid(), new SourceFilterRequest()
+                {
+                    Language = Languages.ENGLISH
+                });
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+        
+        [Fact]
+        public async void GetProcessedSourcesForAdventure_NoLanguage_ReturnBadRequest()
+        {
+            // arrange
+            var sources = new List<En>();
+            var controller = CreateController(sources);
+            
+            // act
+            var response = await controller.GetProcessedSourcesForAdventure(
+                Guid.NewGuid(), new SourceFilterRequest()
+                {
+                    Key = Guid.NewGuid()
+                });
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+        
+        [Fact]
+        public async void GetProcessedSourcesForAdventure_EmptyGuidKey_ReturnSource()
+        {
+            // arrange
+            var sources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.Empty,
+                    Text = "banana"
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid(),
+                    Text = "banana"
+                }
+            };
+            var controller = CreateController(sources);
+            
+            // act
+            var response = await controller.GetProcessedSourcesForAdventure(
+                Guid.NewGuid(), new SourceFilterRequest()
+                {
+                    Key = Guid.Empty,
+                    Language = Languages.ENGLISH
+                });
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var sourceViewModel = okObjectResult.Value as SourceViewModel;
+            Assert.NotNull(sourceViewModel);
+            Assert.Equal(sources[0].Id, sourceViewModel.Id);
+        }
+        
+        [Fact]
+        public async void GetProcessedSourcesForAdventure_Valid_ReturnSource()
+        {
+            // arrange
+            var sources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid(),
+                    Text = "banana"
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid(),
+                    Text = "banana"
+                }
+            };
+            var controller = CreateController(sources);
+            
+            // act
+            var response = await controller.GetProcessedSourcesForAdventure(
+                sources[0].AdventureId, new SourceFilterRequest()
+                {
+                    Key = sources[0].Key,
+                    Language = Languages.ENGLISH
+                });
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var sourceViewModel = okObjectResult.Value as SourceViewModel;
+            Assert.NotNull(sourceViewModel);
+            Assert.Equal(sources[0].Id, sourceViewModel.Id);
+        }
+
+        #endregion
     }
 }

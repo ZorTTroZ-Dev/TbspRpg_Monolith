@@ -265,5 +265,11 @@ namespace TbspRpgProcessor.Tests
             var sourcesService = MockServices.MockDataLayerSourcesService(sources);
             return new ContentProcessor(gamesService, sourcesService, NullLogger<ContentProcessor>.Instance);
         }
+        
+        public static ISourceProcessor MockSourceProcessor(ICollection<En> sources)
+        {
+            var sourcesService = MockServices.MockDataLayerSourcesService(sources);
+            return new SourceProcessor(sourcesService, NullLogger<SourceProcessor>.Instance);
+        }
     }
 }

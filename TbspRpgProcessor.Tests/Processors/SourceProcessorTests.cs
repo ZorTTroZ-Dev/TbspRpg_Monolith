@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Entities;
+using TbspRpgProcessor.Entities;
 using TbspRpgSettings.Settings;
 using Xunit;
 
@@ -98,6 +99,68 @@ namespace TbspRpgProcessor.Tests.Processors
             // assert
             Assert.Single(sources);
             Assert.Equal("updated text", dbSource.Text);
+        }
+
+        #endregion
+
+        #region GetSourceForKey
+
+        [Fact]
+        public async void GetSourceForKey_DoesntExist_ReturnNull()
+        {
+            // arrange
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = "original text"
+            };
+            var sources = new List<En>()
+            {
+                testEn
+            };
+            var processor = CreateSourceProcessor(sources);
+            
+            // act
+            var source = await processor.GetSourceForKey(new SourceForKeyModel()
+            {
+                Key = testEn.Key,
+                AdventureId = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            });
+            
+            // assert
+            Assert.Null(source);
+        }
+
+        [Fact]
+        public async void GetSourceForKey_Valid_SourceTextIsHtml()
+        {
+            // arrange
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = "This is a text with some *emphasis*"
+            };
+            var sources = new List<En>()
+            {
+                testEn
+            };
+            var processor = CreateSourceProcessor(sources);
+            
+            // act
+            var source = await processor.GetSourceForKey(new SourceForKeyModel()
+            {
+                Key = testEn.Key,
+                AdventureId = testEn.AdventureId,
+                Language = Languages.ENGLISH
+            });
+            
+            // Assert
+            Assert.Equal("<p>This is a text with some <em>emphasis</em></p>", source.Text);
         }
 
         #endregion
