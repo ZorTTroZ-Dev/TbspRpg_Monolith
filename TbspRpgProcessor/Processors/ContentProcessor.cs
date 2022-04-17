@@ -2,31 +2,32 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgDataLayer.Services;
+using TbspRpgProcessor.Entities;
 
 namespace TbspRpgProcessor.Processors
 {
     public interface IContentProcessor
     {
-        Task<string> GetSourceForKey(Guid gameId, Guid sourceKey);
+        Task<string> GetSourceForKey(Guid gameId, Guid sourceKey, bool processed = false);
     }
     
     public class ContentProcessor : IContentProcessor
     {
         private readonly IGamesService _gamesService;
-        private readonly ISourcesService _sourcesService;
+        private readonly ISourceProcessor _sourceProcessor;
         private readonly ILogger<ContentProcessor> _logger;
 
         public ContentProcessor(
             IGamesService gamesService,
-            ISourcesService sourcesService,
+            ISourceProcessor sourceProcessor,
             ILogger<ContentProcessor> logger)
         {
             _gamesService = gamesService;
-            _sourcesService = sourcesService;
+            _sourceProcessor = sourceProcessor;
             _logger = logger;
         }
 
-        public async Task<string> GetSourceForKey(Guid gameId, Guid sourceKey)
+        public async Task<string> GetSourceForKey(Guid gameId, Guid sourceKey, bool processed = false)
         {
             // get the language the game is set to
             // eventually this will look up javascript
@@ -36,7 +37,15 @@ namespace TbspRpgProcessor.Processors
             if (game == null)
                 throw new ArgumentException("invalid game id");
 
-            return await _sourcesService.GetSourceTextForKey(sourceKey, game.Language);
+            var dbSource = await _sourceProcessor.GetSourceForKey(new SourceForKeyModel()
+            {
+                Key = sourceKey,
+                AdventureId = game.AdventureId,
+                Language = game.Language,
+                Processed = processed
+            });
+            
+            return dbSource?.Text;
         }
     }
 }

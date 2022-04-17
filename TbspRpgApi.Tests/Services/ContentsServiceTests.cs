@@ -292,5 +292,66 @@ namespace TbspRpgApi.Tests.Services
         
 
         #endregion
+        
+        #region GetProcessedSourceForKey
+
+        [Fact]
+        public async void GetProcessedSourceForKey_BadKey_ReturnNull()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            };
+            var testSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                Text = "test source"
+            };
+            var service = CreateContentsService(
+                new List<Content>(),
+                new List<Game>() { testGame },
+                new List<En>() { testSource });
+            
+            // act
+            var source = await service.GetProcessedSourceForKey(testGame.Id, Guid.NewGuid());
+            
+            // assert
+            Assert.Null(source);
+        }
+        
+        [Fact]
+        public async void GetProcessedSourceForKey_ValidKey_ReturnSource()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            };
+            var testSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                Text = "test source"
+            };
+            var service = CreateContentsService(
+                new List<Content>(),
+                new List<Game>() { testGame },
+                new List<En>() { testSource });
+            
+            // act
+            var sourceViewModel = await service.GetProcessedSourceForKey(testGame.Id, testSource.Key);
+            
+            // assert
+            Assert.NotNull(sourceViewModel);
+            Assert.Equal("<p>test source</p>", sourceViewModel.Text);
+        }
+
+        
+
+        #endregion
     }
 }

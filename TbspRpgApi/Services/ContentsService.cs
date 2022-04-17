@@ -13,6 +13,7 @@ namespace TbspRpgApi.Services
         Task<ContentViewModel> GetPartialContentForGame(Guid gameId, ContentFilterRequest filterRequest);
         Task<ContentViewModel> GetContentForGameAfterPosition(Guid gameId, ulong position);
         Task<SourceViewModel> GetSourceForKey(Guid gameId, Guid sourceKey);
+        Task<SourceViewModel> GetProcessedSourceForKey(Guid gameId, Guid sourceKey);
     }
     
     public class ContentsService : IContentsService
@@ -57,6 +58,12 @@ namespace TbspRpgApi.Services
         public async Task<SourceViewModel> GetSourceForKey(Guid gameId, Guid sourceKey)
         {
             var text = await _contentProcessor.GetSourceForKey(gameId, sourceKey);
+            return text == null ? null : new SourceViewModel(sourceKey, text);
+        }
+        
+        public async Task<SourceViewModel> GetProcessedSourceForKey(Guid gameId, Guid sourceKey)
+        {
+            var text = await _contentProcessor.GetSourceForKey(gameId, sourceKey, true);
             return text == null ? null : new SourceViewModel(sourceKey, text);
         }
     }

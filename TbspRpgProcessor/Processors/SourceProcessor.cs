@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Markdig;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
+using TbspRpgProcessor.Entities;
 
 namespace TbspRpgProcessor.Processors
 {
     public interface ISourceProcessor
     {
         Task<Source> CreateOrUpdateSource(Source updatedSource, string language);
+        Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
     }
     
     public class SourceProcessor : ISourceProcessor
@@ -43,6 +46,19 @@ namespace TbspRpgProcessor.Processors
             if(dbSource == null)
                 throw new ArgumentException("invalid source key");
             dbSource.Text = updatedSource.Text;
+            return dbSource;
+        }
+
+        public async Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel)
+        {
+            var dbSource = await _sourcesService.GetSourceForKey(
+                sourceForKeyModel.Key, sourceForKeyModel.AdventureId, sourceForKeyModel.Language);
+
+            if (sourceForKeyModel.Processed && dbSource != null)
+            {
+                dbSource.Text = Markdown.ToHtml(dbSource.Text).Trim();
+            }
+
             return dbSource;
         }
     }

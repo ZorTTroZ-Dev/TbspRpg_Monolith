@@ -325,5 +325,63 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+        
+        #region GetProcessedSourceForKey
+
+        [Fact]
+        public async void GetProcessedSourceForKey_InvalidKey_BadRequest()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            };
+            var controller = CreateController(
+                null,
+                new List<Game>() {testGame},
+                new List<En>());
+            
+            // act
+            var response = await controller.GetProcessedSourceForKey(testGame.Id, Guid.NewGuid());
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+
+        [Fact]
+        public async void GetProcessedSourceForKey_ValidKey_ReturnSource()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            };
+            var testSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                Text = "test source"
+            };
+            var controller = CreateController(
+                null,
+                new List<Game>() {testGame},
+                new List<En>() {testSource});
+            
+            // act
+            var response = await controller.GetProcessedSourceForKey(testGame.Id, testSource.Key);
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var source = okObjectResult.Value as SourceViewModel;
+            Assert.NotNull(source);
+            Assert.Equal("<p>test source</p>", source.Text);
+        }
+
+        #endregion
     }
 }
