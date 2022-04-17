@@ -827,7 +827,7 @@ namespace TbspRpgApi.Tests.Services
         #region CanReadAdventure
 
         [Fact]
-        public async void CanReadAdventure_OwnAdventure_ReturnTrue()
+        public async void CanReadAdventure_OwnAdventureNotPublished_ReturnTrue()
         {
             // arrange
             var users = new List<User>()
@@ -859,7 +859,8 @@ namespace TbspRpgApi.Tests.Services
                 new() {
                     Id = Guid.NewGuid(),
                     Name = "test adventure",
-                    CreatedByUserId = users[0].Id
+                    CreatedByUserId = users[0].Id,
+                    PublishDate = DateTime.UtcNow.AddDays(1)
                 }
             };
             var service = CreatePermissionService(users, null, adventures);
@@ -872,7 +873,7 @@ namespace TbspRpgApi.Tests.Services
         }
 
         [Fact]
-        public async void CanReadAdventure_HasPermission_ReturnTrue()
+        public async void CanReadAdventure_HasPermissionNotPublished_ReturnTrue()
         {
             // arrange
             var users = new List<User>()
@@ -904,7 +905,8 @@ namespace TbspRpgApi.Tests.Services
                 new() {
                     Id = Guid.NewGuid(),
                     Name = "test adventure",
-                    CreatedByUserId = Guid.NewGuid()
+                    CreatedByUserId = Guid.NewGuid(),
+                    PublishDate = DateTime.UtcNow.AddDays(1)
                 }
             };
             var service = CreatePermissionService(users, null, adventures);
@@ -915,9 +917,9 @@ namespace TbspRpgApi.Tests.Services
             // assert
             Assert.True(canRead);
         }
-
+        
         [Fact]
-        public async void CanReadAdventure_NoOwnNoPermission_ReturnFalse()
+        public async void CanReadAdventure_NoPermissionNoOwnPublished_ReturnTrue()
         {
             // arrange
             var users = new List<User>()
@@ -933,13 +935,6 @@ namespace TbspRpgApi.Tests.Services
                             Id = Guid.NewGuid(),
                             Name = "admin_group",
                             Permissions = new List<Permission>()
-                            {
-                                new()
-                                {
-                                    Id = Guid.NewGuid(),
-                                    Name = "bananas"
-                                }
-                            }
                         }
                     }
                 }
@@ -949,7 +944,47 @@ namespace TbspRpgApi.Tests.Services
                 new() {
                     Id = Guid.NewGuid(),
                     Name = "test adventure",
-                    CreatedByUserId = Guid.NewGuid()
+                    CreatedByUserId = Guid.NewGuid(),
+                    PublishDate = DateTime.UtcNow
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures);
+            
+            // act
+            var canRead = await service.CanReadAdventure(users[0].Id, adventures[0].Id);
+            
+            // assert
+            Assert.True(canRead);
+        }
+
+        [Fact]
+        public async void CanReadAdventure_NoPermissionNoOwnNoPublished_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid(),
+                    PublishDate = DateTime.UtcNow.AddDays(1)
                 }
             };
             var service = CreatePermissionService(users, null, adventures);
