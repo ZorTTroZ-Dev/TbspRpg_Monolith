@@ -17,6 +17,7 @@ namespace TbspRpgApi.Services
         Task<bool> CanWriteAdventure(Guid userId, Guid adventureId);
         Task<bool> CanReadGame(Guid userId, Guid gameId);
         Task<bool> CanWriteGame(Guid userId, Guid gameId);
+        Task<bool> CanDeleteGame(Guid userId, Guid gameId);
     }
     
     public class PermissionService: IPermissionService
@@ -139,6 +140,12 @@ namespace TbspRpgApi.Services
         {
             return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.WRITE_GAME) ||
                    await CanAccessGame(userId, gameId);
+        }
+
+        public async Task<bool> CanDeleteGame(Guid userId, Guid gameId)
+        {
+            return await CanWriteGame(userId, gameId) ||
+                   await IsInGroup(userId, TbspRpgSettings.Settings.Permissions.ADMIN_GROUP);
         }
     }
 }

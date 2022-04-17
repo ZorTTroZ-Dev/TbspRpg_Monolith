@@ -263,9 +263,9 @@ namespace TbspRpgProcessor.Tests.Processors
 
         #region MailTest
 
-        [Fact]
-        public async void SendMailTest()
-        {
+        // [Fact]
+        // public async void SendMailTest()
+        // {
             // var mailClient = new MailClient(
             //     new SmtpSettings()
             //     {
@@ -277,7 +277,7 @@ namespace TbspRpgProcessor.Tests.Processors
             //     });
             //
             // await mailClient.SendRegistrationVerificationMail("cdavid.vanhorn@gmail.com", "000000");
-        }
+        // }
 
         #endregion
     }
