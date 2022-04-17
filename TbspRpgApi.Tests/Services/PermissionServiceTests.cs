@@ -295,7 +295,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.READ_GAME
+                                    Name = TbspRpgSettings.Settings.Permissions.ReadGame
                                 }
                             }
                         }
@@ -410,6 +410,235 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+        
+        #region CanDeleteGame
+
+        [Fact]
+        public async void CanDeleteGame_OwnsGame_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var games = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = users[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, null, games);
+            
+            // act
+            var can = await service.CanDeleteGame(users[0].Id, games[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteGame_HasPermission_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteGame
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var games = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = Guid.NewGuid()
+                }
+            };
+            var service = CreatePermissionService(users, null, null, games);
+            
+            // act
+            var can = await service.CanDeleteGame(users[0].Id, games[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteGame_NoOwnNoPermissionIsAdmin_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var games = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = Guid.NewGuid()
+                }
+            };
+            var service = CreatePermissionService(users, null, null, games);
+            
+            // act
+            var can = await service.CanDeleteGame(users[0].Id, games[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteGame_NoOwnNoPermissionNotAdmin_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var games = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = Guid.NewGuid()
+                }
+            };
+            var service = CreatePermissionService(users, null, null, games);
+            
+            // act
+            var can = await service.CanDeleteGame(users[0].Id, games[0].Id);
+            
+            // assert
+            Assert.False(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteGame_BadGameId_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var games = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = users[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, null, games);
+            
+            // act
+            var can = await service.CanDeleteGame(users[0].Id, Guid.NewGuid());
+            
+            // assert
+            Assert.False(can);
+        }
+
+        #endregion
 
         #region CanWriteGame
 
@@ -479,7 +708,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.WRITE_GAME
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteGame
                                 }
                             }
                         }
@@ -569,7 +798,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.WRITE_GAME
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteGame
                                 }
                             }
                         }
@@ -598,7 +827,7 @@ namespace TbspRpgApi.Tests.Services
         #region CanReadAdventure
 
         [Fact]
-        public async void CanReadAdventure_OwnAdventure_ReturnTrue()
+        public async void CanReadAdventure_OwnAdventureNotPublished_ReturnTrue()
         {
             // arrange
             var users = new List<User>()
@@ -630,7 +859,8 @@ namespace TbspRpgApi.Tests.Services
                 new() {
                     Id = Guid.NewGuid(),
                     Name = "test adventure",
-                    CreatedByUserId = users[0].Id
+                    CreatedByUserId = users[0].Id,
+                    PublishDate = DateTime.UtcNow.AddDays(1)
                 }
             };
             var service = CreatePermissionService(users, null, adventures);
@@ -643,7 +873,7 @@ namespace TbspRpgApi.Tests.Services
         }
 
         [Fact]
-        public async void CanReadAdventure_HasPermission_ReturnTrue()
+        public async void CanReadAdventure_HasPermissionNotPublished_ReturnTrue()
         {
             // arrange
             var users = new List<User>()
@@ -663,7 +893,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.READ_ADVENTURE
+                                    Name = TbspRpgSettings.Settings.Permissions.ReadAdventure
                                 }
                             }
                         }
@@ -675,7 +905,8 @@ namespace TbspRpgApi.Tests.Services
                 new() {
                     Id = Guid.NewGuid(),
                     Name = "test adventure",
-                    CreatedByUserId = Guid.NewGuid()
+                    CreatedByUserId = Guid.NewGuid(),
+                    PublishDate = DateTime.UtcNow.AddDays(1)
                 }
             };
             var service = CreatePermissionService(users, null, adventures);
@@ -686,9 +917,9 @@ namespace TbspRpgApi.Tests.Services
             // assert
             Assert.True(canRead);
         }
-
+        
         [Fact]
-        public async void CanReadAdventure_NoOwnNoPermission_ReturnFalse()
+        public async void CanReadAdventure_NoPermissionNoOwnPublished_ReturnTrue()
         {
             // arrange
             var users = new List<User>()
@@ -704,13 +935,6 @@ namespace TbspRpgApi.Tests.Services
                             Id = Guid.NewGuid(),
                             Name = "admin_group",
                             Permissions = new List<Permission>()
-                            {
-                                new()
-                                {
-                                    Id = Guid.NewGuid(),
-                                    Name = "bananas"
-                                }
-                            }
                         }
                     }
                 }
@@ -720,7 +944,47 @@ namespace TbspRpgApi.Tests.Services
                 new() {
                     Id = Guid.NewGuid(),
                     Name = "test adventure",
-                    CreatedByUserId = Guid.NewGuid()
+                    CreatedByUserId = Guid.NewGuid(),
+                    PublishDate = DateTime.UtcNow
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures);
+            
+            // act
+            var canRead = await service.CanReadAdventure(users[0].Id, adventures[0].Id);
+            
+            // assert
+            Assert.True(canRead);
+        }
+
+        [Fact]
+        public async void CanReadAdventure_NoPermissionNoOwnNoPublished_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid(),
+                    PublishDate = DateTime.UtcNow.AddDays(1)
                 }
             };
             var service = CreatePermissionService(users, null, adventures);
@@ -847,7 +1111,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.WRITE_ADVENTURE
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteAdventure
                                 }
                             }
                         }
@@ -1038,7 +1302,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.READ_LOCATION
+                                    Name = TbspRpgSettings.Settings.Permissions.ReadLocation
                                 }
                             }
                         }
@@ -1250,7 +1514,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.WRITE_LOCATION
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteLocation
                                 }
                             }
                         }

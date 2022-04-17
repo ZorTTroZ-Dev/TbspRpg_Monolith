@@ -371,5 +371,93 @@ namespace TbspRpgProcessor.Tests.Processors
         }
 
         #endregion
+
+        #region RemoveGames
+
+        [Fact]
+        public async void RemoveGames_AllGamesRemoved()
+        {
+            // arrange
+            var testAdventures = new List<Adventure>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure"
+                }
+            };
+            var testUsers = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test"
+                }
+            };
+            var testGames = new List<Game>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = testAdventures[0].Id,
+                    UserId = testUsers[0].Id
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = testAdventures[0].Id,
+                    UserId = testUsers[0].Id
+                }
+            };
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGames[0].Id,
+                    Position = 0,
+                    SourceKey = Guid.NewGuid()
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGames[0].Id,
+                    Position = 1,
+                    SourceKey = Guid.NewGuid()
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGames[1].Id,
+                    Position = 0,
+                    SourceKey = Guid.NewGuid()
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGames[1].Id,
+                    Position = 1,
+                    SourceKey = Guid.NewGuid()
+                }
+            };
+            var processor = CreateGameProcessor(
+                testUsers,
+                testAdventures,
+                testGames,
+                null,
+                testContents);
+            
+            // act
+            await processor.RemoveGames(new List<Game>()
+            {
+                testGames[0], testGames[1]
+            });
+            
+            // assert
+            Assert.Empty(testGames);
+            Assert.Empty(testContents);
+        }
+
+        #endregion
     }
 }

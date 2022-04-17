@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TbspRpgApi.Entities;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor.Entities;
 using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
@@ -16,6 +17,7 @@ namespace TbspRpgApi.Services
         Task<AdventureViewModel> GetAdventureByName(string name);
         Task<AdventureViewModel> GetAdventureById(Guid adventureId);
         Task UpdateAdventureAndSource(AdventureUpdateRequest adventureUpdateRequest, Guid userId);
+        Task DeleteAdventure(Guid adventureId);
     }
     
     public class AdventuresService : IAdventuresService
@@ -61,6 +63,14 @@ namespace TbspRpgApi.Services
             var adventureUpdateModel = adventureUpdateRequest.ToAdventureUpdateModel();
             adventureUpdateModel.UserId = userId;
             await _adventureProcessor.UpdateAdventure(adventureUpdateModel);
+        }
+
+        public async Task DeleteAdventure(Guid adventureId)
+        {
+            await _adventureProcessor.RemoveAdventure(new AdventureRemoveModel()
+            {
+                AdventureId = adventureId
+            });
         }
     }
 }

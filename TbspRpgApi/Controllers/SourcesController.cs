@@ -71,5 +71,33 @@ namespace TbspRpgApi.Controllers
             var source = await _sourcesService.GetSourceForKey(filters.Key.GetValueOrDefault(), adventureId, filters.Language);
             return Ok(source);
         }
+        
+        [HttpGet("adventure/{adventureId:guid}/processed")]
+        [Authorize]
+        public async Task<IActionResult> GetProcessedSourcesForAdventure(Guid adventureId, [FromQuery]SourceFilterRequest filters)
+        {
+            var canAccessAdventure = await _permissionService.CanReadAdventure(
+                GetUserId().GetValueOrDefault(),
+                adventureId);
+            if(!canAccessAdventure)
+            {
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            }
+
+            // if language is missing throw an exception
+            if (filters.Language == null)
+            {
+                return BadRequest(new {message = "language required"});
+            }
+            
+            // key is missing call a different method one that returns all sources for an adventure
+            if (filters.Key == null)
+            {
+                return BadRequest(new {message = "operation not supported yet."});
+            }
+            
+            var source = await _sourcesService.GetProcessedSourceForKey(filters.Key.GetValueOrDefault(), adventureId, filters.Language);
+            return Ok(source);
+        }
     }
 }

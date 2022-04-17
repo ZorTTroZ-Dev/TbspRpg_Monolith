@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.ArgumentModels;
@@ -248,6 +249,90 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
         
         #endregion
+        
+        #region GetGamesIncludeUsers
+        
+        [Fact]
+        public async void GetGamesIncludeUsers_FilterByAdventureId_ReturnsGames()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGame = new Game()
+            {
+                AdventureId = Guid.NewGuid(),
+                User = new User()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test@test.com",
+                    RegistrationComplete = true
+                }
+            };
+            var testGameTwo = new Game()
+            {
+                AdventureId = Guid.NewGuid(),
+                User = new User()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test@test.com",
+                    RegistrationComplete = true
+                }
+            };
+            await context.Games.AddAsync(testGame);
+            await context.Games.AddAsync(testGameTwo);
+            await context.SaveChangesAsync();
+            var repository = new GameRepository(context);
+            
+            // act
+            var games = await repository.GetGamesIncludeUsers(new GameFilter()
+            {
+                AdventureId = testGame.AdventureId
+            });
+            
+            // assert
+            Assert.Single(games);
+            Assert.Equal("test@test.com", games[0].User.Email);
+            Assert.Equal(testGame.AdventureId, games[0].AdventureId);
+        }
+        
+        [Fact]
+        public async void GetGamesIncludeUsers_NoFilter_ReturnsAll()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGame = new Game()
+            {
+                AdventureId = Guid.NewGuid(),
+                User = new User()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test@test.com",
+                    RegistrationComplete = true
+                }
+            };
+            var testGameTwo = new Game()
+            {
+                AdventureId = Guid.NewGuid(),
+                User = new User()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test2@test.com",
+                    RegistrationComplete = true
+                }
+            };
+            await context.Games.AddAsync(testGame);
+            await context.Games.AddAsync(testGameTwo);
+            await context.SaveChangesAsync();
+            var repository = new GameRepository(context);
+            
+            // act
+            var games = await repository.GetGamesIncludeUsers(null);
+            
+            // assert
+            Assert.Equal(2, games.Count);
+            Assert.Equal("test@test.com", games[0].User.Email);
+        }
+        
+        #endregion
 
         #region RemoveGame
 
@@ -275,6 +360,36 @@ namespace TbspRpgDataLayer.Tests.Repositories
 
             // assert
             Assert.Single(context.Games);
+        }
+
+        #endregion
+        
+        #region RemoveGames
+
+        [Fact]
+        public async void RemoveGames_GamesRemoved()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGame = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            var testGameTwo = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            await context.Games.AddAsync(testGame);
+            await context.Games.AddAsync(testGameTwo);
+            await context.SaveChangesAsync();
+            var repository = new GameRepository(context);
+            
+            // act
+            repository.RemoveGames(new List<Game>() { testGame, testGameTwo});
+            await repository.SaveChanges();
+
+            // assert
+            Assert.Empty(context.Games);
         }
 
         #endregion

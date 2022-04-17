@@ -13,7 +13,10 @@ namespace TbspRpgDataLayer.Services
         Task<Location> GetInitialLocationForAdventure(Guid adventureId);
         Task<List<Location>> GetLocationsForAdventure(Guid adventureId);
         Task<Location> GetLocationById(Guid locationId);
+        Task<Location> GetLocationByIdWithRoutes(Guid locationId);
         Task AddLocation(Location location);
+        void RemoveLocation(Location location);
+        void RemoveLocations(ICollection<Location> locations);
     }
     
     public class LocationsService : ILocationsService
@@ -44,9 +47,24 @@ namespace TbspRpgDataLayer.Services
             return _locationsRepository.GetLocationById(locationId);
         }
 
+        public Task<Location> GetLocationByIdWithRoutes(Guid locationId)
+        {
+            return _locationsRepository.GetLocationByIdWithRoutes(locationId);
+        }
+
         public async Task AddLocation(Location location)
         {
             await _locationsRepository.AddLocation(location);
+        }
+
+        public void RemoveLocation(Location location)
+        {
+            _locationsRepository.RemoveLocation(location);
+        }
+
+        public void RemoveLocations(ICollection<Location> locations)
+        {
+            _locationsRepository.RemoveLocations(locations);
         }
 
         public async Task SaveChanges()

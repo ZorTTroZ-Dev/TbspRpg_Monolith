@@ -14,7 +14,7 @@ namespace TbspRpgApi.Services
     {
         Task StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
         Task<GameViewModel> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId);
-        Task<List<GameViewModel>> GetGames(GameFilterRequest gameFilterRequest);
+        Task<List<GameUserViewModel>> GetGames(GameFilterRequest gameFilterRequest);
         Task DeleteGame(Guid gameId);
     }
     
@@ -47,10 +47,14 @@ namespace TbspRpgApi.Services
             return game != null ? new GameViewModel(game) : null;
         }
 
-        public async Task<List<GameViewModel>> GetGames(GameFilterRequest gameFilterRequest)
+        public async Task<List<GameUserViewModel>> GetGames(GameFilterRequest gameFilterRequest)
         {
-            var games = await _gamesService.GetGames(gameFilterRequest.ToGameFilter());
-            return games.Select(game => new GameViewModel(game)).ToList();
+            var games = await _gamesService.GetGamesIncludeUsers(gameFilterRequest.ToGameFilter());
+            return games.Select(game => new GameUserViewModel()
+            {
+                Game = new GameViewModel(game),
+                User = new UserViewModel(game.User)
+            }).ToList();
         }
 
         public async Task DeleteGame(Guid gameId)

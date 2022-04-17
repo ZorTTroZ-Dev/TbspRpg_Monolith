@@ -50,6 +50,10 @@ namespace TbspRpgApi.Tests
                     service.CanWriteGame(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((Guid userId, Guid locationId) => true);
             
+            permissionService.Setup(service =>
+                    service.CanDeleteGame(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid userId, Guid gameId) => true);
+            
             return permissionService.Object;
         }
 
@@ -145,8 +149,10 @@ namespace TbspRpgApi.Tests
         protected static SourcesService CreateSourcesService(ICollection<En> sources)
         {
             var dlSourcesService = MockServices.MockDataLayerSourcesService(sources);
+            var sourceProcessor = ProcessorTest.MockSourceProcessor(sources);
             return new SourcesService(
                 dlSourcesService,
+                sourceProcessor,
                 NullLogger<SourcesService>.Instance);
         }
 

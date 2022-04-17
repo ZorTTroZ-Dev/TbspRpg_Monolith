@@ -74,5 +74,25 @@ namespace TbspRpgApi.Controllers
                 return BadRequest((new {message = ex.Message}));
             }
         }
+        
+        [HttpDelete("{adventureId:guid}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteAdventure(Guid adventureId)
+        {
+            var canAccessAdventure = await _permissionService.CanWriteAdventure(GetUserId().GetValueOrDefault(), adventureId);
+            // make sure the user either is the adventure's owner or the user is an admin or has write adventure permission
+            if(!canAccessAdventure)
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            
+            try
+            {
+                await _adventuresService.DeleteAdventure(adventureId);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest(new { message = "couldn't delete adventure" });
+            }
+        }
     }
 }
