@@ -147,12 +147,11 @@ namespace TbspRpgApi.Tests.Services
             {
                 new()
                 {
-                    route = new RouteViewModel(new Route()
-                    {
+                    route = new RouteUpdateViewModel(){
                         Id = Guid.NewGuid(),
-                        Name = "route name"
-                    }),
-                    newDestinationLocationName = "",
+                        Name = "route name",
+                        newDestinationLocationName = ""
+                    },
                     source = new SourceViewModel(Guid.Empty,"source text"),
                     successSource = new SourceViewModel(Guid.Empty,"success source text")
                 }
@@ -173,12 +172,12 @@ namespace TbspRpgApi.Tests.Services
             {
                 new()
                 {
-                    route = new RouteViewModel(new Route()
+                    route = new RouteUpdateViewModel()
                     {
                         Id = exceptionId,
-                        Name = "route name"
-                    }),
-                    newDestinationLocationName = "",
+                        Name = "route name",
+                        newDestinationLocationName = ""
+                    },
                     source = new SourceViewModel(Guid.Empty,"source text"),
                     successSource = new SourceViewModel(Guid.Empty,"success source text")
                 }

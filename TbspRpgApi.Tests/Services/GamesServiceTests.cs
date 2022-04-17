@@ -97,7 +97,12 @@ namespace TbspRpgApi.Tests.Services
             {
                 Id = Guid.NewGuid(),
                 AdventureId = Guid.NewGuid(),
-                UserId = Guid.NewGuid()
+                User = new User()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test@test.com",
+                    RegistrationComplete = true
+                }
             };
             var service = CreateGamesService(new List<Game>() {testGame});
             

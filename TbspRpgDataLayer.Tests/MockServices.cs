@@ -115,6 +115,10 @@ namespace TbspRpgDataLayer.Tests
             gamesService.Setup(service =>
                     service.GetGames(It.IsAny<GameFilter>()))
                 .ReturnsAsync((GameFilter filter) => games.ToList());
+            
+            gamesService.Setup(service =>
+                    service.GetGamesIncludeUsers(It.IsAny<GameFilter>()))
+                .ReturnsAsync((GameFilter filter) => games.ToList());
 
             gamesService.Setup(service =>
                     service.RemoveGame(It.IsAny<Game>()))
