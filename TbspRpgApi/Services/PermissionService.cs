@@ -146,7 +146,7 @@ namespace TbspRpgApi.Services
         public async Task<bool> CanDeleteGame(Guid userId, Guid gameId)
         {
             return await CanWriteGame(userId, gameId) ||
-                   await IsInGroup(userId, TbspRpgSettings.Settings.Permissions.ADMIN_GROUP);
+                   await IsInGroup(userId, TbspRpgSettings.Settings.Permissions.AdminGroup);
         }
     }
 }
