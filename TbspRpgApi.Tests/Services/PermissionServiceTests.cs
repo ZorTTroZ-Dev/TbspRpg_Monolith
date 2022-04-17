@@ -295,7 +295,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.READ_GAME
+                                    Name = TbspRpgSettings.Settings.Permissions.ReadGame
                                 }
                             }
                         }
@@ -708,7 +708,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.WRITE_GAME
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteGame
                                 }
                             }
                         }
@@ -798,7 +798,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.WRITE_GAME
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteGame
                                 }
                             }
                         }
@@ -892,7 +892,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.READ_ADVENTURE
+                                    Name = TbspRpgSettings.Settings.Permissions.ReadAdventure
                                 }
                             }
                         }
@@ -1076,7 +1076,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.WRITE_ADVENTURE
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteAdventure
                                 }
                             }
                         }
@@ -1267,7 +1267,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.READ_LOCATION
+                                    Name = TbspRpgSettings.Settings.Permissions.ReadLocation
                                 }
                             }
                         }
@@ -1479,7 +1479,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.WRITE_LOCATION
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteLocation
                                 }
                             }
                         }

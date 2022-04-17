@@ -16,6 +16,7 @@ namespace TbspRpgDataLayer.Repositories
         Task<List<Content>> GetContentForGameReverse(Guid gameId, int? offset = null, int? count = null);
         Task<List<Content>> GetContentForGameAfterPosition(Guid gameId, ulong position);
         void RemoveContents(IEnumerable<Content> contents);
+        Task RemoveAllContentsForGame(Guid gameId);
     }
     
     public class ContentsRepository : IContentsRepository
@@ -72,6 +73,12 @@ namespace TbspRpgDataLayer.Repositories
         public void RemoveContents(IEnumerable<Content> contents)
         {
             _databaseContext.RemoveRange(contents);
+        }
+
+        public async Task RemoveAllContentsForGame(Guid gameId)
+        {
+            var contents = await GetContentForGame(gameId);
+            RemoveContents(contents);
         }
 
         public async Task SaveChanges()

@@ -69,6 +69,11 @@ namespace TbspRpgDataLayer.Tests
                     service.GetAdventureById(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid Id) =>
                     adventures.FirstOrDefault(a => a.Id == Id));
+            
+            adventuresService.Setup(service =>
+                    service.GetAdventureByIdIncludeAssociatedObjects(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid Id) =>
+                    adventures.FirstOrDefault(a => a.Id == Id));
 
             adventuresService.Setup(service =>
                     service.AddAdventure(It.IsAny<Adventure>()))
@@ -77,6 +82,10 @@ namespace TbspRpgDataLayer.Tests
                     adventure.Id = Guid.NewGuid();
                     adventures.Add(adventure);
                 });
+            
+            adventuresService.Setup(service =>
+                    service.RemoveAdventure(It.IsAny<Adventure>()))
+                .Callback((Adventure adventure) => adventures.Remove(adventure));
 
             return adventuresService.Object;
         }
@@ -137,12 +146,20 @@ namespace TbspRpgDataLayer.Tests
                 .ReturnsAsync((Guid locationId) => locations.FirstOrDefault(l => l.Id == locationId));
             
             locationsService.Setup(service =>
+                    service.GetLocationByIdWithRoutes(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid locationId) => locations.FirstOrDefault(l => l.Id == locationId));
+            
+            locationsService.Setup(service =>
                     service.AddLocation(It.IsAny<Location>()))
                 .Callback((Location location) =>
                 {
                     location.Id = Guid.NewGuid();
                     locations.Add(location);
                 });
+            
+            locationsService.Setup(service =>
+                    service.RemoveLocation(It.IsAny<Location>()))
+                .Callback((Location location) => locations.Remove(location));
 
             return locationsService.Object;
         }
@@ -181,6 +198,22 @@ namespace TbspRpgDataLayer.Tests
             routesService.Setup(service =>
                     service.RemoveRoute(It.IsAny<Route>()))
                 .Callback((Route route) => routes.Remove(route));
+            
+            routesService.Setup(service =>
+                    service.RemoveRoutes(It.IsAny<ICollection<Route>>()))
+                .Callback((ICollection<Route> routesToRemove) =>
+                {
+                    for (int i = routes.Count - 1; i >= 0; i--)
+                    {
+                        foreach (var route in routesToRemove)
+                        {
+                            if (routes.ToArray()[i].Id == route.Id)
+                            {
+                                routes.Remove(routes.ToArray()[i]);
+                            }
+                        }
+                    }
+                });
 
             return routesService.Object;
         }
@@ -219,6 +252,20 @@ namespace TbspRpgDataLayer.Tests
                     Name = source.Name,
                     Text = source.Text
                 }));
+            
+            sourcesService.Setup(service =>
+                    service.RemoveAllSourceForAdventure(It.IsAny<Guid>()))
+                .Callback((Guid adventureId) =>
+                {
+                    for (int i = sources.Count - 1; i >= 0; i--)
+                    {
+                        // Do processing here, then...
+                        if (sources.ToArray()[i].AdventureId == adventureId)
+                        {
+                            sources.Remove(sources.ToArray()[i]);
+                        }
+                    }
+                });
 
             return sourcesService.Object;
         }
@@ -264,6 +311,20 @@ namespace TbspRpgDataLayer.Tests
                     foreach (var ctr in contentsToRemove)
                     {
                         contents.Remove(ctr);
+                    }
+                });
+            
+            contentsService.Setup(service =>
+                    service.RemoveAllContentsForGame(It.IsAny<Guid>()))
+                .Callback((Guid gameId) =>
+                {
+                    for (int i = contents.Count - 1; i >= 0; i--)
+                    {
+                        // Do processing here, then...
+                        if (contents.ToArray()[i].GameId == gameId)
+                        {
+                            contents.Remove(contents.ToArray()[i]);
+                        }
                     }
                 });
 

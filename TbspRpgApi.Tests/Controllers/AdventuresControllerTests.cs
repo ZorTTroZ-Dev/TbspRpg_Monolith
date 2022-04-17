@@ -15,7 +15,8 @@ namespace TbspRpgApi.Tests.Controllers
 {
     public class AdventuresControllerTests : ApiTest
     {
-        private static AdventuresController CreateController(ICollection<Adventure> adventures, Guid? exceptionId = null)
+        private static AdventuresController CreateController(ICollection<Adventure> adventures,
+            Guid? exceptionId = null, Guid? userId = null)
         {
             var service = CreateAdventuresService(adventures, exceptionId);
             var controller = new AdventuresController(service,
@@ -30,7 +31,7 @@ namespace TbspRpgApi.Tests.Controllers
             
             controller.ControllerContext.HttpContext.Items = new Dictionary<object, object>()
             {
-                { AuthorizeAttribute.USER_ID_CONTEXT_KEY, Guid.NewGuid() }
+                { AuthorizeAttribute.USER_ID_CONTEXT_KEY, userId }
             };
             return controller;
         }
@@ -297,6 +298,40 @@ namespace TbspRpgApi.Tests.Controllers
             var badRequestResult = response as BadRequestObjectResult;
             Assert.NotNull(badRequestResult);
             Assert.Equal(400, badRequestResult.StatusCode);
+        }
+
+        #endregion
+
+        #region DeleteAdventure
+
+        [Fact]
+        public async void DeleteAdventure_InvalidId_BadRequest()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var controller = CreateController(new List<Adventure>(), exceptionId, exceptionId);
+            
+            // act
+            var response = await controller.DeleteAdventure(exceptionId);
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+
+        [Fact]
+        public async void DeleteAdventure_Valid_ReturnOk()
+        {
+            // arrange
+            var controller = CreateController(new List<Adventure>(), Guid.NewGuid(), Guid.NewGuid());
+            
+            // act
+            var response = await controller.DeleteAdventure(Guid.NewGuid());
+            
+            // assert
+            var okObjectResult = response as OkResult;
+            Assert.NotNull(okObjectResult);
         }
 
         #endregion

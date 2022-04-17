@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
 using TbspRpgProcessor.Entities;
@@ -11,20 +10,30 @@ namespace TbspRpgProcessor.Processors
     public interface IAdventureProcessor
     {
         Task UpdateAdventure(AdventureUpdateModel adventureUpdateModel);
+        Task RemoveAdventure(AdventureRemoveModel adventureRemoveModel);
     }
     
     public class AdventureProcessor: IAdventureProcessor
     {
         private readonly ISourceProcessor _sourceProcessor;
+        private readonly IGameProcessor _gameProcessor;
+        private readonly ILocationProcessor _locationProcessor;
         private readonly IAdventuresService _adventuresService;
+        private readonly ISourcesService _sourcesService;
         private readonly ILogger<AdventureProcessor> _logger;
 
         public AdventureProcessor(ISourceProcessor sourceProcessor,
+            IGameProcessor gameProcessor,
+            ILocationProcessor locationProcessor,
             IAdventuresService adventuresService,
+            ISourcesService sourcesService,
             ILogger<AdventureProcessor> logger)
         {
             _sourceProcessor = sourceProcessor;
+            _gameProcessor = gameProcessor;
+            _locationProcessor = locationProcessor;
             _adventuresService = adventuresService;
+            _sourcesService = sourcesService;
             _logger = logger;
         }
         
@@ -74,6 +83,20 @@ namespace TbspRpgProcessor.Processors
                 adventureUpdateModel.Language);
             adventure.DescriptionSourceKey = dbDescriptionSource.Key;
 
+            await _adventuresService.SaveChanges();
+        }
+
+        public async Task RemoveAdventure(AdventureRemoveModel adventureRemoveModel)
+        {
+            // load the adventure from the database
+            var adventure = await _adventuresService.GetAdventureByIdIncludeAssociatedObjects(adventureRemoveModel.AdventureId);
+            if (adventure == null)
+                throw new ArgumentException("invalid adventure id");
+            
+            await _gameProcessor.RemoveGames(adventure.Games, false);
+            await _locationProcessor.RemoveLocations(adventure.Locations, false);
+            await _sourcesService.RemoveAllSourceForAdventure(adventure.Id);
+            _adventuresService.RemoveAdventure(adventure);
             await _adventuresService.SaveChanges();
         }
     }

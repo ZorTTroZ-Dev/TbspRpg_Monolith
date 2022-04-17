@@ -34,13 +34,16 @@ namespace TbspRpgProcessor.Tests
 
         protected static ILocationProcessor CreateLocationProcessor(
             ICollection<Location> locations = null,
-            ICollection<En> sources = null)
+            ICollection<En> sources = null,
+            ICollection<Route> routes = null)
         {
             var sourceProcessor = CreateSourceProcessor(sources);
             var locationService = MockServices.MockDataLayerLocationsService(locations);
+            var routeService = MockServices.MockDataLayerRoutesService(routes);
             return new LocationProcessor(
                 sourceProcessor,
                 locationService,
+                routeService,
                 NullLogger<LocationProcessor>.Instance);
         }
 
@@ -88,13 +91,29 @@ namespace TbspRpgProcessor.Tests
 
         protected static IAdventureProcessor CreateAdventureProcessor(
             ICollection<Adventure> adventures = null,
-            ICollection<En> sources = null)
+            ICollection<En> sources = null,
+            ICollection<User> users = null,
+            ICollection<Game> games = null,
+            ICollection<Location> locations = null,
+            ICollection<Content> contents = null,
+            ICollection<Route> routes = null)
         {
             var adventuresService = MockServices.MockDataLayerAdventuresService(adventures);
             var sourceProcessor = CreateSourceProcessor(sources);
+            var gameProcessor = CreateGameProcessor(
+                users,
+                adventures,
+                games,
+                locations,
+                contents);
+            var locationProcessor = CreateLocationProcessor(locations, sources, routes);
+            var sourceService = MockServices.MockDataLayerSourcesService(sources);
             return new AdventureProcessor(
                 sourceProcessor,
+                gameProcessor,
+                locationProcessor,
                 adventuresService,
+                sourceService,
                 NullLogger<AdventureProcessor>.Instance);
         }
 
@@ -169,6 +188,14 @@ namespace TbspRpgProcessor.Tests
                 .Callback((AdventureUpdateModel adventureUpdateModel) =>
                 {
                     if (adventureUpdateModel.Adventure.Id == updateAdventureExceptionId)
+                        throw new ArgumentException("invalid adventure id");
+                });
+            
+            adventureProcessor.Setup(service =>
+                    service.RemoveAdventure(It.IsAny<AdventureRemoveModel>()))
+                .Callback((AdventureRemoveModel adventureRemoveModel) =>
+                {
+                    if (adventureRemoveModel.AdventureId == updateAdventureExceptionId)
                         throw new ArgumentException("invalid adventure id");
                 });
 

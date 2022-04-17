@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.ArgumentModels;
@@ -359,6 +360,36 @@ namespace TbspRpgDataLayer.Tests.Repositories
 
             // assert
             Assert.Single(context.Games);
+        }
+
+        #endregion
+        
+        #region RemoveGames
+
+        [Fact]
+        public async void RemoveGames_GamesRemoved()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGame = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            var testGameTwo = new Game()
+            {
+                AdventureId = Guid.NewGuid()
+            };
+            await context.Games.AddAsync(testGame);
+            await context.Games.AddAsync(testGameTwo);
+            await context.SaveChangesAsync();
+            var repository = new GameRepository(context);
+            
+            // act
+            repository.RemoveGames(new List<Game>() { testGame, testGameTwo});
+            await repository.SaveChanges();
+
+            // assert
+            Assert.Empty(context.Games);
         }
 
         #endregion

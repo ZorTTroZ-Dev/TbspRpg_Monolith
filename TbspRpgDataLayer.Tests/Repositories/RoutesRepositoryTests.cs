@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using TbspRpgApi.Entities;
@@ -254,6 +255,41 @@ namespace TbspRpgDataLayer.Tests.Repositories
             await context.SaveChangesAsync();
             Assert.Single(context.Routes);
             Assert.Equal("test route two", context.Routes.First().Name);
+        }
+
+        #endregion
+        
+        #region RemoveRoutes
+
+        [Fact]
+        public async void RemoveRoutes_RoutesRemoved()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testroute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid(),
+                DestinationLocationId = Guid.NewGuid(),
+                Name = "test route"
+            };
+            var testroute2 = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid(),
+                DestinationLocationId = Guid.NewGuid(),
+                Name = "test route two"
+            };
+            context.Routes.AddRange(testroute, testroute2);
+            await context.SaveChangesAsync();
+            var repository = new RoutesRepository(context);
+            
+            // act
+            repository.RemoveRoutes(new List<Route>() { testroute, testroute2 });
+            await context.SaveChangesAsync();
+            
+            // assert
+            Assert.Empty(context.Routes);
         }
 
         #endregion

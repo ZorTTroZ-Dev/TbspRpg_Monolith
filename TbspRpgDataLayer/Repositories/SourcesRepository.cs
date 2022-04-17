@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 using Microsoft.EntityFrameworkCore;
 using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
@@ -14,6 +16,8 @@ namespace TbspRpgDataLayer.Repositories
         Task<string> GetSourceTextForKey(Guid key, string language = null);
         Task<Source> GetSourceForKey(Guid key, Guid adventureId, string language);
         Task AddSource(Source source, string language);
+        Task RemoveAllSourceForAdventure(Guid adventureId);
+        Task<List<Source>> GetAllSourceForAdventure(Guid adventureId, string language);
     }
     
     public class SourcesRepository : ISourcesRepository
@@ -102,6 +106,22 @@ namespace TbspRpgDataLayer.Repositories
             }
 
             throw new ArgumentException($"invalid language {language}");
+        }
+
+        public async Task RemoveAllSourceForAdventure(Guid adventureId)
+        {
+            // have to remove all source for each language
+            foreach (var language in Languages.GetAllLanguages())
+            {
+                var source = await GetAllSourceForAdventure(adventureId, language);
+                _databaseContext.RemoveRange(source);
+            }
+        }
+
+        public Task<List<Source>> GetAllSourceForAdventure(Guid adventureId, string language)
+        {
+            var query = GetQueryRoot(language);
+            return query.Where(source => source.AdventureId == adventureId).ToListAsync();
         }
     }
 }

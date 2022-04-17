@@ -565,5 +565,106 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+        
+        #region RemoveAllContentsForGame
+
+        [Fact]
+        public async void RemoveAllContentsForGame_NoContents_NothingRemoved()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>();
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            // act
+            await repository.RemoveAllContentsForGame(testGameId);
+            await repository.SaveChanges();
+            
+            // assert
+            Assert.Empty(context.Contents);
+        }
+        
+        [Fact]
+        public async void RemoveAllContentsForGame_InvalidGameId_NothingRemoved()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 1
+                }
+            };
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            // act
+            await repository.RemoveAllContentsForGame(Guid.NewGuid());
+            await repository.SaveChanges();
+            
+            // assert
+            Assert.Equal(3, context.Contents.Count());
+        }
+        
+        [Fact]
+        public async void RemoveAllContentsForGame_Valid_ContentsRemoved()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testGameId = Guid.NewGuid();
+            var testContents = new List<Content>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 42
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 0
+                },
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    GameId = testGameId,
+                    Position = 1
+                }
+            };
+            context.Contents.AddRange(testContents);
+            await context.SaveChangesAsync();
+            var repository = new ContentsRepository(context);
+            
+            // act
+            await repository.RemoveAllContentsForGame(testGameId);
+            await repository.SaveChanges();
+            
+            // assert
+            Assert.Empty(context.Contents);
+        }
+
+        #endregion
     }
 }

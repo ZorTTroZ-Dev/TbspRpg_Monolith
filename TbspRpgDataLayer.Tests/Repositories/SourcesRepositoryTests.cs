@@ -363,5 +363,99 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+        
+        #region RemoveAllSourceForAdventure
+
+        [Fact]
+        public async void RemoveAllSourceForAdventure_AllSourceRemoved()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = testSource.AdventureId,
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEnTwo = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = Guid.NewGuid(),
+                Name = "test source two",
+                Text = "test source two"
+            };
+            context.SourcesEsp.Add(testSource);
+            context.SourcesEn.Add(testSourceEn);
+            context.SourcesEn.Add(testSourceEnTwo);
+            await context.SaveChangesAsync();
+            var repository = new SourcesRepository(context);
+            
+            // act
+            await repository.RemoveAllSourceForAdventure(testSource.AdventureId);
+            await context.SaveChangesAsync();
+            
+            // assert
+            Assert.Empty(context.SourcesEsp);
+            Assert.Single(context.SourcesEn);
+        }
+
+        #endregion
+
+        #region GetAllSourceForAdventure
+
+        [Fact]
+        public async void GetAllSourceForAdventure_Valid_AllSourceReturned()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = testSource.AdventureId,
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEnTwo = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = Guid.NewGuid(),
+                Name = "test source two",
+                Text = "test source two"
+            };
+            context.SourcesEsp.Add(testSource);
+            context.SourcesEn.Add(testSourceEn);
+            context.SourcesEn.Add(testSourceEnTwo);
+            await context.SaveChangesAsync();
+            var repository = new SourcesRepository(context);
+            
+            // act
+            var source = await repository.GetAllSourceForAdventure(testSource.AdventureId, Languages.ENGLISH);
+            
+            // assert
+            Assert.Single(source);
+        }
+
+        #endregion
     }
 }

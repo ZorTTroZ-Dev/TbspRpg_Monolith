@@ -289,5 +289,32 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region RemoveAdventure
+
+        [Fact]
+        public async void RemoveAdventure_Valid_AdventureRemoved()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var newAdventure = new Adventure()
+            {
+                Name = "test_adventure",
+                CreatedByUserId = Guid.NewGuid(),
+                InitialSourceKey = Guid.Empty
+            };
+            await context.AddAsync(newAdventure);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            service.RemoveAdventure(newAdventure);
+            await service.SaveChanges();
+            
+            // assert
+            Assert.Empty(context.Adventures);
+        }
+
+        #endregion
     }
 }
