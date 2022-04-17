@@ -479,7 +479,7 @@ namespace TbspRpgApi.Tests.Services
                                 new()
                                 {
                                     Id = Guid.NewGuid(),
-                                    Name = TbspRpgSettings.Settings.Permissions.WRITE_GAME
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteGame
                                 }
                             }
                         }
