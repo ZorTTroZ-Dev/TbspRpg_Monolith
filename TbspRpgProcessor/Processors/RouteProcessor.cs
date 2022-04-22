@@ -108,7 +108,7 @@ namespace TbspRpgProcessor.Processors
             var dbSuccessSource = await _sourceProcessor.CreateOrUpdateSource(
                 routeUpdateModel.successSource,
                 routeUpdateModel.language);
-            route.SuccessSourceKey = dbSuccessSource.Key;
+            route.RouteTakenSourceKey = dbSuccessSource.Key;
 
             await _routesService.SaveChanges();
         }

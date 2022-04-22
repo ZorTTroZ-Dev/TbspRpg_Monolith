@@ -17,7 +17,7 @@ namespace TbspRpgDataLayer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
@@ -255,19 +255,16 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<Guid>("DestinationLocationId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("FailureSourceKey")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("LocationId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("SourceKey")
+                    b.Property<Guid>("RouteTakenSourceKey")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("SuccessSourceKey")
+                    b.Property<Guid>("SourceKey")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");

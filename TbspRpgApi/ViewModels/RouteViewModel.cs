@@ -10,7 +10,7 @@ namespace TbspRpgApi.ViewModels
         public Guid Id { get; set; }
         public string Name { get; set; }
         public Guid SourceKey { get; set; }
-        public Guid SuccessSourceKey { get; set; }
+        public Guid RouteTakenSourceKey { get; set; }
         public Guid LocationId { get; set; }
         public Guid DestinationLocationId { get; set; }
         public long TimeStamp { get; }
@@ -30,7 +30,7 @@ namespace TbspRpgApi.ViewModels
             Id = route.Id;
             Name = route.Name;
             SourceKey = route.SourceKey;
-            SuccessSourceKey = route.SuccessSourceKey;
+            RouteTakenSourceKey = route.RouteTakenSourceKey;
             LocationId = route.LocationId;
             DestinationLocationId = route.DestinationLocationId;
         }
@@ -42,7 +42,7 @@ namespace TbspRpgApi.ViewModels
                 Id = Id,
                 Name = Name,
                 SourceKey = SourceKey,
-                SuccessSourceKey = SuccessSourceKey,
+                RouteTakenSourceKey = RouteTakenSourceKey,
                 LocationId = LocationId,
                 DestinationLocationId = DestinationLocationId
             };

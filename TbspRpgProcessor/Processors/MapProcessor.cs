@@ -66,7 +66,7 @@ namespace TbspRpgProcessor.Processors
                 Id = Guid.NewGuid(),
                 GameId = game.Id,
                 Position = (ulong)secondsSinceEpoch,
-                SourceKey = route.SuccessSourceKey
+                SourceKey = route.RouteTakenSourceKey
             });
             
             // create content entry for the new location

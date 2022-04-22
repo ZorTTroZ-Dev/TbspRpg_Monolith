@@ -20,7 +20,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 Id = Guid.NewGuid(),
                 LocationId = Guid.NewGuid(),
                 DestinationLocationId = Guid.NewGuid(),
-                SuccessSourceKey = Guid.NewGuid()
+                RouteTakenSourceKey = Guid.NewGuid()
             };
             var testGames = new List<Game>()
             {
@@ -52,7 +52,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 Id = Guid.NewGuid(),
                 LocationId = Guid.NewGuid(),
                 DestinationLocationId = Guid.NewGuid(),
-                SuccessSourceKey = Guid.NewGuid()
+                RouteTakenSourceKey = Guid.NewGuid()
             };
             var testGames = new List<Game>()
             {
@@ -86,7 +86,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 Id = Guid.NewGuid(),
                 LocationId = Guid.NewGuid(),
                 DestinationLocationId = Guid.NewGuid(),
-                SuccessSourceKey = Guid.NewGuid()
+                RouteTakenSourceKey = Guid.NewGuid()
             };
             var testGames = new List<Game>()
             {
@@ -126,7 +126,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 LocationId = Guid.NewGuid(),
                 DestinationLocationId = testDestinationLocation.Id,
                 DestinationLocation = testDestinationLocation,
-                SuccessSourceKey = Guid.NewGuid()
+                RouteTakenSourceKey = Guid.NewGuid()
             };
             var testGames = new List<Game>()
             {
@@ -153,7 +153,7 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.Equal(testRoute.DestinationLocationId, game.LocationId);
             Assert.True(game.LocationUpdateTimeStamp > 0);
             Assert.Equal(2, testContents.Count);
-            Assert.Equal(testContents[0].SourceKey, testRoute.SuccessSourceKey);
+            Assert.Equal(testContents[0].SourceKey, testRoute.RouteTakenSourceKey);
         }
 
         #endregion
