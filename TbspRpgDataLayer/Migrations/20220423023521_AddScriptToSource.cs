@@ -13,15 +13,13 @@ namespace TbspRpgDataLayer.Migrations
                 name: "ScriptId",
                 table: "sources_esp",
                 type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+                nullable: true);
 
             migrationBuilder.AddColumn<Guid>(
                 name: "ScriptId",
                 table: "sources_en",
                 type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_sources_esp_ScriptId",
@@ -38,16 +36,14 @@ namespace TbspRpgDataLayer.Migrations
                 table: "sources_en",
                 column: "ScriptId",
                 principalTable: "scripts",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_sources_esp_scripts_ScriptId",
                 table: "sources_esp",
                 column: "ScriptId",
                 principalTable: "scripts",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

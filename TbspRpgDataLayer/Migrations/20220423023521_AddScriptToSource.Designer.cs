@@ -12,7 +12,7 @@ using TbspRpgDataLayer;
 namespace TbspRpgDataLayer.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220423022243_AddScriptToSource")]
+    [Migration("20220423023521_AddScriptToSource")]
     partial class AddScriptToSource
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,7 +86,7 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("ScriptId")
+                    b.Property<Guid?>("ScriptId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Text")
@@ -115,7 +115,7 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("ScriptId")
+                    b.Property<Guid?>("ScriptId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Text")
@@ -423,9 +423,7 @@ namespace TbspRpgDataLayer.Migrations
                 {
                     b.HasOne("TbspRpgDataLayer.Entities.Script", "Script")
                         .WithMany()
-                        .HasForeignKey("ScriptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ScriptId");
 
                     b.Navigation("Script");
                 });
@@ -434,9 +432,7 @@ namespace TbspRpgDataLayer.Migrations
                 {
                     b.HasOne("TbspRpgDataLayer.Entities.Script", "Script")
                         .WithMany()
-                        .HasForeignKey("ScriptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ScriptId");
 
                     b.Navigation("Script");
                 });

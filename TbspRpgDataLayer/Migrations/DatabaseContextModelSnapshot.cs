@@ -84,7 +84,7 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("ScriptId")
+                    b.Property<Guid?>("ScriptId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Text")
@@ -113,7 +113,7 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("ScriptId")
+                    b.Property<Guid?>("ScriptId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Text")
@@ -421,9 +421,7 @@ namespace TbspRpgDataLayer.Migrations
                 {
                     b.HasOne("TbspRpgDataLayer.Entities.Script", "Script")
                         .WithMany()
-                        .HasForeignKey("ScriptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ScriptId");
 
                     b.Navigation("Script");
                 });
@@ -432,9 +430,7 @@ namespace TbspRpgDataLayer.Migrations
                 {
                     b.HasOne("TbspRpgDataLayer.Entities.Script", "Script")
                         .WithMany()
-                        .HasForeignKey("ScriptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ScriptId");
 
                     b.Navigation("Script");
                 });
