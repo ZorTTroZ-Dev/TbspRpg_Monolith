@@ -60,6 +60,11 @@ namespace TbspRpgProcessor.Processors
             game.LocationId = route.DestinationLocationId;
             game.LocationUpdateTimeStamp = secondsSinceEpoch;
             
+            // TODO: instead of just adding the source key we'll need to 
+            // look up if there is a script for the source key
+            // if so run the script which will return another
+            // source key which will then do it all over again
+            
             // create content entry for the route
             await _contentsService.AddContent(new Content()
             {
