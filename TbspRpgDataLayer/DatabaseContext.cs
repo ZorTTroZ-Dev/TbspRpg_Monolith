@@ -24,6 +24,7 @@ namespace TbspRpgDataLayer
         public DbSet<Route> Routes { get; set; }
         public DbSet<En> SourcesEn { get; set; }
         public DbSet<Esp> SourcesEsp { get; set; }
+        public DbSet<Script> Scripts { get; set; }
 
         #endregion
 
@@ -70,6 +71,7 @@ namespace TbspRpgDataLayer
             modelBuilder.Entity<Route>().ToTable("routes");
             modelBuilder.Entity<En>().ToTable("sources_en");
             modelBuilder.Entity<Esp>().ToTable("sources_esp");
+            modelBuilder.Entity<Script>().ToTable("scripts");
 
             modelBuilder.Entity<Adventure>().HasKey(a => a.Id);
             modelBuilder.Entity<Adventure>().Property(a => a.Id)
@@ -85,6 +87,12 @@ namespace TbspRpgDataLayer
             
             modelBuilder.Entity<Route>().HasKey(a => a.Id);
             modelBuilder.Entity<Route>().Property(a => a.Id)
+                .HasColumnType("uuid")
+                .HasDefaultValueSql("uuid_generate_v4()")
+                .IsRequired();
+            
+            modelBuilder.Entity<Script>().HasKey(s => s.Id);
+            modelBuilder.Entity<Script>().Property(s => s.Id)
                 .HasColumnType("uuid")
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();
@@ -157,6 +165,10 @@ namespace TbspRpgDataLayer
             modelBuilder.Entity<Permission>()
                 .HasMany(p => p.Groups)
                 .WithMany(g => g.Permissions);
+
+            modelBuilder.Entity<Script>()
+                .HasMany(s => s.Includes)
+                .WithMany(s => s.IncludedIn);
             
             modelBuilder.Entity<Adventure>()
                 .HasMany(a => a.Games)

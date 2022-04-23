@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TbspRpgDataLayer;
@@ -11,9 +12,10 @@ using TbspRpgDataLayer;
 namespace TbspRpgDataLayer.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220422233757_AlterRouteFieldNames")]
+    partial class AlterRouteFieldNames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,21 +53,6 @@ namespace TbspRpgDataLayer.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("GroupUser");
-                });
-
-            modelBuilder.Entity("ScriptScript", b =>
-                {
-                    b.Property<Guid>("IncludedInId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("IncludesId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("IncludedInId", "IncludesId");
-
-                    b.HasIndex("IncludesId");
-
-                    b.ToTable("ScriptScript");
                 });
 
             modelBuilder.Entity("TbspRpgApi.Entities.LanguageSources.En", b =>
@@ -291,27 +278,6 @@ namespace TbspRpgDataLayer.Migrations
                     b.ToTable("routes", (string)null);
                 });
 
-            modelBuilder.Entity("TbspRpgDataLayer.Entities.Script", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("uuid_generate_v4()");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("scripts", (string)null);
-                });
-
             modelBuilder.Entity("TbspRpgDataLayer.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -368,21 +334,6 @@ namespace TbspRpgDataLayer.Migrations
                     b.HasOne("TbspRpgDataLayer.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ScriptScript", b =>
-                {
-                    b.HasOne("TbspRpgDataLayer.Entities.Script", null)
-                        .WithMany()
-                        .HasForeignKey("IncludedInId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TbspRpgDataLayer.Entities.Script", null)
-                        .WithMany()
-                        .HasForeignKey("IncludesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
