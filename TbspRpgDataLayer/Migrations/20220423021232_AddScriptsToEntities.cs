@@ -13,29 +13,25 @@ namespace TbspRpgDataLayer.Migrations
                 name: "RouteTakenScriptId",
                 table: "routes",
                 type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+                nullable: true);
 
             migrationBuilder.AddColumn<Guid>(
                 name: "EnterScriptId",
                 table: "locations",
                 type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+                nullable: true);
 
             migrationBuilder.AddColumn<Guid>(
                 name: "ExitScriptId",
                 table: "locations",
                 type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+                nullable: true);
 
             migrationBuilder.AddColumn<Guid>(
                 name: "InitializationScriptId",
                 table: "adventures",
                 type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_routes_RouteTakenScriptId",
@@ -62,32 +58,28 @@ namespace TbspRpgDataLayer.Migrations
                 table: "adventures",
                 column: "InitializationScriptId",
                 principalTable: "scripts",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_locations_scripts_EnterScriptId",
                 table: "locations",
                 column: "EnterScriptId",
                 principalTable: "scripts",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_locations_scripts_ExitScriptId",
                 table: "locations",
                 column: "ExitScriptId",
                 principalTable: "scripts",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_routes_scripts_RouteTakenScriptId",
                 table: "routes",
                 column: "RouteTakenScriptId",
                 principalTable: "scripts",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
