@@ -142,7 +142,7 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<Guid>("InitialSourceKey")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("InitializationScriptId")
+                    b.Property<Guid?>("InitializationScriptId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
@@ -241,10 +241,10 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<Guid>("AdventureId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("EnterScriptId")
+                    b.Property<Guid?>("EnterScriptId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ExitScriptId")
+                    b.Property<Guid?>("ExitScriptId")
                         .HasColumnType("uuid");
 
                     b.Property<bool>("Final")
@@ -301,7 +301,7 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("RouteTakenScriptId")
+                    b.Property<Guid?>("RouteTakenScriptId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("RouteTakenSourceKey")
@@ -332,6 +332,9 @@ namespace TbspRpgDataLayer.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReturnType")
                         .HasColumnType("text");
 
                     b.Property<string>("Type")
@@ -445,9 +448,7 @@ namespace TbspRpgDataLayer.Migrations
 
                     b.HasOne("TbspRpgDataLayer.Entities.Script", "InitializationScript")
                         .WithMany()
-                        .HasForeignKey("InitializationScriptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("InitializationScriptId");
 
                     b.Navigation("CreatedByUser");
 
@@ -502,15 +503,11 @@ namespace TbspRpgDataLayer.Migrations
 
                     b.HasOne("TbspRpgDataLayer.Entities.Script", "EnterScript")
                         .WithMany()
-                        .HasForeignKey("EnterScriptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EnterScriptId");
 
                     b.HasOne("TbspRpgDataLayer.Entities.Script", "ExitScript")
                         .WithMany()
-                        .HasForeignKey("ExitScriptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ExitScriptId");
 
                     b.Navigation("Adventure");
 
@@ -535,9 +532,7 @@ namespace TbspRpgDataLayer.Migrations
 
                     b.HasOne("TbspRpgDataLayer.Entities.Script", "RouteTakenScript")
                         .WithMany()
-                        .HasForeignKey("RouteTakenScriptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RouteTakenScriptId");
 
                     b.Navigation("DestinationLocation");
 
