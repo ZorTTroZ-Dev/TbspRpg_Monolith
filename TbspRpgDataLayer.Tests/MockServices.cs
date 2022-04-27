@@ -163,6 +163,17 @@ namespace TbspRpgDataLayer.Tests
 
             return locationsService.Object;
         }
+        
+        public static IScriptsService MockDataLayerScriptsService(ICollection<Script> scripts)
+        {
+            var scriptsService = new Mock<IScriptsService>();
+
+            scriptsService.Setup(service =>
+                    service.GetScriptById(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid scriptId) => scripts.FirstOrDefault(s => s.Id == scriptId));
+            
+            return scriptsService.Object;
+        }
 
         public static IRoutesService MockDataLayerRoutesService(ICollection<Route> routes)
         {
