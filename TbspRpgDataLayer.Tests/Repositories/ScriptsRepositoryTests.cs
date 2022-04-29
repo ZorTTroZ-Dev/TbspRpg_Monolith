@@ -24,7 +24,6 @@ public class ScriptsRepositoryTests: InMemoryTest
             Id = Guid.NewGuid(),
             Name = "test",
             Content = "print('banana');",
-            ReturnType = "void",
             Type = ScriptTypes.LuaScript,
             Includes = new List<Script>()
         };
@@ -49,7 +48,6 @@ public class ScriptsRepositoryTests: InMemoryTest
             Id = Guid.NewGuid(),
             Name = "test",
             Content = "print('banana');",
-            ReturnType = "void",
             Type = ScriptTypes.LuaScript,
             Includes = new List<Script>()
             {
@@ -58,7 +56,6 @@ public class ScriptsRepositoryTests: InMemoryTest
                     Id = Guid.NewGuid(),
                     Name = "test_base",
                     Content = "print('base banana');",
-                    ReturnType = "void",
                     Type = ScriptTypes.LuaScript,
                 }
             }
