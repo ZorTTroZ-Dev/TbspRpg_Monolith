@@ -3,15 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NLua;
-using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
+using TbspRpgSettings.Settings;
 
 namespace TbspRpgProcessor.Processors;
 
 public interface IScriptProcessor
 {
     // a script can only return a GUID which is a source id
-    Task ExecuteScript(Guid scriptId);
+    Task<string> ExecuteScript(Guid scriptId);
 }
 
 public class ScriptProcessor : IScriptProcessor
@@ -41,8 +41,27 @@ public class ScriptProcessor : IScriptProcessor
     // I've also been thinking of adding variables to the content that can be replaced in the
     // associated source. So when content added, provide a source key and variable values that
     // would get replaced when source rendered.
-    public Task ExecuteScript(Guid scriptId)
+    public async Task<string> ExecuteScript(Guid scriptId)
     {
-        throw new System.NotImplementedException();
+        var script = await _scriptsService.GetScriptById(scriptId);
+        if (script == null)
+            throw new ArgumentException("invalid script id");
+        
+        var luaState = new Lua();
+        
+        // load sandbox lua library
+        luaState["sandbox"] = luaState.DoString(LuaSandbox.LuaSandboxCode).First();
+        
+        // load the script
+        luaState.DoString(script.Content);
+        
+        // have to put the run function in the environment or it won't run
+        luaState.DoString("sandboxed_run = sandbox('run()', {env = { run = run }})");
+        
+        // run the script
+        var scriptFunc = luaState["sandboxed_run"] as LuaFunction;
+        if (scriptFunc == null) return null;
+        scriptFunc.Call();
+        return luaState["result"] as string;
     }
 }
