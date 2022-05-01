@@ -34,9 +34,7 @@ public class ScriptProcessor : IScriptProcessor
     // add the script to the environment
     // execute the script
     // update the game state in the database, future addition
-    // return the result of the script?
-        // how am I going to return the result, just return a string and let the caller
-        // interpret it how they want?, add a return type to the script object?
+    // retrieve the result of the script
         
     // I've also been thinking of adding variables to the content that can be replaced in the
     // associated source. So when content added, provide a source key and variable values that
@@ -52,14 +50,23 @@ public class ScriptProcessor : IScriptProcessor
         // load sandbox lua library
         luaState["sandbox"] = luaState.DoString(LuaSandbox.LuaSandboxCode).First();
         
+        // load any includes
+        if (script.Includes != null)
+        {
+            foreach (var include in script.Includes)
+            {
+                luaState.DoString(include.Content);
+            }
+        }
+
         // load the script
         luaState.DoString(script.Content);
         
         // have to put the run function in the environment or it won't run
-        luaState.DoString("sandboxed_run = sandbox('run()', {env = { run = run }})");
+        luaState.DoString("sandbox_run = sandbox('run()', {env = { run = run }})");
         
         // run the script
-        var scriptFunc = luaState["sandboxed_run"] as LuaFunction;
+        var scriptFunc = luaState["sandbox_run"] as LuaFunction;
         if (scriptFunc == null) return null;
         scriptFunc.Call();
         return luaState["result"] as string;
