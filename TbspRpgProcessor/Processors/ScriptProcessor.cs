@@ -41,6 +41,9 @@ public class ScriptProcessor : IScriptProcessor
     // would get replaced when source rendered.
     public async Task<string> ExecuteScript(Guid scriptId)
     {
+        if(scriptId == Guid.Empty)
+            throw new ArgumentException("invalid script id");
+            
         var script = await _scriptsService.GetScriptById(scriptId);
         if (script == null)
             throw new ArgumentException("invalid script id");

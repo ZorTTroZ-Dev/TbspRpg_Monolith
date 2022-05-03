@@ -133,6 +133,34 @@ public class ScriptProcessorTests: ProcessorTest
         // assert
         await Assert.ThrowsAsync<ArgumentException>(Act);
     }
+    
+    [Fact]
+    public async void ExecuteScript_EmptyScriptId_ExceptionThrown()
+    {
+        // arrange
+        var script = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script",
+            Content = @"
+                function banana()
+                    return 'foo'
+                end
+
+                function fun()
+		            result = banana()
+	            end
+            ",
+            Type = ScriptTypes.LuaScript
+        };
+        var processor = CreateScriptProcessor(new List<Script>() {script});
+        
+        // act
+        Task Act() => processor.ExecuteScript(Guid.Empty);
+        
+        // assert
+        await Assert.ThrowsAsync<ArgumentException>(Act);
+    }
 
     #endregion
 }

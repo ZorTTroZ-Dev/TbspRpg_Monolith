@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
 using TbspRpgProcessor.Entities;
@@ -78,6 +77,10 @@ namespace TbspRpgProcessor.Processors
             await _gamesService.AddGame(game);
             
             // run the initialization script for the adventure if there is one
+            if (adventure.InitializationScriptId != null)
+            {
+                await _scriptProcessor.ExecuteScript(adventure.InitializationScriptId.GetValueOrDefault());
+            }
 
             // create content entry for adventure's source key
             await _contentsService.AddContent(new Content()
