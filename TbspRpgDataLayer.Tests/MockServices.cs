@@ -110,6 +110,10 @@ namespace TbspRpgDataLayer.Tests
             gamesService.Setup(service =>
                     service.GetGameById(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid gameId) => games.FirstOrDefault(g => g.Id == gameId));
+            
+            gamesService.Setup(service =>
+                    service.GetGameByIdIncludeAdventure(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid gameId) => games.FirstOrDefault(g => g.Id == gameId));
 
             // doesn't do any actual filtering
             gamesService.Setup(service =>
