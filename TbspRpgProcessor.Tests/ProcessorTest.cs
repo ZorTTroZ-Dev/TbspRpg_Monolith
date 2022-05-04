@@ -63,12 +63,19 @@ namespace TbspRpgProcessor.Tests
         protected static IMapProcessor CreateMapProcessor(
             ICollection<Game> games = null,
             ICollection<Route> routes = null,
-            ICollection<Content> contents = null)
+            ICollection<Content> contents = null,
+            ICollection<Script> scripts = null)
         {
+            var scriptProcessor = CreateScriptProcessor(scripts);
             var gamesService = MockServices.MockDataLayerGamesService(games);
             var routesService = MockServices.MockDataLayerRoutesService(routes);
             var contentsService = MockServices.MockDataLayerContentsService(contents);
-            return new MapProcessor(gamesService, routesService, contentsService, NullLogger<MapProcessor>.Instance);
+            return new MapProcessor(
+                scriptProcessor,
+                gamesService,
+                routesService,
+                contentsService, 
+                NullLogger<MapProcessor>.Instance);
         }
 
         protected static ISourceProcessor CreateSourceProcessor(

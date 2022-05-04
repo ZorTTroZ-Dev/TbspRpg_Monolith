@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
 
@@ -14,16 +13,20 @@ namespace TbspRpgProcessor.Processors
     
     public class MapProcessor: IMapProcessor
     {
+        private readonly IScriptProcessor _scriptProcessor;
         private readonly IGamesService _gamesService;
         private readonly IRoutesService _routesService;
         private readonly IContentsService _contentsService;
         private readonly ILogger<MapProcessor> _logger;
 
-        public MapProcessor(IGamesService gamesService,
+        public MapProcessor(
+            IScriptProcessor scriptProcessor,
+            IGamesService gamesService,
             IRoutesService routesService,
             IContentsService contentsService,
             ILogger<MapProcessor> logger)
         {
+            _scriptProcessor = scriptProcessor;
             _gamesService = gamesService;
             _routesService = routesService;
             _contentsService = contentsService;
@@ -38,7 +41,7 @@ namespace TbspRpgProcessor.Processors
         //  if pass update location id, location time stamp, add pass content to game
         public async Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp)
         {
-            var game = await _gamesService.GetGameById(gameId);
+            var game = await _gamesService.GetGameByIdIncludeAdventure(gameId);
             if (game == null)
             {
                 throw new ArgumentException("invalid game id");
@@ -54,12 +57,37 @@ namespace TbspRpgProcessor.Processors
             {
                 throw new Exception("game not in location it should be");
             }
+            
+            // these scripts should just update game state, can't stop entering location
+            // run the location exit script
+            if (route.Location.ExitScriptId != null)
+            {
+                await _scriptProcessor.ExecuteScript(route.Location.ExitScriptId.GetValueOrDefault());
+            }
+                
+            // run the route taken script
+            if (route.RouteTakenScriptId != null)
+            {
+                await _scriptProcessor.ExecuteScript(route.RouteTakenScriptId.GetValueOrDefault());
+            }
+            
+            // run the location enter script
+            if (route.DestinationLocation.EnterScriptId != null)
+            {
+                await _scriptProcessor.ExecuteScript(route.DestinationLocation.EnterScriptId.GetValueOrDefault());
+            }
+
+            // if we're entering the final location run the adventure completion script
+            if (route.DestinationLocation.Final && game.Adventure.TerminationScriptId != null)
+            {
+                await _scriptProcessor.ExecuteScript(game.Adventure.TerminationScriptId.GetValueOrDefault());
+            }
 
             // for now assume the check passed
             var secondsSinceEpoch = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds();
             game.LocationId = route.DestinationLocationId;
             game.LocationUpdateTimeStamp = secondsSinceEpoch;
-            
+
             // TODO: instead of just adding the source key we'll need to 
             // look up if there is a script for the source key
             // if so run the script which will return another
