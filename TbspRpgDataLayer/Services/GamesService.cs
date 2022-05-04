@@ -15,6 +15,7 @@ namespace TbspRpgDataLayer.Services
         Task AddGame(Game game);
         Task<Game> GetGameByIdIncludeLocation(Guid gameId);
         Task<Game> GetGameById(Guid gameId);
+        Task<Game> GetGameByIdIncludeAdventure(Guid gameId);
         Task<List<Game>> GetGamesByAdventureId(Guid adventureId);
         Task<List<Game>> GetGames(GameFilter filters);
         Task<List<Game>> GetGamesIncludeUsers(GameFilter filters);
@@ -52,6 +53,11 @@ namespace TbspRpgDataLayer.Services
         public Task<Game> GetGameById(Guid gameId)
         {
             return _gameRepository.GetGameById(gameId);
+        }
+        
+        public Task<Game> GetGameByIdIncludeAdventure(Guid gameId)
+        {
+            return _gameRepository.GetGameByIdWithAdventure(gameId);
         }
 
         public Task<List<Game>> GetGamesByAdventureId(Guid adventureId)

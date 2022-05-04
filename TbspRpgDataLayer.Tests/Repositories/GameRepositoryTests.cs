@@ -191,6 +191,46 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+        
+        #region GetGameByIdIncludeAdventure
+
+        [Fact]
+        public async void GetGameByIdIncludeAdventure()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocationId = Guid.NewGuid();
+            var testAdventureId = Guid.NewGuid();
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = testLocationId,
+                Location = new Location()
+                {
+                    Id = testLocationId,
+                    Name = "test location",
+                    Initial = true
+                },
+                Adventure = new Adventure()
+                {
+                    Id = testAdventureId,
+                    Name = "test"
+                }
+            };
+            context.Games.Add(testGame);
+            await context.SaveChangesAsync();
+            var repository = new GameRepository(context);
+            
+            // act
+            var game = await repository.GetGameByIdWithAdventure(testGame.Id);
+            
+            // assert
+            Assert.NotNull(game);
+            Assert.NotNull(game.Adventure);
+            Assert.Equal(testAdventureId, game.Adventure.Id);
+        }
+
+        #endregion
 
         #region GetGames
 
