@@ -113,10 +113,10 @@ namespace TbspRpgApi.Tests
         }
 
         protected static ContentsService CreateContentsService(ICollection<Content> contents,
-            ICollection<Game> games = null, ICollection<En> sources = null)
+            Guid scriptExceptionId, ICollection<Game> games = null, ICollection<En> sources = null)
         {
             var dlContentsService = MockServices.MockDataLayerContentsService(contents);
-            var contentProcessor = ProcessorTest.MockContentProcessor(games, sources);
+            var contentProcessor = ProcessorTest.MockContentProcessor(games, sources, scriptExceptionId);
             return new ContentsService(dlContentsService, 
                 contentProcessor, NullLogger<ContentsService>.Instance);
         }
@@ -146,10 +146,10 @@ namespace TbspRpgApi.Tests
                 NullLogger<LocationsService>.Instance);
         }
 
-        protected static SourcesService CreateSourcesService(ICollection<En> sources)
+        protected static SourcesService CreateSourcesService(ICollection<En> sources, Guid scriptExceptionId)
         {
             var dlSourcesService = MockServices.MockDataLayerSourcesService(sources);
-            var sourceProcessor = ProcessorTest.MockSourceProcessor(sources);
+            var sourceProcessor = ProcessorTest.MockSourceProcessor(sources, scriptExceptionId);
             return new SourcesService(
                 dlSourcesService,
                 sourceProcessor,

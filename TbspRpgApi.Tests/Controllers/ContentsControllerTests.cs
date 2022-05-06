@@ -20,7 +20,7 @@ namespace TbspRpgApi.Tests.Controllers
             ICollection<Game> games = null,
             ICollection<En> sources = null)
         {
-            var service = CreateContentsService(contents, games, sources);
+            var service = CreateContentsService(contents, Guid.Empty, games, sources);
             return new ContentsController(service,
                 MockPermissionService(),
                 NullLogger<ContentsController>.Instance);

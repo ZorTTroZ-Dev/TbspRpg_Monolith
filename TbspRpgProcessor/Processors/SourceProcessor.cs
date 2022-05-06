@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Markdig;
 using Microsoft.Extensions.Logging;
-using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
 using TbspRpgProcessor.Entities;
@@ -13,16 +12,21 @@ namespace TbspRpgProcessor.Processors
     {
         Task<Source> CreateOrUpdateSource(Source updatedSource, string language);
         Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
+        Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
     }
     
     public class SourceProcessor : ISourceProcessor
     {
+        private readonly IScriptProcessor _scriptProcessor;
         private readonly ISourcesService _sourcesService;
         private readonly ILogger<SourceProcessor> _logger;
 
-        public SourceProcessor(ISourcesService sourcesService,
+        public SourceProcessor(
+            IScriptProcessor scriptProcessor,
+            ISourcesService sourcesService,
             ILogger<SourceProcessor> logger)
         {
+            _scriptProcessor = scriptProcessor;
             _sourcesService = sourcesService;
             _logger = logger;
         }
@@ -52,7 +56,9 @@ namespace TbspRpgProcessor.Processors
         public async Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel)
         {
             var dbSource = await _sourcesService.GetSourceForKey(
-                sourceForKeyModel.Key, sourceForKeyModel.AdventureId, sourceForKeyModel.Language);
+                sourceForKeyModel.Key,
+                sourceForKeyModel.AdventureId,
+                sourceForKeyModel.Language);
 
             if (sourceForKeyModel.Processed && dbSource != null)
             {
@@ -60,6 +66,23 @@ namespace TbspRpgProcessor.Processors
             }
 
             return dbSource;
+        }
+
+        public async Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel)
+        {
+            // load the source for the given key
+            // while source is a script
+            // call script, get result, load source
+            var dbSource = await _sourcesService.GetSourceForKey(
+                sourceForKeyModel.Key,
+                sourceForKeyModel.AdventureId,
+                sourceForKeyModel.Language);
+
+            while (dbSource.ScriptId != null)
+            {
+                
+            }
+            throw new NotImplementedException();
         }
     }
 }

@@ -35,7 +35,7 @@ namespace TbspRpgApi.Tests.Services
                     SourceKey = Guid.NewGuid()
                 }
             };
-            var service = CreateContentsService(testContents);
+            var service = CreateContentsService(testContents, Guid.Empty);
             
             // act
             var contentViewModel = await service.GetLatestForGame(testGameId);
@@ -69,7 +69,7 @@ namespace TbspRpgApi.Tests.Services
                     SourceKey = Guid.NewGuid()
                 }
             };
-            var service = CreateContentsService(testContents);
+            var service = CreateContentsService(testContents, Guid.Empty);
             
             // act
             var contentViewModel = await service.GetLatestForGame(Guid.NewGuid());
@@ -104,7 +104,7 @@ namespace TbspRpgApi.Tests.Services
                     SourceKey = Guid.NewGuid()
                 }
             };
-            var service = CreateContentsService(testContents);
+            var service = CreateContentsService(testContents, Guid.Empty);
             
             // act
             var contents = await service.GetPartialContentForGame(
@@ -142,7 +142,7 @@ namespace TbspRpgApi.Tests.Services
                     SourceKey = Guid.NewGuid()
                 }
             };
-            var service = CreateContentsService(testContents);
+            var service = CreateContentsService(testContents, Guid.Empty);
             
             // act
             var contents = await service.GetPartialContentForGame(
@@ -187,7 +187,7 @@ namespace TbspRpgApi.Tests.Services
                     SourceKey = Guid.NewGuid()
                 }
             };
-            var service = CreateContentsService(testContents);
+            var service = CreateContentsService(testContents, Guid.Empty);
             
             //act
             var contentViewModel = await service.GetContentForGameAfterPosition(testGameId, 43);
@@ -218,7 +218,7 @@ namespace TbspRpgApi.Tests.Services
                     SourceKey = Guid.NewGuid()
                 }
             };
-            var service = CreateContentsService(testContents);
+            var service = CreateContentsService(testContents, Guid.Empty);
             
             // act
             var contentViewModel = await service.GetContentForGameAfterPosition(testGameId, 10);
@@ -251,6 +251,7 @@ namespace TbspRpgApi.Tests.Services
             };
             var service = CreateContentsService(
                 new List<Content>(),
+                Guid.Empty,
                 new List<Game>() { testGame },
                 new List<En>() { testSource });
             
@@ -278,6 +279,7 @@ namespace TbspRpgApi.Tests.Services
             };
             var service = CreateContentsService(
                 new List<Content>(),
+                Guid.Empty,
                 new List<Game>() { testGame },
                 new List<En>() { testSource });
             
@@ -312,6 +314,7 @@ namespace TbspRpgApi.Tests.Services
             };
             var service = CreateContentsService(
                 new List<Content>(),
+                Guid.Empty,
                 new List<Game>() { testGame },
                 new List<En>() { testSource });
             
@@ -339,6 +342,7 @@ namespace TbspRpgApi.Tests.Services
             };
             var service = CreateContentsService(
                 new List<Content>(),
+                Guid.Empty,
                 new List<Game>() { testGame },
                 new List<En>() { testSource });
             

@@ -79,10 +79,15 @@ namespace TbspRpgProcessor.Tests
         }
 
         protected static ISourceProcessor CreateSourceProcessor(
-            ICollection<En> sources = null)
+            ICollection<En> sources = null,
+            ICollection<Script> scripts = null)
         {
+            var scriptProcessor = CreateScriptProcessor(scripts);
             var sourcesService = MockServices.MockDataLayerSourcesService(sources);
-            return new SourceProcessor(sourcesService, NullLogger<SourceProcessor>.Instance);
+            return new SourceProcessor(
+                scriptProcessor,
+                sourcesService,
+                NullLogger<SourceProcessor>.Instance);
         }
 
         protected static IRouteProcessor CreateRouteProcessor(
@@ -323,17 +328,21 @@ namespace TbspRpgProcessor.Tests
             return scriptProcessor.Object;
         }
 
-        public static IContentProcessor MockContentProcessor(ICollection<Game> games, ICollection<En> sources)
+        public static IContentProcessor MockContentProcessor(ICollection<Game> games, ICollection<En> sources, Guid scriptExceptionId)
         {
             var gamesService = MockServices.MockDataLayerGamesService(games);
-            var sourceProcessor = MockSourceProcessor(sources);
+            var sourceProcessor = MockSourceProcessor(sources, scriptExceptionId);
             return new ContentProcessor(gamesService, sourceProcessor, NullLogger<ContentProcessor>.Instance);
         }
         
-        public static ISourceProcessor MockSourceProcessor(ICollection<En> sources)
+        public static ISourceProcessor MockSourceProcessor(ICollection<En> sources, Guid scriptExceptionId)
         {
             var sourcesService = MockServices.MockDataLayerSourcesService(sources);
-            return new SourceProcessor(sourcesService, NullLogger<SourceProcessor>.Instance);
+            var scriptProcessor = MockScriptProcessor(scriptExceptionId);
+            return new SourceProcessor(
+                scriptProcessor,
+                sourcesService,
+                NullLogger<SourceProcessor>.Instance);
         }
     }
 }

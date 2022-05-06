@@ -54,9 +54,7 @@ namespace TbspRpgApi.Services
             var contents = await _contentsService.GetContentForGameAfterPosition(gameId, position);
             return contents.Count > 0 ? new ContentViewModel(contents) : null;
         }
-
-        //TODO: Either get rid of these endpoints and have the frontend call the source endpoints
-        // or have these use the source processor to get the actual text.
+        
         public async Task<SourceViewModel> GetContentTextForKey(Guid gameId, Guid sourceKey)
         {
             var text = await _contentProcessor.GetContentTextForKey(gameId, sourceKey);
