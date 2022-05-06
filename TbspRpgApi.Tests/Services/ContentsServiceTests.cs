@@ -232,10 +232,10 @@ namespace TbspRpgApi.Tests.Services
 
         #endregion
 
-        #region GetSourceForKey
+        #region GetContentTextForKey
 
         [Fact]
-        public async void GetSourceForKey_BadKey_ReturnNull()
+        public async void GetContentTextForKey_BadKey_ReturnNull()
         {
             // arrange
             var testGame = new Game()
@@ -255,14 +255,14 @@ namespace TbspRpgApi.Tests.Services
                 new List<En>() { testSource });
             
             // act
-            var source = await service.GetSourceForKey(testGame.Id, Guid.NewGuid());
+            var source = await service.GetContentTextForKey(testGame.Id, Guid.NewGuid());
             
             // assert
             Assert.Null(source);
         }
         
         [Fact]
-        public async void GetSourceForKey_ValidKey_ReturnSource()
+        public async void GetContentTextForKey_ValidKey_ReturnSource()
         {
             // arrange
             var testGame = new Game()
@@ -282,7 +282,7 @@ namespace TbspRpgApi.Tests.Services
                 new List<En>() { testSource });
             
             // act
-            var sourceViewModel = await service.GetSourceForKey(testGame.Id, testSource.Key);
+            var sourceViewModel = await service.GetContentTextForKey(testGame.Id, testSource.Key);
             
             // assert
             Assert.NotNull(sourceViewModel);
@@ -293,10 +293,10 @@ namespace TbspRpgApi.Tests.Services
 
         #endregion
         
-        #region GetProcessedSourceForKey
+        #region GetProcessedContentTextForKey
 
         [Fact]
-        public async void GetProcessedSourceForKey_BadKey_ReturnNull()
+        public async void GetProcessedContentTextForKey_BadKey_ReturnNull()
         {
             // arrange
             var testGame = new Game()
@@ -316,14 +316,14 @@ namespace TbspRpgApi.Tests.Services
                 new List<En>() { testSource });
             
             // act
-            var source = await service.GetProcessedSourceForKey(testGame.Id, Guid.NewGuid());
+            var source = await service.GetProcessedContentTextForKey(testGame.Id, Guid.NewGuid());
             
             // assert
             Assert.Null(source);
         }
         
         [Fact]
-        public async void GetProcessedSourceForKey_ValidKey_ReturnSource()
+        public async void GetProcessedContentTextForKey_ValidKey_ReturnSource()
         {
             // arrange
             var testGame = new Game()
@@ -343,7 +343,7 @@ namespace TbspRpgApi.Tests.Services
                 new List<En>() { testSource });
             
             // act
-            var sourceViewModel = await service.GetProcessedSourceForKey(testGame.Id, testSource.Key);
+            var sourceViewModel = await service.GetProcessedContentTextForKey(testGame.Id, testSource.Key);
             
             // assert
             Assert.NotNull(sourceViewModel);
