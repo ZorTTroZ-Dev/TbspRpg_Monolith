@@ -78,11 +78,26 @@ namespace TbspRpgProcessor.Processors
                 sourceForKeyModel.AdventureId,
                 sourceForKeyModel.Language);
 
+            if (dbSource == null)
+            {
+                throw new ArgumentException("invalid source key");
+            }
+
             while (dbSource.ScriptId != null)
             {
-                
+                var result = await _scriptProcessor.ExecuteScript(dbSource.ScriptId.GetValueOrDefault());
+                var sourceKey = Guid.Parse(result);
+                dbSource = await _sourcesService.GetSourceForKey(
+                    sourceKey,
+                    sourceForKeyModel.AdventureId,
+                    sourceForKeyModel.Language);
+                if (dbSource == null)
+                {
+                    throw new ArgumentException("invalid source key");
+                }
             }
-            throw new NotImplementedException();
+
+            return dbSource.Key;
         }
     }
 }

@@ -195,5 +195,279 @@ namespace TbspRpgProcessor.Tests.Processors
         }
 
         #endregion
+
+        #region ResolveSourceKey
+
+        [Fact]
+        public async void ResolveSourceKey_NoScript_ReturnKey()
+        {
+            // arrange
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = "This is a text with some *emphasis*"
+            };
+            var sources = new List<En>()
+            {
+                testEn
+            };
+            var processor = CreateSourceProcessor(sources);
+            
+            // act
+            var key = await processor.ResolveSourceKey(new SourceForKeyModel()
+            {
+                Key = testEn.Key,
+                AdventureId = testEn.AdventureId,
+                Language = Languages.ENGLISH
+            });
+
+            // assert
+            Assert.Equal(testEn.Key, key);
+        }
+
+        [Fact]
+        public async void ResolveSourceKey_OneScript_ReturnKey()
+        {
+            // arrange
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = "This is a text with some *emphasis*"
+            };
+            var testScript = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "source resolve script",
+                Type = ScriptTypes.LuaScript,
+                Content = $"function run() result = '{testEn.Key}' end"
+            };
+            var scriptEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = testEn.AdventureId,
+                ScriptId = testScript.Id,
+                Script = testScript
+            };
+            var sources = new List<En>()
+            {
+                testEn, scriptEn
+            };
+            var scripts = new List<Script>()
+            {
+                testScript
+            };
+            var processor = CreateSourceProcessor(sources, scripts);
+            
+            // act
+            var key = await processor.ResolveSourceKey(new SourceForKeyModel()
+            {
+                Key = scriptEn.Key,
+                AdventureId = scriptEn.AdventureId,
+                Language = Languages.ENGLISH
+            });
+
+            // assert
+            Assert.Equal(testEn.Key, key);
+        }
+
+        [Fact]
+        public async void ResolveSourceKey_MultipleScript_ReturnKey()
+        {
+            // arrange
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = "This is a text with some *emphasis*"
+            };
+            
+            // source one with script
+            var testScript = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "source resolve script",
+                Type = ScriptTypes.LuaScript,
+                Content = $"function run() result = '{testEn.Key}' end"
+            };
+            var scriptEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = testEn.AdventureId,
+                ScriptId = testScript.Id,
+                Script = testScript
+            };
+            
+            // source two with script
+            var testScriptTwo = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "source resolve script two",
+                Type = ScriptTypes.LuaScript,
+                Content = $"function run() result = '{scriptEn.Key}' end"
+            };
+            var scriptEnTwo = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = testEn.AdventureId,
+                ScriptId = testScriptTwo.Id,
+                Script = testScriptTwo
+            };
+            
+            var sources = new List<En>()
+            {
+                testEn, scriptEn, scriptEnTwo
+            };
+            var scripts = new List<Script>()
+            {
+                testScript, testScriptTwo
+            };
+            var processor = CreateSourceProcessor(sources, scripts);
+            
+            // act
+            var key = await processor.ResolveSourceKey(new SourceForKeyModel()
+            {
+                Key = scriptEnTwo.Key,
+                AdventureId = scriptEn.AdventureId,
+                Language = Languages.ENGLISH
+            });
+
+            // assert
+            Assert.Equal(testEn.Key, key);
+        }
+
+        [Fact]
+        public async void ResolveSourceKey_InvalidKey_ExceptionThrown()
+        {
+            // arrange
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = "This is a text with some *emphasis*"
+            };
+            var sources = new List<En>()
+            {
+                testEn
+            };
+            var processor = CreateSourceProcessor(sources);
+            
+            // act
+            Task Act() => processor.ResolveSourceKey(new SourceForKeyModel()
+            {
+                Key = Guid.NewGuid(),
+                AdventureId = testEn.AdventureId,
+                Language = Languages.ENGLISH
+            });
+
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        [Fact]
+        public async void ResloveSourceKey_ScriptReturnNonGuid_ExceptionThrown()
+        {
+            // arrange
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = "This is a text with some *emphasis*"
+            };
+            var testScript = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "source resolve script",
+                Type = ScriptTypes.LuaScript,
+                Content = $"function run() result = 'Fred' end"
+            };
+            var scriptEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = testEn.AdventureId,
+                ScriptId = testScript.Id,
+                Script = testScript
+            };
+            var sources = new List<En>()
+            {
+                testEn, scriptEn
+            };
+            var scripts = new List<Script>()
+            {
+                testScript
+            };
+            var processor = CreateSourceProcessor(sources, scripts);
+            
+            // act
+            Task Act() => processor.ResolveSourceKey(new SourceForKeyModel()
+            {
+                Key = scriptEn.Key,
+                AdventureId = scriptEn.AdventureId,
+                Language = Languages.ENGLISH
+            });
+            
+            // assert
+            await Assert.ThrowsAsync<FormatException>(Act);
+        }
+        
+        [Fact]
+        public async void ResloveSourceKey_ScriptReturnInvalidKey_ExceptionThrown()
+        {
+            // arrange
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = "This is a text with some *emphasis*"
+            };
+            var testScript = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "source resolve script",
+                Type = ScriptTypes.LuaScript,
+                Content = $"function run() result = '{Guid.NewGuid()}' end"
+            };
+            var scriptEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = testEn.AdventureId,
+                ScriptId = testScript.Id,
+                Script = testScript
+            };
+            var sources = new List<En>()
+            {
+                testEn, scriptEn
+            };
+            var scripts = new List<Script>()
+            {
+                testScript
+            };
+            var processor = CreateSourceProcessor(sources, scripts);
+            
+            // act
+            Task Act() => processor.ResolveSourceKey(new SourceForKeyModel()
+            {
+                Key = scriptEn.Key,
+                AdventureId = scriptEn.AdventureId,
+                Language = Languages.ENGLISH
+            });
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        #endregion
     }
 }
