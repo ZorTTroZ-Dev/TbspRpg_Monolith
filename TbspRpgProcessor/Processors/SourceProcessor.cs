@@ -20,6 +20,7 @@ namespace TbspRpgProcessor.Processors
         private readonly IScriptProcessor _scriptProcessor;
         private readonly ISourcesService _sourcesService;
         private readonly ILogger<SourceProcessor> _logger;
+        private readonly int MaxLoopCount = 5;
 
         public SourceProcessor(
             IScriptProcessor scriptProcessor,
@@ -83,7 +84,8 @@ namespace TbspRpgProcessor.Processors
                 throw new ArgumentException("invalid source key");
             }
 
-            while (dbSource.ScriptId != null)
+            var loopCount = 0;
+            while (dbSource.ScriptId != null && loopCount < MaxLoopCount)
             {
                 var result = await _scriptProcessor.ExecuteScript(dbSource.ScriptId.GetValueOrDefault());
                 var sourceKey = Guid.Parse(result);
@@ -95,6 +97,13 @@ namespace TbspRpgProcessor.Processors
                 {
                     throw new ArgumentException("invalid source key");
                 }
+
+                loopCount++;
+            }
+
+            if (loopCount >= MaxLoopCount)
+            {
+                throw new Exception("source never resolved");
             }
 
             return dbSource.Key;

@@ -467,6 +467,142 @@ namespace TbspRpgProcessor.Tests.Processors
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
         }
+        
+        [Fact]
+        public async void ResolveSourceKey_MoreThanFiveScripts_ExceptionThrown()
+        {
+            // arrange
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = "This is a text with some *emphasis*"
+            };
+            
+            // source one with script
+            var testScript = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "source resolve script",
+                Type = ScriptTypes.LuaScript,
+                Content = $"function run() result = '{testEn.Key}' end"
+            };
+            var scriptEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = testEn.AdventureId,
+                ScriptId = testScript.Id,
+                Script = testScript
+            };
+            
+            // source two with script
+            var testScriptTwo = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "source resolve script two",
+                Type = ScriptTypes.LuaScript,
+                Content = $"function run() result = '{scriptEn.Key}' end"
+            };
+            var scriptEnTwo = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = testEn.AdventureId,
+                ScriptId = testScriptTwo.Id,
+                Script = testScriptTwo
+            };
+            
+            // source three with script
+            var testScriptThree = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "source resolve script three",
+                Type = ScriptTypes.LuaScript,
+                Content = $"function run() result = '{scriptEnTwo.Key}' end"
+            };
+            var scriptEnThree = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = testEn.AdventureId,
+                ScriptId = testScriptThree.Id,
+                Script = testScriptThree
+            };
+            
+            // source four with script
+            var testScriptFour = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "source resolve script four",
+                Type = ScriptTypes.LuaScript,
+                Content = $"function run() result = '{scriptEnThree.Key}' end"
+            };
+            var scriptEnFour = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = testEn.AdventureId,
+                ScriptId = testScriptFour.Id,
+                Script = testScriptFour
+            };
+            
+            // source five with script
+            var testScriptFive = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "source resolve script five",
+                Type = ScriptTypes.LuaScript,
+                Content = $"function run() result = '{scriptEnFour.Key}' end"
+            };
+            var scriptEnFive = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = testEn.AdventureId,
+                ScriptId = testScriptFive.Id,
+                Script = testScriptFive
+            };
+            
+            // source six with script
+            var testScriptSix = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "source resolve script six",
+                Type = ScriptTypes.LuaScript,
+                Content = $"function run() result = '{scriptEnFive.Key}' end"
+            };
+            var scriptEnSix = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = testEn.AdventureId,
+                ScriptId = testScriptSix.Id,
+                Script = testScriptSix
+            };
+            
+            var sources = new List<En>()
+            {
+                testEn, scriptEn, scriptEnTwo, scriptEnThree, scriptEnFour, scriptEnFive, scriptEnSix
+            };
+            var scripts = new List<Script>()
+            {
+                testScript, testScriptTwo, testScriptThree, testScriptFour, testScriptFive, testScriptSix
+            };
+            var processor = CreateSourceProcessor(sources, scripts);
+            
+            // act
+            Task Act() => processor.ResolveSourceKey(new SourceForKeyModel()
+            {
+                Key = scriptEnSix.Key,
+                AdventureId = scriptEn.AdventureId,
+                Language = Languages.ENGLISH
+            });
+
+            // assert
+            await Assert.ThrowsAsync<Exception>(Act);
+        }
 
         #endregion
     }
