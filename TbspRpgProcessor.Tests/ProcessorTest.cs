@@ -64,14 +64,17 @@ namespace TbspRpgProcessor.Tests
             ICollection<Game> games = null,
             ICollection<Route> routes = null,
             ICollection<Content> contents = null,
-            ICollection<Script> scripts = null)
+            ICollection<Script> scripts = null,
+            ICollection<En> sources = null)
         {
             var scriptProcessor = CreateScriptProcessor(scripts);
+            var sourceProcessor = CreateSourceProcessor(sources, scripts);
             var gamesService = MockServices.MockDataLayerGamesService(games);
             var routesService = MockServices.MockDataLayerRoutesService(routes);
             var contentsService = MockServices.MockDataLayerContentsService(contents);
             return new MapProcessor(
                 scriptProcessor,
+                sourceProcessor,
                 gamesService,
                 routesService,
                 contentsService, 

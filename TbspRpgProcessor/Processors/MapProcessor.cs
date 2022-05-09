@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
+using TbspRpgProcessor.Entities;
 
 namespace TbspRpgProcessor.Processors
 {
@@ -14,6 +15,7 @@ namespace TbspRpgProcessor.Processors
     public class MapProcessor: IMapProcessor
     {
         private readonly IScriptProcessor _scriptProcessor;
+        private readonly ISourceProcessor _sourceProcessor;
         private readonly IGamesService _gamesService;
         private readonly IRoutesService _routesService;
         private readonly IContentsService _contentsService;
@@ -21,12 +23,14 @@ namespace TbspRpgProcessor.Processors
 
         public MapProcessor(
             IScriptProcessor scriptProcessor,
+            ISourceProcessor sourceProcessor,
             IGamesService gamesService,
             IRoutesService routesService,
             IContentsService contentsService,
             ILogger<MapProcessor> logger)
         {
             _scriptProcessor = scriptProcessor;
+            _sourceProcessor = sourceProcessor;
             _gamesService = gamesService;
             _routesService = routesService;
             _contentsService = contentsService;
@@ -88,18 +92,19 @@ namespace TbspRpgProcessor.Processors
             game.LocationId = route.DestinationLocationId;
             game.LocationUpdateTimeStamp = secondsSinceEpoch;
 
-            // TODO: instead of just adding the source key we'll need to 
-            // look up if there is a script for the source key
-            // if so run the script which will return another
-            // source key which will then do it all over again
-            
             // create content entry for the route
             await _contentsService.AddContent(new Content()
             {
                 Id = Guid.NewGuid(),
                 GameId = game.Id,
                 Position = (ulong)secondsSinceEpoch,
-                SourceKey = route.RouteTakenSourceKey
+                SourceKey = await _sourceProcessor.ResolveSourceKey(
+                    new SourceForKeyModel()
+                    {
+                        AdventureId = game.AdventureId,
+                        Key = route.RouteTakenSourceKey,
+                        Language = game.Language
+                    })
             });
             
             // create content entry for the new location
@@ -108,7 +113,13 @@ namespace TbspRpgProcessor.Processors
                 Id = Guid.NewGuid(),
                 GameId = game.Id,
                 Position = (ulong)secondsSinceEpoch + 1,
-                SourceKey = route.DestinationLocation.SourceKey
+                SourceKey = await _sourceProcessor.ResolveSourceKey(
+                    new SourceForKeyModel()
+                    {
+                        AdventureId = game.AdventureId,
+                        Key = route.DestinationLocation.SourceKey,
+                        Language = game.Language
+                    })
             });
 
             // save context changes
