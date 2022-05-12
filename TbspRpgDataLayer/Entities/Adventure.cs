@@ -17,6 +17,7 @@ namespace TbspRpgDataLayer.Entities
         
         public ICollection<Location> Locations { get; set; }
         public ICollection<Game> Games { get; set; }
+        public ICollection<Script> Scripts { get; set; }
         public User CreatedByUser { get; set; }
         public Script InitializationScript { get; set; }
         public Script TerminationScript { get; set; }

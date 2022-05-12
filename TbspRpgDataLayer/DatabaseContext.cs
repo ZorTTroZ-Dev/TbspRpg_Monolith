@@ -102,6 +102,21 @@ namespace TbspRpgDataLayer
                 .WithOne(l => l.Adventure)
                 .HasForeignKey(l => l.AdventureId);
 
+            modelBuilder.Entity<Adventure>()
+                .HasMany(a => a.Scripts)
+                .WithOne(s => s.Adventure)
+                .HasForeignKey(s => s.AdventureId);
+
+            modelBuilder.Entity<Adventure>()
+                .HasOne(a => a.InitializationScript)
+                .WithOne(s => s.AdventureInitialization)
+                .HasForeignKey<Adventure>(a => a.InitializationScriptId);
+            
+            modelBuilder.Entity<Adventure>()
+                .HasOne(a => a.TerminationScript)
+                .WithOne(s => s.AdventureTermination)
+                .HasForeignKey<Adventure>(a => a.TerminationScriptId);
+
             modelBuilder.Entity<Location>()
                 .HasMany(l => l.Routes)
                 .WithOne(r => r.Location)
