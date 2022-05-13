@@ -14,6 +14,6 @@ public class Script
     public ICollection<Script> IncludedIn { get; set; }
     public ICollection<Script> Includes { get; set; }
     public Adventure Adventure { get; set; }
-    public Adventure AdventureTermination { get; set; }
-    public Adventure AdventureInitialization { get; set; }
+    public ICollection<Adventure> AdventureTerminations { get; set; }
+    public ICollection<Adventure> AdventureInitializations { get; set; }
 }
