@@ -75,4 +75,83 @@ public class ScriptsRepositoryTests: InMemoryTest
     }
 
     #endregion
+
+    #region GetScriptsForAdventure
+
+    [Fact]
+    public async void GetScriptsForAdventure_ValidId_ReturnsScripts()
+    {
+        // arrange
+        var testScripts = new List<Script>()
+        {
+            new Script()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test"
+                }
+            },
+            new Script()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test two"
+                }
+            }
+        };
+        await using var context = new DatabaseContext(DbContextOptions);
+        await context.Scripts.AddRangeAsync(testScripts);
+        await context.SaveChangesAsync();
+        var repository = new ScriptsRepository(context);
+        
+        // act
+        var scripts = await repository.GetScriptsForAdventure(testScripts[0].Adventure.Id);
+        
+        // assert
+        Assert.Single(scripts);
+        Assert.Equal("test", scripts[0].Adventure.Name);
+    }
+
+    [Fact]
+    public async void GetScriptsForAdventure_InvalidId_ReturnEmptyList()
+    {
+        // arrange
+        var testScripts = new List<Script>()
+        {
+            new Script()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test"
+                }
+            },
+            new Script()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test two"
+                }
+            }
+        };
+        await using var context = new DatabaseContext(DbContextOptions);
+        await context.Scripts.AddRangeAsync(testScripts);
+        await context.SaveChangesAsync();
+        var repository = new ScriptsRepository(context);
+        
+        // act
+        var scripts = await repository.GetScriptsForAdventure(Guid.NewGuid());
+        
+        // assert
+        Assert.Empty(scripts);
+    }
+
+    #endregion
 }

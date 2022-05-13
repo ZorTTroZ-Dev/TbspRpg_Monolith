@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TbspRpgDataLayer.Entities;
@@ -8,6 +10,7 @@ namespace TbspRpgDataLayer.Repositories;
 public interface IScriptsRepository: IBaseRepository
 {
     Task<Script> GetScriptById(Guid scriptId);
+    Task<List<Script>> GetScriptsForAdventure(Guid adventureId);
 }
 
 public class ScriptsRepository: IScriptsRepository
@@ -24,6 +27,14 @@ public class ScriptsRepository: IScriptsRepository
         return _databaseContext.Scripts.AsQueryable()
             .Include(script => script.Includes)
             .FirstOrDefaultAsync(script => script.Id == scriptId);
+    }
+
+    public Task<List<Script>> GetScriptsForAdventure(Guid adventureId)
+    {
+        return _databaseContext.Scripts.AsQueryable()
+            .Include(script => script.Adventure)
+            .Where(script => script.AdventureId == adventureId)
+            .ToListAsync();
     }
 
     public async Task SaveChanges()

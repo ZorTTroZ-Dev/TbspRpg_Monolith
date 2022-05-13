@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgDataLayer.Entities;
@@ -9,6 +10,7 @@ namespace TbspRpgDataLayer.Services;
 public interface IScriptsService: IBaseService
 {
     Task<Script> GetScriptById(Guid scriptId);
+    Task<List<Script>> GetScriptsForAdventure(Guid adventureId);
 }
 
 public class ScriptsService: IScriptsService
@@ -31,5 +33,10 @@ public class ScriptsService: IScriptsService
     public Task<Script> GetScriptById(Guid scriptId)
     {
         return _scriptsRepository.GetScriptById(scriptId);
+    }
+
+    public Task<List<Script>> GetScriptsForAdventure(Guid adventureId)
+    {
+        return _scriptsRepository.GetScriptsForAdventure(adventureId);
     }
 }
