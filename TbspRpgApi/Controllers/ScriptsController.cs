@@ -13,12 +13,12 @@ public class ScriptsController : BaseController
 {
     private readonly IScriptsService _scriptsService;
     private readonly IPermissionService _permissionService;
-    private readonly ILogger<SourcesController> _logger;
+    private readonly ILogger<ScriptsController> _logger;
 
     public ScriptsController(
         IScriptsService scriptsService,
         IPermissionService permissionService,
-        ILogger<SourcesController> logger)
+        ILogger<ScriptsController> logger)
     {
         _scriptsService = scriptsService;
         _permissionService = permissionService;

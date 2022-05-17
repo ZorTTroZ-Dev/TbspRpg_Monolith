@@ -167,5 +167,14 @@ namespace TbspRpgApi.Tests
                 dlRoutesService,
                 NullLogger<RoutesService>.Instance);
         }
+
+        protected static ScriptsService CreateScriptsService(
+            ICollection<Script> scripts = null)
+        {
+            var dlScriptService = MockServices.MockDataLayerScriptsService(scripts);
+            return new ScriptsService(
+                dlScriptService,
+                NullLogger<ScriptsService>.Instance);
+        }
     }
 }

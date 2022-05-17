@@ -176,6 +176,10 @@ namespace TbspRpgDataLayer.Tests
                     service.GetScriptById(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid scriptId) => scripts.FirstOrDefault(s => s.Id == scriptId));
             
+            scriptsService.Setup(service =>
+                    service.GetScriptsForAdventure(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId) => scripts.Where(s => s.AdventureId == adventureId).ToList());
+            
             return scriptsService.Object;
         }
 
