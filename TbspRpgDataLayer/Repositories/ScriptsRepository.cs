@@ -32,7 +32,7 @@ public class ScriptsRepository: IScriptsRepository
     public Task<List<Script>> GetScriptsForAdventure(Guid adventureId)
     {
         return _databaseContext.Scripts.AsQueryable()
-            .Include(script => script.Adventure)
+            .Include(script => script.Includes)
             .Where(script => script.AdventureId == adventureId)
             .ToListAsync();
     }
