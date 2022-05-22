@@ -11,6 +11,9 @@ public interface IScriptsService: IBaseService
 {
     Task<Script> GetScriptById(Guid scriptId);
     Task<List<Script>> GetScriptsForAdventure(Guid adventureId);
+    Task AddScript(Script script);
+    void RemoveScript(Script script);
+    void RemoveScripts(ICollection<Script> scripts);
 }
 
 public class ScriptsService: IScriptsService
@@ -38,5 +41,20 @@ public class ScriptsService: IScriptsService
     public Task<List<Script>> GetScriptsForAdventure(Guid adventureId)
     {
         return _scriptsRepository.GetScriptsForAdventure(adventureId);
+    }
+
+    public async Task AddScript(Script script)
+    {
+        await _scriptsRepository.AddScript(script);
+    }
+
+    public void RemoveScript(Script script)
+    {
+        _scriptsRepository.RemoveScript(script);
+    }
+
+    public void RemoveScripts(ICollection<Script> scripts)
+    {
+        _scriptsRepository.RemoveScripts(scripts);
     }
 }

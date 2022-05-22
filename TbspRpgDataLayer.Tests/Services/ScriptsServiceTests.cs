@@ -163,4 +163,92 @@ public class ScriptsServiceTests: InMemoryTest
     }
 
     #endregion
+    
+    #region AddScript
+
+    [Fact]
+    public async void AddScript_ScriptAdded()
+    {
+        // arrange
+        await using var context = new DatabaseContext(DbContextOptions);
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script"
+        };
+        var service = CreateService(context);
+        
+        // act
+        await service.AddScript(testScript);
+        await service.SaveChanges();
+        
+        // assert
+        Assert.Single(context.Scripts);
+    }
+
+        #endregion
+        
+    #region RemoveScript
+
+    [Fact]
+    public async void RemoveScript_ScriptRemoved()
+    {
+        // arrange
+        await using var context = new DatabaseContext(DbContextOptions);
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script"
+        };
+        var testScriptTwo = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script Two"
+        };
+        context.Scripts.Add(testScript);
+        context.Scripts.Add(testScriptTwo);
+        await context.SaveChangesAsync();
+        var service = CreateService(context);
+
+        // act
+        service.RemoveScript(testScript);
+        await service.SaveChanges();
+        
+        // assert
+        Assert.Single(context.Scripts);
+    }
+    
+    #endregion
+
+    #region RemoveScripts
+
+    [Fact]
+    public async void RemoveScripts_ScriptsRemoved()
+    {
+        // arrange
+        await using var context = new DatabaseContext(DbContextOptions);
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script"
+        };
+        var testScriptTwo = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script Two"
+        };
+        context.Scripts.Add(testScript);
+        context.Scripts.Add(testScriptTwo);
+        await context.SaveChangesAsync();
+        var service = CreateService(context);
+        
+        // act
+        service.RemoveScripts(new List<Script>() { testScript, testScriptTwo});
+        await service.SaveChanges();
+        
+        // assert
+        Assert.Empty(context.Scripts);
+    }
+
+    #endregion
 }

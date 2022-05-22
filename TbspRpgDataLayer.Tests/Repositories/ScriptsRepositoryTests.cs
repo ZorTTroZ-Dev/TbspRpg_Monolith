@@ -154,4 +154,92 @@ public class ScriptsRepositoryTests: InMemoryTest
     }
 
     #endregion
+    
+    #region AddScript
+
+    [Fact]
+    public async void AddScript_ScriptAdded()
+    {
+        // arrange
+        await using var context = new DatabaseContext(DbContextOptions);
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script"
+        };
+        var repository = new ScriptsRepository(context);
+        
+        // act
+        await repository.AddScript(testScript);
+        await repository.SaveChanges();
+        
+        // assert
+        Assert.Single(context.Scripts);
+    }
+
+        #endregion
+        
+    #region RemoveScript
+
+    [Fact]
+    public async void RemoveScript_ScriptRemoved()
+    {
+        // arrange
+        await using var context = new DatabaseContext(DbContextOptions);
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script"
+        };
+        var testScriptTwo = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script Two"
+        };
+        context.Scripts.Add(testScript);
+        context.Scripts.Add(testScriptTwo);
+        await context.SaveChangesAsync();
+        var repository = new ScriptsRepository(context);
+
+        // act
+        repository.RemoveScript(testScript);
+        await repository.SaveChanges();
+        
+        // assert
+        Assert.Single(context.Scripts);
+    }
+    
+    #endregion
+
+    #region RemoveScripts
+
+    [Fact]
+    public async void RemoveScripts_ScriptsRemoved()
+    {
+        // arrange
+        await using var context = new DatabaseContext(DbContextOptions);
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script"
+        };
+        var testScriptTwo = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script Two"
+        };
+        context.Scripts.Add(testScript);
+        context.Scripts.Add(testScriptTwo);
+        await context.SaveChangesAsync();
+        var repository = new ScriptsRepository(context);
+        
+        // act
+        repository.RemoveScripts(new List<Script>() { testScript, testScriptTwo});
+        await repository.SaveChanges();
+        
+        // assert
+        Assert.Empty(context.Scripts);
+    }
+
+    #endregion
 }

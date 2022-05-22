@@ -11,6 +11,9 @@ public interface IScriptsRepository: IBaseRepository
 {
     Task<Script> GetScriptById(Guid scriptId);
     Task<List<Script>> GetScriptsForAdventure(Guid adventureId);
+    Task AddScript(Script script);
+    void RemoveScript(Script script);
+    void RemoveScripts(ICollection<Script> scripts);
 }
 
 public class ScriptsRepository: IScriptsRepository
@@ -35,6 +38,21 @@ public class ScriptsRepository: IScriptsRepository
             .Include(script => script.Includes)
             .Where(script => script.AdventureId == adventureId)
             .ToListAsync();
+    }
+
+    public async Task AddScript(Script script)
+    {
+        await _databaseContext.AddAsync(script);
+    }
+
+    public void RemoveScript(Script script)
+    {
+        _databaseContext.Remove(script);
+    }
+    
+    public void RemoveScripts(ICollection<Script> scripts)
+    {
+        _databaseContext.RemoveRange(scripts);
     }
 
     public async Task SaveChanges()
