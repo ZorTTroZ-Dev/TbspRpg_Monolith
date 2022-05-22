@@ -13,6 +13,8 @@ public class ScriptViewModel
     public List<ScriptViewModel> Includes { get; set; }
     public Guid AdventureId { get; set; }
 
+    public ScriptViewModel() { }
+
     public ScriptViewModel(Script script)
     {
         Id = script.Id;

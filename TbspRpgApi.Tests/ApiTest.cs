@@ -169,10 +169,13 @@ namespace TbspRpgApi.Tests
         }
 
         protected static ScriptsService CreateScriptsService(
-            ICollection<Script> scripts = null)
+            ICollection<Script> scripts = null,
+            Guid? executeScriptExceptionId = null)
         {
+            var scriptProcessor = ProcessorTest.MockScriptProcessor(executeScriptExceptionId.GetValueOrDefault());
             var dlScriptService = MockServices.MockDataLayerScriptsService(scripts);
             return new ScriptsService(
+                scriptProcessor,
                 dlScriptService,
                 NullLogger<ScriptsService>.Instance);
         }

@@ -1,9 +1,12 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.JwtAuthorization;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.Services;
+using TbspRpgApi.ViewModels;
 
 namespace TbspRpgApi.Controllers;
 
@@ -25,8 +28,7 @@ public class ScriptsController : BaseController
         _logger = logger;
     }
     
-    [HttpGet("adventure/{adventureId:guid}")]
-    [Authorize]
+    [HttpGet("adventure/{adventureId:guid}"), Authorize]
     public async Task<IActionResult> GetScriptsForAdventure(Guid adventureId)
     {
         var canAccessAdventure = await _permissionService.CanWriteAdventure(
@@ -39,5 +41,34 @@ public class ScriptsController : BaseController
 
         var scripts = await _scriptsService.GetScriptsForAdventure(adventureId);
         return Ok(scripts);
+    }
+    
+    [HttpPut, Authorize]
+    public async Task<IActionResult> UpdateScript([FromBody] ScriptUpdateRequest scriptUpdateRequest)
+    {
+        var canAccessAdventure = await _permissionService.CanWriteAdventure(
+            GetUserId().GetValueOrDefault(),
+            scriptUpdateRequest.script.AdventureId);
+        if (!canAccessAdventure)
+        {
+            return BadRequest(new { message = NotYourAdventureErrorMessage });
+        }
+        
+        // make sure the script doesn't include itself
+        if (scriptUpdateRequest.script.Includes.FirstOrDefault(script =>
+                script.Id == scriptUpdateRequest.script.Id) != null)
+        {
+            return BadRequest(new { message = "script can not include itself" });
+        }
+
+        try
+        {
+            await _scriptsService.UpdateScript(scriptUpdateRequest);
+            return Ok(null);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest((new {message = ex.Message}));
+        }
     }
 }

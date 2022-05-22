@@ -328,6 +328,16 @@ namespace TbspRpgProcessor.Tests
                     }
                 });
             
+            scriptProcessor.Setup(service =>
+                    service.UpdateScript(It.IsAny<ScriptUpdateModel>()))
+                .Callback((ScriptUpdateModel scriptUpdateModel) =>
+                {
+                    if (scriptUpdateModel.script.Id == executeScriptExceptionId)
+                    {
+                        throw new ArgumentException("invalid script id");
+                    }
+                });
+            
             return scriptProcessor.Object;
         }
 
