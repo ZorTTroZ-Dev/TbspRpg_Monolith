@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NLua.Exceptions;
 using TbspRpgDataLayer.Entities;
+using TbspRpgProcessor.Entities;
 using TbspRpgSettings.Settings;
 using Xunit;
 
@@ -160,6 +161,122 @@ public class ScriptProcessorTests: ProcessorTest
         
         // assert
         await Assert.ThrowsAsync<ArgumentException>(Act);
+    }
+
+    #endregion
+    
+    #region UpdateScript
+
+    [Fact]
+    public async void UpdateScript_BadScriptId_ThrowException()
+    {
+        // arrange
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script"
+        };
+        var scripts = new List<Script>() { testScript };
+        var processor = CreateScriptProcessor(scripts);
+        
+        // act
+        Task Act() => processor.UpdateScript(new ScriptUpdateModel()
+        {
+            script = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "banana"
+            }
+        });
+    
+        // assert
+        await Assert.ThrowsAsync<ArgumentException>(Act);
+    }
+    
+    [Fact]
+    public async void UpdateScript_EmptyScriptId_CreateNewScript()
+    {
+        // arrange
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test location",
+            Type = ScriptTypes.LuaScript,
+            Content = "function base()\n  result = 'banana'\nend",
+            AdventureId = Guid.NewGuid()
+        };
+        var scripts = new List<Script>() { testScript };
+        var processor = CreateScriptProcessor(scripts);
+        
+        // act
+        await processor.UpdateScript(new ScriptUpdateModel()
+        {
+            script = new Script()
+            {
+                Id = Guid.Empty,
+                Name = "new script",
+                Type = ScriptTypes.LuaScript,
+                Content = "function run()\n  base()\n  result = 'banana'\nend",
+                AdventureId = testScript.AdventureId,
+                Includes = new List<Script>()
+                {
+                    testScript
+                }
+            }
+        });
+        
+        // assert
+        Assert.Equal(2, scripts.Count);
+        Assert.NotEqual(Guid.Empty, scripts[1].Id);
+        Assert.Single(scripts[1].Includes);
+    }
+    
+    [Fact]
+    public async void UpdateLocation_ScriptChange_ScriptUpdated()
+    {
+        // arrange
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test location",
+            Type = ScriptTypes.LuaScript,
+            Content = "function base()\n  result = 'banana'\nend",
+            AdventureId = Guid.NewGuid()
+        };
+        var testScriptTwo = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test location two",
+            Type = ScriptTypes.LuaScript,
+            Content = "function\n  result = 'banana'\nend",
+            AdventureId = Guid.NewGuid()
+        };
+        var scripts = new List<Script>() { testScript, testScriptTwo };
+        var processor = CreateScriptProcessor(scripts);
+        
+        // act
+        await processor.UpdateScript(new ScriptUpdateModel()
+        {
+            script = new Script()
+            {
+                Id = testScriptTwo.Id,
+                Name = "new script",
+                Type = ScriptTypes.LuaScript,
+                Content = "function run()\n  base()\n  result = 'banana'\nend",
+                AdventureId = testScript.AdventureId,
+                Includes = new List<Script>()
+                {
+                    testScript
+                }
+            }
+        });
+        
+        // assert
+        Assert.Equal(2, scripts.Count);
+        Assert.NotEqual(Guid.Empty, scripts[1].Id);
+        Assert.Single(scripts[1].Includes);
+        Assert.Equal("new script", scripts[1].Name);
+        Assert.Contains("base()", scripts[1].Content);
     }
 
     #endregion

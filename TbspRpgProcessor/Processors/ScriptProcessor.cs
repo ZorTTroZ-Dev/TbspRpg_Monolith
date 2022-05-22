@@ -3,15 +3,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NLua;
+using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
+using TbspRpgProcessor.Entities;
 using TbspRpgSettings.Settings;
 
 namespace TbspRpgProcessor.Processors;
 
 public interface IScriptProcessor
 {
-    // a script can only return a GUID which is a source id
     Task<string> ExecuteScript(Guid scriptId);
+    Task UpdateScript(ScriptUpdateModel scriptUpdateModel);
 }
 
 public class ScriptProcessor : IScriptProcessor
@@ -73,5 +75,36 @@ public class ScriptProcessor : IScriptProcessor
         if (scriptFunc == null) return null;
         scriptFunc.Call();
         return luaState["result"] as string;
+    }
+
+    public async Task UpdateScript(ScriptUpdateModel scriptUpdateModel)
+    {
+        if (scriptUpdateModel.script.Id == Guid.Empty)
+        {
+            // create a new script
+            var script = new Script()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = scriptUpdateModel.script.AdventureId,
+                Name = scriptUpdateModel.script.Name,
+                Type = scriptUpdateModel.script.Type,
+                Content = scriptUpdateModel.script.Content,
+                Includes = scriptUpdateModel.script.Includes
+            };
+            await _scriptsService.AddScript(script);
+        }
+        else
+        {
+            // update existing script
+            var dbScript = await _scriptsService.GetScriptById(scriptUpdateModel.script.Id);
+            if (dbScript == null)
+                throw new ArgumentException("invalid script id");
+            dbScript.Name = scriptUpdateModel.script.Name;
+            dbScript.Type = scriptUpdateModel.script.Type;
+            dbScript.Content = scriptUpdateModel.script.Content;
+            dbScript.Includes = scriptUpdateModel.script.Includes;
+        }
+
+        await _scriptsService.SaveChanges();
     }
 }
