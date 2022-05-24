@@ -41,7 +41,8 @@ public class ScriptViewModel
         }
         return new Script()
         {
-            Id = this.Id,
+            Id = Id,
+            Name = Name,
             AdventureId = AdventureId,
             Content = Content,
             Type = Type,
