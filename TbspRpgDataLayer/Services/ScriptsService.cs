@@ -14,6 +14,7 @@ public interface IScriptsService: IBaseService
     Task AddScript(Script script);
     void RemoveScript(Script script);
     void RemoveScripts(ICollection<Script> scripts);
+    void AttachScript(Script script);
 }
 
 public class ScriptsService: IScriptsService
@@ -56,5 +57,10 @@ public class ScriptsService: IScriptsService
     public void RemoveScripts(ICollection<Script> scripts)
     {
         _scriptsRepository.RemoveScripts(scripts);
+    }
+
+    public void AttachScript(Script script)
+    {
+        _scriptsRepository.AttachScript(script);
     }
 }

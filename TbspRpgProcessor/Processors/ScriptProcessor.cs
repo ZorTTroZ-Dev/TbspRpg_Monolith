@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -89,8 +90,13 @@ public class ScriptProcessor : IScriptProcessor
                 Name = scriptUpdateModel.script.Name,
                 Type = scriptUpdateModel.script.Type,
                 Content = scriptUpdateModel.script.Content,
-                Includes = scriptUpdateModel.script.Includes
+                Includes = new List<Script>()
             };
+            foreach (var include in scriptUpdateModel.script.Includes)
+            {
+                _scriptsService.AttachScript(include);
+                script.Includes.Add(include);
+            }
             await _scriptsService.AddScript(script);
         }
         else

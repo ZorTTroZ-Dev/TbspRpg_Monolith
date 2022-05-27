@@ -14,6 +14,7 @@ public interface IScriptsRepository: IBaseRepository
     Task AddScript(Script script);
     void RemoveScript(Script script);
     void RemoveScripts(ICollection<Script> scripts);
+    void AttachScript(Script script);
 }
 
 public class ScriptsRepository: IScriptsRepository
@@ -53,6 +54,11 @@ public class ScriptsRepository: IScriptsRepository
     public void RemoveScripts(ICollection<Script> scripts)
     {
         _databaseContext.RemoveRange(scripts);
+    }
+
+    public void AttachScript(Script script)
+    {
+        _databaseContext.Attach(script);
     }
 
     public async Task SaveChanges()
