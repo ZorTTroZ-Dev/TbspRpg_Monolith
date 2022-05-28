@@ -50,7 +50,9 @@ namespace TbspRpgProcessor.Processors
                     Name = adventureUpdateModel.Adventure.Name,
                     InitialSourceKey = Guid.Empty,
                     CreatedByUserId = adventureUpdateModel.UserId,
-                    PublishDate = adventureUpdateModel.Adventure.PublishDate
+                    PublishDate = adventureUpdateModel.Adventure.PublishDate,
+                    InitializationScriptId = adventureUpdateModel.Adventure.InitializationScriptId,
+                    TerminationScriptId = adventureUpdateModel.Adventure.TerminationScriptId
                 };
                 await _adventuresService.AddAdventure(adventure);
             }
@@ -62,6 +64,8 @@ namespace TbspRpgProcessor.Processors
                     throw new ArgumentException("invalid adventure id");
                 dbAdventure.Name = adventureUpdateModel.Adventure.Name;
                 dbAdventure.PublishDate = adventureUpdateModel.Adventure.PublishDate;
+                dbAdventure.InitializationScriptId = adventureUpdateModel.Adventure.InitializationScriptId;
+                dbAdventure.TerminationScriptId = adventureUpdateModel.Adventure.TerminationScriptId;
                 adventure = dbAdventure;
             }
             

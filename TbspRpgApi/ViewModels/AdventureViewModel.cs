@@ -13,6 +13,8 @@ namespace TbspRpgApi.ViewModels
         public Guid DescriptionSourceKey { get; set; }
         public Guid CreatedByUserId { get; set; }
         public DateTime PublishDate { get; set; }
+        public Guid? InitializationScriptId { get; set; }
+        public Guid? TerminationScriptId { get; set; }
 
         public AdventureViewModel() { }
 
@@ -24,6 +26,8 @@ namespace TbspRpgApi.ViewModels
             DescriptionSourceKey = adventure.DescriptionSourceKey;
             CreatedByUserId = adventure.CreatedByUserId;
             PublishDate = adventure.PublishDate;
+            InitializationScriptId = adventure.InitializationScriptId;
+            TerminationScriptId = adventure.TerminationScriptId;
         }
 
         public Adventure ToEntity()
@@ -35,7 +39,9 @@ namespace TbspRpgApi.ViewModels
                 InitialSourceKey = InitialSourceKey,
                 DescriptionSourceKey = DescriptionSourceKey,
                 CreatedByUserId = CreatedByUserId,
-                PublishDate = DateTime.SpecifyKind(PublishDate, DateTimeKind.Utc)
+                PublishDate = DateTime.SpecifyKind(PublishDate, DateTimeKind.Utc),
+                InitializationScriptId = InitializationScriptId,
+                TerminationScriptId = TerminationScriptId
             };
         }
     }
