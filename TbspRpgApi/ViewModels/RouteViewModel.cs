@@ -14,6 +14,7 @@ namespace TbspRpgApi.ViewModels
         public Guid LocationId { get; set; }
         public Guid DestinationLocationId { get; set; }
         public long TimeStamp { get; }
+        public Guid? RouteTakenScriptId { get; set; }
 
         public RouteViewModel() { }
 
@@ -33,6 +34,7 @@ namespace TbspRpgApi.ViewModels
             RouteTakenSourceKey = route.RouteTakenSourceKey;
             LocationId = route.LocationId;
             DestinationLocationId = route.DestinationLocationId;
+            RouteTakenScriptId = route.RouteTakenScriptId;
         }
 
         public Route ToEntity()
@@ -44,7 +46,8 @@ namespace TbspRpgApi.ViewModels
                 SourceKey = SourceKey,
                 RouteTakenSourceKey = RouteTakenSourceKey,
                 LocationId = LocationId,
-                DestinationLocationId = DestinationLocationId
+                DestinationLocationId = DestinationLocationId,
+                RouteTakenScriptId = RouteTakenScriptId
             };
         }
     }

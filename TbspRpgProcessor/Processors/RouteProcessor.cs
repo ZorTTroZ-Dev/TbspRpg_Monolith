@@ -49,7 +49,8 @@ namespace TbspRpgProcessor.Processors
                 route = new Route()
                 {
                     Name = routeUpdateModel.route.Name,
-                    LocationId = routeUpdateModel.route.LocationId
+                    LocationId = routeUpdateModel.route.LocationId,
+                    RouteTakenScriptId = routeUpdateModel.route.RouteTakenScriptId
                 };
                 await _routesService.AddRoute(route);
             }
@@ -59,6 +60,7 @@ namespace TbspRpgProcessor.Processors
                 if (dbRoute == null)
                     throw new ArgumentException("invalid route id");
                 dbRoute.Name = routeUpdateModel.route.Name;
+                dbRoute.RouteTakenScriptId = routeUpdateModel.route.RouteTakenScriptId;
                 route = dbRoute;
             }
             
