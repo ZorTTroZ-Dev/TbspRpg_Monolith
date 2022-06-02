@@ -42,7 +42,8 @@ namespace TbspRpgProcessor.Processors
                     Key = Guid.NewGuid(),
                     AdventureId = updatedSource.AdventureId,
                     Name = updatedSource.Name,
-                    Text = updatedSource.Text
+                    Text = updatedSource.Text,
+                    ScriptId = updatedSource.ScriptId
                 };
                 await _sourcesService.AddSource(newSource);
                 return newSource;
@@ -51,6 +52,7 @@ namespace TbspRpgProcessor.Processors
             if(dbSource == null)
                 throw new ArgumentException("invalid source key");
             dbSource.Text = updatedSource.Text;
+            dbSource.ScriptId = updatedSource.ScriptId;
             return dbSource;
         }
 
