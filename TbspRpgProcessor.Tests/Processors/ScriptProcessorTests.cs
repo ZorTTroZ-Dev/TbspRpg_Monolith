@@ -280,4 +280,14 @@ public class ScriptProcessorTests: ProcessorTest
     }
 
     #endregion
+
+    #region RemoveScript
+
+    [Fact]
+    public async void RemoveScript_WithAdventures_ScriptRemoved()
+    {
+        // have to test the other scenarios
+    }
+
+    #endregion
 }

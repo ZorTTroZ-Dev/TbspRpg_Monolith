@@ -251,4 +251,14 @@ public class ScriptsServiceTests: InMemoryTest
     }
 
     #endregion
+
+    #region GetScriptWithIncludedIn
+
+    [Fact]
+    public async void GetScriptWithIncludedIn_ReturnsScript()
+    {
+        
+    }
+
+    #endregion
 }

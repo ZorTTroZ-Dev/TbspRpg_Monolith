@@ -14,18 +14,31 @@ namespace TbspRpgProcessor.Processors;
 public interface IScriptProcessor
 {
     Task<string> ExecuteScript(Guid scriptId);
+    Task RemoveScript(ScriptRemoveModel scriptIdRemoveModel);
     Task UpdateScript(ScriptUpdateModel scriptUpdateModel);
 }
 
 public class ScriptProcessor : IScriptProcessor
 {
     private readonly IScriptsService _scriptsService;
+    private readonly IAdventuresService _adventuresService;
+    private readonly IRoutesService _routesService;
+    private readonly ILocationsService _locationsService;
+    private readonly ISourcesService _sourcesService;
     private readonly ILogger<ScriptProcessor> _logger;
 
     public ScriptProcessor(IScriptsService scriptsService,
+        IAdventuresService adventuresService,
+        IRoutesService routesService,
+        ILocationsService locationsService,
+        ISourcesService sourcesService,
         ILogger<ScriptProcessor> logger)
     {
         _scriptsService = scriptsService;
+        _adventuresService = adventuresService;
+        _routesService = routesService;
+        _locationsService = locationsService;
+        _sourcesService = sourcesService;
         _logger = logger;
     }
     
@@ -76,6 +89,29 @@ public class ScriptProcessor : IScriptProcessor
         if (scriptFunc == null) return null;
         scriptFunc.Call();
         return luaState["result"] as string;
+    }
+
+    public async Task RemoveScript(ScriptRemoveModel scriptRemoveModel)
+    {
+        var dbScript = await _scriptsService.GetScriptWithIncludedIn(scriptRemoveModel.ScriptId);
+        if (dbScript == null)
+        {
+            throw new ArgumentException("invalid script id");
+        }
+        
+        // need to check if script attached to an adventure, location, route or source
+        _adventuresService.RemoveScriptFromAdventures(scriptRemoveModel.ScriptId);
+        _routesService.RemoveScriptFromRoutes(scriptRemoveModel.ScriptId);
+        _locationsService.RemoveScriptFromLocations(scriptRemoveModel.ScriptId);
+        _sourcesService.RemoveScriptFromSources(scriptRemoveModel.ScriptId);
+        
+        // remove this script from being included in other scripts
+        dbScript.IncludedIn = new List<Script>();
+        
+        // then delete the script
+        _scriptsService.RemoveScript(dbScript);
+
+        await _scriptsService.SaveChanges();
     }
 
     public async Task UpdateScript(ScriptUpdateModel scriptUpdateModel)

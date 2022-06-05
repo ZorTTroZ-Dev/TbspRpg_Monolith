@@ -17,6 +17,7 @@ namespace TbspRpgDataLayer.Services
         Task AddLocation(Location location);
         void RemoveLocation(Location location);
         void RemoveLocations(ICollection<Location> locations);
+        void RemoveScriptFromLocations(Guid scriptId);
     }
     
     public class LocationsService : ILocationsService
@@ -65,6 +66,18 @@ namespace TbspRpgDataLayer.Services
         public void RemoveLocations(ICollection<Location> locations)
         {
             _locationsRepository.RemoveLocations(locations);
+        }
+
+        public async void RemoveScriptFromLocations(Guid scriptId)
+        {
+            var locations = await _locationsRepository.GetLocationsWithScript(scriptId);
+            foreach (var location in locations)
+            {
+                if (location.EnterScriptId == scriptId)
+                    location.EnterScriptId = null;
+                if (location.ExitScriptId == scriptId)
+                    location.ExitScriptId = null;
+            }
         }
 
         public async Task SaveChanges()

@@ -316,5 +316,15 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region RemoveScriptFromAdventures
+
+        [Fact]
+        public async void RemoveScriptFromAdventures_ScriptRemoved()
+        {
+            
+        }
+
+        #endregion
     }
 }

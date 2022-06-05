@@ -10,6 +10,7 @@ namespace TbspRpgDataLayer.Services;
 public interface IScriptsService: IBaseService
 {
     Task<Script> GetScriptById(Guid scriptId);
+    Task<Script> GetScriptWithIncludedIn(Guid scriptId);
     Task<List<Script>> GetScriptsForAdventure(Guid adventureId);
     Task AddScript(Script script);
     void RemoveScript(Script script);
@@ -37,6 +38,11 @@ public class ScriptsService: IScriptsService
     public Task<Script> GetScriptById(Guid scriptId)
     {
         return _scriptsRepository.GetScriptById(scriptId);
+    }
+
+    public Task<Script> GetScriptWithIncludedIn(Guid scriptId)
+    {
+        return _scriptsRepository.GetScriptWithIncludedIn(scriptId);
     }
 
     public Task<List<Script>> GetScriptsForAdventure(Guid adventureId)

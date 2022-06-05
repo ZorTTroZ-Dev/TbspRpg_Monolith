@@ -10,6 +10,7 @@ namespace TbspRpgDataLayer.Repositories;
 public interface IScriptsRepository: IBaseRepository
 {
     Task<Script> GetScriptById(Guid scriptId);
+    Task<Script> GetScriptWithIncludedIn(Guid scriptId);
     Task<List<Script>> GetScriptsForAdventure(Guid adventureId);
     Task AddScript(Script script);
     void RemoveScript(Script script);
@@ -30,6 +31,13 @@ public class ScriptsRepository: IScriptsRepository
     {
         return _databaseContext.Scripts.AsQueryable()
             .Include(script => script.Includes)
+            .FirstOrDefaultAsync(script => script.Id == scriptId);
+    }
+
+    public Task<Script> GetScriptWithIncludedIn(Guid scriptId)
+    {
+        return _databaseContext.Scripts.AsQueryable()
+            .Include(script => script.IncludedIn)
             .FirstOrDefaultAsync(script => script.Id == scriptId);
     }
 

@@ -17,6 +17,7 @@ namespace TbspRpgDataLayer.Repositories
         void RemoveRoute(Route route);
         void RemoveRoutes(ICollection<Route> routes);
         Task AddRoute(Route route);
+        Task<List<Route>> GetRoutesWithScript(Guid scriptId);
     }
     
     public class RoutesRepository : IRoutesRepository
@@ -58,6 +59,13 @@ namespace TbspRpgDataLayer.Repositories
         public async Task AddRoute(Route route)
         {
             await _databaseContext.AddAsync(route);
+        }
+
+        public Task<List<Route>> GetRoutesWithScript(Guid scriptId)
+        {
+            return _databaseContext.Routes.AsQueryable()
+                .Where(route => route.RouteTakenScriptId == scriptId)
+                .ToListAsync();
         }
 
         public Task<List<Route>> GetRoutesForLocation(Guid locationId)
