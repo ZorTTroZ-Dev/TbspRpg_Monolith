@@ -6,6 +6,7 @@ using TbspRpgApi.Entities;
 using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Repositories;
+using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgDataLayer.Tests.Repositories
@@ -352,13 +353,95 @@ namespace TbspRpgDataLayer.Tests.Repositories
         [Fact]
         public async void GetAdventuresWithScript_HasScripts_AdventuresReturned()
         {
-            throw new NotImplementedException();
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testScript = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Content = "banana",
+                Name = "test",
+                Type = ScriptTypes.LuaScript
+            };
+            var newAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_adventure",
+                CreatedByUser = new User()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test@test.com",
+                    RegistrationComplete = true
+                },
+                InitialSourceKey = Guid.Empty,
+                InitializationScript = testScript 
+            };
+            var newAdventureTwo = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_adventure_two",
+                TerminationScript = testScript
+            };
+            var newAdventureThree = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_adventure_three"
+            };
+            await context.AddRangeAsync(newAdventure, newAdventureTwo, newAdventureThree);
+            await context.SaveChangesAsync();
+            var repository = new AdventuresRepository(context);
+            
+            // act
+            var adventures = await repository.GetAdventuresWithScript(testScript.Id);
+            
+            // assert
+            Assert.Equal(2, adventures.Count);
         }
 
         [Fact]
         public async void GetAdventuresWithScript_NoScripts_ReturnEmpty()
         {
-            throw new NotImplementedException();
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testScript = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Content = "banana",
+                Name = "test",
+                Type = ScriptTypes.LuaScript
+            };
+            var newAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_adventure",
+                CreatedByUser = new User()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test@test.com",
+                    RegistrationComplete = true
+                },
+                InitialSourceKey = Guid.Empty,
+                InitializationScript = testScript 
+            };
+            var newAdventureTwo = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_adventure_two",
+                TerminationScript = testScript
+            };
+            var newAdventureThree = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_adventure_three"
+            };
+            await context.AddRangeAsync(newAdventure, newAdventureTwo, newAdventureThree);
+            await context.SaveChangesAsync();
+            var repository = new AdventuresRepository(context);
+            
+            // act
+            var adventures = await repository.GetAdventuresWithScript(Guid.NewGuid());
+            
+            // assert
+            Assert.Empty(adventures);
         }
 
         #endregion

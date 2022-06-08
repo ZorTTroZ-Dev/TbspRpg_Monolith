@@ -86,6 +86,25 @@ namespace TbspRpgDataLayer.Tests
             adventuresService.Setup(service =>
                     service.RemoveAdventure(It.IsAny<Adventure>()))
                 .Callback((Adventure adventure) => adventures.Remove(adventure));
+            
+            adventuresService.Setup(service =>
+                    service.RemoveScriptFromAdventures(It.IsAny<Guid>()))
+                .Callback((Guid scriptId) =>
+                {
+                    foreach (var adventure in adventures)
+                    {
+                        if (adventure.InitializationScriptId == scriptId)
+                        {
+                            adventure.InitializationScriptId = null;
+                            adventure.InitializationScript = null;
+                        }
+                        if (adventure.TerminationScriptId == scriptId)
+                        {
+                            adventure.TerminationScriptId = null;
+                            adventure.TerminationScript = null;
+                        }
+                    }
+                });
 
             return adventuresService.Object;
         }

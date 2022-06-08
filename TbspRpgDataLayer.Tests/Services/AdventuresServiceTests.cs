@@ -6,6 +6,7 @@ using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Repositories;
 using TbspRpgDataLayer.Services;
+using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgDataLayer.Tests.Services
@@ -322,7 +323,37 @@ namespace TbspRpgDataLayer.Tests.Services
         [Fact]
         public async void RemoveScriptFromAdventures_ScriptRemoved()
         {
-            throw new NotImplementedException();
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test",
+                InitializationScript = new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test",
+                    Type = ScriptTypes.LuaScript,
+                    Content = "banana"
+                }
+            };
+            var testAdventureTwo = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test two",
+                TerminationScript = testAdventure.InitializationScript
+            };
+            await context.AddRangeAsync(testAdventure, testAdventureTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            service.RemoveScriptFromAdventures(testAdventure.InitializationScript.Id);
+            await service.SaveChanges();
+            
+            // assert
+            Assert.Null(context.Adventures.First(a => a.Id == testAdventure.Id).InitializationScript);
+            Assert.Null(context.Adventures.First(a => a.Id == testAdventureTwo.Id).TerminationScript);
         }
 
         #endregion
