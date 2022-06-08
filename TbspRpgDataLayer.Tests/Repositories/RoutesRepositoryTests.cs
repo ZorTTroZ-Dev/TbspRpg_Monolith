@@ -325,5 +325,21 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+
+        #region GetRoutesWithScript
+
+        [Fact]
+        public async void GetRoutesWithScript_HasRoutes_RoutesReturned()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Fact]
+        public async void GetRoutesWithScript_NoRoutes_ReturnEmpty()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

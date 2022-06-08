@@ -152,7 +152,13 @@ namespace TbspRpgProcessor.Tests
             ICollection<Script> scripts = null)
         {
             var scriptsService = MockServices.MockDataLayerScriptsService(scripts);
-            return new ScriptProcessor(scriptsService, NullLogger<ScriptProcessor>.Instance);
+            return new ScriptProcessor(
+                scriptsService,
+                null,
+                null,
+                null,
+                null,
+                NullLogger<ScriptProcessor>.Instance);
         }
 
         public static IMailClient MockMailClient()

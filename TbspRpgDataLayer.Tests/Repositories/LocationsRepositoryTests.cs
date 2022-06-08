@@ -417,5 +417,21 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+
+        #region GetLocationsWithScript
+
+        [Fact]
+        public async void GetLocationsWithScript_HasLocations_ReturnLocations()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Fact]
+        public async void GetLocationsWithScript_NoLocations_ReturnEmpty()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

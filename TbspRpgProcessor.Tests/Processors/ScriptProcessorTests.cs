@@ -284,9 +284,40 @@ public class ScriptProcessorTests: ProcessorTest
     #region RemoveScript
 
     [Fact]
+    public async void RemoveScript_InvalidId_ExceptionThrown()
+    {
+        throw new NotImplementedException();
+    }
+    
+    [Fact]
     public async void RemoveScript_WithAdventures_ScriptRemoved()
     {
         // have to test the other scenarios
+        throw new NotImplementedException();
+    }
+
+    [Fact]
+    public async void RemoveScript_WithRoutes_ScriptRemoved()
+    {
+        throw new NotImplementedException();
+    }
+
+    [Fact]
+    public async void RemoveScript_WithLocations_ScriptRemoved()
+    {
+        throw new NotImplementedException();
+    }
+
+    [Fact]
+    public async void RemoveScript_WithSources_ScriptRemoved()
+    {
+        throw new NotImplementedException();
+    }
+
+    [Fact]
+    public async void RemoveScript_WithIncludes_ScriptRemoved()
+    {
+        throw new NotImplementedException();
     }
 
     #endregion

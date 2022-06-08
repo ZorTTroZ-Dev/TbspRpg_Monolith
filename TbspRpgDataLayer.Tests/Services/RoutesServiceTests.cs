@@ -321,7 +321,7 @@ namespace TbspRpgDataLayer.Tests.Services
         [Fact]
         public async void RemoveScriptFromRoutes_ScriptRemoved()
         {
-            
+            throw new NotImplementedException();
         }
 
         #endregion

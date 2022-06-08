@@ -245,7 +245,7 @@ namespace TbspRpgDataLayer.Tests.Services
         [Fact]
         public async void RemoveScriptFromSources_ScriptRemoved()
         {
-            
+            throw new NotImplementedException();
         }
 
         #endregion
