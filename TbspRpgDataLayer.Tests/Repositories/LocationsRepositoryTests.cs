@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
@@ -423,13 +424,76 @@ namespace TbspRpgDataLayer.Tests.Repositories
         [Fact]
         public async void GetLocationsWithScript_HasLocations_ReturnLocations()
         {
-            throw new NotImplementedException();
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location",
+                EnterScript = new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script"
+                }
+            };
+            var testLocationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location two",
+                EnterScript = testLocation.EnterScript
+            };
+            var testLocationThree = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location three"
+            };
+            await context.Locations.AddRangeAsync(testLocation, testLocationTwo, testLocationThree);
+            await context.SaveChangesAsync();
+            var repository = new LocationsRepository(context);
+            
+            // act
+            var locations = await repository.GetLocationsWithScript(testLocation.EnterScript.Id);
+            
+            // assert
+            Assert.Equal(2, locations.Count);
+            Assert.Null(locations.FirstOrDefault(loc => loc.Id == testLocationThree.Id));
         }
 
         [Fact]
         public async void GetLocationsWithScript_NoLocations_ReturnEmpty()
         {
-            throw new NotImplementedException();
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location",
+                EnterScript = new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script"
+                }
+            };
+            var testLocationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location two",
+                EnterScript = testLocation.EnterScript
+            };
+            var testLocationThree = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location three"
+            };
+            await context.Locations.AddRangeAsync(testLocation, testLocationTwo, testLocationThree);
+            await context.SaveChangesAsync();
+            var repository = new LocationsRepository(context);
+            
+            // act
+            var locations = await repository.GetLocationsWithScript(Guid.NewGuid());
+            
+            // assert
+            Assert.Empty(locations);
         }
 
         #endregion

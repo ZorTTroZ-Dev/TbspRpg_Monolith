@@ -245,7 +245,50 @@ namespace TbspRpgDataLayer.Tests.Services
         [Fact]
         public async void RemoveScriptFromSources_ScriptRemoved()
         {
-            throw new NotImplementedException();
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source",
+                Script = new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script"
+                }
+            };
+            var testSourceTwo = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source two",
+                Text = "test source two"
+            };
+            var testSourceThree = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source",
+                Script = testSource.Script
+            };
+            await context.SourcesEsp.AddRangeAsync(testSource, testSourceTwo);
+            await context.SourcesEn.AddRangeAsync(testSourceThree);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            service.RemoveScriptFromSources(testSource.Script.Id);
+            await context.SaveChangesAsync();
+            
+            // assert
+            Assert.Null(context.SourcesEn.First(s => s.Id == testSourceThree.Id).Script);
+            Assert.Null(context.SourcesEsp.First(s => s.Id == testSource.Id).Script);
         }
 
         #endregion

@@ -183,6 +183,25 @@ namespace TbspRpgDataLayer.Tests
             locationsService.Setup(service =>
                     service.RemoveLocation(It.IsAny<Location>()))
                 .Callback((Location location) => locations.Remove(location));
+            
+            locationsService.Setup(service =>
+                    service.RemoveScriptFromLocations(It.IsAny<Guid>()))
+                .Callback((Guid scriptId) =>
+                {
+                    foreach (var location in locations)
+                    {
+                        if (location.EnterScriptId == scriptId)
+                        {
+                            location.EnterScript = null;
+                            location.EnterScriptId = null;
+                        }
+                        if (location.ExitScriptId == scriptId)
+                        {
+                            location.ExitScript = null;
+                            location.ExitScriptId = null;
+                        }
+                    }
+                });
 
             return locationsService.Object;
         }
@@ -256,6 +275,20 @@ namespace TbspRpgDataLayer.Tests
                         }
                     }
                 });
+            
+            routesService.Setup(service =>
+                    service.RemoveScriptFromRoutes(It.IsAny<Guid>()))
+                .Callback((Guid scriptId) =>
+                {
+                    foreach (var route in routes)
+                    {
+                        if (route.RouteTakenScriptId == scriptId)
+                        {
+                            route.RouteTakenScript = null;
+                            route.RouteTakenScriptId = null;
+                        }
+                    }
+                });
 
             return routesService.Object;
         }
@@ -305,6 +338,20 @@ namespace TbspRpgDataLayer.Tests
                         if (sources.ToArray()[i].AdventureId == adventureId)
                         {
                             sources.Remove(sources.ToArray()[i]);
+                        }
+                    }
+                });
+            
+            sourcesService.Setup(service =>
+                    service.RemoveScriptFromSources(It.IsAny<Guid>()))
+                .Callback((Guid scriptId) =>
+                {
+                    foreach (var en in sources)
+                    {
+                        if (en.ScriptId == scriptId)
+                        {
+                            en.Script = null;
+                            en.ScriptId = null;
                         }
                     }
                 });

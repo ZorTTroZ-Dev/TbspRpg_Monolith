@@ -321,7 +321,33 @@ namespace TbspRpgDataLayer.Tests.Services
         [Fact]
         public async void RemoveScriptFromRoutes_ScriptRemoved()
         {
-            throw new NotImplementedException();
+            // arrange
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route",
+                RouteTakenScript = new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script"
+                }
+            };
+            var testRouteTwo = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route two" 
+            };
+            await using var context = new DatabaseContext(DbContextOptions);
+            await context.Routes.AddRangeAsync(testRoute, testRouteTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            service.RemoveScriptFromRoutes(testRoute.RouteTakenScript.Id);
+            await service.SaveChanges();
+            
+            // assert
+            Assert.Null(context.Routes.First(route => route.Id == testRoute.Id).RouteTakenScript);
         }
 
         #endregion

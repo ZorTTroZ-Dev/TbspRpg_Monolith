@@ -331,13 +331,64 @@ namespace TbspRpgDataLayer.Tests.Repositories
         [Fact]
         public async void GetRoutesWithScript_HasRoutes_RoutesReturned()
         {
-            throw new NotImplementedException();
+            // arrange
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route",
+                RouteTakenScript = new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script"
+                }
+            };
+            var testRouteTwo = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route two" 
+            };
+            await using var context = new DatabaseContext(DbContextOptions);
+            await context.Routes.AddRangeAsync(testRoute, testRouteTwo);
+            await context.SaveChangesAsync();
+            var repository = new RoutesRepository(context);
+            
+            // act
+            var routes = await repository.GetRoutesWithScript(testRoute.RouteTakenScript.Id);
+            
+            // assert
+            Assert.Single(routes);
+            Assert.Equal("test route", routes[0].Name);
         }
 
         [Fact]
         public async void GetRoutesWithScript_NoRoutes_ReturnEmpty()
         {
-            throw new NotImplementedException();
+            // arrange
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route",
+                RouteTakenScript = new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script"
+                }
+            };
+            var testRouteTwo = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route two" 
+            };
+            await using var context = new DatabaseContext(DbContextOptions);
+            await context.Routes.AddRangeAsync(testRoute, testRouteTwo);
+            await context.SaveChangesAsync();
+            var repository = new RoutesRepository(context);
+            
+            // act
+            var routes = await repository.GetRoutesWithScript(Guid.NewGuid());
+            
+            // assert
+            Assert.Empty(routes);
         }
 
         #endregion

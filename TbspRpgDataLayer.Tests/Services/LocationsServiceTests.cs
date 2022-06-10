@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
@@ -208,7 +209,40 @@ namespace TbspRpgDataLayer.Tests.Services
         [Fact]
         public async void RemoveScriptFromLocations_ScriptRemoved()
         {
-            throw new NotImplementedException();
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location",
+                EnterScript = new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script"
+                }
+            };
+            var testLocationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location two",
+                EnterScript = testLocation.EnterScript
+            };
+            var testLocationThree = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location three"
+            };
+            await context.Locations.AddRangeAsync(testLocation, testLocationTwo, testLocationThree);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            service.RemoveScriptFromLocations(testLocation.EnterScript.Id);
+            await service.SaveChanges();
+            
+            // assert
+            Assert.Null(context.Locations.First(loc => loc.Id == testLocation.Id).EnterScript);
+            Assert.Null(context.Locations.First(loc => loc.Id == testLocationTwo.Id).ExitScript);
         }
 
         #endregion
