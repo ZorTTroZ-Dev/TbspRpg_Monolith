@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Repositories;
 using TbspRpgSettings.Settings;
@@ -239,6 +240,41 @@ public class ScriptsRepositoryTests: InMemoryTest
         
         // assert
         Assert.Empty(context.Scripts);
+    }
+
+    #endregion
+
+    #region RemoveIncludes
+
+    [Fact]
+    public async void RemoveIncludes_IncludesRemoved()
+    {
+        // arrange
+        await using var context = new DatabaseContext(DbContextOptions);
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script"
+        };
+        var testScriptTwo = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script Two",
+            Includes = new List<Script>() { testScript }
+        };
+        context.Scripts.Add(testScript);
+        context.Scripts.Add(testScriptTwo);
+        await context.SaveChangesAsync();
+        var repository = new ScriptsRepository(context);
+        
+        // act
+        var script = context.Scripts.First(script => script.Id == testScriptTwo.Id);
+        script.Includes = new List<Script>();
+        await repository.SaveChanges();
+        
+        // assert
+        Assert.Empty(context.Scripts.First(s => s.Id == testScriptTwo.Id).Includes);
+        Assert.Empty(context.Scripts.First(s => s.Id == testScript.Id).IncludedIn);
     }
 
     #endregion

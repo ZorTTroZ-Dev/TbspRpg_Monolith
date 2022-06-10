@@ -222,6 +222,10 @@ namespace TbspRpgDataLayer.Tests
                     service.AddScript(It.IsAny<Script>()))
                 .Callback((Script script) => scripts.Add(script));
             
+            scriptsService.Setup(service =>
+                    service.GetScriptWithIncludedIn(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid scriptId) => scripts.FirstOrDefault(s => s.Id == scriptId));
+            
             return scriptsService.Object;
         }
 

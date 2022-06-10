@@ -149,15 +149,18 @@ namespace TbspRpgProcessor.Tests
         }
 
         protected static IScriptProcessor CreateScriptProcessor(
-            ICollection<Script> scripts = null)
+            ICollection<Script> scripts = null,
+            ICollection<Adventure> adventures = null,
+            ICollection<Route> routes = null,
+            ICollection<Location> locations = null,
+            ICollection<En> sources = null)
         {
-            var scriptsService = MockServices.MockDataLayerScriptsService(scripts);
             return new ScriptProcessor(
-                scriptsService,
-                null,
-                null,
-                null,
-                null,
+                MockServices.MockDataLayerScriptsService(scripts),
+                MockServices.MockDataLayerAdventuresService(adventures),
+                MockServices.MockDataLayerRoutesService(routes),
+                MockServices.MockDataLayerLocationsService(locations),
+                MockServices.MockDataLayerSourcesService(sources),
                 NullLogger<ScriptProcessor>.Instance);
         }
 

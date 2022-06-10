@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NLua.Exceptions;
+using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Entities;
 using TbspRpgProcessor.Entities;
 using TbspRpgSettings.Settings;
@@ -286,14 +287,56 @@ public class ScriptProcessorTests: ProcessorTest
     [Fact]
     public async void RemoveScript_InvalidId_ExceptionThrown()
     {
-        throw new NotImplementedException();
+        // arrange
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script"
+        };
+        var processor = CreateScriptProcessor(
+            new List<Script>() {testScript},
+            new List<Adventure>(),
+            new List<Route>(),
+            new List<Location>(),
+            new List<En>());
+        
+        // act
+        Task Act() => processor.RemoveScript(new ScriptRemoveModel()
+        {
+            ScriptId = Guid.NewGuid()
+        });
+    
+        // assert
+        await Assert.ThrowsAsync<ArgumentException>(Act);
     }
     
     [Fact]
     public async void RemoveScript_WithAdventures_ScriptRemoved()
     {
-        // have to test the other scenarios
-        throw new NotImplementedException();
+        // arrange
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script"
+        };
+        var testAdventure = new Adventure()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test adventure",
+            InitializationScript = testScript
+        };
+        var processor = CreateScriptProcessor(
+            new List<Script>() {testScript},
+            new List<Adventure>() {testAdventure},
+            new List<Route>(),
+            new List<Location>(),
+            new List<En>());
+        
+        // act
+        await processor.RemoveScript(new ScriptRemoveModel()
+        {
+            ScriptId = testScript.Id
+        });
     }
 
     [Fact]
