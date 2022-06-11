@@ -323,11 +323,13 @@ public class ScriptProcessorTests: ProcessorTest
         {
             Id = Guid.NewGuid(),
             Name = "test adventure",
+            InitializationScriptId = testScript.Id,
             InitializationScript = testScript
         };
+        var scripts = new List<Script>() { testScript };
         var processor = CreateScriptProcessor(
-            new List<Script>() {testScript},
-            new List<Adventure>() {testAdventure},
+            scripts,
+            new List<Adventure>() { testAdventure },
             new List<Route>(),
             new List<Location>(),
             new List<En>());
@@ -337,30 +339,153 @@ public class ScriptProcessorTests: ProcessorTest
         {
             ScriptId = testScript.Id
         });
+        
+        // assert
+        Assert.Empty(scripts);
+        Assert.Null(testAdventure.InitializationScript);
+        Assert.Null(testAdventure.InitializationScriptId);
     }
 
     [Fact]
     public async void RemoveScript_WithRoutes_ScriptRemoved()
     {
-        throw new NotImplementedException();
+        // arrange
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script"
+        };
+        var testRoute = new Route()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test route",
+            RouteTakenScriptId = testScript.Id,
+            RouteTakenScript = testScript
+        };
+        var scripts = new List<Script>() { testScript };
+        var processor = CreateScriptProcessor(
+            scripts,
+            new List<Adventure>(),
+            new List<Route>() { testRoute },
+            new List<Location>(),
+            new List<En>());
+        
+        // act
+        await processor.RemoveScript(new ScriptRemoveModel()
+        {
+            ScriptId = testScript.Id
+        });
+        
+        // assert
+        Assert.Empty(scripts);
+        Assert.Null(testRoute.RouteTakenScript);
+        Assert.Null(testRoute.RouteTakenScriptId);
     }
 
     [Fact]
     public async void RemoveScript_WithLocations_ScriptRemoved()
     {
-        throw new NotImplementedException();
+        // arrange
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script"
+        };
+        var testLocation = new Location()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test location",
+            EnterScript = testScript,
+            EnterScriptId = testScript.Id
+        };
+        var scripts = new List<Script>() { testScript };
+        var processor = CreateScriptProcessor(
+            scripts,
+            new List<Adventure>(),
+            new List<Route>(),
+            new List<Location>() { testLocation },
+            new List<En>());
+        
+        // act
+        await processor.RemoveScript(new ScriptRemoveModel()
+        {
+            ScriptId = testScript.Id
+        });
+        
+        // assert
+        Assert.Empty(scripts);
+        Assert.Null(testLocation.EnterScript);
+        Assert.Null(testLocation.EnterScriptId);
     }
 
     [Fact]
     public async void RemoveScript_WithSources_ScriptRemoved()
     {
-        throw new NotImplementedException();
+        // arrange
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script"
+        };
+        var testSource = new En()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test source",
+            Script = testScript,
+            ScriptId = testScript.Id
+        };
+        var scripts = new List<Script>() { testScript };
+        var processor = CreateScriptProcessor(
+            scripts,
+            new List<Adventure>(),
+            new List<Route>(),
+            new List<Location>(),
+            new List<En>() { testSource });
+        
+        // act
+        await processor.RemoveScript(new ScriptRemoveModel()
+        {
+            ScriptId = testScript.Id
+        });
+        
+        // assert
+        Assert.Empty(scripts);
+        Assert.Null(testSource.Script);
+        Assert.Null(testSource.ScriptId);
     }
 
     [Fact]
     public async void RemoveScript_WithIncludes_ScriptRemoved()
     {
-        throw new NotImplementedException();
+        // arrange
+        var includeScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "include script"
+        };
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script",
+            IncludedIn = new List<Script>() { includeScript }
+        };
+        var scripts = new List<Script>() { testScript, includeScript };
+        var processor = CreateScriptProcessor(
+            scripts,
+            new List<Adventure>(),
+            new List<Route>(),
+            new List<Location>(),
+            new List<En>());
+        
+        // act
+        await processor.RemoveScript(new ScriptRemoveModel()
+        {
+            ScriptId = testScript.Id
+        });
+        
+        // assert
+        Assert.Single(scripts);
+        Assert.Empty(testScript.IncludedIn);
     }
 
     #endregion

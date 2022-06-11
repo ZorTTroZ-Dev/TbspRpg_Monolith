@@ -85,7 +85,12 @@ namespace TbspRpgProcessor.Tests
             ICollection<En> sources = null,
             ICollection<Script> scripts = null)
         {
-            var scriptProcessor = CreateScriptProcessor(scripts);
+            var scriptProcessor = CreateScriptProcessor(
+                scripts,
+                null,
+                null,
+                null,
+                sources);
             var sourcesService = MockServices.MockDataLayerSourcesService(sources);
             return new SourceProcessor(
                 scriptProcessor,
@@ -119,7 +124,8 @@ namespace TbspRpgProcessor.Tests
             ICollection<Script> scripts = null)
         {
             var adventuresService = MockServices.MockDataLayerAdventuresService(adventures);
-            var sourceProcessor = CreateSourceProcessor(sources);
+            var sourceProcessor = CreateSourceProcessor(
+                sources, scripts);
             var gameProcessor = CreateGameProcessor(
                 users,
                 adventures,
@@ -155,6 +161,10 @@ namespace TbspRpgProcessor.Tests
             ICollection<Location> locations = null,
             ICollection<En> sources = null)
         {
+            adventures ??= new List<Adventure>();
+            routes ??= new List<Route>();
+            locations ??= new List<Location>();
+            sources ??= new List<En>();
             return new ScriptProcessor(
                 MockServices.MockDataLayerScriptsService(scripts),
                 MockServices.MockDataLayerAdventuresService(adventures),

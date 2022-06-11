@@ -226,6 +226,10 @@ namespace TbspRpgDataLayer.Tests
                     service.GetScriptWithIncludedIn(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid scriptId) => scripts.FirstOrDefault(s => s.Id == scriptId));
             
+            scriptsService.Setup(service =>
+                    service.RemoveScript(It.IsAny<Script>()))
+                .Callback((Script script) => scripts.Remove(script));
+            
             return scriptsService.Object;
         }
 
