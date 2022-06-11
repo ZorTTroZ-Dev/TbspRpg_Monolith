@@ -135,12 +135,14 @@ namespace TbspRpgProcessor.Tests
                 scripts);
             var locationProcessor = CreateLocationProcessor(locations, sources, routes);
             var sourceService = MockServices.MockDataLayerSourcesService(sources);
+            var scriptsService = MockServices.MockDataLayerScriptsService(scripts);
             return new AdventureProcessor(
                 sourceProcessor,
                 gameProcessor,
                 locationProcessor,
                 adventuresService,
                 sourceService,
+                scriptsService,
                 NullLogger<AdventureProcessor>.Instance);
         }
 

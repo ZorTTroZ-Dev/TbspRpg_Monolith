@@ -252,12 +252,41 @@ public class ScriptsServiceTests: InMemoryTest
 
     #endregion
 
-    #region GetScriptWithIncludedIn
+    #region RemoveAllScriptsForAdventure
 
     [Fact]
-    public async void GetScriptWithIncludedIn_ReturnsScript()
+    public async void RemoveAllScriptsForAdventure_ScriptsRemoved()
     {
+        // arrange
+        var testAdventure = new Adventure()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test adventure"
+        };
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script",
+            Adventure = testAdventure
+        };
+        var testScriptTwo = new Script()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test script two",
+            Adventure = testAdventure
+        };
+        await using var context = new DatabaseContext(DbContextOptions);
+        await context.Adventures.AddRangeAsync(testAdventure);
+        await context.Scripts.AddRangeAsync(testScript, testScriptTwo);
+        await context.SaveChangesAsync();
+        var service = CreateService(context);
         
+        // act
+        await service.RemoveAllScriptsForAdventure(testAdventure.Id);
+        await service.SaveChanges();
+        
+        // assert
+        Assert.Empty(context.Scripts);
     }
 
     #endregion

@@ -230,6 +230,20 @@ namespace TbspRpgDataLayer.Tests
                     service.RemoveScript(It.IsAny<Script>()))
                 .Callback((Script script) => scripts.Remove(script));
             
+            scriptsService.Setup(service =>
+                    service.RemoveAllScriptsForAdventure(It.IsAny<Guid>()))
+                .Callback((Guid adventureId) =>
+                {
+                    for (int i = scripts.Count - 1; i >= 0; i--)
+                    {
+                        // Do processing here, then...
+                        if (scripts.ToArray()[i].AdventureId == adventureId)
+                        {
+                            scripts.Remove(scripts.ToArray()[i]);
+                        }
+                    }
+                });
+            
             return scriptsService.Object;
         }
 
