@@ -183,4 +183,68 @@ public class ScriptsControllerTests: ApiTest
     }
 
     #endregion
+    
+    #region DeleteScript
+
+    [Fact]
+    public async void DeleteScript_Valid_NoException()
+    {
+        // arrange
+        var testScripts = new List<Script>()
+        {
+            new Script()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test"
+            },
+            new Script()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test two"
+            }
+        };
+        var controller = CreateController(testScripts);
+        
+        // act
+        var response = await controller.DeleteScript(testScripts[0].Id);
+        
+        // assert
+        var okResult = response as OkResult;
+        Assert.NotNull(okResult);
+    }
+    
+    [Fact]
+    public async void DeleteScript_DeleteFails_ExceptionThrown()
+    {
+        // arrange
+        var testScripts = new List<Script>()
+        {
+            new Script()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test"
+            },
+            new Script()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test two"
+            }
+        };
+        var exceptionId = Guid.NewGuid();
+        var controller = CreateController(testScripts, exceptionId);
+        
+        // act
+        var response = await controller.DeleteScript(exceptionId);
+        
+        // assert
+        var badRequestResult = response as BadRequestObjectResult;
+        Assert.NotNull(badRequestResult);
+        Assert.Equal(400, badRequestResult.StatusCode);
+    }
+
+    #endregion
 }

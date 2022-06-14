@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor.Entities;
 using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services;
@@ -13,6 +14,7 @@ public interface IScriptsService
 {
     Task<List<ScriptViewModel>> GetScriptsForAdventure(Guid adventureId);
     Task UpdateScript(ScriptUpdateRequest scriptUpdateRequest);
+    Task DeleteScript(Guid scriptId);
 }
 
 public class ScriptsService: IScriptsService
@@ -40,5 +42,13 @@ public class ScriptsService: IScriptsService
     public async Task UpdateScript(ScriptUpdateRequest scriptUpdateRequest)
     {
         await _scriptProcessor.UpdateScript(scriptUpdateRequest.ToScriptUpdateModel());
+    }
+
+    public async Task DeleteScript(Guid scriptId)
+    {
+        await _scriptProcessor.RemoveScript(new ScriptRemoveModel()
+        {
+            ScriptId = scriptId
+        });
     }
 }

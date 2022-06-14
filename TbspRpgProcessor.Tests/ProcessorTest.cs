@@ -358,6 +358,16 @@ namespace TbspRpgProcessor.Tests
                         throw new ArgumentException("invalid script id");
                     }
                 });
+
+            scriptProcessor.Setup(service =>
+                    service.RemoveScript(It.IsAny<ScriptRemoveModel>()))
+                .Callback((ScriptRemoveModel scriptRemoveModel) =>
+                {
+                    if (scriptRemoveModel.ScriptId == executeScriptExceptionId)
+                    {
+                        throw new ArgumentException("invalid script id");
+                    }
+                });
             
             return scriptProcessor.Object;
         }

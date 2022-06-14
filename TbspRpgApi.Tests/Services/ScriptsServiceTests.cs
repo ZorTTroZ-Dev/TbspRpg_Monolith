@@ -145,4 +145,68 @@ public class ScriptsServiceTests: ApiTest
     }
 
     #endregion
+
+    #region DeleteScript
+
+    [Fact]
+    public async void DeleteScript_Valid_NoException()
+    {
+        // arrange
+        var testScripts = new List<Script>()
+        {
+            new Script()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test"
+            },
+            new Script()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test two"
+            }
+        };
+        var service = CreateScriptsService(testScripts,
+            Guid.NewGuid());
+        
+        // act
+        await service.DeleteScript(testScripts[0].Id);
+
+
+        // assert
+    }
+    
+    [Fact]
+    public async void DeleteScript_Invalid_ExceptionThrown()
+    {
+        // arrange
+        var testScripts = new List<Script>()
+        {
+            new Script()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test"
+            },
+            new Script()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test two"
+            }
+        };
+        var exceptionId = Guid.NewGuid();
+        var service = CreateScriptsService(testScripts,
+            exceptionId);
+        
+        // act
+        Task Act() => service.DeleteScript(exceptionId);
+        
+        // assert
+        await Assert.ThrowsAsync<ArgumentException>(Act);
+    }
+    
+
+    #endregion
 }

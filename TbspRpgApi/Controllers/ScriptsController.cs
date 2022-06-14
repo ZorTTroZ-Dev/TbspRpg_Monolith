@@ -43,6 +43,26 @@ public class ScriptsController : BaseController
         return Ok(scripts);
     }
     
+    [HttpDelete("{scriptId:guid}")]
+    [Authorize]
+    public async Task<IActionResult> DeleteScript(Guid scriptId)
+    {
+        var canDeleteScript = await _permissionService.CanDeleteScript(GetUserId().GetValueOrDefault(), scriptId);
+        // make sure the user either is the adventure's owner or the user is an admin or has write adventure permission
+        if(!canDeleteScript)
+            return BadRequest(new { message = NotYourAdventureErrorMessage });
+            
+        try
+        {
+            await _scriptsService.DeleteScript(scriptId);
+            return Ok();
+        }
+        catch
+        {
+            return BadRequest(new { message = "couldn't delete script" });
+        }
+    }
+    
     [HttpPut, Authorize]
     public async Task<IActionResult> UpdateScript([FromBody] ScriptUpdateRequest scriptUpdateRequest)
     {

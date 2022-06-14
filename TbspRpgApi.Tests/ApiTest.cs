@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
+using Org.BouncyCastle.Bcpg;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.Services;
@@ -53,6 +54,10 @@ namespace TbspRpgApi.Tests
             permissionService.Setup(service =>
                     service.CanDeleteGame(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((Guid userId, Guid gameId) => true);
+
+            permissionService.Setup(service =>
+                    service.CanDeleteScript(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid userId, Guid scriptId) => true);
             
             return permissionService.Object;
         }
@@ -61,7 +66,8 @@ namespace TbspRpgApi.Tests
             ICollection<User> users,
             ICollection<Location> locations = null,
             ICollection<Adventure> adventures = null,
-            ICollection<Game> games = null)
+            ICollection<Game> games = null,
+            ICollection<Script> scripts = null)
         {
             locations ??= new List<Location>();
             adventures ??= new List<Adventure>();
@@ -71,10 +77,12 @@ namespace TbspRpgApi.Tests
             var dlLocationsService = MockServices.MockDataLayerLocationsService(locations);
             var dlAdventuresService = MockServices.MockDataLayerAdventuresService(adventures);
             var dlGamesService = MockServices.MockDataLayerGamesService(games);
+            var dlScriptsService = MockServices.MockDataLayerScriptsService(scripts);
             return new PermissionService(dlUsersService,
                 dlLocationsService,
                 dlAdventuresService,
                 dlGamesService,
+                dlScriptsService,
                 NullLogger<PermissionService>.Instance);
         }
         
