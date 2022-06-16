@@ -466,6 +466,21 @@ namespace TbspRpgProcessor.Tests.Processors
                     }
                 }
             };
+            var testScripts = new List<Script>()
+            {
+                new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script",
+                    AdventureId = testAdventureId
+                },
+                new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script two",
+                    AdventureId = testAdventureId
+                }
+            };
             var testAdventures = new List<Adventure>()
             {
                 new()
@@ -473,7 +488,11 @@ namespace TbspRpgProcessor.Tests.Processors
                     Id = testAdventureId,
                     Name = "test adventure",
                     Games = new List<Game>() { testGames[0], testGames[1] },
-                    Locations = new List<Location>() { testLocations[0], testLocations[1] }
+                    Locations = new List<Location>() { testLocations[0], testLocations[1] },
+                    InitializationScript = testScripts[0],
+                    InitializationScriptId = testScripts[0].Id,
+                    TerminationScript = testScripts[1],
+                    TerminationScriptId = testScripts[1].Id
                 }
             };
             var processor = CreateAdventureProcessor(
@@ -483,7 +502,8 @@ namespace TbspRpgProcessor.Tests.Processors
                 testGames,
                 testLocations,
                 testContents,
-                testRoutes);
+                testRoutes,
+                testScripts);
             
             // act
             await processor.RemoveAdventure(new AdventureRemoveModel()
@@ -497,6 +517,7 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.Empty(testRoutes);
             Assert.Empty(testSources);
             Assert.Empty(testContents);
+            Assert.Empty(testScripts);
         }
 
         #endregion

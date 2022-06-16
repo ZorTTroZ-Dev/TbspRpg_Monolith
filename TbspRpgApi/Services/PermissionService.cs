@@ -18,17 +18,20 @@ namespace TbspRpgApi.Services
         Task<bool> CanReadGame(Guid userId, Guid gameId);
         Task<bool> CanWriteGame(Guid userId, Guid gameId);
         Task<bool> CanDeleteGame(Guid userId, Guid gameId);
+        Task<bool> CanDeleteScript(Guid userId, Guid scriptId);
     }
     
     public class PermissionService: IPermissionService
     {
         private User User { get; set; }
         private Adventure Adventure { get; set; }
+        private Script Script { get; set; }
         private HashSet<string> Permissions { get; set; }
         private readonly TbspRpgDataLayer.Services.IUsersService _usersService;
         private readonly TbspRpgDataLayer.Services.ILocationsService _locationsService;
         private readonly TbspRpgDataLayer.Services.IAdventuresService _adventuresService;
         private readonly TbspRpgDataLayer.Services.IGamesService _gamesService;
+        private readonly TbspRpgDataLayer.Services.IScriptsService _scriptsService;
         private readonly ILogger<PermissionService> _logger;
 
         public PermissionService(
@@ -36,12 +39,14 @@ namespace TbspRpgApi.Services
             TbspRpgDataLayer.Services.ILocationsService locationsService,
             TbspRpgDataLayer.Services.IAdventuresService adventuresService,
             TbspRpgDataLayer.Services.IGamesService gamesService,
+            TbspRpgDataLayer.Services.IScriptsService scriptsService,
             ILogger<PermissionService> logger)
         {
             _usersService = usersService;
             _locationsService = locationsService;
             _adventuresService = adventuresService;
             _gamesService = gamesService;
+            _scriptsService = scriptsService;
             _logger = logger;
         }
         
@@ -53,6 +58,11 @@ namespace TbspRpgApi.Services
         private async Task LoadAdventure(Guid adventureId)
         {
             Adventure ??= await _adventuresService.GetAdventureById(adventureId);
+        }
+
+        private async Task LoadScript(Guid scriptId)
+        {
+            Script ??= await _scriptsService.GetScriptById(scriptId);
         }
 
         protected async Task LoadPermissions(Guid userId)
@@ -163,6 +173,14 @@ namespace TbspRpgApi.Services
         {
             return await CanWriteGame(userId, gameId) ||
                    await IsInGroup(userId, TbspRpgSettings.Settings.Permissions.AdminGroup);
+        }
+
+        public async Task<bool> CanDeleteScript(Guid userId, Guid scriptId)
+        {
+            await LoadScript(scriptId);
+            if (Script == null)
+                return false;
+            return await CanWriteAdventure(userId, Script.AdventureId);
         }
     }
 }

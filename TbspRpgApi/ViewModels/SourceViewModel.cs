@@ -12,6 +12,7 @@ namespace TbspRpgApi.ViewModels
         public Guid AdventureId { get; set; }
         public string Text { get; set; }
         public string Language { get; set; }
+        public Guid? ScriptId { get; set; }
         
         public SourceViewModel() {}
 
@@ -29,6 +30,7 @@ namespace TbspRpgApi.ViewModels
             AdventureId = source.AdventureId;
             Text = source.Text;
             Language = language;
+            ScriptId = source.ScriptId;
         }
 
         public Source ToEntity()
@@ -39,7 +41,8 @@ namespace TbspRpgApi.ViewModels
                 Name = Name,
                 Key = Key,
                 AdventureId = AdventureId,
-                Text = Text
+                Text = Text,
+                ScriptId = ScriptId
             };
         }
     }

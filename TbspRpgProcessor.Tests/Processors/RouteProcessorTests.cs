@@ -86,7 +86,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     LocationId = testLocation.Id,
                     Name = "new route",
                     SourceKey = Guid.Empty,
-                    SuccessSourceKey = Guid.Empty,
+                    RouteTakenSourceKey = Guid.Empty,
                     DestinationLocationId = testDestinationLocation.Id
                 },
                 source = new En()
@@ -180,7 +180,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     LocationId = testLocation.Id,
                     Name = "updated route",
                     SourceKey = Guid.Empty,
-                    SuccessSourceKey = Guid.Empty,
+                    RouteTakenSourceKey = Guid.Empty,
                     DestinationLocationId = testDestinationLocation.Id
                 },
                 source = new En()
@@ -202,7 +202,7 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.NotNull(testRoutes.FirstOrDefault(route => route.Id == testRoute.Id));
             Assert.Equal("updated route", testRoute.Name);
             Assert.NotEqual(Guid.Empty, testRoute.SourceKey);
-            Assert.NotEqual(Guid.Empty, testRoute.SuccessSourceKey);
+            Assert.NotEqual(Guid.Empty, testRoute.RouteTakenSourceKey);
         }
 
         [Fact]
@@ -257,7 +257,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     LocationId = testLocation.Id,
                     Name = "updated route",
                     SourceKey = testSource.Key,
-                    SuccessSourceKey = testSuccessSource.Key,
+                    RouteTakenSourceKey = testSuccessSource.Key,
                     DestinationLocationId = testDestinationLocation.Id
                 },
                 source = new En()
@@ -278,12 +278,12 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.Single(testRoutes);
             Assert.Equal(2, testSources.Count);
             Assert.NotEqual(Guid.Empty, testRoute.SourceKey);
-            Assert.NotEqual(Guid.Empty, testRoute.SuccessSourceKey);
+            Assert.NotEqual(Guid.Empty, testRoute.RouteTakenSourceKey);
             Assert.NotNull(testSources.FirstOrDefault(source => source.Key == testRoute.SourceKey));
-            Assert.NotNull(testSources.FirstOrDefault(source => source.Key == testRoute.SuccessSourceKey));
+            Assert.NotNull(testSources.FirstOrDefault(source => source.Key == testRoute.RouteTakenSourceKey));
             var source = testSources.First(source => source.Key == testRoute.SourceKey);
             Assert.Equal("updated source text", source.Text);
-            var successSource = testSources.First(src => src.Key == testRoute.SuccessSourceKey);
+            var successSource = testSources.First(src => src.Key == testRoute.RouteTakenSourceKey);
             Assert.Equal("updated success source text", successSource.Text);
         }
 
@@ -323,7 +323,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     LocationId = testLocation.Id,
                     Name = "updated route",
                     SourceKey = Guid.Empty,
-                    SuccessSourceKey = Guid.Empty,
+                    RouteTakenSourceKey = Guid.Empty,
                     DestinationLocationId = testDestinationLocation.Id
                 },
                 source = new En()
@@ -344,9 +344,9 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.Single(testRoutes);
             Assert.Equal(2, testSources.Count);
             Assert.NotEqual(Guid.Empty, testRoute.SourceKey);
-            Assert.NotEqual(Guid.Empty, testRoute.SuccessSourceKey);
+            Assert.NotEqual(Guid.Empty, testRoute.RouteTakenSourceKey);
             Assert.NotNull(testSources.FirstOrDefault(source => source.Key == testRoute.SourceKey));
-            Assert.NotNull(testSources.FirstOrDefault(source => source.Key == testRoute.SuccessSourceKey));
+            Assert.NotNull(testSources.FirstOrDefault(source => source.Key == testRoute.RouteTakenSourceKey));
             var source = testSources.First(source => source.Key == testRoute.SourceKey);
             Assert.Equal("source text", source.Text);
         }
@@ -387,7 +387,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     LocationId = testLocation.Id,
                     Name = "updated route",
                     SourceKey = Guid.Empty,
-                    SuccessSourceKey = Guid.Empty,
+                    RouteTakenSourceKey = Guid.Empty,
                     DestinationLocationId = testDestinationLocation.Id
                 },
                 source = new En()
@@ -453,7 +453,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     LocationId = testLocation.Id,
                     Name = "updated route",
                     SourceKey = Guid.Empty,
-                    SuccessSourceKey = Guid.Empty,
+                    RouteTakenSourceKey = Guid.Empty,
                     DestinationLocationId = newTestDestinationLocation.Id
                 },
                 source = new En()

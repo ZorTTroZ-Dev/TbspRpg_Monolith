@@ -17,14 +17,18 @@ namespace TbspRpgProcessor.Tests
             ICollection<Adventure> adventures = null,
             ICollection<Game> games = null,
             ICollection<Location> locations = null,
-            ICollection<Content> contents = null)
+            ICollection<Content> contents = null,
+            ICollection<Script> scripts = null)
         {
+            var scriptProcessor = CreateScriptProcessor(scripts);
             var usersService = MockServices.MockDataLayerUsersService(users);
             var adventuresService = MockServices.MockDataLayerAdventuresService(adventures);
             var gamesService = MockServices.MockDataLayerGamesService(games);
             var locationsService = MockServices.MockDataLayerLocationsService(locations);
             var contentsService = MockServices.MockDataLayerContentsService(contents);
-            return new GameProcessor(adventuresService,
+            return new GameProcessor(
+                scriptProcessor,
+                adventuresService,
                 usersService,
                 gamesService,
                 locationsService,
@@ -59,19 +63,39 @@ namespace TbspRpgProcessor.Tests
         protected static IMapProcessor CreateMapProcessor(
             ICollection<Game> games = null,
             ICollection<Route> routes = null,
-            ICollection<Content> contents = null)
+            ICollection<Content> contents = null,
+            ICollection<Script> scripts = null,
+            ICollection<En> sources = null)
         {
+            var scriptProcessor = CreateScriptProcessor(scripts);
+            var sourceProcessor = CreateSourceProcessor(sources, scripts);
             var gamesService = MockServices.MockDataLayerGamesService(games);
             var routesService = MockServices.MockDataLayerRoutesService(routes);
             var contentsService = MockServices.MockDataLayerContentsService(contents);
-            return new MapProcessor(gamesService, routesService, contentsService, NullLogger<MapProcessor>.Instance);
+            return new MapProcessor(
+                scriptProcessor,
+                sourceProcessor,
+                gamesService,
+                routesService,
+                contentsService, 
+                NullLogger<MapProcessor>.Instance);
         }
 
         protected static ISourceProcessor CreateSourceProcessor(
-            ICollection<En> sources = null)
+            ICollection<En> sources = null,
+            ICollection<Script> scripts = null)
         {
+            var scriptProcessor = CreateScriptProcessor(
+                scripts,
+                null,
+                null,
+                null,
+                sources);
             var sourcesService = MockServices.MockDataLayerSourcesService(sources);
-            return new SourceProcessor(sourcesService, NullLogger<SourceProcessor>.Instance);
+            return new SourceProcessor(
+                scriptProcessor,
+                sourcesService,
+                NullLogger<SourceProcessor>.Instance);
         }
 
         protected static IRouteProcessor CreateRouteProcessor(
@@ -96,24 +120,29 @@ namespace TbspRpgProcessor.Tests
             ICollection<Game> games = null,
             ICollection<Location> locations = null,
             ICollection<Content> contents = null,
-            ICollection<Route> routes = null)
+            ICollection<Route> routes = null,
+            ICollection<Script> scripts = null)
         {
             var adventuresService = MockServices.MockDataLayerAdventuresService(adventures);
-            var sourceProcessor = CreateSourceProcessor(sources);
+            var sourceProcessor = CreateSourceProcessor(
+                sources, scripts);
             var gameProcessor = CreateGameProcessor(
                 users,
                 adventures,
                 games,
                 locations,
-                contents);
+                contents,
+                scripts);
             var locationProcessor = CreateLocationProcessor(locations, sources, routes);
             var sourceService = MockServices.MockDataLayerSourcesService(sources);
+            var scriptsService = MockServices.MockDataLayerScriptsService(scripts);
             return new AdventureProcessor(
                 sourceProcessor,
                 gameProcessor,
                 locationProcessor,
                 adventuresService,
                 sourceService,
+                scriptsService,
                 NullLogger<AdventureProcessor>.Instance);
         }
 
@@ -125,6 +154,26 @@ namespace TbspRpgProcessor.Tests
                 usersService,
                 MockMailClient(),
                 NullLogger<UserProcessor>.Instance);
+        }
+
+        protected static IScriptProcessor CreateScriptProcessor(
+            ICollection<Script> scripts = null,
+            ICollection<Adventure> adventures = null,
+            ICollection<Route> routes = null,
+            ICollection<Location> locations = null,
+            ICollection<En> sources = null)
+        {
+            adventures ??= new List<Adventure>();
+            routes ??= new List<Route>();
+            locations ??= new List<Location>();
+            sources ??= new List<En>();
+            return new ScriptProcessor(
+                MockServices.MockDataLayerScriptsService(scripts),
+                MockServices.MockDataLayerAdventuresService(adventures),
+                MockServices.MockDataLayerRoutesService(routes),
+                MockServices.MockDataLayerLocationsService(locations),
+                MockServices.MockDataLayerSourcesService(sources),
+                NullLogger<ScriptProcessor>.Instance);
         }
 
         public static IMailClient MockMailClient()
@@ -285,18 +334,59 @@ namespace TbspRpgProcessor.Tests
             
             return mapProcessor.Object;
         }
+        
+        public static IScriptProcessor MockScriptProcessor(Guid executeScriptExceptionId)
+        {
+            var scriptProcessor = new Mock<IScriptProcessor>();
+            
+            scriptProcessor.Setup(service =>
+                    service.ExecuteScript(It.IsAny<Guid>()))
+                .Callback((Guid scriptId) =>
+                {
+                    if (scriptId == executeScriptExceptionId)
+                    {
+                        throw new ArgumentException("invalid script id");
+                    }
+                });
+            
+            scriptProcessor.Setup(service =>
+                    service.UpdateScript(It.IsAny<ScriptUpdateModel>()))
+                .Callback((ScriptUpdateModel scriptUpdateModel) =>
+                {
+                    if (scriptUpdateModel.script.Id == executeScriptExceptionId)
+                    {
+                        throw new ArgumentException("invalid script id");
+                    }
+                });
 
-        public static IContentProcessor MockContentProcessor(ICollection<Game> games, ICollection<En> sources)
+            scriptProcessor.Setup(service =>
+                    service.RemoveScript(It.IsAny<ScriptRemoveModel>()))
+                .Callback((ScriptRemoveModel scriptRemoveModel) =>
+                {
+                    if (scriptRemoveModel.ScriptId == executeScriptExceptionId)
+                    {
+                        throw new ArgumentException("invalid script id");
+                    }
+                });
+            
+            return scriptProcessor.Object;
+        }
+
+        public static IContentProcessor MockContentProcessor(ICollection<Game> games, ICollection<En> sources, Guid scriptExceptionId)
         {
             var gamesService = MockServices.MockDataLayerGamesService(games);
-            var sourceProcessor = MockSourceProcessor(sources);
+            var sourceProcessor = MockSourceProcessor(sources, scriptExceptionId);
             return new ContentProcessor(gamesService, sourceProcessor, NullLogger<ContentProcessor>.Instance);
         }
         
-        public static ISourceProcessor MockSourceProcessor(ICollection<En> sources)
+        public static ISourceProcessor MockSourceProcessor(ICollection<En> sources, Guid scriptExceptionId)
         {
             var sourcesService = MockServices.MockDataLayerSourcesService(sources);
-            return new SourceProcessor(sourcesService, NullLogger<SourceProcessor>.Instance);
+            var scriptProcessor = MockScriptProcessor(scriptExceptionId);
+            return new SourceProcessor(
+                scriptProcessor,
+                sourcesService,
+                NullLogger<SourceProcessor>.Instance);
         }
     }
 }

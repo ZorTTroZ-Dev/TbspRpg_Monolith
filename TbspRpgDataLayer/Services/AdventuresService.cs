@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
@@ -18,6 +19,7 @@ namespace TbspRpgDataLayer.Services
         Task<Adventure> GetAdventureByIdIncludeAssociatedObjects(Guid adventureId);
         Task AddAdventure(Adventure adventure);
         void RemoveAdventure(Adventure adventure);
+        void RemoveScriptFromAdventures(Guid scriptId);
     }
     
     public class AdventuresService : IAdventuresService
@@ -65,6 +67,18 @@ namespace TbspRpgDataLayer.Services
         public void RemoveAdventure(Adventure adventure)
         {
             _adventuresRepository.RemoveAdventure(adventure);
+        }
+
+        public async void RemoveScriptFromAdventures(Guid scriptId)
+        {
+            var adventures = await _adventuresRepository.GetAdventuresWithScript(scriptId);
+            foreach (var adventure in adventures)
+            {
+                if (adventure.InitializationScriptId == scriptId)
+                    adventure.InitializationScriptId = null;
+                if (adventure.TerminationScriptId == scriptId)
+                    adventure.TerminationScriptId = null;
+            }
         }
 
         public async Task SaveChanges()

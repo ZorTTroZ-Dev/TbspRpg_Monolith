@@ -1650,5 +1650,289 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+        
+        #region CanDeleteScript
+
+        [Fact]
+        public async void CanDeleteScript_OwnsAdventure_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = users[0].Id
+                }
+            };
+            var scripts = new List<Script>()
+            {
+                new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script",
+                    Adventure = adventures[0],
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures, null, scripts);
+            
+            // act
+            var can = await service.CanDeleteScript(users[0].Id, scripts[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteScript_HasPermission_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteAdventure
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var scripts = new List<Script>()
+            {
+                new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script",
+                    Adventure = adventures[0],
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures, null, scripts);
+            
+            // act
+            var can = await service.CanDeleteScript(users[0].Id, scripts[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteScript_NoOwnNoPermissionIsAdmin_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var scripts = new List<Script>()
+            {
+                new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script",
+                    Adventure = adventures[0],
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures, null, scripts);
+            
+            // act
+            var can = await service.CanDeleteScript(users[0].Id, scripts[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteScript_NoOwnNoPermissionNotAdmin_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var scripts = new List<Script>()
+            {
+                new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script",
+                    Adventure = adventures[0],
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures, null, scripts);
+            
+            // act
+            var can = await service.CanDeleteScript(users[0].Id, scripts[0].Id);
+            
+            // assert
+            Assert.False(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteScript_BadScriptId_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var scripts = new List<Script>()
+            {
+                new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script",
+                    Adventure = adventures[0],
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures, null, scripts);
+            
+            // act
+            var can = await service.CanDeleteScript(users[0].Id, Guid.NewGuid());
+            
+            // assert
+            Assert.False(can);
+        }
+
+        #endregion
     }
 }

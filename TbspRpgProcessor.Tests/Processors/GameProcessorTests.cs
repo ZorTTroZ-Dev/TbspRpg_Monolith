@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
 using TbspRpgProcessor.Entities;
+using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgProcessor.Tests.Processors
@@ -157,16 +157,28 @@ namespace TbspRpgProcessor.Tests.Processors
         }
         
         [Fact]
-        public async void StartGame_Valid_GameCreated()
+        public async void StartGame_ValidWithInitScript_GameCreated()
         {
             // arrange
+            var testScript = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test script",
+                Content = @"
+                    function run()
+		                result = true
+	                end
+                ",
+                Type = ScriptTypes.LuaScript
+            };
             var testAdventures = new List<Adventure>()
             {
                 new()
                 {
                     Id = Guid.NewGuid(),
                     Name = "test adventure",
-                    InitialSourceKey = Guid.NewGuid()
+                    InitialSourceKey = Guid.NewGuid(),
+                    InitializationScriptId = testScript.Id
                 }
             };
             var testUsers = new List<User>()
@@ -189,12 +201,73 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var testContents = new List<Content>();
             var testGames = new List<Game>();
+            var testScripts = new List<Script>() { testScript };
             var processor = CreateGameProcessor(
                 testUsers,
                 testAdventures,
                 testGames,
                 testLocations,
-                testContents);
+                testContents,
+                testScripts);
+            
+            // act
+            var game = await processor.StartGame(testUsers[0].Id,
+                testAdventures[0].Id, DateTime.UtcNow);
+
+            // assert
+            Assert.Single(testGames);
+            Assert.NotNull(game);
+            Assert.True(game.LocationUpdateTimeStamp > 0);
+            Assert.Equal(testAdventures[0].Id, game.AdventureId);
+            Assert.Equal(testUsers[0].Id, game.UserId);
+            Assert.Equal(testLocations[0].Id, game.LocationId);
+            Assert.Equal(2, testContents.Count);
+            Assert.NotNull(testContents.FirstOrDefault(c => c.SourceKey == testAdventures[0].InitialSourceKey));
+            Assert.NotNull(testContents.FirstOrDefault(c => c.SourceKey == testLocations[0].SourceKey));
+        }
+        
+        [Fact]
+        public async void StartGame_ValidWithoutInitScript_GameCreated()
+        {
+            // arrange
+            var testAdventures = new List<Adventure>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    InitialSourceKey = Guid.NewGuid(),
+                    InitializationScriptId = null
+                }
+            };
+            var testUsers = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test"
+                }
+            };
+            var testLocations = new List<Location>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = testAdventures[0].Id,
+                    Initial = true,
+                    SourceKey = Guid.NewGuid()
+                }
+            };
+            var testContents = new List<Content>();
+            var testGames = new List<Game>();
+            var testScripts = new List<Script>();
+            var processor = CreateGameProcessor(
+                testUsers,
+                testAdventures,
+                testGames,
+                testLocations,
+                testContents,
+                testScripts);
             
             // act
             var game = await processor.StartGame(testUsers[0].Id,

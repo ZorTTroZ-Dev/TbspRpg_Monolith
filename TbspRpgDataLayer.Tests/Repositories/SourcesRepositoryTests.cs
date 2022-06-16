@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
@@ -454,6 +455,143 @@ namespace TbspRpgDataLayer.Tests.Repositories
             
             // assert
             Assert.Single(source);
+        }
+
+        #endregion
+
+        #region GetSourcesWithScript
+
+        [Fact]
+        public async void GetSourcesWithScript_HasSources_ReturnSources()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source",
+                Script = new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script"
+                }
+            };
+            var testSourceTwo = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source two",
+                Text = "test source two"
+            };
+            await context.SourcesEsp.AddRangeAsync(testSource, testSourceTwo);
+            await context.SaveChangesAsync();
+            var repository = new SourcesRepository(context);
+            
+            // act
+            var sources = await repository.GetSourcesWithScript(testSource.Script.Id);
+            
+            // assert
+            Assert.Single(sources);
+        }
+
+        [Fact]
+        public async void GetSourcesWithScript_MultipleLanguages_ReturnSources()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source",
+                Script = new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script"
+                }
+            };
+            var testSourceTwo = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source two",
+                Text = "test source two"
+            };
+            var testSourceThree = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source",
+                Script = testSource.Script
+            };
+            await context.SourcesEsp.AddRangeAsync(testSource, testSourceTwo);
+            await context.SourcesEn.AddRangeAsync(testSourceThree);
+            await context.SaveChangesAsync();
+            var repository = new SourcesRepository(context);
+            
+            // act
+            var sources = await repository.GetSourcesWithScript(testSource.Script.Id);
+            
+            // assert
+            Assert.Equal(2, sources.Count);
+            Assert.NotNull(sources.FirstOrDefault(source => source.Id == testSourceThree.Id));
+            Assert.NotNull(sources.FirstOrDefault(source => source.Id == testSource.Id));
+        }
+
+        [Fact]
+        public async void GetSourcesWithScript_NoSources_ReturnEmpty()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source",
+                Script = new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script"
+                }
+            };
+            var testSourceTwo = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source two",
+                Text = "test source two"
+            };
+            var testSourceThree = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source",
+                Script = testSource.Script
+            };
+            await context.SourcesEsp.AddRangeAsync(testSource, testSourceTwo);
+            await context.SourcesEn.AddRangeAsync(testSourceThree);
+            await context.SaveChangesAsync();
+            var repository = new SourcesRepository(context);
+            
+            // act
+            var sources = await repository.GetSourcesWithScript(Guid.NewGuid());
+            
+            // assert
+            Assert.Empty(sources);
         }
 
         #endregion

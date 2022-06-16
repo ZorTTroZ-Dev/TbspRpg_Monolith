@@ -20,7 +20,7 @@ namespace TbspRpgApi.Tests.Controllers
             ICollection<Game> games = null,
             ICollection<En> sources = null)
         {
-            var service = CreateContentsService(contents, games, sources);
+            var service = CreateContentsService(contents, Guid.Empty, games, sources);
             return new ContentsController(service,
                 MockPermissionService(),
                 NullLogger<ContentsController>.Instance);
@@ -268,10 +268,10 @@ namespace TbspRpgApi.Tests.Controllers
 
         #endregion
         
-        #region GetSourceForKey
+        #region GetContentTextForKey
 
         [Fact]
-        public async void GetSourceForKey_InvalidKey_BadRequest()
+        public async void GetContentTextForKey_InvalidKey_BadRequest()
         {
             // arrange
             var testGame = new Game()
@@ -285,7 +285,7 @@ namespace TbspRpgApi.Tests.Controllers
                 new List<En>());
             
             // act
-            var response = await controller.GetSourceForKey(testGame.Id, Guid.NewGuid());
+            var response = await controller.GetContentTextForKey(testGame.Id, Guid.NewGuid());
             
             // assert
             var badRequestResult = response as BadRequestObjectResult;
@@ -294,7 +294,7 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         [Fact]
-        public async void GetSourceForKey_ValidKey_ReturnSource()
+        public async void GetContentTextForKey_ValidKey_ReturnSource()
         {
             // arrange
             var testGame = new Game()
@@ -314,7 +314,7 @@ namespace TbspRpgApi.Tests.Controllers
                 new List<En>() {testSource});
             
             // act
-            var response = await controller.GetSourceForKey(testGame.Id, testSource.Key);
+            var response = await controller.GetContentTextForKey(testGame.Id, testSource.Key);
             
             // assert
             var okObjectResult = response as OkObjectResult;
@@ -326,10 +326,10 @@ namespace TbspRpgApi.Tests.Controllers
 
         #endregion
         
-        #region GetProcessedSourceForKey
+        #region GetProcessedContentTextForKey
 
         [Fact]
-        public async void GetProcessedSourceForKey_InvalidKey_BadRequest()
+        public async void GetProcessedContentTextForKey_InvalidKey_BadRequest()
         {
             // arrange
             var testGame = new Game()
@@ -343,7 +343,7 @@ namespace TbspRpgApi.Tests.Controllers
                 new List<En>());
             
             // act
-            var response = await controller.GetProcessedSourceForKey(testGame.Id, Guid.NewGuid());
+            var response = await controller.GetProcessedContentTextForKey(testGame.Id, Guid.NewGuid());
             
             // assert
             var badRequestResult = response as BadRequestObjectResult;
@@ -352,7 +352,7 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         [Fact]
-        public async void GetProcessedSourceForKey_ValidKey_ReturnSource()
+        public async void GetProcessedContentTextForKey_ValidKey_ReturnSource()
         {
             // arrange
             var testGame = new Game()
@@ -372,7 +372,7 @@ namespace TbspRpgApi.Tests.Controllers
                 new List<En>() {testSource});
             
             // act
-            var response = await controller.GetProcessedSourceForKey(testGame.Id, testSource.Key);
+            var response = await controller.GetProcessedContentTextForKey(testGame.Id, testSource.Key);
             
             // assert
             var okObjectResult = response as OkObjectResult;

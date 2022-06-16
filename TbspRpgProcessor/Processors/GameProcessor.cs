@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
 using TbspRpgProcessor.Entities;
@@ -24,9 +23,11 @@ namespace TbspRpgProcessor.Processors
         private readonly IGamesService _gamesService;
         private readonly ILocationsService _locationsService;
         private readonly IContentsService _contentsService;
+        private readonly IScriptProcessor _scriptProcessor;
         private readonly ILogger<GameProcessor> _logger;
 
         public GameProcessor(
+            IScriptProcessor scriptProcessor,
             IAdventuresService adventuresService,
             IUsersService usersService,
             IGamesService gamesService,
@@ -34,6 +35,7 @@ namespace TbspRpgProcessor.Processors
             IContentsService contentsService,
             ILogger<GameProcessor> logger)
         {
+            _scriptProcessor = scriptProcessor;
             _adventuresService = adventuresService;
             _usersService = usersService;
             _gamesService = gamesService;
@@ -74,6 +76,12 @@ namespace TbspRpgProcessor.Processors
             };
             await _gamesService.AddGame(game);
             
+            // run the initialization script for the adventure if there is one
+            if (adventure.InitializationScriptId != null)
+            {
+                await _scriptProcessor.ExecuteScript(adventure.InitializationScriptId.GetValueOrDefault());
+            }
+
             // create content entry for adventure's source key
             await _contentsService.AddContent(new Content()
             {

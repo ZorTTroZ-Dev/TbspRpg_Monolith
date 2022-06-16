@@ -68,8 +68,8 @@ namespace TbspRpgApi.Controllers
             return Ok(contentViewModel);
         }
         
-        [Authorize, HttpGet("source/{key:guid}")]
-        public async Task<IActionResult> GetSourceForKey(Guid gameId, Guid key) {
+        [Authorize, HttpGet("text/{key:guid}")]
+        public async Task<IActionResult> GetContentTextForKey(Guid gameId, Guid key) {
             var canAccessGame = await _permissionService.CanReadGame(
                 GetUserId().GetValueOrDefault(),
                 gameId);
@@ -78,7 +78,7 @@ namespace TbspRpgApi.Controllers
             // TODO: Make sure the key is part of the game content
             try
             {
-                var source = await _contentsService.GetSourceForKey(gameId, key);
+                var source = await _contentsService.GetContentTextForKey(gameId, key);
                 if(source == null)
                     return BadRequest(new { message = "invalid source key request" });
                 return Ok(source);
@@ -89,8 +89,8 @@ namespace TbspRpgApi.Controllers
             }
         }
         
-        [Authorize, HttpGet("source/{key:guid}/processed")]
-        public async Task<IActionResult> GetProcessedSourceForKey(Guid gameId, Guid key) {
+        [Authorize, HttpGet("text/{key:guid}/processed")]
+        public async Task<IActionResult> GetProcessedContentTextForKey(Guid gameId, Guid key) {
             var canAccessGame = await _permissionService.CanReadGame(
                 GetUserId().GetValueOrDefault(),
                 gameId);
@@ -99,7 +99,7 @@ namespace TbspRpgApi.Controllers
             // TODO: Make sure the key is part of the game content
             try
             {
-                var source = await _contentsService.GetProcessedSourceForKey(gameId, key);
+                var source = await _contentsService.GetProcessedContentTextForKey(gameId, key);
                 if(source == null)
                     return BadRequest(new { message = "invalid source key request" });
                 return Ok(source);

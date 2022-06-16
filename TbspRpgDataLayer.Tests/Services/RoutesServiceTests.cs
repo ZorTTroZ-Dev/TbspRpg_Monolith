@@ -114,15 +114,21 @@ namespace TbspRpgDataLayer.Tests.Services
             {
                 Id = Guid.NewGuid()
             };
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid()
+            };
             var testRoute = new Route()
             {
                 Id = Guid.NewGuid(),
                 Name = "test route",
-                DestinationLocationId = testDestinationLocation.Id
+                DestinationLocationId = testDestinationLocation.Id,
+                LocationId = testLocation.Id
             };
             await using var context = new DatabaseContext(DbContextOptions);
             context.Routes.Add(testRoute);
             context.Locations.Add(testDestinationLocation);
+            context.Locations.Add(testLocation);
             await context.SaveChangesAsync();
             var service = CreateService(context);
             
@@ -306,6 +312,42 @@ namespace TbspRpgDataLayer.Tests.Services
             // assert
             Assert.Single(context.Routes);
             Assert.Equal("test route", context.Routes.First().Name);
+        }
+
+        #endregion
+
+        #region RemoveScriptFromRoutes
+
+        [Fact]
+        public async void RemoveScriptFromRoutes_ScriptRemoved()
+        {
+            // arrange
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route",
+                RouteTakenScript = new Script()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test script"
+                }
+            };
+            var testRouteTwo = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test route two" 
+            };
+            await using var context = new DatabaseContext(DbContextOptions);
+            await context.Routes.AddRangeAsync(testRoute, testRouteTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            service.RemoveScriptFromRoutes(testRoute.RouteTakenScript.Id);
+            await service.SaveChanges();
+            
+            // assert
+            Assert.Null(context.Routes.First(route => route.Id == testRoute.Id).RouteTakenScript);
         }
 
         #endregion

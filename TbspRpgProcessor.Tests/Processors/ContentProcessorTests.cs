@@ -11,10 +11,10 @@ namespace TbspRpgProcessor.Tests.Processors
 {
     public class ContentProcessorTests : ProcessorTest
     {
-        #region GetSourceForKey
+        #region GetContentTextForKey
 
         [Fact]
-        public async void GetSourceForKey_NoGame_ThrowException()
+        public async void GetContentTextForKey_NoGame_ThrowException()
         {
             // arrange
             var testGame = new Game()
@@ -33,14 +33,14 @@ namespace TbspRpgProcessor.Tests.Processors
                 new List<En>() {testSource});
 
             // act
-            Task Act() => processor.GetSourceForKey(Guid.NewGuid(), testSource.Key);
+            Task Act() => processor.GetContentTextForKey(Guid.NewGuid(), testSource.Key);
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
         }
 
         [Fact]
-        public async void GetSourceForKey_NullLanguage_SourceReturned()
+        public async void GetContentTextForKey_NullLanguage_SourceReturned()
         {
             // arrange
             var testGame = new Game()
@@ -58,7 +58,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 new List<En>() {testSource});
             
             // act
-            var source = await processor.GetSourceForKey(testGame.Id, testSource.Key);
+            var source = await processor.GetContentTextForKey(testGame.Id, testSource.Key);
             
             // assert
             Assert.NotNull(source);
@@ -66,7 +66,7 @@ namespace TbspRpgProcessor.Tests.Processors
         }
 
         [Fact]
-        public async void GetSourceForKey_Valid_SourceReturned()
+        public async void GetContentTextForKey_Valid_SourceReturned()
         {
             // arrange
             var testGame = new Game()
@@ -85,7 +85,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 new List<En>() {testSource});
             
             // act
-            var source = await processor.GetSourceForKey(testGame.Id, testSource.Key);
+            var source = await processor.GetContentTextForKey(testGame.Id, testSource.Key);
             
             // assert
             Assert.NotNull(source);

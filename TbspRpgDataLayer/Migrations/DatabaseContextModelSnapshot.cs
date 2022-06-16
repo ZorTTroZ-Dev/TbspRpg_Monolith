@@ -17,7 +17,7 @@ namespace TbspRpgDataLayer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
@@ -53,6 +53,21 @@ namespace TbspRpgDataLayer.Migrations
                     b.ToTable("GroupUser");
                 });
 
+            modelBuilder.Entity("ScriptScript", b =>
+                {
+                    b.Property<Guid>("IncludedInId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("IncludesId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("IncludedInId", "IncludesId");
+
+                    b.HasIndex("IncludesId");
+
+                    b.ToTable("ScriptScript");
+                });
+
             modelBuilder.Entity("TbspRpgApi.Entities.LanguageSources.En", b =>
                 {
                     b.Property<Guid>("Id")
@@ -69,10 +84,15 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("ScriptId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Text")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ScriptId");
 
                     b.ToTable("sources_en", (string)null);
                 });
@@ -93,10 +113,15 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("ScriptId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Text")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ScriptId");
 
                     b.ToTable("sources_esp", (string)null);
                 });
@@ -117,15 +142,25 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<Guid>("InitialSourceKey")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("InitializationScriptId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("PublishDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("TerminationScriptId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("InitializationScriptId");
+
+                    b.HasIndex("TerminationScriptId");
 
                     b.ToTable("adventures", (string)null);
                 });
@@ -211,6 +246,12 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<Guid>("AdventureId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("EnterScriptId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ExitScriptId")
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("Final")
                         .HasColumnType("boolean");
 
@@ -226,6 +267,10 @@ namespace TbspRpgDataLayer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AdventureId");
+
+                    b.HasIndex("EnterScriptId");
+
+                    b.HasIndex("ExitScriptId");
 
                     b.ToTable("locations", (string)null);
                 });
@@ -255,19 +300,19 @@ namespace TbspRpgDataLayer.Migrations
                     b.Property<Guid>("DestinationLocationId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("FailureSourceKey")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("LocationId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("SourceKey")
+                    b.Property<Guid?>("RouteTakenScriptId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("SuccessSourceKey")
+                    b.Property<Guid>("RouteTakenSourceKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SourceKey")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -276,7 +321,35 @@ namespace TbspRpgDataLayer.Migrations
 
                     b.HasIndex("LocationId");
 
+                    b.HasIndex("RouteTakenScriptId");
+
                     b.ToTable("routes", (string)null);
+                });
+
+            modelBuilder.Entity("TbspRpgDataLayer.Entities.Script", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<Guid>("AdventureId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdventureId");
+
+                    b.ToTable("scripts", (string)null);
                 });
 
             modelBuilder.Entity("TbspRpgDataLayer.Entities.User", b =>
@@ -339,6 +412,39 @@ namespace TbspRpgDataLayer.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ScriptScript", b =>
+                {
+                    b.HasOne("TbspRpgDataLayer.Entities.Script", null)
+                        .WithMany()
+                        .HasForeignKey("IncludedInId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TbspRpgDataLayer.Entities.Script", null)
+                        .WithMany()
+                        .HasForeignKey("IncludesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TbspRpgApi.Entities.LanguageSources.En", b =>
+                {
+                    b.HasOne("TbspRpgDataLayer.Entities.Script", "Script")
+                        .WithMany()
+                        .HasForeignKey("ScriptId");
+
+                    b.Navigation("Script");
+                });
+
+            modelBuilder.Entity("TbspRpgApi.Entities.LanguageSources.Esp", b =>
+                {
+                    b.HasOne("TbspRpgDataLayer.Entities.Script", "Script")
+                        .WithMany()
+                        .HasForeignKey("ScriptId");
+
+                    b.Navigation("Script");
+                });
+
             modelBuilder.Entity("TbspRpgDataLayer.Entities.Adventure", b =>
                 {
                     b.HasOne("TbspRpgDataLayer.Entities.User", "CreatedByUser")
@@ -347,7 +453,19 @@ namespace TbspRpgDataLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TbspRpgDataLayer.Entities.Script", "InitializationScript")
+                        .WithMany("AdventureInitializations")
+                        .HasForeignKey("InitializationScriptId");
+
+                    b.HasOne("TbspRpgDataLayer.Entities.Script", "TerminationScript")
+                        .WithMany("AdventureTerminations")
+                        .HasForeignKey("TerminationScriptId");
+
                     b.Navigation("CreatedByUser");
+
+                    b.Navigation("InitializationScript");
+
+                    b.Navigation("TerminationScript");
                 });
 
             modelBuilder.Entity("TbspRpgDataLayer.Entities.Content", b =>
@@ -396,7 +514,19 @@ namespace TbspRpgDataLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TbspRpgDataLayer.Entities.Script", "EnterScript")
+                        .WithMany()
+                        .HasForeignKey("EnterScriptId");
+
+                    b.HasOne("TbspRpgDataLayer.Entities.Script", "ExitScript")
+                        .WithMany()
+                        .HasForeignKey("ExitScriptId");
+
                     b.Navigation("Adventure");
+
+                    b.Navigation("EnterScript");
+
+                    b.Navigation("ExitScript");
                 });
 
             modelBuilder.Entity("TbspRpgDataLayer.Entities.Route", b =>
@@ -413,9 +543,26 @@ namespace TbspRpgDataLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TbspRpgDataLayer.Entities.Script", "RouteTakenScript")
+                        .WithMany()
+                        .HasForeignKey("RouteTakenScriptId");
+
                     b.Navigation("DestinationLocation");
 
                     b.Navigation("Location");
+
+                    b.Navigation("RouteTakenScript");
+                });
+
+            modelBuilder.Entity("TbspRpgDataLayer.Entities.Script", b =>
+                {
+                    b.HasOne("TbspRpgDataLayer.Entities.Adventure", "Adventure")
+                        .WithMany("Scripts")
+                        .HasForeignKey("AdventureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Adventure");
                 });
 
             modelBuilder.Entity("TbspRpgDataLayer.Entities.Adventure", b =>
@@ -423,6 +570,8 @@ namespace TbspRpgDataLayer.Migrations
                     b.Navigation("Games");
 
                     b.Navigation("Locations");
+
+                    b.Navigation("Scripts");
                 });
 
             modelBuilder.Entity("TbspRpgDataLayer.Entities.Game", b =>
@@ -435,6 +584,13 @@ namespace TbspRpgDataLayer.Migrations
                     b.Navigation("Games");
 
                     b.Navigation("Routes");
+                });
+
+            modelBuilder.Entity("TbspRpgDataLayer.Entities.Script", b =>
+                {
+                    b.Navigation("AdventureInitializations");
+
+                    b.Navigation("AdventureTerminations");
                 });
 
             modelBuilder.Entity("TbspRpgDataLayer.Entities.User", b =>

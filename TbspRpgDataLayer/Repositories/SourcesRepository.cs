@@ -18,6 +18,7 @@ namespace TbspRpgDataLayer.Repositories
         Task AddSource(Source source, string language);
         Task RemoveAllSourceForAdventure(Guid adventureId);
         Task<List<Source>> GetAllSourceForAdventure(Guid adventureId, string language);
+        Task<List<Source>> GetSourcesWithScript(Guid scriptId);
     }
     
     public class SourcesRepository : ISourcesRepository
@@ -122,6 +123,17 @@ namespace TbspRpgDataLayer.Repositories
         {
             var query = GetQueryRoot(language);
             return query.Where(source => source.AdventureId == adventureId).ToListAsync();
+        }
+
+        public async Task<List<Source>> GetSourcesWithScript(Guid scriptId)
+        {
+            List<Source> sources = new List<Source>();
+            foreach (var language in Languages.GetAllLanguages())
+            {
+                var query = GetQueryRoot(language);
+                sources.AddRange(await query.Where(source => source.ScriptId == scriptId).ToListAsync());
+            }
+            return sources;
         }
     }
 }
