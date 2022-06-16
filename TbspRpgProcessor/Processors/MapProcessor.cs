@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
+using TbspRpgProcessor.Entities;
 
 namespace TbspRpgProcessor.Processors
 {
@@ -14,16 +14,23 @@ namespace TbspRpgProcessor.Processors
     
     public class MapProcessor: IMapProcessor
     {
+        private readonly IScriptProcessor _scriptProcessor;
+        private readonly ISourceProcessor _sourceProcessor;
         private readonly IGamesService _gamesService;
         private readonly IRoutesService _routesService;
         private readonly IContentsService _contentsService;
         private readonly ILogger<MapProcessor> _logger;
 
-        public MapProcessor(IGamesService gamesService,
+        public MapProcessor(
+            IScriptProcessor scriptProcessor,
+            ISourceProcessor sourceProcessor,
+            IGamesService gamesService,
             IRoutesService routesService,
             IContentsService contentsService,
             ILogger<MapProcessor> logger)
         {
+            _scriptProcessor = scriptProcessor;
+            _sourceProcessor = sourceProcessor;
             _gamesService = gamesService;
             _routesService = routesService;
             _contentsService = contentsService;
@@ -38,7 +45,7 @@ namespace TbspRpgProcessor.Processors
         //  if pass update location id, location time stamp, add pass content to game
         public async Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp)
         {
-            var game = await _gamesService.GetGameById(gameId);
+            var game = await _gamesService.GetGameByIdIncludeAdventure(gameId);
             if (game == null)
             {
                 throw new ArgumentException("invalid game id");
@@ -54,19 +61,50 @@ namespace TbspRpgProcessor.Processors
             {
                 throw new Exception("game not in location it should be");
             }
+            
+            // these scripts should just update game state, can't stop entering location
+            // run the location exit script
+            if (route.Location.ExitScriptId != null)
+            {
+                await _scriptProcessor.ExecuteScript(route.Location.ExitScriptId.GetValueOrDefault());
+            }
+                
+            // run the route taken script
+            if (route.RouteTakenScriptId != null)
+            {
+                await _scriptProcessor.ExecuteScript(route.RouteTakenScriptId.GetValueOrDefault());
+            }
+            
+            // run the location enter script
+            if (route.DestinationLocation.EnterScriptId != null)
+            {
+                await _scriptProcessor.ExecuteScript(route.DestinationLocation.EnterScriptId.GetValueOrDefault());
+            }
+
+            // if we're entering the final location run the adventure completion script
+            if (route.DestinationLocation.Final && game.Adventure.TerminationScriptId != null)
+            {
+                await _scriptProcessor.ExecuteScript(game.Adventure.TerminationScriptId.GetValueOrDefault());
+            }
 
             // for now assume the check passed
             var secondsSinceEpoch = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds();
             game.LocationId = route.DestinationLocationId;
             game.LocationUpdateTimeStamp = secondsSinceEpoch;
-            
+
             // create content entry for the route
             await _contentsService.AddContent(new Content()
             {
                 Id = Guid.NewGuid(),
                 GameId = game.Id,
                 Position = (ulong)secondsSinceEpoch,
-                SourceKey = route.SuccessSourceKey
+                SourceKey = await _sourceProcessor.ResolveSourceKey(
+                    new SourceForKeyModel()
+                    {
+                        AdventureId = game.AdventureId,
+                        Key = route.RouteTakenSourceKey,
+                        Language = game.Language
+                    })
             });
             
             // create content entry for the new location
@@ -75,7 +113,13 @@ namespace TbspRpgProcessor.Processors
                 Id = Guid.NewGuid(),
                 GameId = game.Id,
                 Position = (ulong)secondsSinceEpoch + 1,
-                SourceKey = route.DestinationLocation.SourceKey
+                SourceKey = await _sourceProcessor.ResolveSourceKey(
+                    new SourceForKeyModel()
+                    {
+                        AdventureId = game.AdventureId,
+                        Key = route.DestinationLocation.SourceKey,
+                        Language = game.Language
+                    })
             });
 
             // save context changes

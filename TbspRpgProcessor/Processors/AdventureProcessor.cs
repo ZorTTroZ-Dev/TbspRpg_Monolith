@@ -20,6 +20,7 @@ namespace TbspRpgProcessor.Processors
         private readonly ILocationProcessor _locationProcessor;
         private readonly IAdventuresService _adventuresService;
         private readonly ISourcesService _sourcesService;
+        private readonly IScriptsService _scriptsService;
         private readonly ILogger<AdventureProcessor> _logger;
 
         public AdventureProcessor(ISourceProcessor sourceProcessor,
@@ -27,6 +28,7 @@ namespace TbspRpgProcessor.Processors
             ILocationProcessor locationProcessor,
             IAdventuresService adventuresService,
             ISourcesService sourcesService,
+            IScriptsService scriptsService,
             ILogger<AdventureProcessor> logger)
         {
             _sourceProcessor = sourceProcessor;
@@ -34,6 +36,7 @@ namespace TbspRpgProcessor.Processors
             _locationProcessor = locationProcessor;
             _adventuresService = adventuresService;
             _sourcesService = sourcesService;
+            _scriptsService = scriptsService;
             _logger = logger;
         }
         
@@ -50,7 +53,9 @@ namespace TbspRpgProcessor.Processors
                     Name = adventureUpdateModel.Adventure.Name,
                     InitialSourceKey = Guid.Empty,
                     CreatedByUserId = adventureUpdateModel.UserId,
-                    PublishDate = adventureUpdateModel.Adventure.PublishDate
+                    PublishDate = adventureUpdateModel.Adventure.PublishDate,
+                    InitializationScriptId = adventureUpdateModel.Adventure.InitializationScriptId,
+                    TerminationScriptId = adventureUpdateModel.Adventure.TerminationScriptId
                 };
                 await _adventuresService.AddAdventure(adventure);
             }
@@ -62,6 +67,8 @@ namespace TbspRpgProcessor.Processors
                     throw new ArgumentException("invalid adventure id");
                 dbAdventure.Name = adventureUpdateModel.Adventure.Name;
                 dbAdventure.PublishDate = adventureUpdateModel.Adventure.PublishDate;
+                dbAdventure.InitializationScriptId = adventureUpdateModel.Adventure.InitializationScriptId;
+                dbAdventure.TerminationScriptId = adventureUpdateModel.Adventure.TerminationScriptId;
                 adventure = dbAdventure;
             }
             
@@ -96,6 +103,7 @@ namespace TbspRpgProcessor.Processors
             await _gameProcessor.RemoveGames(adventure.Games, false);
             await _locationProcessor.RemoveLocations(adventure.Locations, false);
             await _sourcesService.RemoveAllSourceForAdventure(adventure.Id);
+            await _scriptsService.RemoveAllScriptsForAdventure(adventure.Id);
             _adventuresService.RemoveAdventure(adventure);
             await _adventuresService.SaveChanges();
         }

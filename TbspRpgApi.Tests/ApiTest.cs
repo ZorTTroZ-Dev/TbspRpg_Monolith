@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
+using Org.BouncyCastle.Bcpg;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.Services;
@@ -53,6 +54,10 @@ namespace TbspRpgApi.Tests
             permissionService.Setup(service =>
                     service.CanDeleteGame(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((Guid userId, Guid gameId) => true);
+
+            permissionService.Setup(service =>
+                    service.CanDeleteScript(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid userId, Guid scriptId) => true);
             
             return permissionService.Object;
         }
@@ -61,7 +66,8 @@ namespace TbspRpgApi.Tests
             ICollection<User> users,
             ICollection<Location> locations = null,
             ICollection<Adventure> adventures = null,
-            ICollection<Game> games = null)
+            ICollection<Game> games = null,
+            ICollection<Script> scripts = null)
         {
             locations ??= new List<Location>();
             adventures ??= new List<Adventure>();
@@ -71,10 +77,12 @@ namespace TbspRpgApi.Tests
             var dlLocationsService = MockServices.MockDataLayerLocationsService(locations);
             var dlAdventuresService = MockServices.MockDataLayerAdventuresService(adventures);
             var dlGamesService = MockServices.MockDataLayerGamesService(games);
+            var dlScriptsService = MockServices.MockDataLayerScriptsService(scripts);
             return new PermissionService(dlUsersService,
                 dlLocationsService,
                 dlAdventuresService,
                 dlGamesService,
+                dlScriptsService,
                 NullLogger<PermissionService>.Instance);
         }
         
@@ -113,10 +121,10 @@ namespace TbspRpgApi.Tests
         }
 
         protected static ContentsService CreateContentsService(ICollection<Content> contents,
-            ICollection<Game> games = null, ICollection<En> sources = null)
+            Guid scriptExceptionId, ICollection<Game> games = null, ICollection<En> sources = null)
         {
             var dlContentsService = MockServices.MockDataLayerContentsService(contents);
-            var contentProcessor = ProcessorTest.MockContentProcessor(games, sources);
+            var contentProcessor = ProcessorTest.MockContentProcessor(games, sources, scriptExceptionId);
             return new ContentsService(dlContentsService, 
                 contentProcessor, NullLogger<ContentsService>.Instance);
         }
@@ -146,10 +154,10 @@ namespace TbspRpgApi.Tests
                 NullLogger<LocationsService>.Instance);
         }
 
-        protected static SourcesService CreateSourcesService(ICollection<En> sources)
+        protected static SourcesService CreateSourcesService(ICollection<En> sources, Guid scriptExceptionId)
         {
             var dlSourcesService = MockServices.MockDataLayerSourcesService(sources);
-            var sourceProcessor = ProcessorTest.MockSourceProcessor(sources);
+            var sourceProcessor = ProcessorTest.MockSourceProcessor(sources, scriptExceptionId);
             return new SourcesService(
                 dlSourcesService,
                 sourceProcessor,
@@ -166,6 +174,18 @@ namespace TbspRpgApi.Tests
                 routeProcessor,
                 dlRoutesService,
                 NullLogger<RoutesService>.Instance);
+        }
+
+        protected static ScriptsService CreateScriptsService(
+            ICollection<Script> scripts = null,
+            Guid? executeScriptExceptionId = null)
+        {
+            var scriptProcessor = ProcessorTest.MockScriptProcessor(executeScriptExceptionId.GetValueOrDefault());
+            var dlScriptService = MockServices.MockDataLayerScriptsService(scripts);
+            return new ScriptsService(
+                scriptProcessor,
+                dlScriptService,
+                NullLogger<ScriptsService>.Instance);
         }
     }
 }

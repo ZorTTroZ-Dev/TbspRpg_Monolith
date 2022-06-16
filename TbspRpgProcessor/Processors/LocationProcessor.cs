@@ -47,7 +47,9 @@ namespace TbspRpgProcessor.Processors
                     Name = location.Name,
                     Initial = location.Initial,
                     Final = location.Final,
-                    AdventureId = location.AdventureId
+                    AdventureId = location.AdventureId,
+                    EnterScriptId = location.EnterScriptId,
+                    ExitScriptId = location.ExitScriptId
                 };
                 await _locationsService.AddLocation(dbLocation);
             }
@@ -60,6 +62,8 @@ namespace TbspRpgProcessor.Processors
                 dbLocation.Name = location.Name;
                 dbLocation.Initial = location.Initial;
                 dbLocation.Final = location.Final;
+                dbLocation.EnterScriptId = location.EnterScriptId;
+                dbLocation.ExitScriptId = location.ExitScriptId;
             }
             
             // update the source

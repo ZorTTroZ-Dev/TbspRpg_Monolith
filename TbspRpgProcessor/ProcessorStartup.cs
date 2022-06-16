@@ -16,6 +16,7 @@ namespace TbspRpgProcessor
             services.AddScoped<ISourceProcessor, SourceProcessor>();
             services.AddScoped<IAdventureProcessor, AdventureProcessor>();
             services.AddScoped<IUserProcessor, UserProcessor>();
+            services.AddScoped<IScriptProcessor, ScriptProcessor>();
             
             services.AddScoped<IMailClient, MailClient>();
         }

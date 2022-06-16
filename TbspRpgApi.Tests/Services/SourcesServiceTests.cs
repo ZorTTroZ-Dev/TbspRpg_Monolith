@@ -29,7 +29,7 @@ namespace TbspRpgApi.Tests.Services
                     Key = Guid.NewGuid()
                 }
             };
-            var service = CreateSourcesService(sources);
+            var service = CreateSourcesService(sources, Guid.Empty);
             
             // act
             var source = await service.GetSourceForKey(
@@ -58,7 +58,7 @@ namespace TbspRpgApi.Tests.Services
                     Key = Guid.NewGuid()
                 }
             };
-            var service = CreateSourcesService(sources);
+            var service = CreateSourcesService(sources, Guid.Empty);
             
             // act
             var source = await service.GetSourceForKey(
@@ -92,7 +92,7 @@ namespace TbspRpgApi.Tests.Services
                     Key = Guid.NewGuid()
                 }
             };
-            var service = CreateSourcesService(sources);
+            var service = CreateSourcesService(sources, Guid.Empty);
             
             // act
             var source = await service.GetProcessedSourceForKey(
@@ -123,7 +123,7 @@ namespace TbspRpgApi.Tests.Services
                     Text = "banana"
                 }
             };
-            var service = CreateSourcesService(sources);
+            var service = CreateSourcesService(sources, Guid.Empty);
             
             // act
             var source = await service.GetProcessedSourceForKey(

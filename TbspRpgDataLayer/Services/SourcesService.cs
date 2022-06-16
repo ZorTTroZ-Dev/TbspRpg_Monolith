@@ -14,6 +14,7 @@ namespace TbspRpgDataLayer.Services
         Task<Source> GetSourceForKey(Guid key, Guid adventureId, string language);
         Task AddSource(Source source, string language = null);
         Task RemoveAllSourceForAdventure(Guid adventureId);
+        void RemoveScriptFromSources(Guid scriptId);
     }
     
     public class SourcesService : ISourcesService
@@ -47,6 +48,15 @@ namespace TbspRpgDataLayer.Services
         public async Task RemoveAllSourceForAdventure(Guid adventureId)
         {
             await _sourcesRepository.RemoveAllSourceForAdventure(adventureId);
+        }
+
+        public async void RemoveScriptFromSources(Guid scriptId)
+        {
+            var sources = await _sourcesRepository.GetSourcesWithScript(scriptId);
+            foreach (var source in sources)
+            {
+                source.ScriptId = null;
+            }
         }
     }
 }

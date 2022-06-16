@@ -86,6 +86,25 @@ namespace TbspRpgDataLayer.Tests
             adventuresService.Setup(service =>
                     service.RemoveAdventure(It.IsAny<Adventure>()))
                 .Callback((Adventure adventure) => adventures.Remove(adventure));
+            
+            adventuresService.Setup(service =>
+                    service.RemoveScriptFromAdventures(It.IsAny<Guid>()))
+                .Callback((Guid scriptId) =>
+                {
+                    foreach (var adventure in adventures)
+                    {
+                        if (adventure.InitializationScriptId == scriptId)
+                        {
+                            adventure.InitializationScriptId = null;
+                            adventure.InitializationScript = null;
+                        }
+                        if (adventure.TerminationScriptId == scriptId)
+                        {
+                            adventure.TerminationScriptId = null;
+                            adventure.TerminationScript = null;
+                        }
+                    }
+                });
 
             return adventuresService.Object;
         }
@@ -109,6 +128,10 @@ namespace TbspRpgDataLayer.Tests
             
             gamesService.Setup(service =>
                     service.GetGameById(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid gameId) => games.FirstOrDefault(g => g.Id == gameId));
+            
+            gamesService.Setup(service =>
+                    service.GetGameByIdIncludeAdventure(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid gameId) => games.FirstOrDefault(g => g.Id == gameId));
 
             // doesn't do any actual filtering
@@ -160,8 +183,68 @@ namespace TbspRpgDataLayer.Tests
             locationsService.Setup(service =>
                     service.RemoveLocation(It.IsAny<Location>()))
                 .Callback((Location location) => locations.Remove(location));
+            
+            locationsService.Setup(service =>
+                    service.RemoveScriptFromLocations(It.IsAny<Guid>()))
+                .Callback((Guid scriptId) =>
+                {
+                    foreach (var location in locations)
+                    {
+                        if (location.EnterScriptId == scriptId)
+                        {
+                            location.EnterScript = null;
+                            location.EnterScriptId = null;
+                        }
+                        if (location.ExitScriptId == scriptId)
+                        {
+                            location.ExitScript = null;
+                            location.ExitScriptId = null;
+                        }
+                    }
+                });
 
             return locationsService.Object;
+        }
+        
+        public static IScriptsService MockDataLayerScriptsService(ICollection<Script> scripts)
+        {
+            var scriptsService = new Mock<IScriptsService>();
+
+            scriptsService.Setup(service =>
+                    service.GetScriptById(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid scriptId) => scripts.FirstOrDefault(s => s.Id == scriptId));
+            
+            scriptsService.Setup(service =>
+                    service.GetScriptsForAdventure(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId) => scripts.Where(s => s.AdventureId == adventureId).ToList());
+
+            scriptsService.Setup(service =>
+                    service.AddScript(It.IsAny<Script>()))
+                .Callback((Script script) => scripts.Add(script));
+            
+            scriptsService.Setup(service =>
+                    service.GetScriptWithIncludedIn(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid scriptId) => scripts.FirstOrDefault(s => s.Id == scriptId));
+            
+            scriptsService.Setup(service =>
+                    service.RemoveScript(It.IsAny<Script>()))
+                .Callback((Script script) => scripts.Remove(script));
+            
+            scriptsService.Setup(service =>
+                    service.RemoveAllScriptsForAdventure(It.IsAny<Guid>()))
+                .Callback((Guid adventureId) =>
+                {
+                    for (int i = scripts.Count - 1; i >= 0; i--)
+                    {
+                        // Do processing here, then...
+                        if (scripts.ToArray()[i].AdventureId == adventureId)
+                        {
+                            scripts.Remove(scripts.ToArray()[i]);
+                        }
+                    }
+                });
+            
+            return scriptsService.Object;
         }
 
         public static IRoutesService MockDataLayerRoutesService(ICollection<Route> routes)
@@ -214,6 +297,20 @@ namespace TbspRpgDataLayer.Tests
                         }
                     }
                 });
+            
+            routesService.Setup(service =>
+                    service.RemoveScriptFromRoutes(It.IsAny<Guid>()))
+                .Callback((Guid scriptId) =>
+                {
+                    foreach (var route in routes)
+                    {
+                        if (route.RouteTakenScriptId == scriptId)
+                        {
+                            route.RouteTakenScript = null;
+                            route.RouteTakenScriptId = null;
+                        }
+                    }
+                });
 
             return routesService.Object;
         }
@@ -263,6 +360,20 @@ namespace TbspRpgDataLayer.Tests
                         if (sources.ToArray()[i].AdventureId == adventureId)
                         {
                             sources.Remove(sources.ToArray()[i]);
+                        }
+                    }
+                });
+            
+            sourcesService.Setup(service =>
+                    service.RemoveScriptFromSources(It.IsAny<Guid>()))
+                .Callback((Guid scriptId) =>
+                {
+                    foreach (var en in sources)
+                    {
+                        if (en.ScriptId == scriptId)
+                        {
+                            en.Script = null;
+                            en.ScriptId = null;
                         }
                     }
                 });

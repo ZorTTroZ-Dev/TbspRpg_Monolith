@@ -8,7 +8,7 @@ namespace TbspRpgProcessor.Processors
 {
     public interface IContentProcessor
     {
-        Task<string> GetSourceForKey(Guid gameId, Guid sourceKey, bool processed = false);
+        Task<string> GetContentTextForKey(Guid gameId, Guid sourceKey, bool processed = false);
     }
     
     public class ContentProcessor : IContentProcessor
@@ -27,12 +27,8 @@ namespace TbspRpgProcessor.Processors
             _logger = logger;
         }
 
-        public async Task<string> GetSourceForKey(Guid gameId, Guid sourceKey, bool processed = false)
+        public async Task<string> GetContentTextForKey(Guid gameId, Guid sourceKey, bool processed = false)
         {
-            // get the language the game is set to
-            // eventually this will look up javascript
-            // that will use the game state to return a source key for lookup
-            // for now we'll just look up the source key
             var game = await _gamesService.GetGameById(gameId);
             if (game == null)
                 throw new ArgumentException("invalid game id");

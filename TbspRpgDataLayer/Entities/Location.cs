@@ -12,9 +12,13 @@ namespace TbspRpgDataLayer.Entities
         public bool Final { get; set; }
         public Guid SourceKey { get; set; }
         public Guid AdventureId { get; set; }
+        public Guid? EnterScriptId { get; set; }
+        public Guid? ExitScriptId { get; set; }
         
         public Adventure Adventure { get; set; }
         public ICollection<Route> Routes { get; set; }
         public ICollection<Game> Games { get; set; }
+        public Script EnterScript { get; set; }
+        public Script ExitScript { get; set; }
     }
 }

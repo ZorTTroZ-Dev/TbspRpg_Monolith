@@ -12,6 +12,8 @@ namespace TbspRpgApi.ViewModels
         public bool Final { get; set; }
         public Guid SourceKey { get; set; }
         public Guid AdventureId { get; set; }
+        public Guid? EnterScriptId { get; set; }
+        public Guid? ExitScriptId { get; set; }
 
         public LocationViewModel() {}
 
@@ -23,6 +25,8 @@ namespace TbspRpgApi.ViewModels
             Final = location.Final;
             SourceKey = location.SourceKey;
             AdventureId = location.AdventureId;
+            EnterScriptId = location.EnterScriptId;
+            ExitScriptId = location.ExitScriptId;
         }
 
         public Location ToEntity()
@@ -34,7 +38,9 @@ namespace TbspRpgApi.ViewModels
                 Initial = Initial,
                 Final = Final,
                 Name = Name,
-                SourceKey = SourceKey
+                SourceKey = SourceKey,
+                EnterScriptId = EnterScriptId,
+                ExitScriptId = ExitScriptId
             };
         }
     }

@@ -17,6 +17,7 @@ namespace TbspRpgDataLayer.Services
         void RemoveRoute(Route route);
         void RemoveRoutes(ICollection<Route> routes);
         Task AddRoute(Route route);
+        void RemoveScriptFromRoutes(Guid scriptId);
     }
     
     public class RoutesService : IRoutesService
@@ -58,6 +59,16 @@ namespace TbspRpgDataLayer.Services
         public async Task AddRoute(Route route)
         {
             await _routesRepository.AddRoute(route);
+        }
+
+        public async void RemoveScriptFromRoutes(Guid scriptId)
+        {
+            var routes = await _routesRepository.GetRoutesWithScript(scriptId);
+            foreach (var route in routes)
+            {
+                if (route.RouteTakenScriptId == scriptId)
+                    route.RouteTakenScriptId = null;
+            }
         }
 
         public async Task SaveChanges()
