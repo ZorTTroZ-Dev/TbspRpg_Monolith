@@ -59,6 +59,25 @@ namespace TbspRpgApi.Controllers
             return Ok(routes);
         }
         
+        [HttpGet("adventure/{adventureId:guid}"), Authorize]
+        public async Task<IActionResult> GetRoutesForAdventure(Guid adventureId)
+        {
+            var canAccessAdventure = await _permissionService.CanReadAdventure(
+                GetUserId().GetValueOrDefault(),
+                adventureId);
+            
+            if (!canAccessAdventure)
+            {
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            }
+                
+            var routes = await _routesService.GetRoutes(new RouteFilterRequest()
+            {
+                AdventureId = adventureId
+            });
+            return Ok(routes);
+        }
+        
         [HttpGet("destination/{locationId:guid}"), Authorize]
         public async Task<IActionResult> GetRoutesWithDestination(Guid locationId)
         {
