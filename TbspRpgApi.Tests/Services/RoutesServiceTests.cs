@@ -74,6 +74,49 @@ namespace TbspRpgApi.Tests.Services
             Assert.Single(routes);
             Assert.Equal(testRoutes[0].Id, routes[0].Id);
         }
+        
+        [Fact]
+        public async void GetRoutes_FilterAdventure_ReturnRoutes()
+        {
+            // arrange
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test adventure"
+            };
+            var testRoutes = new List<Route>()
+            {
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Location = new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        AdventureId = testAdventure.Id
+                    }
+                },
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Location = new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        AdventureId = testAdventure.Id
+                    }
+                }
+            };
+            var service = CreateRoutesService(testRoutes);
+            
+            // act
+            var routes = await service.GetRoutes(new RouteFilterRequest()
+            {
+                AdventureId = testAdventure.Id
+            });
+            
+            // assert
+            Assert.Equal(2, routes.Count);
+            Assert.Equal(testRoutes[0].Id, routes[0].Id);
+        }
 
         #endregion
 

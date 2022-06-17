@@ -267,6 +267,8 @@ namespace TbspRpgDataLayer.Tests
                         return routes.Where(r => r.DestinationLocationId == filter.DestinationLocationId).ToList();
                     if (filter.LocationId != null)
                         return routes.Where(r => r.LocationId == filter.LocationId).ToList();
+                    if (filter.AdventureId != null)
+                        return routes.Where(r => r.Location.AdventureId == filter.AdventureId).ToList();
                     return routes.ToList();
                 });
 

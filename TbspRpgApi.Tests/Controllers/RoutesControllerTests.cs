@@ -85,6 +85,97 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+        
+        #region GetRoutesForAdventure
+
+        [Fact]
+        public async void GetRoutesForAdventure_RouteWithAdventureExists_ReturnRoutes()
+        {
+            // arrange
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test adventure"
+            };
+            var testRoutes = new List<Route>()
+            {
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Location = new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        AdventureId = testAdventure.Id
+                    }
+                },
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Location = new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        AdventureId = testAdventure.Id
+                    }
+                }
+            };
+            var controller = CreateController(testRoutes);
+            
+            // act
+            var response = await controller.GetRoutesForAdventure(testAdventure.Id);
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var routeViewModels = okObjectResult.Value as List<RouteViewModel>;
+            Assert.NotNull(routeViewModels);
+            Assert.Equal(2, routeViewModels.Count);
+            Assert.Equal(testRoutes[0].Id, routeViewModels[0].Id);
+        }
+        
+        [Fact]
+        public async void GetRoutesForAdventure_RouteWithAdventureNotExists_ReturnEmpty()
+        {
+            // arrange
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test adventure"
+            };
+            var testRoutes = new List<Route>()
+            {
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Location = new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        AdventureId = testAdventure.Id
+                    }
+                },
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Location = new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        AdventureId = testAdventure.Id
+                    }
+                }
+            };
+            var controller = CreateController(testRoutes);
+            
+            // act
+            var response = await controller.GetRoutesForAdventure(Guid.NewGuid());
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var routeViewModels = okObjectResult.Value as List<RouteViewModel>;
+            Assert.NotNull(routeViewModels);
+            Assert.Empty(routeViewModels);
+        }
+
+        #endregion
 
         #region GetRoutesWithDestination
 
