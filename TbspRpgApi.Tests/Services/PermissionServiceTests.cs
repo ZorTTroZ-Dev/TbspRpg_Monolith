@@ -1934,5 +1934,329 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+        
+        #region CanDeleteRoute
+
+        [Fact]
+        public async void CanDeleteRoute_OwnsAdventure_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = users[0].Id
+                }
+            };
+            var locations = new List<Location>()
+            {
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test location",
+                    Adventure = adventures[0]
+                }
+            };
+            var routes = new List<Route>()
+            {
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    LocationId = locations[0].Id,
+                    Location = locations[0]
+                }
+            };
+            var service = CreatePermissionService(users, locations, adventures, null, null, routes);
+            
+            // act
+            var can = await service.CanDeleteRoute(users[0].Id, routes[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteRoute_HasPermission_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteLocation
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var locations = new List<Location>()
+            {
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test location",
+                    Adventure = adventures[0]
+                }
+            };
+            var routes = new List<Route>()
+            {
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    LocationId = locations[0].Id,
+                    Location = locations[0]
+                }
+            };
+            var service = CreatePermissionService(users, locations, adventures, null, null, routes);
+            
+            // act
+            var can = await service.CanDeleteRoute(users[0].Id, routes[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteRoute_NoOwnNoPermissionIsAdmin_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var locations = new List<Location>()
+            {
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test location",
+                    Adventure = adventures[0]
+                }
+            };
+            var routes = new List<Route>()
+            {
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    LocationId = locations[0].Id,
+                    Location = locations[0]
+                }
+            };
+            var service = CreatePermissionService(users, locations, adventures, null, null, routes);
+            
+            // act
+            var can = await service.CanDeleteRoute(users[0].Id, routes[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteRoute_NoOwnNoPermissionNotAdmin_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var locations = new List<Location>()
+            {
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test location",
+                    Adventure = adventures[0]
+                }
+            };
+            var routes = new List<Route>()
+            {
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    LocationId = locations[0].Id,
+                    Location = locations[0]
+                }
+            };
+            var service = CreatePermissionService(users, locations, adventures, null, null, routes);
+            
+            // act
+            var can = await service.CanDeleteRoute(users[0].Id, routes[0].Id);
+            
+            // assert
+            Assert.False(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteRoute_BadRouteId_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var locations = new List<Location>()
+            {
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test location",
+                    Adventure = adventures[0]
+                }
+            };
+            var routes = new List<Route>()
+            {
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    LocationId = locations[0].Id,
+                    Location = locations[0]
+                }
+            };
+            var service = CreatePermissionService(users, locations, adventures, null, null, routes);
+            
+            // act
+            var can = await service.CanDeleteRoute(users[0].Id, Guid.NewGuid());
+            
+            // assert
+            Assert.False(can);
+        }
+
+        #endregion
     }
 }

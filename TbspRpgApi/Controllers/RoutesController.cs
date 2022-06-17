@@ -120,5 +120,23 @@ namespace TbspRpgApi.Controllers
                 return BadRequest((new {message = ex.Message}));
             }
         }
+        
+        [HttpDelete("{routeId:guid}"), Authorize]
+        public async Task<IActionResult> DeleteRoute(Guid routeId)
+        {
+            var canDeleteRoute = await _permissionService.CanDeleteScript(GetUserId().GetValueOrDefault(), routeId);
+            if(!canDeleteRoute)
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            
+            try
+            {
+                await _routesService.DeleteRoute(routeId);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest(new { message = "couldn't delete route" });
+            }
+        }
     }
 }

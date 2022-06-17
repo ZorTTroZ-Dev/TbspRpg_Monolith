@@ -366,5 +366,65 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+
+        #region DeleteRoute
+
+        [Fact]
+        public async void DeleteRoute_Valid_NoException()
+        {
+            // arrange
+            var testRoutes = new List<Route>()
+            {
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test route"
+                },
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test route two"
+                }
+            };
+            var controller = CreateController(testRoutes);
+        
+            // act
+            var response = await controller.DeleteRoute(testRoutes[0].Id);
+        
+            // assert
+            var okResult = response as OkResult;
+            Assert.NotNull(okResult);
+        }
+    
+        [Fact]
+        public async void DeleteScript_DeleteFails_ExceptionThrown()
+        {
+            // arrange
+            var testRoutes = new List<Route>()
+            {
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test route"
+                },
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test route two"
+                }
+            };
+            var exceptionId = Guid.NewGuid();
+            var controller = CreateController(testRoutes, exceptionId);
+
+            // act
+            var response = await controller.DeleteRoute(exceptionId);
+        
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+
+        #endregion
     }
 }

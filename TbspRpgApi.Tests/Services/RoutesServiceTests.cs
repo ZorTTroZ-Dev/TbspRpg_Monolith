@@ -231,5 +231,43 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+
+        #region DeleteRoute
+
+        [Fact]
+        public async void DeleteRoute_InvalidRouteId_ThrowsException()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var service = CreateRoutesService(new List<Route>(), exceptionId);
+            
+            // act
+            Task Act() => service.DeleteRoute(exceptionId);
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        [Fact]
+        public async void DeleteRoute_RouteValid_Returns()
+        {
+            // arrange
+            var routes = new List<Route>()
+            {
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test route"
+                }
+            };
+            var service = CreateRoutesService(routes, Guid.NewGuid());
+            
+            // act
+            await service.DeleteRoute(routes[0].Id);
+
+            // assert
+        }
+
+        #endregion
     }
 }

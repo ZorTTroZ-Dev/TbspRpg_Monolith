@@ -13,6 +13,7 @@ namespace TbspRpgProcessor.Processors
     public interface IRouteProcessor
     {
         Task UpdateRoute(RouteUpdateModel routeUpdateModel);
+        Task RemoveRoute(RouteRemoveModel routeRemoveModel);
         Task RemoveRoutes(List<Guid> currentRouteIds, Guid locationId);
     }
     
@@ -112,6 +113,17 @@ namespace TbspRpgProcessor.Processors
                 routeUpdateModel.language);
             route.RouteTakenSourceKey = dbSuccessSource.Key;
 
+            await _routesService.SaveChanges();
+        }
+
+        public async Task RemoveRoute(RouteRemoveModel routeRemoveModel)
+        {
+            var dbRoute = await _routesService.GetRouteById(routeRemoveModel.RouteId);
+            if (dbRoute == null)
+            {
+                throw new ArgumentException("invalid route id");
+            }
+            _routesService.RemoveRoute(dbRoute);
             await _routesService.SaveChanges();
         }
 
