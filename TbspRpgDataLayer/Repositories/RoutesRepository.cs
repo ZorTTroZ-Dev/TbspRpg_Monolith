@@ -12,6 +12,7 @@ namespace TbspRpgDataLayer.Repositories
     public interface IRoutesRepository : IBaseRepository
     {
         Task<List<Route>> GetRoutesForLocation(Guid locationId);
+        Task<List<Route>> GetRoutesForAdventure(Guid adventureId);
         Task<Route> GetRouteById(Guid routeId);
         Task<List<Route>> GetRoutes(RouteFilter routeFilter);
         void RemoveRoute(Route route);
@@ -41,7 +42,11 @@ namespace TbspRpgDataLayer.Repositories
                 if (routeFilter.LocationId != null)
                 {
                     query = query.Where(route => route.LocationId == routeFilter.LocationId);
-                }    
+                }
+                if (routeFilter.AdventureId != null)
+                {
+                    query = query.Where(route => route.Location.AdventureId == routeFilter.AdventureId);
+                }
             }
             return query.ToListAsync();
         }
@@ -73,6 +78,14 @@ namespace TbspRpgDataLayer.Repositories
             return GetRoutes(new RouteFilter()
             {
                 LocationId = locationId
+            });
+        }
+
+        public Task<List<Route>> GetRoutesForAdventure(Guid adventureId)
+        {
+            return GetRoutes(new RouteFilter()
+            {
+                AdventureId = adventureId
             });
         }
 

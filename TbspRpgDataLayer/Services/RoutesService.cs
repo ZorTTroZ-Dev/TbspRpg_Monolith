@@ -12,6 +12,7 @@ namespace TbspRpgDataLayer.Services
     public interface IRoutesService: IBaseService
     {
         Task<List<Route>> GetRoutesForLocation(Guid locationId);
+        Task<List<Route>> GetRoutesForAdventure(Guid adventureId);
         Task<Route> GetRouteById(Guid routeId);
         Task<List<Route>> GetRoutes(RouteFilter routeFilter);
         void RemoveRoute(Route route);
@@ -34,6 +35,11 @@ namespace TbspRpgDataLayer.Services
         public Task<List<Route>> GetRoutesForLocation(Guid locationId)
         {
             return _routesRepository.GetRoutesForLocation(locationId);
+        }
+
+        public Task<List<Route>> GetRoutesForAdventure(Guid adventureId)
+        {
+            return _routesRepository.GetRoutesForAdventure(adventureId);
         }
 
         public Task<Route> GetRouteById(Guid routeId)

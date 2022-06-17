@@ -103,6 +103,109 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+        
+        #region GetRoutesForAdventure
+
+        [Fact]
+        public async void GetRoutesForAdventure_ValidAdventure_RoutesReturned()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var locationOne = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location",
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure"
+                }
+            };
+            var locationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location two",
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure two"
+                }
+            };
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test",
+                Location = locationOne
+            };
+            var testRouteTwo = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_two",
+                Location = locationTwo
+            };
+            await context.Locations.AddRangeAsync(locationOne, locationTwo);
+            await context.Routes.AddRangeAsync(testRoute, testRouteTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            //act
+            var routes = await service.GetRoutesForAdventure(locationOne.AdventureId);
+            
+            //assert
+            Assert.Single(routes);
+            Assert.Equal(testRoute.Name, routes.First().Name);
+        }
+
+        [Fact]
+        public async void GetRoutesForAdventure_InvalidAdventure_NoRoutes()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var locationOne = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location",
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure"
+                }
+            };
+            var locationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test location two",
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure two"
+                }
+            };
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test",
+                Location = locationOne
+            };
+            var testRouteTwo = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_two",
+                Location = locationTwo
+            };
+            await context.Locations.AddRangeAsync(locationOne, locationTwo);
+            await context.Routes.AddRangeAsync(testRoute, testRouteTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            //act
+            var routes = await service.GetRoutesForLocation(Guid.NewGuid());
+            
+            //assert
+            Assert.Empty(routes);
+        }
+
+        #endregion
 
         #region GetRouteById
 
