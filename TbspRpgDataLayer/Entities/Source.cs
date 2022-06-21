@@ -10,6 +10,7 @@ namespace TbspRpgDataLayer.Entities
         public string Text { get; set; }
         public Guid AdventureId { get; set; }
         public Guid? ScriptId { get; set; }
+        public string Language { get; set; }
         
         public Script Script { get; set; }
     }

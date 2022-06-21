@@ -6,7 +6,9 @@ using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Entities;
+using TbspRpgDataLayer.Migrations;
 using TbspRpgDataLayer.Services;
+using TbspRpgSettings.Settings;
 
 namespace TbspRpgDataLayer.Tests
 {
@@ -379,6 +381,18 @@ namespace TbspRpgDataLayer.Tests
                         }
                     }
                 });
+
+            sourcesService.Setup(service =>
+                    service.GetAllSourceForAdventure(It.IsAny<Guid>(), It.IsAny<string>()))
+                .Returns((Guid adventureId, string language) => 
+                    sources.Where(source => source.AdventureId == adventureId).ToList()
+                );
+            
+            sourcesService.Setup(service =>
+                    service.GetAllSourceAllLanguagesForAdventure(It.IsAny<Guid>()))
+                .Returns((Guid adventureId) => 
+                    sources.Where(source => source.AdventureId == adventureId).ToList()
+                );
 
             return sourcesService.Object;
         }
