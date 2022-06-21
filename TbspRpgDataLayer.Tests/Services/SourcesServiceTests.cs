@@ -292,5 +292,99 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+        
+        #region GetAllSourceForAdventure
+
+        [Fact]
+        public async void GetAllSourceForAdventure_Valid_AllSourceReturned()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = testSource.AdventureId,
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEnTwo = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = Guid.NewGuid(),
+                Name = "test source two",
+                Text = "test source two"
+            };
+            context.SourcesEsp.Add(testSource);
+            context.SourcesEn.Add(testSourceEn);
+            context.SourcesEn.Add(testSourceEnTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var source = await service.GetAllSourceForAdventure(testSource.AdventureId, Languages.ENGLISH);
+            
+            // assert
+            Assert.Single(source);
+        }
+
+        #endregion
+
+        #region GetAllSourceAllLanguagesForAdventure
+
+        [Fact]
+        public async void GetAllSourceAllLanguagesForAdventure()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = testSource.AdventureId,
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEnTwo = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = Guid.NewGuid(),
+                Name = "test source two",
+                Text = "test source two"
+            };
+            context.SourcesEsp.Add(testSource);
+            context.SourcesEn.Add(testSourceEn);
+            context.SourcesEn.Add(testSourceEnTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var sources = await service.GetAllSourceAllLanguagesForAdventure(testSource.AdventureId);
+            
+            // assert
+            Assert.Equal(2, sources.Count);
+            Assert.Equal(Languages.ENGLISH, sources.First(source => source.Id == testSourceEn.Id).Language);
+            Assert.Equal(Languages.SPANISH, sources.First(source => source.Id == testSource.Id).Language);
+        }
+
+        #endregion
     }
 }
