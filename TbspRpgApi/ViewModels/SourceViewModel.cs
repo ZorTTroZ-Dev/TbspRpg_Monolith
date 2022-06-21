@@ -32,6 +32,17 @@ namespace TbspRpgApi.ViewModels
             Language = language;
             ScriptId = source.ScriptId;
         }
+        
+        public SourceViewModel(Source source)
+        {
+            Id = source.Id;
+            Name = source.Name;
+            Key = source.Key;
+            AdventureId = source.AdventureId;
+            Text = source.Text;
+            Language = source.Language;
+            ScriptId = source.ScriptId;
+        }
 
         public Source ToEntity()
         {

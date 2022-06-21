@@ -56,20 +56,22 @@ namespace TbspRpgApi.Controllers
                 return BadRequest(new { message = NotYourAdventureErrorMessage });
             }
 
-            // if language is missing throw an exception
-            if (filters.Language == null)
+            if (filters.Key != null && filters.Language != null)
             {
-                return BadRequest(new {message = "language required"});
+                var source = await _sourcesService.GetSourceForKey(filters.Key.GetValueOrDefault(), adventureId, filters.Language);
+                return Ok(source);
+            }
+            if (filters.Language != null)
+            {
+                var sources = await _sourcesService.GetSourcesForAdventure(adventureId, filters.Language);
+                return Ok(sources);
+            }
+            else
+            {
+                var sources = await _sourcesService.GetSourceAllLanguagesForAdventure(adventureId);
+                return Ok(sources);
             }
             
-            // key is missing call a different method one that returns all sources for an adventure
-            if (filters.Key == null)
-            {
-                return BadRequest(new {message = "operation not supported yet."});
-            }
-            
-            var source = await _sourcesService.GetSourceForKey(filters.Key.GetValueOrDefault(), adventureId, filters.Language);
-            return Ok(source);
         }
         
         [HttpGet("adventure/{adventureId:guid}/processed")]

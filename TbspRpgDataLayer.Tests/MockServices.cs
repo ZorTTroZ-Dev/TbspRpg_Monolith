@@ -384,14 +384,41 @@ namespace TbspRpgDataLayer.Tests
 
             sourcesService.Setup(service =>
                     service.GetAllSourceForAdventure(It.IsAny<Guid>(), It.IsAny<string>()))
-                .Returns((Guid adventureId, string language) => 
-                    sources.Where(source => source.AdventureId == adventureId).ToList()
-                );
+                .ReturnsAsync((Guid adventureId, string language) =>
+                {
+                    var enSources = sources
+                        .Where(source => source.AdventureId == adventureId)
+                        .Select(enSource => new Source()
+                    {
+                        Id = enSource.Id,
+                        AdventureId = enSource.AdventureId,
+                        Key = enSource.Key,
+                        Language = Languages.ENGLISH,
+                        Name = enSource.Name,
+                        ScriptId = enSource.ScriptId,
+                        Text = enSource.Text
+                    });
+                    return enSources.ToList();
+                });
             
             sourcesService.Setup(service =>
                     service.GetAllSourceAllLanguagesForAdventure(It.IsAny<Guid>()))
-                .Returns((Guid adventureId) => 
-                    sources.Where(source => source.AdventureId == adventureId).ToList()
+                .ReturnsAsync((Guid adventureId) =>
+                    {
+                        var enSources = sources
+                            .Where(source => source.AdventureId == adventureId)
+                            .Select(enSource => new Source()
+                            {
+                                Id = enSource.Id,
+                                AdventureId = enSource.AdventureId,
+                                Key = enSource.Key,
+                                Language = Languages.ENGLISH,
+                                Name = enSource.Name,
+                                ScriptId = enSource.ScriptId,
+                                Text = enSource.Text
+                            });
+                        return enSources.ToList();
+                    }
                 );
 
             return sourcesService.Object;
