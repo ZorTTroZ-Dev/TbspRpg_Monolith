@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using TbspRpgApi.Entities;
 
 namespace TbspRpgDataLayer.Entities
@@ -12,6 +13,7 @@ namespace TbspRpgDataLayer.Entities
         public Guid LocationId { get; set; }
         public string Language { get; set; }
         public long LocationUpdateTimeStamp { get; set; }
+        public JsonDocument GameState { get; set; }
 
         public Adventure Adventure { get; set; }
         public User User { get; set; }
