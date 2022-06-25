@@ -163,6 +163,10 @@ namespace TbspRpgDataLayer
                 .HasMany(g => g.Contents)
                 .WithOne(c => c.Game)
                 .HasForeignKey(c => c.GameId);
+            
+            modelBuilder.Entity<Game>()
+                .Property(g => g.GameState)
+                .HasColumnType("jsonb");
 
             #endregion
 
