@@ -13,7 +13,9 @@ namespace TbspRpgProcessor.Processors;
 
 public interface IScriptProcessor
 {
+    Task<string> ExecuteScript(Guid scriptId, Guid gameId);
     Task<string> ExecuteScript(Guid scriptId);
+    string ExecuteScript(Script script, Game game);
     Task RemoveScript(ScriptRemoveModel scriptIdRemoveModel);
     Task UpdateScript(ScriptUpdateModel scriptUpdateModel);
 }
@@ -25,6 +27,7 @@ public class ScriptProcessor : IScriptProcessor
     private readonly IRoutesService _routesService;
     private readonly ILocationsService _locationsService;
     private readonly ISourcesService _sourcesService;
+    private readonly IGamesService _gamesService;
     private readonly ILogger<ScriptProcessor> _logger;
 
     public ScriptProcessor(IScriptsService scriptsService,
@@ -32,6 +35,7 @@ public class ScriptProcessor : IScriptProcessor
         IRoutesService routesService,
         ILocationsService locationsService,
         ISourcesService sourcesService,
+        IGamesService gamesService,
         ILogger<ScriptProcessor> logger)
     {
         _scriptsService = scriptsService;
@@ -39,6 +43,7 @@ public class ScriptProcessor : IScriptProcessor
         _routesService = routesService;
         _locationsService = locationsService;
         _sourcesService = sourcesService;
+        _gamesService = gamesService;
         _logger = logger;
     }
     
@@ -55,15 +60,37 @@ public class ScriptProcessor : IScriptProcessor
     // I've also been thinking of adding variables to the content that can be replaced in the
     // associated source. So when content added, provide a source key and variable values that
     // would get replaced when source rendered.
-    public async Task<string> ExecuteScript(Guid scriptId)
+    private async Task<Script> VerifyScriptId(Guid scriptId)
     {
         if(scriptId == Guid.Empty)
             throw new ArgumentException("invalid script id");
             
-        var script = await _scriptsService.GetScriptById(scriptId);
-        if (script == null)
+        var dbScript = await _scriptsService.GetScriptById(scriptId);
+        if (dbScript == null)
             throw new ArgumentException("invalid script id");
         
+        return dbScript;
+    }
+    
+    public async Task<string> ExecuteScript(Guid scriptId, Guid gameId)
+    {
+        var dbScript = await VerifyScriptId(scriptId);
+        
+        var dbGame = await _gamesService.GetGameById(gameId);
+        if (dbGame == null)
+            throw new ArgumentException("invalid game id");
+        
+        return ExecuteScript(dbScript, dbGame);
+    }
+    
+    public async Task<string> ExecuteScript(Guid scriptId)
+    {
+        var dbScript = await VerifyScriptId(scriptId);
+        return ExecuteScript(dbScript, null);
+    }
+
+    public string ExecuteScript(Script script, Game game)
+    {
         var luaState = new Lua();
         
         // load sandbox lua library
