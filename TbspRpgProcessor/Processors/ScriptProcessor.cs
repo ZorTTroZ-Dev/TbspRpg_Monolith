@@ -14,6 +14,7 @@ namespace TbspRpgProcessor.Processors;
 public interface IScriptProcessor
 {
     Task<string> ExecuteScript(Guid scriptId, Guid gameId);
+    Task<string> ExecuteScript(Guid scriptId, Game game);
     Task<string> ExecuteScript(Guid scriptId);
     string ExecuteScript(Script script, Game game);
     Task RemoveScript(ScriptRemoveModel scriptIdRemoveModel);
@@ -81,6 +82,12 @@ public class ScriptProcessor : IScriptProcessor
             throw new ArgumentException("invalid game id");
         
         return ExecuteScript(dbScript, dbGame);
+    }
+    
+    public async Task<string> ExecuteScript(Guid scriptId, Game game)
+    {
+        var dbScript = await VerifyScriptId(scriptId);
+        return ExecuteScript(dbScript, game);
     }
     
     public async Task<string> ExecuteScript(Guid scriptId)
