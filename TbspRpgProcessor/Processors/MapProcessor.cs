@@ -66,25 +66,25 @@ namespace TbspRpgProcessor.Processors
             // run the location exit script
             if (route.Location.ExitScriptId != null)
             {
-                await _scriptProcessor.ExecuteScript(route.Location.ExitScriptId.GetValueOrDefault());
+                await _scriptProcessor.ExecuteScript(route.Location.ExitScriptId.GetValueOrDefault(), game);
             }
                 
             // run the route taken script
             if (route.RouteTakenScriptId != null)
             {
-                await _scriptProcessor.ExecuteScript(route.RouteTakenScriptId.GetValueOrDefault());
+                await _scriptProcessor.ExecuteScript(route.RouteTakenScriptId.GetValueOrDefault(), game);
             }
             
             // run the location enter script
             if (route.DestinationLocation.EnterScriptId != null)
             {
-                await _scriptProcessor.ExecuteScript(route.DestinationLocation.EnterScriptId.GetValueOrDefault());
+                await _scriptProcessor.ExecuteScript(route.DestinationLocation.EnterScriptId.GetValueOrDefault(), game);
             }
 
             // if we're entering the final location run the adventure completion script
             if (route.DestinationLocation.Final && game.Adventure.TerminationScriptId != null)
             {
-                await _scriptProcessor.ExecuteScript(game.Adventure.TerminationScriptId.GetValueOrDefault());
+                await _scriptProcessor.ExecuteScript(game.Adventure.TerminationScriptId.GetValueOrDefault(), game);
             }
 
             // for now assume the check passed
