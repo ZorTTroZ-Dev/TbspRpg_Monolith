@@ -103,7 +103,8 @@ namespace TbspRpgProcessor.Processors
                     {
                         AdventureId = game.AdventureId,
                         Key = route.RouteTakenSourceKey,
-                        Language = game.Language
+                        Language = game.Language,
+                        Game = game
                     })
             });
             
@@ -118,7 +119,8 @@ namespace TbspRpgProcessor.Processors
                     {
                         AdventureId = game.AdventureId,
                         Key = route.DestinationLocation.SourceKey,
-                        Language = game.Language
+                        Language = game.Language,
+                        Game = game
                     })
             });
 

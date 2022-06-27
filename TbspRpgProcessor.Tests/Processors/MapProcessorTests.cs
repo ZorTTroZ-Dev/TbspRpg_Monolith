@@ -313,17 +313,28 @@ namespace TbspRpgProcessor.Tests.Processors
                 Name = "test script",
                 Content = @"
                     function run()
+                        game:SetGameStatePropertyBoolean('ScriptRun', true)
 		                result = true
 	                end
                 ",
                 Type = ScriptTypes.LuaScript
             };
             var resultSourceKey = Guid.NewGuid();
+            var badResultSourceKey = Guid.NewGuid();
             var testScriptReturnKey = new Script()
             {
                 Id = Guid.NewGuid(),
                 Name = "destination key script",
-                Content = $"function run() result = '{resultSourceKey}' end",
+                Content = @$"
+                    function run()
+                        if(game:GetGameStatePropertyBoolean('ScriptRun'))
+                        then
+                            result = '{resultSourceKey}'
+                        else
+                            result = '{badResultSourceKey}'
+                        end
+                    end
+                ",
                 Type = ScriptTypes.LuaScript
             };
             
@@ -361,6 +372,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 {
                     Id = Guid.NewGuid(),
                     Key = resultSourceKey
+                },
+                new En()
+                {
+                    Id = Guid.NewGuid(),
+                    Key = badResultSourceKey
                 },
                 new En()
                 {
