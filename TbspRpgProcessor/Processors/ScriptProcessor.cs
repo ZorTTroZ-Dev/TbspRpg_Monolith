@@ -103,6 +103,12 @@ public class ScriptProcessor : IScriptProcessor
         // load sandbox lua library
         luaState["sandbox"] = luaState.DoString(LuaSandbox.LuaSandboxCode).First();
         
+        // add the game as a global variable if it exists
+        if (game != null)
+        {
+            luaState["game"] = game;
+        }
+        
         // load any includes
         if (script.Includes != null)
         {

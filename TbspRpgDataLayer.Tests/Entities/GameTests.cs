@@ -42,13 +42,30 @@ public class GameTests
     }
 
     [Fact]
-    public void GetGameStateProperty_InvalidKey_IDontKnow()
+    public void GetGameStateProperty_InvalidKey_ReturnDefault()
     {
         // arrange
         var testGame = new Game()
         {
             GameState = "{\"number\": 42, \"string\": \"banana\", \"boolean\": true}"
         };
+        
+        // act
+        var numberValue = testGame.GetGameStatePropertyNumber("numberx");
+        var stringValue = testGame.GetGameStatePropertyString("stringx");
+        var boolValue = testGame.GetGameStatePropertyBoolean("booleanx");
+        
+        // assert
+        Assert.Equal(0, numberValue);
+        Assert.Null(stringValue);
+        Assert.False(boolValue);
+    }
+    
+    [Fact]
+    public void GetGameStateProperty_EmptyGameState_ReturnDefault()
+    {
+        // arrange
+        var testGame = new Game();
         
         // act
         var numberValue = testGame.GetGameStatePropertyNumber("numberx");
@@ -97,6 +114,19 @@ public class GameTests
         
         // assert
         Assert.Equal("{\"number\":42,\"string\":\"banana\",\"boolean\":true,\"newboolean\":false}", testGame.GameState);
+    }
+    
+    [Fact]
+    public void SetGameStateProperty_EmptyGameState_ValueAdded()
+    {
+        // arrange
+        var testGame = new Game();
+        
+        // act
+        testGame.SetGameStatePropertyBoolean("newboolean", false);
+        
+        // assert
+        Assert.Equal("{\"newboolean\":false}", testGame.GameState);
     }
 
     #endregion

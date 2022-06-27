@@ -25,6 +25,7 @@ namespace TbspRpgDataLayer.Entities
         private void LoadGameStateJson()
         {
             if (GameStateJson != null) return;
+            GameState ??= "{}";
             try
             {
                 var node = JsonNode.Parse(GameState);
