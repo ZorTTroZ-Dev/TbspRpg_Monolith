@@ -180,12 +180,51 @@ namespace TbspRpgProcessor.Tests.Processors
         [Fact]
         public async void ChangeLocationViaRoute_ValidFinalLocationWithScripts_LocationUpdated()
         {
-            var testScript = new Script()
+            var exitLocationTestScript = new Script()
             {
                 Id = Guid.NewGuid(),
                 Name = "test script",
                 Content = @"
                     function run()
+                        game:SetGameStatePropertyBoolean('LocationExited', true)
+		                result = true
+	                end
+                ",
+                Type = ScriptTypes.LuaScript
+            };
+            var enterLocationTestScript = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test script",
+                Content = @"
+                    function run()
+                        routeTaken = game:GetGameStatePropertyNumber('RouteTaken')
+                        game:SetGameStatePropertyNumber('LocationEntered', routeTaken + 1)
+                        
+		                result = true
+	                end
+                ",
+                Type = ScriptTypes.LuaScript
+            };
+            var routeTakenTestScript = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test script",
+                Content = @"
+                    function run()
+                        game:SetGameStatePropertyNumber('RouteTaken', 42)
+		                result = true
+	                end
+                ",
+                Type = ScriptTypes.LuaScript
+            };
+            var terminationTestScript = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test script",
+                Content = @"
+                    function run()
+                        game:SetGameStatePropertyBoolean('GameTerminated', true)
 		                result = true
 	                end
                 ",
@@ -197,12 +236,12 @@ namespace TbspRpgProcessor.Tests.Processors
                 Id = Guid.NewGuid(),
                 SourceKey = Guid.NewGuid(),
                 Final = true,
-                EnterScriptId = testScript.Id
+                EnterScriptId = enterLocationTestScript.Id
             };
             var testLocation = new Location()
             {
                 Id = Guid.NewGuid(),
-                ExitScriptId = testScript.Id
+                ExitScriptId = exitLocationTestScript.Id
             };
             var testRoute = new Route()
             {
@@ -212,7 +251,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 DestinationLocationId = testDestinationLocation.Id,
                 DestinationLocation = testDestinationLocation,
                 RouteTakenSourceKey = Guid.NewGuid(),
-                RouteTakenScriptId = testScript.Id
+                RouteTakenScriptId = routeTakenTestScript.Id
             };
             var testSources = new List<En>()
             {
@@ -237,7 +276,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     {
                         Id = Guid.NewGuid(),
                         Name = "test",
-                        TerminationScriptId = testScript.Id
+                        TerminationScriptId = terminationTestScript.Id
                     }
                 }
             };
@@ -246,7 +285,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 testGames, 
                 new List<Route>() { testRoute },
                 testContents,
-                new List<Script>() { testScript },
+                new List<Script>() { exitLocationTestScript, enterLocationTestScript, routeTakenTestScript, terminationTestScript },
                 testSources);
             
             // act
@@ -261,6 +300,8 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.True(game.LocationUpdateTimeStamp > 0);
             Assert.Equal(2, testContents.Count);
             Assert.Equal(testContents[0].SourceKey, testRoute.RouteTakenSourceKey);
+            Assert.NotNull(game.GameState);
+            Assert.Equal("{\"LocationExited\":true,\"RouteTaken\":42,\"LocationEntered\":43,\"GameTerminated\":true}", game.GameState);
         }
         
         [Fact]
@@ -272,17 +313,28 @@ namespace TbspRpgProcessor.Tests.Processors
                 Name = "test script",
                 Content = @"
                     function run()
+                        game:SetGameStatePropertyBoolean('ScriptRun', true)
 		                result = true
 	                end
                 ",
                 Type = ScriptTypes.LuaScript
             };
             var resultSourceKey = Guid.NewGuid();
+            var badResultSourceKey = Guid.NewGuid();
             var testScriptReturnKey = new Script()
             {
                 Id = Guid.NewGuid(),
                 Name = "destination key script",
-                Content = $"function run() result = '{resultSourceKey}' end",
+                Content = @$"
+                    function run()
+                        if(game:GetGameStatePropertyBoolean('ScriptRun'))
+                        then
+                            result = '{resultSourceKey}'
+                        else
+                            result = '{badResultSourceKey}'
+                        end
+                    end
+                ",
                 Type = ScriptTypes.LuaScript
             };
             
@@ -320,6 +372,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 {
                     Id = Guid.NewGuid(),
                     Key = resultSourceKey
+                },
+                new En()
+                {
+                    Id = Guid.NewGuid(),
+                    Key = badResultSourceKey
                 },
                 new En()
                 {

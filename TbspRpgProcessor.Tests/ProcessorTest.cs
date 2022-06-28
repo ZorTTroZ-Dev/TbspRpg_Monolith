@@ -161,18 +161,21 @@ namespace TbspRpgProcessor.Tests
             ICollection<Adventure> adventures = null,
             ICollection<Route> routes = null,
             ICollection<Location> locations = null,
-            ICollection<En> sources = null)
+            ICollection<En> sources = null,
+            ICollection<Game> games = null)
         {
             adventures ??= new List<Adventure>();
             routes ??= new List<Route>();
             locations ??= new List<Location>();
             sources ??= new List<En>();
+            games ??= new List<Game>();
             return new ScriptProcessor(
                 MockServices.MockDataLayerScriptsService(scripts),
                 MockServices.MockDataLayerAdventuresService(adventures),
                 MockServices.MockDataLayerRoutesService(routes),
                 MockServices.MockDataLayerLocationsService(locations),
                 MockServices.MockDataLayerSourcesService(sources),
+                MockServices.MockDataLayerGamesService(games),
                 NullLogger<ScriptProcessor>.Instance);
         }
 

@@ -89,7 +89,8 @@ namespace TbspRpgProcessor.Processors
             var loopCount = 0;
             while (dbSource.ScriptId != null && loopCount < MaxLoopCount)
             {
-                var result = await _scriptProcessor.ExecuteScript(dbSource.ScriptId.GetValueOrDefault());
+                var result = await _scriptProcessor.ExecuteScript(dbSource.ScriptId.GetValueOrDefault(),
+                    sourceForKeyModel.Game);
                 var sourceKey = Guid.Parse(result);
                 dbSource = await _sourcesService.GetSourceForKey(
                     sourceKey,
