@@ -140,6 +140,9 @@ namespace TbspRpgDataLayer
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();
 
+            modelBuilder.Entity<En>().Ignore(en => en.Language);
+            modelBuilder.Entity<Esp>().Ignore(esp => esp.Language);
+
             #endregion
 
             #region Game

@@ -24,43 +24,72 @@ namespace TbspRpgApi.Tests.Controllers
         #region GetSourcesForAdventure
 
         [Fact]
-        public async void GetSourcesForAdventure_NullKey_ReturnBadRequest()
+        public async void GetSourcesForAdventure_NoKey_ReturnList()
         {
             // arrange
-            var sources = new List<En>();
+            var sources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.Empty
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                }
+            };
             var controller = CreateController(sources);
             
             // act
             var response = await controller.GetSourcesForAdventure(
-                Guid.NewGuid(), new SourceFilterRequest()
+                sources[0].AdventureId, new SourceFilterRequest()
                 {
                     Language = Languages.ENGLISH
                 });
             
             // assert
-            var badRequestResult = response as BadRequestObjectResult;
-            Assert.NotNull(badRequestResult);
-            Assert.Equal(400, badRequestResult.StatusCode);
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var sourceViewModels = okObjectResult.Value as List<SourceViewModel>;
+            Assert.NotNull(sourceViewModels);
+            Assert.Equal(sources[0].Id, sourceViewModels[0].Id);
         }
         
         [Fact]
-        public async void GetSourcesForAdventure_NoLanguage_ReturnBadRequest()
+        public async void GetSourcesForAdventure_NoLanguageNoKey_ReturnList()
         {
             // arrange
-            var sources = new List<En>();
+            var sources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.Empty
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                }
+            };
             var controller = CreateController(sources);
             
             // act
             var response = await controller.GetSourcesForAdventure(
-                Guid.NewGuid(), new SourceFilterRequest()
-                {
-                    Key = Guid.NewGuid()
-                });
+                sources[0].AdventureId, new SourceFilterRequest());
             
             // assert
-            var badRequestResult = response as BadRequestObjectResult;
-            Assert.NotNull(badRequestResult);
-            Assert.Equal(400, badRequestResult.StatusCode);
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var sourceViewModels = okObjectResult.Value as List<SourceViewModel>;
+            Assert.NotNull(sourceViewModels);
+            Assert.Equal(sources[0].Id, sourceViewModels[0].Id);
         }
         
         [Fact]

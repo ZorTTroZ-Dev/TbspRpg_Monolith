@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
@@ -15,6 +16,8 @@ namespace TbspRpgDataLayer.Services
         Task AddSource(Source source, string language = null);
         Task RemoveAllSourceForAdventure(Guid adventureId);
         void RemoveScriptFromSources(Guid scriptId);
+        Task<List<Source>> GetAllSourceForAdventure(Guid adventureId, string language);
+        Task<List<Source>> GetAllSourceAllLanguagesForAdventure(Guid adventureId);
     }
     
     public class SourcesService : ISourcesService
@@ -57,6 +60,16 @@ namespace TbspRpgDataLayer.Services
             {
                 source.ScriptId = null;
             }
+        }
+
+        public async Task<List<Source>> GetAllSourceForAdventure(Guid adventureId, string language)
+        {
+            return await _sourcesRepository.GetAllSourceForAdventure(adventureId, language);
+        }
+
+        public async Task<List<Source>> GetAllSourceAllLanguagesForAdventure(Guid adventureId)
+        {
+            return await _sourcesRepository.GetAllSourceAllLanguagesForAdventure(adventureId);
         }
     }
 }

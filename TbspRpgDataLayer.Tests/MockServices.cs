@@ -6,7 +6,9 @@ using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.ArgumentModels;
 using TbspRpgDataLayer.Entities;
+using TbspRpgDataLayer.Migrations;
 using TbspRpgDataLayer.Services;
+using TbspRpgSettings.Settings;
 
 namespace TbspRpgDataLayer.Tests
 {
@@ -379,6 +381,45 @@ namespace TbspRpgDataLayer.Tests
                         }
                     }
                 });
+
+            sourcesService.Setup(service =>
+                    service.GetAllSourceForAdventure(It.IsAny<Guid>(), It.IsAny<string>()))
+                .ReturnsAsync((Guid adventureId, string language) =>
+                {
+                    var enSources = sources
+                        .Where(source => source.AdventureId == adventureId)
+                        .Select(enSource => new Source()
+                    {
+                        Id = enSource.Id,
+                        AdventureId = enSource.AdventureId,
+                        Key = enSource.Key,
+                        Language = Languages.ENGLISH,
+                        Name = enSource.Name,
+                        ScriptId = enSource.ScriptId,
+                        Text = enSource.Text
+                    });
+                    return enSources.ToList();
+                });
+            
+            sourcesService.Setup(service =>
+                    service.GetAllSourceAllLanguagesForAdventure(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId) =>
+                    {
+                        var enSources = sources
+                            .Where(source => source.AdventureId == adventureId)
+                            .Select(enSource => new Source()
+                            {
+                                Id = enSource.Id,
+                                AdventureId = enSource.AdventureId,
+                                Key = enSource.Key,
+                                Language = Languages.ENGLISH,
+                                Name = enSource.Name,
+                                ScriptId = enSource.ScriptId,
+                                Text = enSource.Text
+                            });
+                        return enSources.ToList();
+                    }
+                );
 
             return sourcesService.Object;
         }
