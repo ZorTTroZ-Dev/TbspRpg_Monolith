@@ -59,6 +59,10 @@ namespace TbspRpgApi.Tests
                     service.CanDeleteScript(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((Guid userId, Guid scriptId) => true);
             
+            permissionService.Setup(service =>
+                    service.CanDeleteRoute(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid userId, Guid routeId) => true);
+            
             return permissionService.Object;
         }
 
@@ -67,22 +71,26 @@ namespace TbspRpgApi.Tests
             ICollection<Location> locations = null,
             ICollection<Adventure> adventures = null,
             ICollection<Game> games = null,
-            ICollection<Script> scripts = null)
+            ICollection<Script> scripts = null,
+            ICollection<Route> routes = null)
         {
             locations ??= new List<Location>();
             adventures ??= new List<Adventure>();
             games ??= new List<Game>();
+            routes ??= new List<Route>();
             
             var dlUsersService = MockServices.MockDataLayerUsersService(users);
             var dlLocationsService = MockServices.MockDataLayerLocationsService(locations);
             var dlAdventuresService = MockServices.MockDataLayerAdventuresService(adventures);
             var dlGamesService = MockServices.MockDataLayerGamesService(games);
             var dlScriptsService = MockServices.MockDataLayerScriptsService(scripts);
+            var dlRoutesService = MockServices.MockDataLayerRoutesService(routes);
             return new PermissionService(dlUsersService,
                 dlLocationsService,
                 dlAdventuresService,
                 dlGamesService,
                 dlScriptsService,
+                dlRoutesService,
                 NullLogger<PermissionService>.Instance);
         }
         

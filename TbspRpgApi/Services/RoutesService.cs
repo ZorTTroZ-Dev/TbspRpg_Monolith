@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor.Entities;
 using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
@@ -14,6 +15,7 @@ namespace TbspRpgApi.Services
         Task<List<RouteViewModel>> GetRoutes(RouteFilterRequest routeFilterRequest);
         Task<RouteViewModel> GetRouteById(Guid routeId);
         Task UpdateRoutesWithSource(ICollection<RouteUpdateRequest> updateRouteRequests);
+        Task DeleteRoute(Guid routeId);
     }
     
     public class RoutesService : IRoutesService
@@ -55,6 +57,14 @@ namespace TbspRpgApi.Services
             {
                 await _routeProcessor.UpdateRoute(updateRouteRequest.ToRouteUpdateModel());
             }
+        }
+
+        public async Task DeleteRoute(Guid routeId)
+        {
+            await _routeProcessor.RemoveRoute(new RouteRemoveModel()
+            {
+                RouteId = routeId
+            });
         }
     }
 }
