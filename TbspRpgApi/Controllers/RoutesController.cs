@@ -124,7 +124,7 @@ namespace TbspRpgApi.Controllers
         [HttpDelete("{routeId:guid}"), Authorize]
         public async Task<IActionResult> DeleteRoute(Guid routeId)
         {
-            var canDeleteRoute = await _permissionService.CanDeleteScript(GetUserId().GetValueOrDefault(), routeId);
+            var canDeleteRoute = await _permissionService.CanDeleteRoute(GetUserId().GetValueOrDefault(), routeId);
             if(!canDeleteRoute)
                 return BadRequest(new { message = NotYourAdventureErrorMessage });
             
