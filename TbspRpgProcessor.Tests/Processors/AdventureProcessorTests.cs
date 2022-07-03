@@ -517,7 +517,6 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.Empty(testRoutes);
             Assert.Empty(testSources);
             Assert.Empty(testContents);
-            Assert.Empty(testScripts);
         }
 
         #endregion
