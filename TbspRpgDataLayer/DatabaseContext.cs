@@ -140,6 +140,9 @@ namespace TbspRpgDataLayer
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();
 
+            modelBuilder.Entity<En>().Ignore(en => en.Language);
+            modelBuilder.Entity<Esp>().Ignore(esp => esp.Language);
+
             #endregion
 
             #region Game
@@ -163,6 +166,10 @@ namespace TbspRpgDataLayer
                 .HasMany(g => g.Contents)
                 .WithOne(c => c.Game)
                 .HasForeignKey(c => c.GameId);
+            
+            modelBuilder.Entity<Game>()
+                .Property(g => g.GameState)
+                .HasColumnType("jsonb");
 
             #endregion
 

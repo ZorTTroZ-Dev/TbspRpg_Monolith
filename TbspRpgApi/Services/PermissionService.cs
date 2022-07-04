@@ -19,6 +19,7 @@ namespace TbspRpgApi.Services
         Task<bool> CanWriteGame(Guid userId, Guid gameId);
         Task<bool> CanDeleteGame(Guid userId, Guid gameId);
         Task<bool> CanDeleteScript(Guid userId, Guid scriptId);
+        Task<bool> CanDeleteRoute(Guid userId, Guid routeId);
     }
     
     public class PermissionService: IPermissionService
@@ -26,12 +27,15 @@ namespace TbspRpgApi.Services
         private User User { get; set; }
         private Adventure Adventure { get; set; }
         private Script Script { get; set; }
+        private Route Route { get; set; }
+        private Location Location { get; set; }
         private HashSet<string> Permissions { get; set; }
         private readonly TbspRpgDataLayer.Services.IUsersService _usersService;
         private readonly TbspRpgDataLayer.Services.ILocationsService _locationsService;
         private readonly TbspRpgDataLayer.Services.IAdventuresService _adventuresService;
         private readonly TbspRpgDataLayer.Services.IGamesService _gamesService;
         private readonly TbspRpgDataLayer.Services.IScriptsService _scriptsService;
+        private readonly TbspRpgDataLayer.Services.IRoutesService _routesService;
         private readonly ILogger<PermissionService> _logger;
 
         public PermissionService(
@@ -40,6 +44,7 @@ namespace TbspRpgApi.Services
             TbspRpgDataLayer.Services.IAdventuresService adventuresService,
             TbspRpgDataLayer.Services.IGamesService gamesService,
             TbspRpgDataLayer.Services.IScriptsService scriptsService,
+            TbspRpgDataLayer.Services.IRoutesService routesService,
             ILogger<PermissionService> logger)
         {
             _usersService = usersService;
@@ -47,6 +52,7 @@ namespace TbspRpgApi.Services
             _adventuresService = adventuresService;
             _gamesService = gamesService;
             _scriptsService = scriptsService;
+            _routesService = routesService;
             _logger = logger;
         }
         
@@ -63,6 +69,16 @@ namespace TbspRpgApi.Services
         private async Task LoadScript(Guid scriptId)
         {
             Script ??= await _scriptsService.GetScriptById(scriptId);
+        }
+
+        private async Task LoadLocation(Guid locationId)
+        {
+            Location ??= await _locationsService.GetLocationById(locationId);
+        }
+
+        private async Task LoadRoute(Guid routeId)
+        {
+            Route ??= await _routesService.GetRouteById(routeId);
         }
 
         protected async Task LoadPermissions(Guid userId)
@@ -96,11 +112,11 @@ namespace TbspRpgApi.Services
 
         private async Task<bool> CanAccessLocation(Guid userId, Guid locationId)
         {
-            var location = await _locationsService.GetLocationById(locationId);
-            if (location == null)
+            await LoadLocation(locationId);
+            if (Location == null)
                 return false;
 
-            return location.Adventure.CreatedByUserId == userId;
+            return Location.Adventure.CreatedByUserId == userId;
         }
 
         // they can access a location if they own the adventure that owns the location
@@ -112,8 +128,9 @@ namespace TbspRpgApi.Services
 
         public async Task<bool> CanWriteLocation(Guid userId, Guid locationId)
         {
-            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.WriteLocation) || 
-                   await CanAccessLocation(userId, locationId);
+            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.WriteLocation)
+                   || await IsInGroup(userId, TbspRpgSettings.Settings.Permissions.AdminGroup)
+                   || await CanAccessLocation(userId, locationId);
         }
 
         private bool CanAccessAdventure(Guid userId)
@@ -181,6 +198,14 @@ namespace TbspRpgApi.Services
             if (Script == null)
                 return false;
             return await CanWriteAdventure(userId, Script.AdventureId);
+        }
+
+        public async Task<bool> CanDeleteRoute(Guid userId, Guid routeId)
+        {
+            await LoadRoute(routeId);
+            if (Route == null)
+                return false;
+            return await CanWriteLocation(userId, Route.LocationId);
         }
     }
 }

@@ -59,6 +59,25 @@ namespace TbspRpgApi.Controllers
             return Ok(routes);
         }
         
+        [HttpGet("adventure/{adventureId:guid}"), Authorize]
+        public async Task<IActionResult> GetRoutesForAdventure(Guid adventureId)
+        {
+            var canAccessAdventure = await _permissionService.CanReadAdventure(
+                GetUserId().GetValueOrDefault(),
+                adventureId);
+            
+            if (!canAccessAdventure)
+            {
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            }
+                
+            var routes = await _routesService.GetRoutes(new RouteFilterRequest()
+            {
+                AdventureId = adventureId
+            });
+            return Ok(routes);
+        }
+        
         [HttpGet("destination/{locationId:guid}"), Authorize]
         public async Task<IActionResult> GetRoutesWithDestination(Guid locationId)
         {
@@ -99,6 +118,24 @@ namespace TbspRpgApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest((new {message = ex.Message}));
+            }
+        }
+        
+        [HttpDelete("{routeId:guid}"), Authorize]
+        public async Task<IActionResult> DeleteRoute(Guid routeId)
+        {
+            var canDeleteRoute = await _permissionService.CanDeleteRoute(GetUserId().GetValueOrDefault(), routeId);
+            if(!canDeleteRoute)
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            
+            try
+            {
+                await _routesService.DeleteRoute(routeId);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest(new { message = "couldn't delete route" });
             }
         }
     }

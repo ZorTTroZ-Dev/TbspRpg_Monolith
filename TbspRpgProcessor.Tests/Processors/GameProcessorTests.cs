@@ -157,7 +157,7 @@ namespace TbspRpgProcessor.Tests.Processors
         }
         
         [Fact]
-        public async void StartGame_ValidWithInitScript_GameCreated()
+        public async void StartGame_ValidWithInitScript_GameCreatedStateUpdated()
         {
             // arrange
             var testScript = new Script()
@@ -166,6 +166,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 Name = "test script",
                 Content = @"
                     function run()
+                        game:SetGameStatePropertyBoolean('GameInitialized', true)
 		                result = true
 	                end
                 ",
@@ -224,6 +225,7 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.Equal(2, testContents.Count);
             Assert.NotNull(testContents.FirstOrDefault(c => c.SourceKey == testAdventures[0].InitialSourceKey));
             Assert.NotNull(testContents.FirstOrDefault(c => c.SourceKey == testLocations[0].SourceKey));
+            Assert.Equal("{\"GameInitialized\":true}", game.GameState);
         }
         
         [Fact]

@@ -74,6 +74,49 @@ namespace TbspRpgApi.Tests.Services
             Assert.Single(routes);
             Assert.Equal(testRoutes[0].Id, routes[0].Id);
         }
+        
+        [Fact]
+        public async void GetRoutes_FilterAdventure_ReturnRoutes()
+        {
+            // arrange
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test adventure"
+            };
+            var testRoutes = new List<Route>()
+            {
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Location = new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        AdventureId = testAdventure.Id
+                    }
+                },
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Location = new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        AdventureId = testAdventure.Id
+                    }
+                }
+            };
+            var service = CreateRoutesService(testRoutes);
+            
+            // act
+            var routes = await service.GetRoutes(new RouteFilterRequest()
+            {
+                AdventureId = testAdventure.Id
+            });
+            
+            // assert
+            Assert.Equal(2, routes.Count);
+            Assert.Equal(testRoutes[0].Id, routes[0].Id);
+        }
 
         #endregion
 
@@ -185,6 +228,44 @@ namespace TbspRpgApi.Tests.Services
             
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        #endregion
+
+        #region DeleteRoute
+
+        [Fact]
+        public async void DeleteRoute_InvalidRouteId_ThrowsException()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var service = CreateRoutesService(new List<Route>(), exceptionId);
+            
+            // act
+            Task Act() => service.DeleteRoute(exceptionId);
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        [Fact]
+        public async void DeleteRoute_RouteValid_Returns()
+        {
+            // arrange
+            var routes = new List<Route>()
+            {
+                new Route()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test route"
+                }
+            };
+            var service = CreateRoutesService(routes, Guid.NewGuid());
+            
+            // act
+            await service.DeleteRoute(routes[0].Id);
+
+            // assert
         }
 
         #endregion

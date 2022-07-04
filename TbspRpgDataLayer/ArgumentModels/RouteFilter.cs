@@ -6,5 +6,6 @@ namespace TbspRpgDataLayer.ArgumentModels
     {
         public Guid? LocationId { get; set; }
         public Guid? DestinationLocationId { get; set; }
+        public Guid? AdventureId { get; set; }
     }
 }

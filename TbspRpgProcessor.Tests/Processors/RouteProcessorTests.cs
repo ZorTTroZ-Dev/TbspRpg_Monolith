@@ -634,5 +634,65 @@ namespace TbspRpgProcessor.Tests.Processors
         }
 
         #endregion
+
+        #region RemoveRoute
+
+        [Fact]
+        public async void RemoveRoute_InvalidRouteId_ThrowException()
+        {
+            // arrange
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid()
+            };
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid()
+            };
+            var testLocations = new List<Location>() {testLocation};
+            var testRoutes = new List<Route>() {testRoute};
+            var processor = CreateRouteProcessor(testRoutes, testLocations);
+            
+            // act
+            Task Act() => processor.RemoveRoute(new RouteRemoveModel()
+            {
+                RouteId = Guid.NewGuid()
+            });
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        [Fact]
+        public async void RemoveRoute_ValidRouteId_RouteRemoved()
+        {
+            // arrange
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid()
+            };
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                LocationId = Guid.NewGuid()
+            };
+            var testLocations = new List<Location>() {testLocation};
+            var testRoutes = new List<Route>() {testRoute};
+            var processor = CreateRouteProcessor(testRoutes, testLocations);
+            
+            // act
+            await processor.RemoveRoute(new RouteRemoveModel()
+            {
+                RouteId = testRoute.Id
+            });
+            
+            // assert
+            Assert.Empty(testRoutes);
+        }
+
+        #endregion
     }
 }

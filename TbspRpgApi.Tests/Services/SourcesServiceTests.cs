@@ -135,5 +135,125 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+
+        #region GetSourcesForAdventure
+
+        [Fact]
+        public async void GetSourcesForAdventure_Valid_ReturnList()
+        {
+            // arrange
+            var testSources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                }
+            };
+            var service = CreateSourcesService(testSources, Guid.Empty);
+            
+            // act
+            var sources = await service.GetSourcesForAdventure(testSources[0].AdventureId, Languages.ENGLISH);
+            
+            // assert
+            Assert.Single(sources);
+        }
+
+        [Fact]
+        public async void GetSourcesForAdventure_Invalid_ReturnEmpty()
+        {
+            // arrange
+            var testSources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                }
+            };
+            var service = CreateSourcesService(testSources, Guid.Empty);
+            
+            // act
+            var sources = await service.GetSourcesForAdventure(Guid.NewGuid(), Languages.ENGLISH);
+            
+            // assert
+            Assert.Empty(sources);
+        }
+        
+        #endregion
+        
+        #region GetSourceAllLanguagesForAdventure
+
+        [Fact]
+        public async void GetSourceAllLanguagesForAdventure_Invalid_ReturnEmpty()
+        {
+            // arrange
+            var testSources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                }
+            };
+            var service = CreateSourcesService(testSources, Guid.Empty);
+            
+            // act
+            var sources = await service.GetSourceAllLanguagesForAdventure(Guid.NewGuid());
+            
+            // assert
+            Assert.Empty(sources);
+        }
+
+        [Fact]
+        public async void GetSourceAllLanguagesForAdventure_Valid_ReturnList()
+        {
+            // arrange
+            var testSources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                }
+            };
+            var service = CreateSourcesService(testSources, Guid.Empty);
+            
+            // act
+            var sources = await service.GetSourceAllLanguagesForAdventure(testSources[0].AdventureId);
+            
+            // assert
+            Assert.Single(sources);
+        }
+        
+        #endregion
     }
 }
