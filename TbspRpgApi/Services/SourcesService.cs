@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using TbspRpgProcessor.Entities;
 using TbspRpgProcessor.Processors;
@@ -15,6 +16,7 @@ namespace TbspRpgApi.Services
         public Task<SourceViewModel> GetProcessedSourceForKey(Guid key, Guid adventureId, string language);
         public Task<List<SourceViewModel>> GetSourcesForAdventure(Guid adventureId, string language);
         public Task<List<SourceViewModel>> GetSourceAllLanguagesForAdventure(Guid adventureId);
+        Task UpdateSource(SourceUpdateRequest sourceUpdateRequest);
     }
     
     public class SourcesService: ISourcesService
@@ -60,6 +62,12 @@ namespace TbspRpgApi.Services
         {
             var sources = await _sourcesService.GetAllSourceAllLanguagesForAdventure(adventureId);
             return sources.Select(source => new SourceViewModel(source)).ToList();
+        }
+
+        public async Task UpdateSource(SourceUpdateRequest sourceUpdateRequest)
+        {
+            await _sourceProcessor.CreateOrUpdateSource(sourceUpdateRequest.Source.ToEntity(),
+                sourceUpdateRequest.Source.Language);
         }
     }
 }
