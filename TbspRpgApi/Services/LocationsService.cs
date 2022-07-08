@@ -12,6 +12,7 @@ namespace TbspRpgApi.Services
     public interface ILocationsService
     {
         Task<List<LocationViewModel>> GetLocationsForAdventure(Guid adventureId);
+        Task<LocationViewModel> GetLocationById(Guid locationId);
         Task UpdateLocationAndSource(LocationUpdateRequest locationUpdateRequest);
     }
 
@@ -34,6 +35,12 @@ namespace TbspRpgApi.Services
         {
             var locations = await _locationsService.GetLocationsForAdventure(adventureId);
             return locations.Select(location => new LocationViewModel(location)).ToList();
+        }
+
+        public async Task<LocationViewModel> GetLocationById(Guid locationId)
+        {
+            var location = await _locationsService.GetLocationById(locationId);
+            return new LocationViewModel(location);
         }
 
         public async Task UpdateLocationAndSource(LocationUpdateRequest locationUpdateRequest)
