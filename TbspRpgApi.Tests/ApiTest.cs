@@ -99,9 +99,9 @@ namespace TbspRpgApi.Tests
             string exceptionEmail = null)
         {
             var dlUsersService = MockServices.MockDataLayerUsersService(users);
-            var userProcessor = ProcessorTest.MockUserProcessor(exceptionEmail);
+            var mockTbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(exceptionEmail);
             return new UsersService(dlUsersService,
-                userProcessor,
+                mockTbspRpgProcessor,
                 new JwtSettings()
                 {
                     Secret = "vtqj@y31d%%j01tae3*bqu16&5$x@s@=22&bk$h9+=55kv-i6t"

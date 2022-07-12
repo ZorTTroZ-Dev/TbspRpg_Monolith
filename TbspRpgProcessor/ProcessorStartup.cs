@@ -7,7 +7,7 @@ namespace TbspRpgProcessor
     {
         public static void InitializeProcessorLayer(IServiceCollection services)
         {
-            // services and repositories
+            // processors
             services.AddScoped<IGameProcessor, GameProcessor>();
             services.AddScoped<IContentProcessor, ContentProcessor>();
             services.AddScoped<IMapProcessor, MapProcessor>();
@@ -15,8 +15,8 @@ namespace TbspRpgProcessor
             services.AddScoped<IRouteProcessor, RouteProcessor>();
             services.AddScoped<ISourceProcessor, SourceProcessor>();
             services.AddScoped<IAdventureProcessor, AdventureProcessor>();
-            services.AddScoped<IUserProcessor, UserProcessor>();
             services.AddScoped<IScriptProcessor, ScriptProcessor>();
+            services.AddScoped<ITbspRpgProcessor, TbspRpgProcessor>();
             
             services.AddScoped<IMailClient, MailClient>();
         }

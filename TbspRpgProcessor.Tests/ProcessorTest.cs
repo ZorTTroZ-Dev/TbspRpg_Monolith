@@ -146,14 +146,14 @@ namespace TbspRpgProcessor.Tests
                 NullLogger<AdventureProcessor>.Instance);
         }
 
-        protected static IUserProcessor CreateUserProcessor(
+        protected static ITbspRpgProcessor CreateTbspRpgProcessor(
             ICollection<User> users = null)
         {
             var usersService = MockServices.MockDataLayerUsersService(users);
-            return new UserProcessor(
+            return new TbspRpgProcessor(
                 usersService,
                 MockMailClient(),
-                NullLogger<UserProcessor>.Instance);
+                NullLogger<TbspRpgProcessor>.Instance);
         }
 
         protected static IScriptProcessor CreateScriptProcessor(
@@ -188,11 +188,11 @@ namespace TbspRpgProcessor.Tests
             return mailClient.Object;
         }
 
-        public static IUserProcessor MockUserProcessor(string exceptionEmail)
+        public static ITbspRpgProcessor MockTbspRpgProcessor(string exceptionEmail)
         {
-            var userProcessor = new Mock<IUserProcessor>();
+            var tbspProcessor = new Mock<ITbspRpgProcessor>();
 
-            userProcessor.Setup(processor =>
+            tbspProcessor.Setup(processor =>
                     processor.RegisterUser(It.IsAny<UserRegisterModel>()))
                 .ReturnsAsync((UserRegisterModel userRegisterModel) =>
                 {
@@ -204,7 +204,7 @@ namespace TbspRpgProcessor.Tests
                     };
                 });
 
-            userProcessor.Setup(processor =>
+            tbspProcessor.Setup(processor =>
                     processor.VerifyUserRegistration(It.IsAny<UserVerifyRegisterModel>()))
                 .ReturnsAsync((UserVerifyRegisterModel userVerifyRegisterModel) =>
                 {
@@ -216,7 +216,7 @@ namespace TbspRpgProcessor.Tests
                     };
                 });
             
-            userProcessor.Setup(processor =>
+            tbspProcessor.Setup(processor =>
                     processor.ResendUserRegistration(It.IsAny<UserRegisterResendModel>()))
                 .ReturnsAsync((UserRegisterResendModel userRegisterResendModel) =>
                 {
@@ -228,7 +228,7 @@ namespace TbspRpgProcessor.Tests
                     };
                 });
 
-            return userProcessor.Object;
+            return tbspProcessor.Object;
         }
 
         public static IAdventureProcessor MockAdventureProcessor(Guid updateAdventureExceptionId)
