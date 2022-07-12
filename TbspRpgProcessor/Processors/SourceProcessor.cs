@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Markdig;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,7 @@ namespace TbspRpgProcessor.Processors
         Task<Source> CreateOrUpdateSource(Source updatedSource, string language);
         Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
         Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
+        Task<List<Source>> GetUnreferencedSource(UnreferencedSourceModel unreferencedSourceModel);
     }
     
     public class SourceProcessor : ISourceProcessor
@@ -110,6 +112,18 @@ namespace TbspRpgProcessor.Processors
             }
 
             return dbSource.Key;
+        }
+
+        public Task<List<Source>> GetUnreferencedSource(UnreferencedSourceModel unreferencedSourceModel)
+        {
+            // get all of the source entries for this adventure
+            // go through each key
+            // check if there is an adventure that has an InitialSourceKey or a DescriptionSourceKey equal to the key
+            // check if there is content that has a SourceKey equal to the key
+            // check if there is a location that has a SourceKey equal to the key
+            // check if there is a route that has a SourceKey or a RouteTakenSourceKy equal to the key
+            // check if there is a script with content that contains the key
+            throw new NotImplementedException();
         }
     }
 }
