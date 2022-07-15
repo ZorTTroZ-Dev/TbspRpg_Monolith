@@ -1,11 +1,8 @@
-using System;
 using System.Threading.Tasks;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using TbspRpgProcessor;
-using TbspRpgProcessor.Entities;
-using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
 {

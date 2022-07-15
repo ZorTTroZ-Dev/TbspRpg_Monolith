@@ -29,7 +29,7 @@ public class ScriptProcessor : IScriptProcessor
     private readonly ILocationsService _locationsService;
     private readonly ISourcesService _sourcesService;
     private readonly IGamesService _gamesService;
-    private readonly ILogger<ScriptProcessor> _logger;
+    private readonly ILogger _logger;
 
     public ScriptProcessor(IScriptsService scriptsService,
         IAdventuresService adventuresService,
@@ -37,7 +37,7 @@ public class ScriptProcessor : IScriptProcessor
         ILocationsService locationsService,
         ISourcesService sourcesService,
         IGamesService gamesService,
-        ILogger<ScriptProcessor> logger)
+        ILogger logger)
     {
         _scriptsService = scriptsService;
         _adventuresService = adventuresService;

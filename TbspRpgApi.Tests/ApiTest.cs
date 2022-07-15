@@ -99,7 +99,7 @@ namespace TbspRpgApi.Tests
             string exceptionEmail = null)
         {
             var dlUsersService = MockServices.MockDataLayerUsersService(users);
-            var mockTbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(exceptionEmail);
+            var mockTbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(exceptionEmail, Guid.Empty);
             return new UsersService(dlUsersService,
                 mockTbspRpgProcessor,
                 new JwtSettings()
@@ -186,12 +186,12 @@ namespace TbspRpgApi.Tests
 
         protected static ScriptsService CreateScriptsService(
             ICollection<Script> scripts = null,
-            Guid? executeScriptExceptionId = null)
+            Guid? exceptionId = null)
         {
-            var scriptProcessor = ProcessorTest.MockScriptProcessor(executeScriptExceptionId.GetValueOrDefault());
+            var mockTbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(null, exceptionId.GetValueOrDefault());
             var dlScriptService = MockServices.MockDataLayerScriptsService(scripts);
             return new ScriptsService(
-                scriptProcessor,
+                mockTbspRpgProcessor,
                 dlScriptService,
                 NullLogger<ScriptsService>.Instance);
         }

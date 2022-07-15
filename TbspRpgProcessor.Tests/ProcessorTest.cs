@@ -147,11 +147,37 @@ namespace TbspRpgProcessor.Tests
         }
 
         protected static ITbspRpgProcessor CreateTbspRpgProcessor(
-            ICollection<User> users = null)
+            ICollection<User> users = null,
+            ICollection<Script> scripts = null,
+            ICollection<Adventure> adventures = null,
+            ICollection<Route> routes = null,
+            ICollection<Location> locations = null,
+            ICollection<En> sources = null,
+            ICollection<Game> games = null)
         {
+            users ??= new List<User>();
+            adventures ??= new List<Adventure>();
+            routes ??= new List<Route>();
+            locations ??= new List<Location>();
+            sources ??= new List<En>();
+            games ??= new List<Game>();
+            
             var usersService = MockServices.MockDataLayerUsersService(users);
+            var scriptsService = MockServices.MockDataLayerScriptsService(scripts);
+            var adventuresService = MockServices.MockDataLayerAdventuresService(adventures);
+            var routesService = MockServices.MockDataLayerRoutesService(routes);
+            var locationsService = MockServices.MockDataLayerLocationsService(locations);
+            var sourcesService = MockServices.MockDataLayerSourcesService(sources);
+            var gamesService = MockServices.MockDataLayerGamesService(games);
+            
             return new TbspRpgProcessor(
                 usersService,
+                sourcesService,
+                scriptsService,
+                adventuresService,
+                routesService,
+                locationsService,
+                gamesService,
                 MockMailClient(),
                 NullLogger<TbspRpgProcessor>.Instance);
         }
@@ -188,7 +214,7 @@ namespace TbspRpgProcessor.Tests
             return mailClient.Object;
         }
 
-        public static ITbspRpgProcessor MockTbspRpgProcessor(string exceptionEmail)
+        public static ITbspRpgProcessor MockTbspRpgProcessor(string exceptionEmail, Guid exceptionId)
         {
             var tbspProcessor = new Mock<ITbspRpgProcessor>();
 
@@ -226,6 +252,36 @@ namespace TbspRpgProcessor.Tests
                     {
                         Id = Guid.NewGuid()
                     };
+                });
+            
+            tbspProcessor.Setup(service =>
+                    service.ExecuteScript(It.IsAny<Guid>()))
+                .Callback((Guid scriptId) =>
+                {
+                    if (scriptId == exceptionId)
+                    {
+                        throw new ArgumentException("invalid script id");
+                    }
+                });
+            
+            tbspProcessor.Setup(service =>
+                    service.UpdateScript(It.IsAny<ScriptUpdateModel>()))
+                .Callback((ScriptUpdateModel scriptUpdateModel) =>
+                {
+                    if (scriptUpdateModel.script.Id == exceptionId)
+                    {
+                        throw new ArgumentException("invalid script id");
+                    }
+                });
+
+            tbspProcessor.Setup(service =>
+                    service.RemoveScript(It.IsAny<ScriptRemoveModel>()))
+                .Callback((ScriptRemoveModel scriptRemoveModel) =>
+                {
+                    if (scriptRemoveModel.ScriptId == exceptionId)
+                    {
+                        throw new ArgumentException("invalid script id");
+                    }
                 });
 
             return tbspProcessor.Object;
