@@ -165,10 +165,12 @@ namespace TbspRpgApi.Tests
         protected static SourcesService CreateSourcesService(ICollection<En> sources, Guid scriptExceptionId)
         {
             var dlSourcesService = MockServices.MockDataLayerSourcesService(sources);
-            var sourceProcessor = ProcessorTest.MockSourceProcessor(sources, scriptExceptionId);
+            var tbspRpgProcessor = ProcessorTest.CreateTbspRpgProcessor(
+                null, null, null, null, null,
+                sources);
             return new SourcesService(
                 dlSourcesService,
-                sourceProcessor,
+                tbspRpgProcessor,
                 NullLogger<SourcesService>.Instance);
         }
 

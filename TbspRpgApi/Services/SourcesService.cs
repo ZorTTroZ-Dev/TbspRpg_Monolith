@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor;
 using TbspRpgProcessor.Entities;
-using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
 {
@@ -20,15 +20,15 @@ namespace TbspRpgApi.Services
     public class SourcesService: ISourcesService
     {
         private readonly TbspRpgDataLayer.Services.ISourcesService _sourcesService;
-        private readonly ISourceProcessor _sourceProcessor;
+        private readonly ITbspRpgProcessor _tbspRpgProcessor;
         private readonly ILogger<SourcesService> _logger;
 
         public SourcesService(TbspRpgDataLayer.Services.ISourcesService sourcesService,
-            ISourceProcessor sourceProcessor,
+            ITbspRpgProcessor tbspRpgProcessor,
             ILogger<SourcesService> logger)
         {
             _sourcesService = sourcesService;
-            _sourceProcessor = sourceProcessor;
+            _tbspRpgProcessor = tbspRpgProcessor;
             _logger = logger;
         }
 
@@ -40,7 +40,7 @@ namespace TbspRpgApi.Services
         
         public async Task<SourceViewModel> GetProcessedSourceForKey(Guid key, Guid adventureId, string language)
         {
-            var source = await _sourceProcessor.GetSourceForKey(new SourceForKeyModel()
+            var source = await _tbspRpgProcessor.GetSourceForKey(new SourceForKeyModel()
             {
                 Key = key,
                 AdventureId = adventureId,

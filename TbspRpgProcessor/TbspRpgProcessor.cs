@@ -113,22 +113,26 @@ public class TbspRpgProcessor: ITbspRpgProcessor
 
     private void LoadSourceProcessor()
     {
-        throw new NotImplementedException();
+        LoadScriptProcessor();
+        _sourceProcessor ??= new SourceProcessor(_scriptProcessor, _sourcesService, _logger);
     }
 
     public Task<Source> CreateOrUpdateSource(Source updatedSource, string language)
     {
-        throw new NotImplementedException();
+        LoadSourceProcessor();
+        return _sourceProcessor.CreateOrUpdateSource(updatedSource, language);
     }
 
     public Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel)
     {
-        throw new NotImplementedException();
+        LoadSourceProcessor();
+        return _sourceProcessor.GetSourceForKey(sourceForKeyModel);
     }
 
     public Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel)
     {
-        throw new NotImplementedException();
+        LoadSourceProcessor();
+        return _sourceProcessor.ResolveSourceKey(sourceForKeyModel);
     }
 
     #endregion

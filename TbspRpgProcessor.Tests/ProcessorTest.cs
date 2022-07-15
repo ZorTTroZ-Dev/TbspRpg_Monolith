@@ -146,7 +146,7 @@ namespace TbspRpgProcessor.Tests
                 NullLogger<AdventureProcessor>.Instance);
         }
 
-        protected static ITbspRpgProcessor CreateTbspRpgProcessor(
+        public static ITbspRpgProcessor CreateTbspRpgProcessor(
             ICollection<User> users = null,
             ICollection<Script> scripts = null,
             ICollection<Adventure> adventures = null,
