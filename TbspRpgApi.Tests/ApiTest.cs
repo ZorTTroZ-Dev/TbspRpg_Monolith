@@ -178,10 +178,10 @@ namespace TbspRpgApi.Tests
             ICollection<Route> routes = null,
             Guid? updateRouteExceptionId = null)
         {
-            var routeProcessor = ProcessorTest.MockRouteProcessor(updateRouteExceptionId.GetValueOrDefault());
+            var mockTbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(null, updateRouteExceptionId.GetValueOrDefault());
             var dlRoutesService = MockServices.MockDataLayerRoutesService(routes);
             return new RoutesService(
-                routeProcessor,
+                mockTbspRpgProcessor,
                 dlRoutesService,
                 NullLogger<RoutesService>.Instance);
         }

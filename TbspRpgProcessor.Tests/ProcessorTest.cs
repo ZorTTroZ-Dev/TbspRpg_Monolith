@@ -283,6 +283,28 @@ namespace TbspRpgProcessor.Tests
                         throw new ArgumentException("invalid script id");
                     }
                 });
+            
+            tbspProcessor.Setup(service =>
+                    service.UpdateRoute(It.IsAny<RouteUpdateModel>()))
+                .Callback((RouteUpdateModel routeUpdateModel) =>
+                {
+                    if (routeUpdateModel.route.Id == exceptionId)
+                        throw new ArgumentException("can't update route");
+                });
+
+            tbspProcessor.Setup(service =>
+                    service.RemoveRoutes(It.IsAny <List<Guid>>(), It.IsAny<Guid>()))
+                .Callback((List<Guid> routeIds, Guid locationId) => { });
+            
+            tbspProcessor.Setup(service =>
+                    service.RemoveRoute(It.IsAny<RouteRemoveModel>()))
+                .Callback((RouteRemoveModel routeRemoveModel) =>
+                {
+                    if (routeRemoveModel.RouteId == exceptionId)
+                    {
+                        throw new ArgumentException("invalid route id");
+                    }
+                });
 
             return tbspProcessor.Object;
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgDataLayer.Entities;
@@ -36,6 +37,14 @@ public interface ITbspRpgProcessor
     Task UpdateScript(ScriptUpdateModel scriptUpdateModel);
     
     #endregion
+
+    #region RouteProcessor
+
+    Task UpdateRoute(RouteUpdateModel routeUpdateModel);
+    Task RemoveRoute(RouteRemoveModel routeRemoveModel);
+    Task RemoveRoutes(List<Guid> currentRouteIds, Guid locationId);
+
+    #endregion
 }
 
 public class TbspRpgProcessor: ITbspRpgProcessor
@@ -43,6 +52,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     private IUserProcessor _userProcessor;
     private ISourceProcessor _sourceProcessor;
     private IScriptProcessor _scriptProcessor;
+    private IRouteProcessor _routeProcessor;
 
     private readonly IUsersService _usersService;
     private readonly ISourcesService _sourcesService;
@@ -185,6 +195,38 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     {
         LoadScriptProcessor();
         return _scriptProcessor.UpdateScript(scriptUpdateModel);
+    }
+
+    #endregion
+
+    #region RouteProcessor
+
+    private void LoadRouteProcessor()
+    {
+        LoadSourceProcessor();
+        _routeProcessor ??= new RouteProcessor(
+            _sourceProcessor,
+            _routesService,
+            _locationsService,
+            _logger);
+    }
+    
+    public Task UpdateRoute(RouteUpdateModel routeUpdateModel)
+    {
+        LoadRouteProcessor();
+        return _routeProcessor.UpdateRoute(routeUpdateModel);
+    }
+
+    public Task RemoveRoute(RouteRemoveModel routeRemoveModel)
+    {
+        LoadRouteProcessor();
+        return _routeProcessor.RemoveRoute(routeRemoveModel);
+    }
+
+    public Task RemoveRoutes(List<Guid> currentRouteIds, Guid locationId)
+    {
+        LoadRouteProcessor();
+        return _routeProcessor.RemoveRoutes(currentRouteIds, locationId);
     }
 
     #endregion
