@@ -153,7 +153,8 @@ namespace TbspRpgProcessor.Tests
             ICollection<Route> routes = null,
             ICollection<Location> locations = null,
             ICollection<En> sources = null,
-            ICollection<Game> games = null)
+            ICollection<Game> games = null,
+            ICollection<Content> contents = null)
         {
             users ??= new List<User>();
             adventures ??= new List<Adventure>();
@@ -161,6 +162,7 @@ namespace TbspRpgProcessor.Tests
             locations ??= new List<Location>();
             sources ??= new List<En>();
             games ??= new List<Game>();
+            contents ??= new List<Content>();
             
             var usersService = MockServices.MockDataLayerUsersService(users);
             var scriptsService = MockServices.MockDataLayerScriptsService(scripts);
@@ -169,6 +171,7 @@ namespace TbspRpgProcessor.Tests
             var locationsService = MockServices.MockDataLayerLocationsService(locations);
             var sourcesService = MockServices.MockDataLayerSourcesService(sources);
             var gamesService = MockServices.MockDataLayerGamesService(games);
+            var contentsService = MockServices.MockDataLayerContentsService(contents);
             
             return new TbspRpgProcessor(
                 usersService,
@@ -178,6 +181,7 @@ namespace TbspRpgProcessor.Tests
                 routesService,
                 locationsService,
                 gamesService,
+                contentsService,
                 MockMailClient(),
                 NullLogger<TbspRpgProcessor>.Instance);
         }
@@ -303,6 +307,16 @@ namespace TbspRpgProcessor.Tests
                     if (routeRemoveModel.RouteId == exceptionId)
                     {
                         throw new ArgumentException("invalid route id");
+                    }
+                });
+            
+            tbspProcessor.Setup(service =>
+                    service.ChangeLocationViaRoute(It.IsAny<Guid>(), It.IsAny<Guid>(),It.IsAny<DateTime>()))
+                .Callback((Guid gameId, Guid routeId, DateTime timeStamp) =>
+                {
+                    if (gameId == exceptionId)
+                    {
+                        throw new ArgumentException("can't change location");
                     }
                 });
 

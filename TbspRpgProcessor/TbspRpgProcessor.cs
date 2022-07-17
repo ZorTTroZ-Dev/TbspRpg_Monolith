@@ -45,6 +45,12 @@ public interface ITbspRpgProcessor
     Task RemoveRoutes(List<Guid> currentRouteIds, Guid locationId);
 
     #endregion
+
+    #region MapProcessor
+
+    Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp);
+
+    #endregion
 }
 
 public class TbspRpgProcessor: ITbspRpgProcessor
@@ -53,6 +59,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     private ISourceProcessor _sourceProcessor;
     private IScriptProcessor _scriptProcessor;
     private IRouteProcessor _routeProcessor;
+    private IMapProcessor _mapProcessor;
 
     private readonly IUsersService _usersService;
     private readonly ISourcesService _sourcesService;
@@ -61,6 +68,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     private readonly IRoutesService _routesService;
     private readonly ILocationsService _locationsService;
     private readonly IGamesService _gamesService;
+    private readonly IContentsService _contentsService;
 
     private readonly IMailClient _mailClient;
     
@@ -76,6 +84,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         IRoutesService routesService,
         ILocationsService locationsService,
         IGamesService gamesService,
+        IContentsService contentsService,
         IMailClient mailClient,
         ILogger<TbspRpgProcessor> logger)
     {
@@ -86,6 +95,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         _routesService = routesService;
         _locationsService = locationsService;
         _gamesService = gamesService;
+        _contentsService = contentsService;
         _mailClient = mailClient;
         _logger = logger;
     }
@@ -227,6 +237,29 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     {
         LoadRouteProcessor();
         return _routeProcessor.RemoveRoutes(currentRouteIds, locationId);
+    }
+
+    #endregion
+
+    #region MapProcessor
+
+    private void LoadMapProcessor()
+    {
+        LoadScriptProcessor();
+        LoadSourceProcessor();
+        _mapProcessor ??= new MapProcessor(
+            _scriptProcessor,
+            _sourceProcessor,
+            _gamesService,
+            _routesService,
+            _contentsService,
+            _logger);
+    }
+    
+    public Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp)
+    {
+        LoadMapProcessor();
+        return _mapProcessor.ChangeLocationViaRoute(gameId, routeId, timeStamp);
     }
 
     #endregion

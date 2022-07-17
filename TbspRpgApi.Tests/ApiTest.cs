@@ -143,11 +143,12 @@ namespace TbspRpgApi.Tests
         {
             var dlGamesService = MockServices.MockDataLayerGamesService(games);
             var dlRoutesService = MockServices.MockDataLayerRoutesService(routes);
-            var mapProcessor = ProcessorTest.MockMapProcessor(changeLocationViaRouteExceptionId.GetValueOrDefault());
+            var tbspRpgProcessor =
+                ProcessorTest.MockTbspRpgProcessor(null, changeLocationViaRouteExceptionId.GetValueOrDefault());
             return new MapsService(
+                tbspRpgProcessor,
                 dlGamesService,
                 dlRoutesService,
-                mapProcessor,
                 NullLogger<MapsService>.Instance);
         }
 
