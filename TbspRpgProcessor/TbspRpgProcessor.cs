@@ -60,6 +60,15 @@ public interface ITbspRpgProcessor
     Task RemoveLocations(ICollection<Location> locations, bool save = true);
 
     #endregion
+
+    #region GameProcessor
+
+    Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
+    Task RemoveGame(GameRemoveModel gameRemoveModel);
+    Task RemoveGame(Game game, bool save = true);
+    Task RemoveGames(ICollection<Game> games, bool save = true);
+
+    #endregion
 }
 
 public class TbspRpgProcessor: ITbspRpgProcessor
@@ -70,6 +79,9 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     private IRouteProcessor _routeProcessor;
     private IMapProcessor _mapProcessor;
     private ILocationProcessor _locationProcessor;
+    private IGameProcessor _gameProcessor;
+    private IContentProcessor _contentProcessor;
+    private IAdventureProcessor _adventureProcessor;
 
     private readonly IUsersService _usersService;
     private readonly ISourcesService _sourcesService;
@@ -308,6 +320,47 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     {
         LoadLocationProcessor();
         return _locationProcessor.RemoveLocations(locations, save);
+    }
+
+    #endregion
+
+    #region GameProcessor
+
+    private void LoadGameProcessor()
+    {
+        LoadScriptProcessor();
+        _gameProcessor ??= new GameProcessor(
+            _scriptProcessor,
+            _adventuresService,
+            _usersService,
+            _gamesService,
+            _locationsService,
+            _contentsService,
+            _logger);
+    }
+
+    public Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp)
+    {
+        LoadGameProcessor();
+        return _gameProcessor.StartGame(userId, adventureId, timeStamp);
+    }
+
+    public Task RemoveGame(GameRemoveModel gameRemoveModel)
+    {
+        LoadGameProcessor();
+        return _gameProcessor.RemoveGame(gameRemoveModel);
+    }
+
+    public Task RemoveGame(Game game, bool save = true)
+    {
+        LoadGameProcessor();
+        return _gameProcessor.RemoveGame(game, save);
+    }
+
+    public Task RemoveGames(ICollection<Game> games, bool save = true)
+    {
+        LoadGameProcessor();
+        return _gameProcessor.RemoveGames(games, save);
     }
 
     #endregion

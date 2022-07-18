@@ -8,7 +8,6 @@ namespace TbspRpgProcessor
         public static void InitializeProcessorLayer(IServiceCollection services)
         {
             // processors
-            services.AddScoped<IGameProcessor, GameProcessor>();
             services.AddScoped<IContentProcessor, ContentProcessor>();
             services.AddScoped<IAdventureProcessor, AdventureProcessor>();
             services.AddScoped<ITbspRpgProcessor, TbspRpgProcessor>();

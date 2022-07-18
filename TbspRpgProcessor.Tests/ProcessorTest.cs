@@ -329,6 +329,31 @@ namespace TbspRpgProcessor.Tests
                         throw new ArgumentException("can't update location");
                     }
                 });
+            
+            tbspProcessor.Setup(service =>
+                    service.StartGame(It.IsAny<Guid>(), It.IsAny<Guid>(),It.IsAny<DateTime>()))
+                .ReturnsAsync((Guid userId, Guid adventureId, DateTime timeStamp) =>
+                {
+                    if (userId == exceptionId)
+                    {
+                        throw new ArgumentException("can't start game");
+                    }
+
+                    return new Game()
+                    {
+                        Id = Guid.NewGuid()
+                    };
+                });
+            
+            tbspProcessor.Setup(service =>
+                    service.RemoveGame(It.IsAny<GameRemoveModel>()))
+                .Callback((GameRemoveModel gameRemoveModel) =>
+                {
+                    if (gameRemoveModel.GameId == exceptionId)
+                    {
+                        throw new ArgumentException("can't remove game");
+                    }
+                });
 
             return tbspProcessor.Object;
         }

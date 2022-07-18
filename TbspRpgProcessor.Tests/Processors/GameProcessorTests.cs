@@ -33,8 +33,9 @@ namespace TbspRpgProcessor.Tests.Processors
                     Email = "test"
                 }
             };
-            var processor = CreateGameProcessor(
+            var processor = CreateTbspRpgProcessor(
                 testUsers,
+                null,
                 testAdventures);
             
             // act
@@ -65,8 +66,9 @@ namespace TbspRpgProcessor.Tests.Processors
                     Email = "test"
                 }
             };
-            var processor = CreateGameProcessor(
+            var processor = CreateTbspRpgProcessor(
                 testUsers,
+                null,
                 testAdventures);
             
             // act
@@ -106,9 +108,13 @@ namespace TbspRpgProcessor.Tests.Processors
                     UserId = testUsers[0].Id
                 }
             };
-            var processor = CreateGameProcessor(
+            var processor = CreateTbspRpgProcessor(
                 testUsers,
+                null,
                 testAdventures,
+                null,
+                null,
+                null,
                 testGames);
 
             // act
@@ -142,11 +148,14 @@ namespace TbspRpgProcessor.Tests.Processors
                     Email = "test"
                 }
             };
-            var processor = CreateGameProcessor(
+            var processor = CreateTbspRpgProcessor(
                 testUsers,
+                null,
                 testAdventures,
-                new List<Game>(),
-                new List<Location>());
+                null,
+                new List<Location>(),
+                null,
+                new List<Game>());
             
             // act
             Task Act() => processor.StartGame(testUsers[0].Id,
@@ -203,13 +212,15 @@ namespace TbspRpgProcessor.Tests.Processors
             var testContents = new List<Content>();
             var testGames = new List<Game>();
             var testScripts = new List<Script>() { testScript };
-            var processor = CreateGameProcessor(
+            var processor = CreateTbspRpgProcessor(
                 testUsers,
+                testScripts,
                 testAdventures,
-                testGames,
+                null,
                 testLocations,
-                testContents,
-                testScripts);
+                null,
+                testGames,
+                testContents);
             
             // act
             var game = await processor.StartGame(testUsers[0].Id,
@@ -263,13 +274,15 @@ namespace TbspRpgProcessor.Tests.Processors
             var testContents = new List<Content>();
             var testGames = new List<Game>();
             var testScripts = new List<Script>();
-            var processor = CreateGameProcessor(
+            var processor = CreateTbspRpgProcessor(
                 testUsers,
+                testScripts,
                 testAdventures,
-                testGames,
+                null,
                 testLocations,
-                testContents,
-                testScripts);
+                null,
+                testGames,
+                testContents);
             
             // act
             var game = await processor.StartGame(testUsers[0].Id,
@@ -320,9 +333,13 @@ namespace TbspRpgProcessor.Tests.Processors
                     UserId = testUsers[0].Id
                 }
             };
-            var processor = CreateGameProcessor(
+            var processor = CreateTbspRpgProcessor(
                 testUsers,
+                null,
                 testAdventures,
+                null,
+                null,
+                null,
                 testGames);
             
             // act
@@ -364,11 +381,14 @@ namespace TbspRpgProcessor.Tests.Processors
                     UserId = testUsers[0].Id
                 }
             };
-            var processor = CreateGameProcessor(
+            var processor = CreateTbspRpgProcessor(
                 testUsers,
-                testAdventures,
-                testGames,
                 null,
+                testAdventures,
+                null,
+                null,
+                null,
+                testGames,
                 new List<Content>());
             
             // act
@@ -427,11 +447,14 @@ namespace TbspRpgProcessor.Tests.Processors
                     SourceKey = Guid.NewGuid()
                 }
             };
-            var processor = CreateGameProcessor(
+            var processor = CreateTbspRpgProcessor(
                 testUsers,
-                testAdventures,
-                testGames,
                 null,
+                testAdventures,
+                null,
+                null,
+                null,
+                testGames,
                 testContents);
             
             // act
@@ -515,11 +538,14 @@ namespace TbspRpgProcessor.Tests.Processors
                     SourceKey = Guid.NewGuid()
                 }
             };
-            var processor = CreateGameProcessor(
+            var processor = CreateTbspRpgProcessor(
                 testUsers,
-                testAdventures,
-                testGames,
                 null,
+                testAdventures,
+                null,
+                null,
+                null,
+                testGames,
                 testContents);
             
             // act

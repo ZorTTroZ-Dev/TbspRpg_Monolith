@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using Org.BouncyCastle.Bcpg;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.Services;
@@ -121,10 +120,11 @@ namespace TbspRpgApi.Tests
         {
             startGameExceptionId ??= Guid.NewGuid();
             var dlGamesService = MockServices.MockDataLayerGamesService(games);
-            var gameProcessor = ProcessorTest.MockGameProcessor(startGameExceptionId.GetValueOrDefault());
+            var tbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(null,
+                startGameExceptionId.GetValueOrDefault());
             return new GamesService(
+                tbspRpgProcessor,
                 dlGamesService,
-                gameProcessor,
                 NullLogger<GamesService>.Instance);
         }
 
