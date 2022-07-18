@@ -51,6 +51,15 @@ public interface ITbspRpgProcessor
     Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp);
 
     #endregion
+
+    #region LocationProcessor
+
+    Task UpdateLocation(Location location, Source source, string language);
+    Task RemoveLocation(LocationRemoveModel locationRemoveModel);
+    Task RemoveLocation(Location location, bool save = true);
+    Task RemoveLocations(ICollection<Location> locations, bool save = true);
+
+    #endregion
 }
 
 public class TbspRpgProcessor: ITbspRpgProcessor
@@ -60,6 +69,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     private IScriptProcessor _scriptProcessor;
     private IRouteProcessor _routeProcessor;
     private IMapProcessor _mapProcessor;
+    private ILocationProcessor _locationProcessor;
 
     private readonly IUsersService _usersService;
     private readonly ISourcesService _sourcesService;
@@ -260,6 +270,44 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     {
         LoadMapProcessor();
         return _mapProcessor.ChangeLocationViaRoute(gameId, routeId, timeStamp);
+    }
+
+    #endregion
+
+    #region LocationProcessor
+
+    private void LoadLocationProcessor()
+    {
+        LoadSourceProcessor();
+        _locationProcessor ??= new LocationProcessor(
+            _sourceProcessor,
+            _locationsService,
+            _routesService,
+            _logger);
+    }
+
+    public Task UpdateLocation(Location location, Source source, string language)
+    {
+        LoadLocationProcessor();
+        return _locationProcessor.UpdateLocation(location, source, language);
+    }
+
+    public Task RemoveLocation(LocationRemoveModel locationRemoveModel)
+    {
+        LoadLocationProcessor();
+        return _locationProcessor.RemoveLocation(locationRemoveModel);
+    }
+
+    public Task RemoveLocation(Location location, bool save = true)
+    {
+        LoadLocationProcessor();
+        return _locationProcessor.RemoveLocation(location, save);
+    }
+
+    public Task RemoveLocations(ICollection<Location> locations, bool save = true)
+    {
+        LoadLocationProcessor();
+        return _locationProcessor.RemoveLocations(locations, save);
     }
 
     #endregion

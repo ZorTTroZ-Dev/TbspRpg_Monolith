@@ -156,10 +156,11 @@ namespace TbspRpgApi.Tests
             Guid? updateLocationExceptionId = null)
         {
             var dlLocationsService = MockServices.MockDataLayerLocationsService(locations);
-            var locationProcessor = ProcessorTest.MockLocationProcessor(updateLocationExceptionId.GetValueOrDefault());
+            var tbspRpgProcessor =
+                ProcessorTest.MockTbspRpgProcessor(null, updateLocationExceptionId.GetValueOrDefault());
             return new LocationsService(
+                tbspRpgProcessor,
                 dlLocationsService,
-                locationProcessor,
                 NullLogger<LocationsService>.Instance);
         }
 

@@ -319,6 +319,16 @@ namespace TbspRpgProcessor.Tests
                         throw new ArgumentException("can't change location");
                     }
                 });
+            
+            tbspProcessor.Setup(service =>
+                    service.UpdateLocation(It.IsAny<Location>(), It.IsAny<Source>(), It.IsAny<string>()))
+                .Callback((Location location, Source source, string language) =>
+                {
+                    if (location.Id == exceptionId)
+                    {
+                        throw new ArgumentException("can't update location");
+                    }
+                });
 
             return tbspProcessor.Object;
         }
