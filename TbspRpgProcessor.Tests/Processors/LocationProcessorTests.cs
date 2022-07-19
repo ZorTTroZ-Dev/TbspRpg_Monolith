@@ -33,7 +33,13 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var locations = new List<Location>() { testLocation };
             var sources = new List<En>() {testSource};
-            var processor = CreateLocationProcessor(locations, sources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                null,
+                locations,
+                sources);
             
             // act
             Task Act() => processor.UpdateLocation(new Location()
@@ -67,7 +73,13 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var locations = new List<Location>() { testLocation };
             var sources = new List<En>();
-            var processor = CreateLocationProcessor(locations, sources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                null,
+                locations,
+                sources);
             
             // act
             await processor.UpdateLocation(new Location()
@@ -109,7 +121,13 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var locations = new List<Location>() { testLocation };
             var sources = new List<En>() {testSource};
-            var processor = CreateLocationProcessor(locations, sources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                null,
+                locations,
+                sources);
             
             // act
             Task Act() => processor.UpdateLocation(new Location()
@@ -150,7 +168,13 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var locations = new List<Location>() { testLocation };
             var sources = new List<En>() {testSource};
-            var processor = CreateLocationProcessor(locations, sources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                null,
+                locations,
+                sources);
             
             // act
             await processor.UpdateLocation(new Location()
@@ -181,7 +205,13 @@ namespace TbspRpgProcessor.Tests.Processors
             // arrange
             var locations = new List<Location>();
             var sources = new List<En>();
-            var processor = CreateLocationProcessor(locations, sources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                null,
+                locations,
+                sources);
             
             // act
             await processor.UpdateLocation(new Location()
@@ -241,7 +271,13 @@ namespace TbspRpgProcessor.Tests.Processors
             var locations = new List<Location>() { testLocation };
             var sources = new List<En>() {testSource};
             var routes = new List<Route>() {testRoute};
-            var processor = CreateLocationProcessor(locations, sources, routes);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                routes,
+                locations,
+                sources);
             
             // act
             await processor.RemoveLocation(new LocationRemoveModel()
@@ -286,7 +322,13 @@ namespace TbspRpgProcessor.Tests.Processors
             var locations = new List<Location>() { testLocation };
             var sources = new List<En>() {testSource};
             var routes = new List<Route>() {testRoute};
-            var processor = CreateLocationProcessor(locations, sources, routes);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                routes,
+                locations,
+                sources);
             
             // act
             Task Act() => processor.RemoveLocation(new LocationRemoveModel()
@@ -352,7 +394,13 @@ namespace TbspRpgProcessor.Tests.Processors
             var locations = new List<Location>() { testLocation, testLocationTwo };
             var sources = new List<En>() { testSource };
             var routes = new List<Route>() { testRoute, testRouteTwo };
-            var processor = CreateLocationProcessor(locations, sources, routes);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                routes,
+                locations,
+                sources);
             
             // act
             await processor.RemoveLocations(new List<Location>()

@@ -33,7 +33,8 @@ public class ScriptProcessorTests: ProcessorTest
             ",
             Type = ScriptTypes.LuaScript
         };
-        var processor = CreateScriptProcessor(new List<Script>() {script});
+        var processor = CreateTbspRpgProcessor(
+            null, new List<Script>() {script});
         
         // act
         var result = await processor.ExecuteScript(script.Id);
@@ -71,7 +72,8 @@ public class ScriptProcessorTests: ProcessorTest
                 }
             }
         };
-        var processor = CreateScriptProcessor(new List<Script>() {script});
+        var processor = CreateTbspRpgProcessor(
+            null, new List<Script>() {script});
         
         // act
         var result = await processor.ExecuteScript(script.Id);
@@ -99,7 +101,8 @@ public class ScriptProcessorTests: ProcessorTest
             ",
             Type = ScriptTypes.LuaScript
         };
-        var processor = CreateScriptProcessor(new List<Script>() {script});
+        var processor = CreateTbspRpgProcessor(
+            null, new List<Script>() {script});
         
         // act
         Task Act() => processor.ExecuteScript(script.Id);
@@ -127,7 +130,8 @@ public class ScriptProcessorTests: ProcessorTest
             ",
             Type = ScriptTypes.LuaScript
         };
-        var processor = CreateScriptProcessor(new List<Script>() {script});
+        var processor = CreateTbspRpgProcessor(
+            null, new List<Script>() {script});
         
         // act
         Task Act() => processor.ExecuteScript(Guid.NewGuid());
@@ -155,7 +159,8 @@ public class ScriptProcessorTests: ProcessorTest
             ",
             Type = ScriptTypes.LuaScript
         };
-        var processor = CreateScriptProcessor(new List<Script>() {script});
+        var processor = CreateTbspRpgProcessor(
+            null, new List<Script>() {script});
         
         // act
         Task Act() => processor.ExecuteScript(Guid.Empty);
@@ -178,7 +183,8 @@ public class ScriptProcessorTests: ProcessorTest
             Name = "test script"
         };
         var scripts = new List<Script>() { testScript };
-        var processor = CreateScriptProcessor(scripts);
+        var processor = CreateTbspRpgProcessor(
+            null, scripts);
         
         // act
         Task Act() => processor.UpdateScript(new ScriptUpdateModel()
@@ -207,7 +213,8 @@ public class ScriptProcessorTests: ProcessorTest
             AdventureId = Guid.NewGuid()
         };
         var scripts = new List<Script>() { testScript };
-        var processor = CreateScriptProcessor(scripts);
+        var processor = CreateTbspRpgProcessor(
+            null, scripts);
         
         // act
         await processor.UpdateScript(new ScriptUpdateModel()
@@ -253,7 +260,8 @@ public class ScriptProcessorTests: ProcessorTest
             AdventureId = Guid.NewGuid()
         };
         var scripts = new List<Script>() { testScript, testScriptTwo };
-        var processor = CreateScriptProcessor(scripts);
+        var processor = CreateTbspRpgProcessor(
+            null, scripts);
         
         // act
         await processor.UpdateScript(new ScriptUpdateModel()
@@ -293,12 +301,9 @@ public class ScriptProcessorTests: ProcessorTest
             Id = Guid.NewGuid(),
             Name = "test script"
         };
-        var processor = CreateScriptProcessor(
-            new List<Script>() {testScript},
-            new List<Adventure>(),
-            new List<Route>(),
-            new List<Location>(),
-            new List<En>());
+        var processor = CreateTbspRpgProcessor(
+            null,
+            new List<Script>() {testScript});
         
         // act
         Task Act() => processor.RemoveScript(new ScriptRemoveModel()
@@ -327,12 +332,8 @@ public class ScriptProcessorTests: ProcessorTest
             InitializationScript = testScript
         };
         var scripts = new List<Script>() { testScript };
-        var processor = CreateScriptProcessor(
-            scripts,
-            new List<Adventure>() { testAdventure },
-            new List<Route>(),
-            new List<Location>(),
-            new List<En>());
+        var processor = CreateTbspRpgProcessor(
+            null, scripts, new List<Adventure>() { testAdventure });
         
         // act
         await processor.RemoveScript(new ScriptRemoveModel()
@@ -363,12 +364,10 @@ public class ScriptProcessorTests: ProcessorTest
             RouteTakenScript = testScript
         };
         var scripts = new List<Script>() { testScript };
-        var processor = CreateScriptProcessor(
+        var processor = CreateTbspRpgProcessor(
+            null,
             scripts,
-            new List<Adventure>(),
-            new List<Route>() { testRoute },
-            new List<Location>(),
-            new List<En>());
+            null, new List<Route>() {testRoute});
         
         // act
         await processor.RemoveScript(new ScriptRemoveModel()
@@ -399,12 +398,12 @@ public class ScriptProcessorTests: ProcessorTest
             EnterScriptId = testScript.Id
         };
         var scripts = new List<Script>() { testScript };
-        var processor = CreateScriptProcessor(
+        var processor = CreateTbspRpgProcessor(
+            null,
             scripts,
-            new List<Adventure>(),
-            new List<Route>(),
-            new List<Location>() { testLocation },
-            new List<En>());
+            null,
+            null,
+            new List<Location>() { testLocation });
         
         // act
         await processor.RemoveScript(new ScriptRemoveModel()
@@ -435,11 +434,12 @@ public class ScriptProcessorTests: ProcessorTest
             ScriptId = testScript.Id
         };
         var scripts = new List<Script>() { testScript };
-        var processor = CreateScriptProcessor(
+        var processor = CreateTbspRpgProcessor(
+            null,
             scripts,
-            new List<Adventure>(),
-            new List<Route>(),
-            new List<Location>(),
+            null,
+            null,
+            null,
             new List<En>() { testSource });
         
         // act
@@ -470,12 +470,7 @@ public class ScriptProcessorTests: ProcessorTest
             IncludedIn = new List<Script>() { includeScript }
         };
         var scripts = new List<Script>() { testScript, includeScript };
-        var processor = CreateScriptProcessor(
-            scripts,
-            new List<Adventure>(),
-            new List<Route>(),
-            new List<Location>(),
-            new List<En>());
+        var processor = CreateTbspRpgProcessor(null, scripts);
         
         // act
         await processor.RemoveScript(new ScriptRemoveModel()

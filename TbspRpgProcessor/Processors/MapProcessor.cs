@@ -19,7 +19,7 @@ namespace TbspRpgProcessor.Processors
         private readonly IGamesService _gamesService;
         private readonly IRoutesService _routesService;
         private readonly IContentsService _contentsService;
-        private readonly ILogger<MapProcessor> _logger;
+        private readonly ILogger _logger;
 
         public MapProcessor(
             IScriptProcessor scriptProcessor,
@@ -27,7 +27,7 @@ namespace TbspRpgProcessor.Processors
             IGamesService gamesService,
             IRoutesService routesService,
             IContentsService contentsService,
-            ILogger<MapProcessor> logger)
+            ILogger logger)
         {
             _scriptProcessor = scriptProcessor;
             _sourceProcessor = sourceProcessor;

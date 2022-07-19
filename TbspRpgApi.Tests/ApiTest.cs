@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using Org.BouncyCastle.Bcpg;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.Services;
@@ -99,9 +98,9 @@ namespace TbspRpgApi.Tests
             string exceptionEmail = null)
         {
             var dlUsersService = MockServices.MockDataLayerUsersService(users);
-            var userProcessor = ProcessorTest.MockUserProcessor(exceptionEmail);
+            var mockTbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(exceptionEmail, Guid.Empty);
             return new UsersService(dlUsersService,
-                userProcessor,
+                mockTbspRpgProcessor,
                 new JwtSettings()
                 {
                     Secret = "vtqj@y31d%%j01tae3*bqu16&5$x@s@=22&bk$h9+=55kv-i6t"
@@ -112,19 +111,20 @@ namespace TbspRpgApi.Tests
             Guid? updateAdventureExceptionId = null)
         {
             var dlAdventuresService = MockServices.MockDataLayerAdventuresService(adventures);
-            var adventureProcessor =
-                ProcessorTest.MockAdventureProcessor(updateAdventureExceptionId.GetValueOrDefault());
-            return new AdventuresService(dlAdventuresService, adventureProcessor);
+            var tbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(null,
+                updateAdventureExceptionId.GetValueOrDefault());
+            return new AdventuresService(tbspRpgProcessor, dlAdventuresService);
         }
 
         protected static GamesService CreateGamesService(ICollection<Game> games, Guid? startGameExceptionId = null)
         {
             startGameExceptionId ??= Guid.NewGuid();
             var dlGamesService = MockServices.MockDataLayerGamesService(games);
-            var gameProcessor = ProcessorTest.MockGameProcessor(startGameExceptionId.GetValueOrDefault());
+            var tbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(null,
+                startGameExceptionId.GetValueOrDefault());
             return new GamesService(
+                tbspRpgProcessor,
                 dlGamesService,
-                gameProcessor,
                 NullLogger<GamesService>.Instance);
         }
 
@@ -132,9 +132,13 @@ namespace TbspRpgApi.Tests
             Guid scriptExceptionId, ICollection<Game> games = null, ICollection<En> sources = null)
         {
             var dlContentsService = MockServices.MockDataLayerContentsService(contents);
-            var contentProcessor = ProcessorTest.MockContentProcessor(games, sources, scriptExceptionId);
-            return new ContentsService(dlContentsService, 
-                contentProcessor, NullLogger<ContentsService>.Instance);
+            var tbspRpgProcessor = ProcessorTest.CreateTbspRpgProcessor(
+                null, null, null, null, null,
+                sources, games);
+            return new ContentsService(
+                tbspRpgProcessor,
+                dlContentsService, 
+                NullLogger<ContentsService>.Instance);
         }
 
         protected static MapsService CreateMapsService(ICollection<Game> games,
@@ -143,11 +147,12 @@ namespace TbspRpgApi.Tests
         {
             var dlGamesService = MockServices.MockDataLayerGamesService(games);
             var dlRoutesService = MockServices.MockDataLayerRoutesService(routes);
-            var mapProcessor = ProcessorTest.MockMapProcessor(changeLocationViaRouteExceptionId.GetValueOrDefault());
+            var tbspRpgProcessor =
+                ProcessorTest.MockTbspRpgProcessor(null, changeLocationViaRouteExceptionId.GetValueOrDefault());
             return new MapsService(
+                tbspRpgProcessor,
                 dlGamesService,
                 dlRoutesService,
-                mapProcessor,
                 NullLogger<MapsService>.Instance);
         }
 
@@ -155,20 +160,23 @@ namespace TbspRpgApi.Tests
             Guid? updateLocationExceptionId = null)
         {
             var dlLocationsService = MockServices.MockDataLayerLocationsService(locations);
-            var locationProcessor = ProcessorTest.MockLocationProcessor(updateLocationExceptionId.GetValueOrDefault());
+            var tbspRpgProcessor =
+                ProcessorTest.MockTbspRpgProcessor(null, updateLocationExceptionId.GetValueOrDefault());
             return new LocationsService(
+                tbspRpgProcessor,
                 dlLocationsService,
-                locationProcessor,
                 NullLogger<LocationsService>.Instance);
         }
 
         protected static SourcesService CreateSourcesService(ICollection<En> sources, Guid scriptExceptionId)
         {
             var dlSourcesService = MockServices.MockDataLayerSourcesService(sources);
-            var sourceProcessor = ProcessorTest.MockSourceProcessor(sources, scriptExceptionId);
+            var tbspRpgProcessor = ProcessorTest.CreateTbspRpgProcessor(
+                null, null, null, null, null,
+                sources);
             return new SourcesService(
                 dlSourcesService,
-                sourceProcessor,
+                tbspRpgProcessor,
                 NullLogger<SourcesService>.Instance);
         }
 
@@ -176,22 +184,22 @@ namespace TbspRpgApi.Tests
             ICollection<Route> routes = null,
             Guid? updateRouteExceptionId = null)
         {
-            var routeProcessor = ProcessorTest.MockRouteProcessor(updateRouteExceptionId.GetValueOrDefault());
+            var mockTbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(null, updateRouteExceptionId.GetValueOrDefault());
             var dlRoutesService = MockServices.MockDataLayerRoutesService(routes);
             return new RoutesService(
-                routeProcessor,
+                mockTbspRpgProcessor,
                 dlRoutesService,
                 NullLogger<RoutesService>.Instance);
         }
 
         protected static ScriptsService CreateScriptsService(
             ICollection<Script> scripts = null,
-            Guid? executeScriptExceptionId = null)
+            Guid? exceptionId = null)
         {
-            var scriptProcessor = ProcessorTest.MockScriptProcessor(executeScriptExceptionId.GetValueOrDefault());
+            var mockTbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(null, exceptionId.GetValueOrDefault());
             var dlScriptService = MockServices.MockDataLayerScriptsService(scripts);
             return new ScriptsService(
-                scriptProcessor,
+                mockTbspRpgProcessor,
                 dlScriptService,
                 NullLogger<ScriptsService>.Instance);
         }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Entities;
 using TbspRpgProcessor.Entities;
@@ -24,7 +23,8 @@ namespace TbspRpgProcessor.Tests.Processors
                 Key = Guid.NewGuid(),
                 AdventureId = Guid.NewGuid()
             };
-            var processor = CreateSourceProcessor(new List<En>() {testEn});
+            var processor = CreateTbspRpgProcessor(null, null, null, null, null,
+                new List<En>() {testEn});
             
             // act
             Task Act() => processor.CreateOrUpdateSource(new Source()
@@ -52,7 +52,8 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 testEn
             };
-            var processor = CreateSourceProcessor(sources);
+            var processor = CreateTbspRpgProcessor(null, null, null, null, null,
+                sources);
             
             
             // act
@@ -85,7 +86,8 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 testEn
             };
-            var processor = CreateSourceProcessor(new List<En>() {testEn});
+            var processor = CreateTbspRpgProcessor(null, null, null, null, null,
+                new List<En>() {testEn});
             
             // act
             var dbSource = await processor.CreateOrUpdateSource(new Source()
@@ -120,7 +122,8 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 testEn
             };
-            var processor = CreateSourceProcessor(sources);
+            var processor = CreateTbspRpgProcessor(null, null, null, null, null,
+                sources);
             
             // act
             var source = await processor.GetSourceForKey(new SourceForKeyModel()
@@ -149,7 +152,8 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 testEn
             };
-            var processor = CreateSourceProcessor(sources);
+            var processor = CreateTbspRpgProcessor(null, null, null, null, null,
+                sources);
             
             // act
             var source = await processor.GetSourceForKey(new SourceForKeyModel()
@@ -179,7 +183,8 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 testEn
             };
-            var processor = CreateSourceProcessor(sources);
+            var processor = CreateTbspRpgProcessor(null, null, null, null, null,
+                sources);
             
             // act
             var source = await processor.GetSourceForKey(new SourceForKeyModel()
@@ -213,7 +218,8 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 testEn
             };
-            var processor = CreateSourceProcessor(sources);
+            var processor = CreateTbspRpgProcessor(null, null, null, null, null,
+                sources);
             
             // act
             var key = await processor.ResolveSourceKey(new SourceForKeyModel()
@@ -261,7 +267,8 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 testScript
             };
-            var processor = CreateSourceProcessor(sources, scripts);
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources);
             
             // act
             var key = await processor.ResolveSourceKey(new SourceForKeyModel()
@@ -329,7 +336,8 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 testScript, testScriptTwo
             };
-            var processor = CreateSourceProcessor(sources, scripts);
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources);
             
             // act
             var key = await processor.ResolveSourceKey(new SourceForKeyModel()
@@ -358,7 +366,8 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 testEn
             };
-            var processor = CreateSourceProcessor(sources);
+            var processor = CreateTbspRpgProcessor(null, null, null, null, null,
+                sources);
             
             // act
             Task Act() => processor.ResolveSourceKey(new SourceForKeyModel()
@@ -406,7 +415,8 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 testScript
             };
-            var processor = CreateSourceProcessor(sources, scripts);
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources);
             
             // act
             Task Act() => processor.ResolveSourceKey(new SourceForKeyModel()
@@ -454,7 +464,8 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 testScript
             };
-            var processor = CreateSourceProcessor(sources, scripts);
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources);
             
             // act
             Task Act() => processor.ResolveSourceKey(new SourceForKeyModel()
@@ -590,7 +601,8 @@ namespace TbspRpgProcessor.Tests.Processors
             {
                 testScript, testScriptTwo, testScriptThree, testScriptFour, testScriptFive, testScriptSix
             };
-            var processor = CreateSourceProcessor(sources, scripts);
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources);
             
             // act
             Task Act() => processor.ResolveSourceKey(new SourceForKeyModel()

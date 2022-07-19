@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor;
 using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
@@ -19,15 +20,16 @@ namespace TbspRpgApi.Services
     public class ContentsService : IContentsService
     {
         private readonly TbspRpgDataLayer.Services.IContentsService _contentsService;
-        private readonly IContentProcessor _contentProcessor;
+        private readonly ITbspRpgProcessor _tbspRpgProcessor;
         private readonly ILogger<ContentsService> _logger;
 
-        public ContentsService(TbspRpgDataLayer.Services.IContentsService contentsService,
-            IContentProcessor contentProcessor,
+        public ContentsService(
+            ITbspRpgProcessor tbspRpgProcessor,
+            TbspRpgDataLayer.Services.IContentsService contentsService,
             ILogger<ContentsService> logger)
         {
+            _tbspRpgProcessor = tbspRpgProcessor;
             _contentsService = contentsService;
-            _contentProcessor = contentProcessor;
             _logger = logger;
         }
 
@@ -57,13 +59,13 @@ namespace TbspRpgApi.Services
         
         public async Task<SourceViewModel> GetContentTextForKey(Guid gameId, Guid sourceKey)
         {
-            var text = await _contentProcessor.GetContentTextForKey(gameId, sourceKey);
+            var text = await _tbspRpgProcessor.GetContentTextForKey(gameId, sourceKey);
             return text == null ? null : new SourceViewModel(sourceKey, text);
         }
         
         public async Task<SourceViewModel> GetProcessedContentTextForKey(Guid gameId, Guid sourceKey)
         {
-            var text = await _contentProcessor.GetContentTextForKey(gameId, sourceKey, true);
+            var text = await _tbspRpgProcessor.GetContentTextForKey(gameId, sourceKey, true);
             return text == null ? null : new SourceViewModel(sourceKey, text);
         }
     }

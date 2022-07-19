@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor;
 using TbspRpgProcessor.Entities;
-using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
 {
@@ -21,15 +21,16 @@ namespace TbspRpgApi.Services
     public class GamesService : IGamesService
     {
         private readonly TbspRpgDataLayer.Services.IGamesService _gamesService;
-        private readonly IGameProcessor _gameProcessor;
+        private readonly ITbspRpgProcessor _tbspRpgProcessor;
         private readonly ILogger<GamesService> _logger;
 
-        public GamesService(TbspRpgDataLayer.Services.IGamesService gamesService,
-            IGameProcessor gameProcessor,
+        public GamesService(
+            ITbspRpgProcessor tbspRpgProcessor,
+            TbspRpgDataLayer.Services.IGamesService gamesService,
             ILogger<GamesService> logger)
         {
+            _tbspRpgProcessor = tbspRpgProcessor;
             _gamesService = gamesService;
-            _gameProcessor = gameProcessor;
             _logger = logger;
         }
 
@@ -38,7 +39,7 @@ namespace TbspRpgApi.Services
             //this may eventually become sending a message to rabbit mq or another
             //messaging service which will then pass messages to worker processes
             //for now we're calling directly
-            await _gameProcessor.StartGame(userId, adventureId, timeStamp);
+            await _tbspRpgProcessor.StartGame(userId, adventureId, timeStamp);
         }
 
         public async Task<GameViewModel> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId)
@@ -59,7 +60,7 @@ namespace TbspRpgApi.Services
 
         public async Task DeleteGame(Guid gameId)
         {
-            await _gameProcessor.RemoveGame(new GameRemoveModel()
+            await _tbspRpgProcessor.RemoveGame(new GameRemoveModel()
             {
                 GameId = gameId
             });

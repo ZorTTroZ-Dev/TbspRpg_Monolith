@@ -19,13 +19,13 @@ namespace TbspRpgProcessor.Processors
     {
         private readonly IScriptProcessor _scriptProcessor;
         private readonly ISourcesService _sourcesService;
-        private readonly ILogger<SourceProcessor> _logger;
+        private readonly ILogger _logger;
         private readonly int MaxLoopCount = 5;
 
         public SourceProcessor(
             IScriptProcessor scriptProcessor,
             ISourcesService sourcesService,
-            ILogger<SourceProcessor> logger)
+            ILogger logger)
         {
             _scriptProcessor = scriptProcessor;
             _sourcesService = sourcesService;

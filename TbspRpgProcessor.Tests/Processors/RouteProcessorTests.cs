@@ -31,7 +31,12 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var testLocations = new List<Location>() {testLocation};
             var testRoutes = new List<Route>() {testRoute};
-            var processor = CreateRouteProcessor(testRoutes, testLocations);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes,
+                testLocations);
             
             // act
             Task Act() => processor.UpdateRoute(new RouteUpdateModel()
@@ -73,7 +78,13 @@ namespace TbspRpgProcessor.Tests.Processors
             var testLocations = new List<Location>() {testLocation, testDestinationLocation};
             var testRoutes = new List<Route>() {testRoute};
             var testSources = new List<En>();
-            var processor = CreateRouteProcessor(testRoutes, testLocations, testSources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes,
+                testLocations,
+                testSources);
             
             // act
             await processor.UpdateRoute(new RouteUpdateModel()
@@ -124,7 +135,12 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var testLocations = new List<Location>() {testLocation};
             var testRoutes = new List<Route>() {testRoute};
-            var processor = CreateRouteProcessor(testRoutes, testLocations);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes,
+                testLocations);
             
             // act
             Task Act() => processor.UpdateRoute(new RouteUpdateModel()
@@ -167,7 +183,13 @@ namespace TbspRpgProcessor.Tests.Processors
             var testLocations = new List<Location>() {testLocation, testDestinationLocation};
             var testRoutes = new List<Route>() {testRoute};
             var testSources = new List<En>();
-            var processor = CreateRouteProcessor(testRoutes, testLocations, testSources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes,
+                testLocations,
+                testSources);
             
             // act
             await processor.UpdateRoute(new RouteUpdateModel()
@@ -244,7 +266,13 @@ namespace TbspRpgProcessor.Tests.Processors
             var testLocations = new List<Location>() {testLocation, testDestinationLocation};
             var testRoutes = new List<Route>() {testRoute};
             var testSources = new List<En>() {testSource, testSuccessSource};
-            var processor = CreateRouteProcessor(testRoutes, testLocations, testSources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes,
+                testLocations,
+                testSources);
             
             // act
             await processor.UpdateRoute(new RouteUpdateModel()
@@ -310,7 +338,13 @@ namespace TbspRpgProcessor.Tests.Processors
             var testLocations = new List<Location>() {testLocation, testDestinationLocation};
             var testRoutes = new List<Route>() {testRoute};
             var testSources = new List<En>();
-            var processor = CreateRouteProcessor(testRoutes, testLocations, testSources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes,
+                testLocations,
+                testSources);
             
             // act
             await processor.UpdateRoute(new RouteUpdateModel()
@@ -374,7 +408,13 @@ namespace TbspRpgProcessor.Tests.Processors
             var testLocations = new List<Location>() {testLocation, testDestinationLocation};
             var testRoutes = new List<Route>() {testRoute};
             var testSources = new List<En>();
-            var processor = CreateRouteProcessor(testRoutes, testLocations, testSources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes,
+                testLocations,
+                testSources);
             
             // act
             await processor.UpdateRoute(new RouteUpdateModel()
@@ -441,7 +481,13 @@ namespace TbspRpgProcessor.Tests.Processors
                 testDestinationLocation, newTestDestinationLocation};
             var testRoutes = new List<Route>() {testRoute};
             var testSources = new List<En>();
-            var processor = CreateRouteProcessor(testRoutes, testLocations, testSources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes,
+                testLocations,
+                testSources);
             
             // act
             await processor.UpdateRoute(new RouteUpdateModel()
@@ -492,7 +538,12 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var testLocations = new List<Location>() {testLocation};
             var testRoutes = new List<Route>() {testRoute};
-            var processor = CreateRouteProcessor(testRoutes, testLocations);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes,
+                testLocations);
             
             // act
             Task Act() => processor.UpdateRoute(new RouteUpdateModel()
@@ -529,7 +580,12 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var testLocations = new List<Location>() {testLocation};
             var testRoutes = new List<Route>() {testRoute};
-            var processor = CreateRouteProcessor(testRoutes, testLocations);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes,
+                testLocations);
             
             // act
             Task Act() => processor.UpdateRoute(new RouteUpdateModel()
@@ -571,7 +627,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 LocationId = testRoute.LocationId
             };
             var testRoutes = new List<Route>() {testRoute, testRouteTwo};
-            var processor = CreateRouteProcessor(testRoutes);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes);
             
             // act
             await processor.RemoveRoutes(new List<Guid>() {testRouteTwo.Id}, testRoute.LocationId);
@@ -598,7 +658,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 LocationId = testRoute.LocationId
             };
             var testRoutes = new List<Route>() {testRoute, testRouteTwo};
-            var processor = CreateRouteProcessor(testRoutes);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes);
             
             // act
             await processor.RemoveRoutes(new List<Guid>() {testRoute.Id, testRouteTwo.Id}, testRoute.LocationId);
@@ -624,7 +688,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 LocationId = testRoute.LocationId
             };
             var testRoutes = new List<Route>() {testRoute, testRouteTwo};
-            var processor = CreateRouteProcessor(testRoutes);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes);
             
             // act
             await processor.RemoveRoutes(new List<Guid>(), testRoute.LocationId);
@@ -653,7 +721,12 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var testLocations = new List<Location>() {testLocation};
             var testRoutes = new List<Route>() {testRoute};
-            var processor = CreateRouteProcessor(testRoutes, testLocations);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes,
+                testLocations);
             
             // act
             Task Act() => processor.RemoveRoute(new RouteRemoveModel()
@@ -681,7 +754,12 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var testLocations = new List<Location>() {testLocation};
             var testRoutes = new List<Route>() {testRoute};
-            var processor = CreateRouteProcessor(testRoutes, testLocations);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                testRoutes,
+                testLocations);
             
             // act
             await processor.RemoveRoute(new RouteRemoveModel()

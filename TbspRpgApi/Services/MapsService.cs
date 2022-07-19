@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.ViewModels;
-using TbspRpgProcessor.Processors;
+using TbspRpgProcessor;
 
 namespace TbspRpgApi.Services
 {
@@ -20,17 +20,18 @@ namespace TbspRpgApi.Services
     {
         private readonly TbspRpgDataLayer.Services.IGamesService _gamesService;
         private readonly TbspRpgDataLayer.Services.IRoutesService _routesService;
-        private readonly IMapProcessor _mapProcessor;
+        private readonly ITbspRpgProcessor _tbspRpgProcessor;
         private readonly ILogger<MapsService> _logger;
 
-        public MapsService(TbspRpgDataLayer.Services.IGamesService gamesService,
+        public MapsService(
+            ITbspRpgProcessor tbspRpgProcessor,
+            TbspRpgDataLayer.Services.IGamesService gamesService,
             TbspRpgDataLayer.Services.IRoutesService routesService,
-            IMapProcessor mapProcessor,
             ILogger<MapsService> logger)
         {
+            _tbspRpgProcessor = tbspRpgProcessor;
             _gamesService = gamesService;
             _routesService = routesService;
-            _mapProcessor = mapProcessor;
             _logger = logger;
         }
         
@@ -78,7 +79,7 @@ namespace TbspRpgApi.Services
 
         public async Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp)
         {
-            await _mapProcessor.ChangeLocationViaRoute(gameId, routeId, timeStamp);
+            await _tbspRpgProcessor.ChangeLocationViaRoute(gameId, routeId, timeStamp);
         }
     }
 }

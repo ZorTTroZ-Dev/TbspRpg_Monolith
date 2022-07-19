@@ -22,13 +22,13 @@ namespace TbspRpgProcessor.Processors
         private readonly ISourceProcessor _sourceProcessor;
         private readonly ILocationsService _locationsService;
         private readonly IRoutesService _routesService;
-        private readonly ILogger<LocationProcessor> _logger;
+        private readonly ILogger _logger;
 
         public LocationProcessor(
             ISourceProcessor sourceProcessor,
             ILocationsService locationsService,
             IRoutesService routesService,
-            ILogger<LocationProcessor> logger)
+            ILogger logger)
         {
             _sourceProcessor = sourceProcessor;
             _locationsService = locationsService;

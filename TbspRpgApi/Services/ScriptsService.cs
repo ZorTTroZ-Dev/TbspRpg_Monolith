@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor;
 using TbspRpgProcessor.Entities;
-using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services;
 
@@ -19,16 +19,16 @@ public interface IScriptsService
 
 public class ScriptsService: IScriptsService
 {
-    private readonly IScriptProcessor _scriptProcessor;
+    private readonly ITbspRpgProcessor _tbspRpgProcessor;
     private readonly TbspRpgDataLayer.Services.IScriptsService _scriptsService;
     private readonly ILogger<ScriptsService> _logger;
     
     public ScriptsService(
-        IScriptProcessor scriptProcessor,
+        ITbspRpgProcessor tbspRpgProcessor,
         TbspRpgDataLayer.Services.IScriptsService scriptsService,
         ILogger<ScriptsService> logger)
     {
-        _scriptProcessor = scriptProcessor;
+        _tbspRpgProcessor = tbspRpgProcessor;
         _scriptsService = scriptsService;
         _logger = logger;
     }
@@ -41,12 +41,12 @@ public class ScriptsService: IScriptsService
 
     public async Task UpdateScript(ScriptUpdateRequest scriptUpdateRequest)
     {
-        await _scriptProcessor.UpdateScript(scriptUpdateRequest.ToScriptUpdateModel());
+        await _tbspRpgProcessor.UpdateScript(scriptUpdateRequest.ToScriptUpdateModel());
     }
 
     public async Task DeleteScript(Guid scriptId)
     {
-        await _scriptProcessor.RemoveScript(new ScriptRemoveModel()
+        await _tbspRpgProcessor.RemoveScript(new ScriptRemoveModel()
         {
             ScriptId = scriptId
         });
