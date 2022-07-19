@@ -69,6 +69,12 @@ public interface ITbspRpgProcessor
     Task RemoveGames(ICollection<Game> games, bool save = true);
 
     #endregion
+
+    #region ContentProcessor
+
+    Task<string> GetContentTextForKey(Guid gameId, Guid sourceKey, bool processed = false);
+
+    #endregion
 }
 
 public class TbspRpgProcessor: ITbspRpgProcessor
@@ -361,6 +367,23 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     {
         LoadGameProcessor();
         return _gameProcessor.RemoveGames(games, save);
+    }
+
+    #endregion
+
+    #region ContentProcessor
+
+    private void LoadContentProcessor()
+    {
+        LoadSourceProcessor();
+        _contentProcessor ??= new ContentProcessor(_gamesService,
+            _sourceProcessor, _logger);
+    }
+    
+    public Task<string> GetContentTextForKey(Guid gameId, Guid sourceKey, bool processed = false)
+    {
+        LoadContentProcessor();
+        return _contentProcessor.GetContentTextForKey(gameId, sourceKey, processed);
     }
 
     #endregion

@@ -132,9 +132,13 @@ namespace TbspRpgApi.Tests
             Guid scriptExceptionId, ICollection<Game> games = null, ICollection<En> sources = null)
         {
             var dlContentsService = MockServices.MockDataLayerContentsService(contents);
-            var contentProcessor = ProcessorTest.MockContentProcessor(games, sources, scriptExceptionId);
-            return new ContentsService(dlContentsService, 
-                contentProcessor, NullLogger<ContentsService>.Instance);
+            var tbspRpgProcessor = ProcessorTest.CreateTbspRpgProcessor(
+                null, null, null, null, null,
+                sources, games);
+            return new ContentsService(
+                tbspRpgProcessor,
+                dlContentsService, 
+                NullLogger<ContentsService>.Instance);
         }
 
         protected static MapsService CreateMapsService(ICollection<Game> games,
