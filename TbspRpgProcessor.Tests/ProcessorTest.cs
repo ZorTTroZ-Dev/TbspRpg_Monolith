@@ -354,6 +354,22 @@ namespace TbspRpgProcessor.Tests
                         throw new ArgumentException("can't remove game");
                     }
                 });
+            
+            tbspProcessor.Setup(service =>
+                    service.UpdateAdventure(It.IsAny<AdventureUpdateModel>()))
+                .Callback((AdventureUpdateModel adventureUpdateModel) =>
+                {
+                    if (adventureUpdateModel.Adventure.Id == exceptionId)
+                        throw new ArgumentException("invalid adventure id");
+                });
+            
+            tbspProcessor.Setup(service =>
+                    service.RemoveAdventure(It.IsAny<AdventureRemoveModel>()))
+                .Callback((AdventureRemoveModel adventureRemoveModel) =>
+                {
+                    if (adventureRemoveModel.AdventureId == exceptionId)
+                        throw new ArgumentException("invalid adventure id");
+                });
 
             return tbspProcessor.Object;
         }

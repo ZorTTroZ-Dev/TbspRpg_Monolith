@@ -75,6 +75,13 @@ public interface ITbspRpgProcessor
     Task<string> GetContentTextForKey(Guid gameId, Guid sourceKey, bool processed = false);
 
     #endregion
+    
+    #region AdventureProcessor
+    
+    Task UpdateAdventure(AdventureUpdateModel adventureUpdateModel);
+    Task RemoveAdventure(AdventureRemoveModel adventureRemoveModel);
+    
+    #endregion
 }
 
 public class TbspRpgProcessor: ITbspRpgProcessor
@@ -386,5 +393,36 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         return _contentProcessor.GetContentTextForKey(gameId, sourceKey, processed);
     }
 
+    #endregion
+    
+    #region AdventureProcessor
+
+    private void LoadAdventureProcessor()
+    {
+        LoadSourceProcessor();
+        LoadGameProcessor();
+        LoadLocationProcessor();
+        _adventureProcessor ??= new AdventureProcessor(
+            _sourceProcessor,
+            _gameProcessor,
+            _locationProcessor,
+            _adventuresService,
+            _sourcesService,
+            _scriptsService,
+            _logger);
+    }
+    
+    public Task UpdateAdventure(AdventureUpdateModel adventureUpdateModel)
+    {
+        LoadAdventureProcessor();
+        return _adventureProcessor.UpdateAdventure(adventureUpdateModel);
+    }
+
+    public Task RemoveAdventure(AdventureRemoveModel adventureRemoveModel)
+    {
+        LoadAdventureProcessor();
+        return _adventureProcessor.RemoveAdventure(adventureRemoveModel);
+    }
+    
     #endregion
 }

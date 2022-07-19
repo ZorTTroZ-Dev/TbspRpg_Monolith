@@ -111,9 +111,9 @@ namespace TbspRpgApi.Tests
             Guid? updateAdventureExceptionId = null)
         {
             var dlAdventuresService = MockServices.MockDataLayerAdventuresService(adventures);
-            var adventureProcessor =
-                ProcessorTest.MockAdventureProcessor(updateAdventureExceptionId.GetValueOrDefault());
-            return new AdventuresService(dlAdventuresService, adventureProcessor);
+            var tbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(null,
+                updateAdventureExceptionId.GetValueOrDefault());
+            return new AdventuresService(tbspRpgProcessor, dlAdventuresService);
         }
 
         protected static GamesService CreateGamesService(ICollection<Game> games, Guid? startGameExceptionId = null)

@@ -7,11 +7,7 @@ namespace TbspRpgProcessor
     {
         public static void InitializeProcessorLayer(IServiceCollection services)
         {
-            // processors
-            services.AddScoped<IContentProcessor, ContentProcessor>();
-            services.AddScoped<IAdventureProcessor, AdventureProcessor>();
             services.AddScoped<ITbspRpgProcessor, TbspRpgProcessor>();
-            
             services.AddScoped<IMailClient, MailClient>();
         }
     }
