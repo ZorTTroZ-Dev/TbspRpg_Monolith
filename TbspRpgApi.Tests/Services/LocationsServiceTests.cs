@@ -88,5 +88,31 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+        
+        #region GetLocationById
+
+        [Fact]
+        public async void GetLocationById_ReturnsLocation()
+        {
+            // arrange
+            var testLocations = new List<Location>()
+            {
+                new Location()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Name = "test"
+                }
+            };
+            var service = CreateLocationsService(testLocations);
+            
+            // act
+            var location = await service.GetLocationById(testLocations[0].Id);
+            
+            // assert
+            Assert.Equal("test", location.Name);
+        }
+
+        #endregion
     }
 }

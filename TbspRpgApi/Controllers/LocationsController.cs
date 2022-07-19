@@ -25,7 +25,7 @@ namespace TbspRpgApi.Controllers
             _logger = logger;
         }
         
-        [HttpGet("{adventureId:guid}"), Authorize]
+        [HttpGet("adventure/{adventureId:guid}"), Authorize]
         public async Task<IActionResult> GetLocationsForAdventure(Guid adventureId) {
             var canAccessAdventure = await _permissionService.CanReadAdventure(
                 GetUserId().GetValueOrDefault(),
@@ -39,6 +39,27 @@ namespace TbspRpgApi.Controllers
             {
                 var locations = await _locationsService.GetLocationsForAdventure(adventureId);
                 return Ok(locations);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new {message = ex.Message});
+            }
+        }
+        
+        [HttpGet("{locationId:guid}"), Authorize]
+        public async Task<IActionResult> GetLocationById(Guid locationId) {
+            var canAccessAdventure = await _permissionService.CanReadLocation(
+                GetUserId().GetValueOrDefault(),
+                locationId);
+            if(!canAccessAdventure)
+            {
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            }
+
+            try
+            {
+                var location = await _locationsService.GetLocationById(locationId);
+                return Ok(location);
             }
             catch (Exception ex)
             {
