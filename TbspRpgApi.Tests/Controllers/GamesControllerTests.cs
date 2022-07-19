@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -254,6 +255,76 @@ namespace TbspRpgApi.Tests.Controllers
             var okResult = response as OkResult;
             Assert.NotNull(okResult);
             Assert.Equal(200, okResult.StatusCode);
+        }
+
+        #endregion
+
+        #region GetGameState
+
+        [Fact]
+        public async void GetGameState_ValidGameId_JsonReturned()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test\":\"value\"}"
+            };
+            var controller = CreateGamesController(new List<Game>() {testGame}, Guid.Empty, null);
+            
+            // act
+            var response = await controller.GetGameState(testGame.Id);
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var jsonState = okObjectResult.Value as JsonObject;
+            Assert.NotNull(jsonState);
+            Assert.NotNull(jsonState["test"]);
+            Assert.Equal("value", jsonState["test"].ToString());
+        }
+
+        [Fact]
+        public async void GetGameState_InvalidGameId_BadRequest()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test\":\"value\"}"
+            };
+            var controller = CreateGamesController(new List<Game>() {testGame}, Guid.Empty, null);
+            
+            // act
+            var response = await controller.GetGameState(Guid.NewGuid());
+
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+        
+        [Fact]
+        public async void GetGameState_InvalidJson_BadRequest()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test':\"value\"}"
+            };
+            var controller = CreateGamesController(new List<Game>() {testGame}, Guid.Empty, null);
+            
+            // act
+            var response = await controller.GetGameState(testGame.Id);
+
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
         }
 
         #endregion

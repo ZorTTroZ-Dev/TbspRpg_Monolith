@@ -171,6 +171,8 @@ namespace TbspRpgDataLayer
                 .Property(g => g.GameState)
                 .HasColumnType("jsonb");
 
+            modelBuilder.Entity<Game>().Ignore(game => game.GameStateJson);
+
             #endregion
 
             #region Relations

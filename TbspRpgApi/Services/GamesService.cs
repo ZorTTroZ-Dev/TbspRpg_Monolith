@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.RequestModels;
@@ -16,6 +17,7 @@ namespace TbspRpgApi.Services
         Task<GameViewModel> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId);
         Task<List<GameUserViewModel>> GetGames(GameFilterRequest gameFilterRequest);
         Task DeleteGame(Guid gameId);
+        Task<JsonObject> GetGameState(Guid gameId);
     }
     
     public class GamesService : IGamesService
@@ -64,6 +66,13 @@ namespace TbspRpgApi.Services
             {
                 GameId = gameId
             });
+        }
+
+        public async Task<JsonObject> GetGameState(Guid gameId)
+        {
+            var game = await _gamesService.GetGameById(gameId);
+            game.LoadGameStateJson();
+            return game.GameStateJson;
         }
     }
 }

@@ -92,5 +92,22 @@ namespace TbspRpgApi.Controllers
 
             return Accepted();
         }
+        
+        [HttpGet("state/{gameId:guid}")]
+        [Authorize]
+        public async Task<IActionResult> GetGameState(Guid gameId) {
+            try
+            {
+                var canReadGame = await _permissionService.CanReadGame(GetUserId().GetValueOrDefault(), gameId);
+                if (!canReadGame)
+                    return BadRequest(new {message = NotYourGameErrorMessage});
+
+                return Ok(await _gamesService.GetGameState(gameId));
+            }
+            catch
+            {
+                return BadRequest(new { message = "couldn't get game state" });
+            }
+        }
     }
 }

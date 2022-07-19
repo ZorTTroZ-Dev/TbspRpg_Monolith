@@ -149,5 +149,67 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+
+        #region GetGameState
+
+        [Fact]
+        public async void GetGameState_ValidGameId_JsonReturned()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test\":\"value\"}"
+            };
+            var service = CreateGamesService(new List<Game>() {testGame});
+            
+            // act
+            var state = await service.GetGameState(testGame.Id);
+            
+            // assert
+            Assert.NotNull(state["test"]);
+            Assert.Equal("value", state["test"].ToString());
+        }
+
+        [Fact]
+        public async void GetGameState_InvalidGameId_ExceptionThrown()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test\":\"value\"}"
+            };
+            var service = CreateGamesService(new List<Game>() {testGame});
+            
+            // act
+            Task Act() => service.GetGameState(Guid.NewGuid());
+
+            // assert
+            await Assert.ThrowsAsync<NullReferenceException>(Act);
+        }
+        
+        [Fact]
+        public async void GetGameState_InvalidJson_ExceptionThrown()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test':\"value\"}"
+            };
+            var service = CreateGamesService(new List<Game>() {testGame});
+            
+            // act
+            Task Act() => service.GetGameState(testGame.Id);
+
+            // assert
+            await Assert.ThrowsAsync<System.Text.Json.JsonException>(Act);
+        }
+
+        #endregion
     }
 }
