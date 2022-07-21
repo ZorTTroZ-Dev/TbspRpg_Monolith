@@ -357,5 +357,127 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+        
+        #region GetAdventureWithSource
+
+        [Fact]
+        public async void GetAdventureWithSource_DoesntExist_ReturnNull()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                DescriptionSourceKey = Guid.NewGuid(),
+                InitialSourceKey = Guid.NewGuid()
+            };
+            await context.AddRangeAsync(testAdventure);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var adventure = await service.GetAdventureWithSource(Guid.NewGuid(), Guid.NewGuid());
+            
+            // assert
+            Assert.Null(adventure);
+        }
+
+        [Fact]
+        public async void GetAdventureWithSource_DescriptionSourceKey_ReturnAdventure()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                DescriptionSourceKey = Guid.NewGuid(),
+                InitialSourceKey = Guid.NewGuid()
+            };
+            await context.AddRangeAsync(testAdventure);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var adventure =
+                await service.GetAdventureWithSource(testAdventure.Id, testAdventure.DescriptionSourceKey);
+            
+            // assert
+            Assert.NotNull(adventure);
+            Assert.Equal(testAdventure.Id, adventure.Id);
+        }
+
+        [Fact]
+        public async void GetAdventureWithSource_InitialSourceKey_ReturnAdventure()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                DescriptionSourceKey = Guid.NewGuid(),
+                InitialSourceKey = Guid.NewGuid()
+            };
+            await context.AddRangeAsync(testAdventure);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var adventure =
+                await service.GetAdventureWithSource(testAdventure.Id, testAdventure.InitialSourceKey);
+            
+            // assert
+            Assert.NotNull(adventure);
+            Assert.Equal(testAdventure.Id, adventure.Id);
+        }
+
+        #endregion
+
+        #region DoesAdventureUseSource
+
+        [Fact]
+        public async void DoesAdventureUseSource_DoesntUseSource_ReturnFalse()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                DescriptionSourceKey = Guid.NewGuid(),
+                InitialSourceKey = Guid.NewGuid()
+            };
+            await context.AddRangeAsync(testAdventure);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var useSource = await service.DoesAdventureUseSource(testAdventure.Id, Guid.NewGuid());
+            
+            // assert
+            Assert.False(useSource);
+        }
+
+        [Fact]
+        public async void DoesAdventureUseSource_UsesSource_ReturnTrue()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                DescriptionSourceKey = Guid.NewGuid(),
+                InitialSourceKey = Guid.NewGuid()
+            };
+            await context.AddRangeAsync(testAdventure);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var useSource = await service.DoesAdventureUseSource(testAdventure.Id, testAdventure.DescriptionSourceKey);
+            
+            // assert
+            Assert.True(useSource);
+        }
+
+        #endregion
     }
 }
