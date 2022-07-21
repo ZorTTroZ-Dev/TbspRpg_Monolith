@@ -18,6 +18,7 @@ namespace TbspRpgDataLayer.Services
         void RemoveLocation(Location location);
         void RemoveLocations(ICollection<Location> locations);
         void RemoveScriptFromLocations(Guid scriptId);
+        Task<bool> DoesAdventureLocationUseSource(Guid adventureId, Guid sourceKey);
     }
     
     public class LocationsService : ILocationsService
@@ -78,6 +79,11 @@ namespace TbspRpgDataLayer.Services
                 if (location.ExitScriptId == scriptId)
                     location.ExitScriptId = null;
             }
+        }
+
+        public Task<bool> DoesAdventureLocationUseSource(Guid adventureId, Guid sourceKey)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task SaveChanges()
