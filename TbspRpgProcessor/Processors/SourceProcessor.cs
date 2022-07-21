@@ -21,16 +21,22 @@ namespace TbspRpgProcessor.Processors
     {
         private readonly IScriptProcessor _scriptProcessor;
         private readonly ISourcesService _sourcesService;
+        private readonly IAdventuresService _adventuresService;
+        private readonly ILocationsService _locationsService;
         private readonly ILogger _logger;
         private readonly int MaxLoopCount = 5;
 
         public SourceProcessor(
             IScriptProcessor scriptProcessor,
             ISourcesService sourcesService,
+            IAdventuresService adventuresService,
+            ILocationsService locationsService,
             ILogger logger)
         {
             _scriptProcessor = scriptProcessor;
             _sourcesService = sourcesService;
+            _adventuresService = adventuresService;
+            _locationsService = locationsService;
             _logger = logger;
         }
 
@@ -114,7 +120,7 @@ namespace TbspRpgProcessor.Processors
             return dbSource.Key;
         }
 
-        public Task<List<Source>> GetUnreferencedSource(UnreferencedSourceModel unreferencedSourceModel)
+        public async Task<List<Source>> GetUnreferencedSource(UnreferencedSourceModel unreferencedSourceModel)
         {
             // get all of the source entries for this adventure
             // go through each key
@@ -123,6 +129,25 @@ namespace TbspRpgProcessor.Processors
             // check if there is a location that has a SourceKey equal to the key
             // check if there is a route that has a SourceKey or a RouteTakenSourceKy equal to the key
             // check if there is a script with content that contains the key
+
+            var sources = await _sourcesService.GetAllSourceAllLanguagesForAdventure(
+                unreferencedSourceModel.AdventureId);
+            for (var i = sources.Count - 1; i >= 0; i--)
+            {
+                var sourceKey = sources[i].Key;
+                
+                // check the adventure
+                var adventureUseSource = await _adventuresService.DoesAdventureUseSource(
+                    unreferencedSourceModel.AdventureId, sourceKey);
+
+                // check the location
+                var locationUseSource = await _locationsService.DoesAdventureLocationUseSource(
+                    unreferencedSourceModel.AdventureId, sourceKey);
+                
+                if(!adventureUseSource
+                   && !locationUseSource)
+                    sources.RemoveAt(i);
+            }
             throw new NotImplementedException();
         }
     }

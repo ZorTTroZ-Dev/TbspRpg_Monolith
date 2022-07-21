@@ -19,6 +19,7 @@ namespace TbspRpgDataLayer.Repositories
         Task AddAdventure(Adventure adventure);
         void RemoveAdventure(Adventure adventure);
         Task<List<Adventure>> GetAdventuresWithScript(Guid scriptId);
+        Task<Adventure> GetAdventureWithSource(Guid adventureId, Guid sourceKey);
     }
     
     public class AdventuresRepository : IAdventuresRepository
@@ -94,6 +95,15 @@ namespace TbspRpgDataLayer.Repositories
                 .Where(adventure =>
                     adventure.TerminationScriptId == scriptId || adventure.InitializationScriptId == scriptId)
                 .ToListAsync();
+        }
+
+        public Task<Adventure> GetAdventureWithSource(Guid adventureId, Guid sourceKey)
+        {
+            return _databaseContext.Adventures.AsQueryable()
+                .FirstOrDefaultAsync(adventure =>
+                    adventure.Id == adventureId &&
+                    (adventure.DescriptionSourceKey == sourceKey 
+                     || adventure.InitialSourceKey == sourceKey));
         }
 
         public async Task SaveChanges()

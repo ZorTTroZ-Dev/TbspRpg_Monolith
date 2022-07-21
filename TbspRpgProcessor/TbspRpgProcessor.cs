@@ -169,7 +169,12 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     private void LoadSourceProcessor()
     {
         LoadScriptProcessor();
-        _sourceProcessor ??= new SourceProcessor(_scriptProcessor, _sourcesService, _logger);
+        _sourceProcessor ??= new SourceProcessor(
+            _scriptProcessor,
+            _sourcesService,
+            _adventuresService,
+            _locationsService,
+            _logger);
     }
 
     public Task<Source> CreateOrUpdateSource(Source updatedSource, string language)

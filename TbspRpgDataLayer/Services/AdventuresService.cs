@@ -20,6 +20,8 @@ namespace TbspRpgDataLayer.Services
         Task AddAdventure(Adventure adventure);
         void RemoveAdventure(Adventure adventure);
         void RemoveScriptFromAdventures(Guid scriptId);
+        Task<Adventure> GetAdventureWithSource(Guid adventureId, Guid sourceKey);
+        Task<bool> DoesAdventureUseSource(Guid adventureId, Guid sourceKey);
     }
     
     public class AdventuresService : IAdventuresService
@@ -79,6 +81,17 @@ namespace TbspRpgDataLayer.Services
                 if (adventure.TerminationScriptId == scriptId)
                     adventure.TerminationScriptId = null;
             }
+        }
+
+        public Task<Adventure> GetAdventureWithSource(Guid adventureId, Guid sourceKey)
+        {
+            return _adventuresRepository.GetAdventureWithSource(adventureId, sourceKey);
+        }
+
+        public async Task<bool> DoesAdventureUseSource(Guid adventureId, Guid sourceKey)
+        {
+            var adventure = await GetAdventureWithSource(adventureId, sourceKey);
+            return adventure != null;
         }
 
         public async Task SaveChanges()
