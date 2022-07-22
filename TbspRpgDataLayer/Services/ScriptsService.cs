@@ -17,6 +17,7 @@ public interface IScriptsService: IBaseService
     void RemoveScript(Script script);
     void RemoveScripts(ICollection<Script> scripts);
     void AttachScript(Script script);
+    Task<bool> IsSourceKeyReferenced(Guid adventureId, Guid sourceKey);
 }
 
 public class ScriptsService: IScriptsService
@@ -75,5 +76,10 @@ public class ScriptsService: IScriptsService
     public void AttachScript(Script script)
     {
         _scriptsRepository.AttachScript(script);
+    }
+
+    public Task<bool> IsSourceKeyReferenced(Guid adventureId, Guid sourceKey)
+    {
+        throw new NotImplementedException();
     }
 }

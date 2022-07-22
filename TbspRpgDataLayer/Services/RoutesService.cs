@@ -19,6 +19,7 @@ namespace TbspRpgDataLayer.Services
         void RemoveRoutes(ICollection<Route> routes);
         Task AddRoute(Route route);
         void RemoveScriptFromRoutes(Guid scriptId);
+        Task<bool> DoesAdventureRouteUseSource(Guid adventureId, Guid sourceKey);
     }
     
     public class RoutesService : IRoutesService
@@ -75,6 +76,11 @@ namespace TbspRpgDataLayer.Services
                 if (route.RouteTakenScriptId == scriptId)
                     route.RouteTakenScriptId = null;
             }
+        }
+
+        public Task<bool> DoesAdventureRouteUseSource(Guid adventureId, Guid sourceKey)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task SaveChanges()
