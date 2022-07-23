@@ -246,5 +246,161 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+        
+        #region GetAdventureLocationsWithSource
+
+        [Fact]
+        public async void GetAdventureLocationsWithSource_NoLocations_ReturnEmpty()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid()
+            };
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = testAdventure,
+                SourceKey = Guid.NewGuid()
+            };
+            var testLocationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid()
+                },
+                SourceKey = Guid.NewGuid()
+            };
+            await context.Adventures.AddRangeAsync(testAdventure);
+            await context.Locations.AddRangeAsync(testLocation, testLocationTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var locations = await service.GetAdventureLocationsWithSource(
+                Guid.NewGuid(), testLocation.SourceKey);
+
+            // assert
+            Assert.Empty(locations);
+        }
+
+        [Fact]
+        public async void GetAdventureLocationsWithSource_Exists_ReturnLocations()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid()
+            };
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = testAdventure,
+                SourceKey = Guid.NewGuid()
+            };
+            var testLocationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid()
+                },
+                SourceKey = Guid.NewGuid()
+            };
+            await context.Adventures.AddRangeAsync(testAdventure);
+            await context.Locations.AddRangeAsync(testLocation, testLocationTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var locations = await service.GetAdventureLocationsWithSource(
+                testAdventure.Id, testLocation.SourceKey);
+
+            // assert
+            Assert.Single(locations);
+        }
+
+        #endregion
+
+        #region DoesAdventureLocationUseSource
+
+        [Fact]
+        public async void DoesAdventLocationUseSource_DoesUseSource_ReturnTrue()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid()
+            };
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = testAdventure,
+                SourceKey = Guid.NewGuid()
+            };
+            var testLocationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid()
+                },
+                SourceKey = Guid.NewGuid()
+            };
+            await context.Adventures.AddRangeAsync(testAdventure);
+            await context.Locations.AddRangeAsync(testLocation, testLocationTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var usesSource = await service.DoesAdventureLocationUseSource(
+                testAdventure.Id, testLocation.SourceKey);
+            
+            // assert
+            Assert.True(usesSource);
+        }
+        
+        [Fact]
+        public async void DoesAdventLocationUseSource_DoesntUseSource_ReturnFalse()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid()
+            };
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = testAdventure,
+                SourceKey = Guid.NewGuid()
+            };
+            var testLocationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid()
+                },
+                SourceKey = Guid.NewGuid()
+            };
+            await context.Adventures.AddRangeAsync(testAdventure);
+            await context.Locations.AddRangeAsync(testLocation, testLocationTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var usesSource = await service.DoesAdventureLocationUseSource(
+                Guid.NewGuid(), testLocation.SourceKey);
+            
+            // assert
+            Assert.False(usesSource);
+        }
+
+        #endregion
     }
 }

@@ -497,5 +497,83 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+
+        #region GetAdventureLocationsWithSource
+
+        [Fact]
+        public async void GetAdventureLocationsWithSource_NoLocations_ReturnEmpty()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid()
+            };
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = testAdventure,
+                SourceKey = Guid.NewGuid()
+            };
+            var testLocationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid()
+                },
+                SourceKey = Guid.NewGuid()
+            };
+            await context.Adventures.AddRangeAsync(testAdventure);
+            await context.Locations.AddRangeAsync(testLocation, testLocationTwo);
+            await context.SaveChangesAsync();
+            var repository = new LocationsRepository(context);
+            
+            // act
+            var locations = await repository.GetAdventureLocationsWithSource(
+                Guid.NewGuid(), testLocation.SourceKey);
+
+            // assert
+            Assert.Empty(locations);
+        }
+
+        [Fact]
+        public async void GetAdventureLocationsWithSource_Exists_ReturnLocations()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid()
+            };
+            var testLocation = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = testAdventure,
+                SourceKey = Guid.NewGuid()
+            };
+            var testLocationTwo = new Location()
+            {
+                Id = Guid.NewGuid(),
+                Adventure = new Adventure()
+                {
+                    Id = Guid.NewGuid()
+                },
+                SourceKey = Guid.NewGuid()
+            };
+            await context.Adventures.AddRangeAsync(testAdventure);
+            await context.Locations.AddRangeAsync(testLocation, testLocationTwo);
+            await context.SaveChangesAsync();
+            var repository = new LocationsRepository(context);
+            
+            // act
+            var locations = await repository.GetAdventureLocationsWithSource(
+                testAdventure.Id, testLocation.SourceKey);
+
+            // assert
+            Assert.Single(locations);
+        }
+
+        #endregion
     }
 }
