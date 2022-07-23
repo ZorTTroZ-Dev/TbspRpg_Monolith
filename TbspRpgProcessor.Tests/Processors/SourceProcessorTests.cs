@@ -621,7 +621,7 @@ namespace TbspRpgProcessor.Tests.Processors
         #region GetUnreferencedSource
 
         [Fact]
-        public async void GetUnreferencedSource_NotUsed_SourceReturned()
+        public async void GetUnreferencedSource_OneNotUsed_SourceReturned()
         {
             // arrange
             var testAdventure = new Adventure()
