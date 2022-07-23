@@ -165,11 +165,11 @@ namespace TbspRpgProcessor.Processors
                 var scriptsUseSource = await _scriptsService.IsSourceKeyReferenced(
                     unreferencedSourceModel.AdventureId, sourceKey);
                 
-                if(!adventureUseSource
-                   && !locationUseSource
-                   && !routeUseSource
-                   && !contentUseSource
-                   && !scriptsUseSource)
+                if(adventureUseSource
+                   || locationUseSource
+                   || routeUseSource
+                   || contentUseSource
+                   || scriptsUseSource)
                     sources.RemoveAt(i);
             }
 

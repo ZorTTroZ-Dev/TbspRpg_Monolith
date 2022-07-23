@@ -218,7 +218,7 @@ namespace TbspRpgDataLayer.Tests
                     service.DoesAdventureLocationUseSource(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((Guid adventureId, Guid sourceKey) =>
                 {
-                    var locs = locations.Where(a => a.Id == adventureId && a.SourceKey == sourceKey);
+                    var locs = locations.Where(a => a.AdventureId == adventureId && a.SourceKey == sourceKey);
                     return locs.Any();
                 });
 
