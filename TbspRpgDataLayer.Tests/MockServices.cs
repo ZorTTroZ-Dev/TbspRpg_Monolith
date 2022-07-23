@@ -108,6 +108,15 @@ namespace TbspRpgDataLayer.Tests
                     }
                 });
 
+            adventuresService.Setup(service =>
+                    service.DoesAdventureUseSource(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId, Guid sourceKey) =>
+                {
+                    var advs = adventures.Where(a => a.Id == adventureId && (
+                        a.DescriptionSourceKey == sourceKey || a.InitialSourceKey == sourceKey));
+                    return advs.Any();
+                });
+
             return adventuresService.Object;
         }
         
@@ -203,6 +212,14 @@ namespace TbspRpgDataLayer.Tests
                             location.ExitScriptId = null;
                         }
                     }
+                });
+            
+            locationsService.Setup(service =>
+                    service.DoesAdventureLocationUseSource(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId, Guid sourceKey) =>
+                {
+                    var locs = locations.Where(a => a.Id == adventureId && a.SourceKey == sourceKey);
+                    return locs.Any();
                 });
 
             return locationsService.Object;

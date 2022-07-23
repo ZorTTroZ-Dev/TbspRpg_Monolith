@@ -18,6 +18,7 @@ namespace TbspRpgDataLayer.Repositories
         void RemoveLocation(Location location);
         void RemoveLocations(ICollection<Location> locations);
         Task<List<Location>> GetLocationsWithScript(Guid scriptId);
+        Task<List<Location>> GetAdventureLocationsWithSource(Guid adventureId, Guid sourceKey);
     }
     
     public class LocationsRepository: ILocationsRepository
@@ -77,6 +78,13 @@ namespace TbspRpgDataLayer.Repositories
         {
             return _databaseContext.Locations.AsQueryable()
                 .Where(location => location.EnterScriptId == scriptId || location.ExitScriptId == scriptId)
+                .ToListAsync();
+        }
+
+        public Task<List<Location>> GetAdventureLocationsWithSource(Guid adventureId, Guid sourceKey)
+        {
+            return _databaseContext.Locations.AsQueryable()
+                .Where(location => location.AdventureId == adventureId && location.SourceKey == sourceKey)
                 .ToListAsync();
         }
 
