@@ -20,7 +20,8 @@ namespace TbspRpgDataLayer.Services
         Task<List<Content>> GetPartialContentForGame(Guid gameId, ContentFilterRequest filterRequest);
         void RemoveContents(IEnumerable<Content> contents);
         Task RemoveAllContentsForGame(Guid gameId);
-        Task<bool> DoesContentUseSource(Guid adventureId, Guid sourceKey);
+        Task<bool> DoesAdventureContentUseSource(Guid adventureId, Guid sourceKey);
+        Task<List<Content>> GetAdventureContentsWithSource(Guid adventureId, Guid sourceKey);
     }
     
     public class ContentsService : IContentsService
@@ -104,9 +105,15 @@ namespace TbspRpgDataLayer.Services
             await _contentsRepository.RemoveAllContentsForGame(gameId);
         }
 
-        public Task<bool> DoesContentUseSource(Guid adventureId, Guid sourceKey)
+        public async Task<bool> DoesAdventureContentUseSource(Guid adventureId, Guid sourceKey)
         {
-            throw new NotImplementedException();
+            var contents = await GetAdventureContentsWithSource(adventureId, sourceKey);
+            return contents.Any();
+        }
+
+        public Task<List<Content>> GetAdventureContentsWithSource(Guid adventureId, Guid sourceKey)
+        {
+            return _contentsRepository.GetAdventureContentsWithSource(adventureId, sourceKey);
         }
     }
 }

@@ -158,7 +158,7 @@ namespace TbspRpgProcessor.Processors
                     unreferencedSourceModel.AdventureId, sourceKey);
                 
                 // check content
-                var contentUseSource = await _contentsService.DoesContentUseSource(
+                var contentUseSource = await _contentsService.DoesAdventureContentUseSource(
                     unreferencedSourceModel.AdventureId, sourceKey);
                 
                 // check scripts

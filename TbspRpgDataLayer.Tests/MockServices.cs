@@ -540,6 +540,15 @@ namespace TbspRpgDataLayer.Tests
 
                     throw new ArgumentException("invalid direction argument");
                 });
+            
+            contentsService.Setup(service =>
+                    service.DoesAdventureContentUseSource(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId, Guid sourceKey) =>
+                {
+                    var locs = contents.Where(a => a.Game.AdventureId == adventureId && 
+                                                 a.SourceKey == sourceKey);
+                    return locs.Any();
+                });
 
             return contentsService.Object;
         }
