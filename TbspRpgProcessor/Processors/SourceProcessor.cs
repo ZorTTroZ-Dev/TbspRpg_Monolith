@@ -14,7 +14,7 @@ namespace TbspRpgProcessor.Processors
         Task<Source> CreateOrUpdateSource(Source updatedSource, string language);
         Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
         Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
-        Task<List<Source>> GetUnreferencedSource(UnreferencedSourceModel unreferencedSourceModel);
+        Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel);
     }
     
     public class SourceProcessor : ISourceProcessor
@@ -129,7 +129,7 @@ namespace TbspRpgProcessor.Processors
             return dbSource.Key;
         }
 
-        public async Task<List<Source>> GetUnreferencedSource(UnreferencedSourceModel unreferencedSourceModel)
+        public async Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel)
         {
             // get all of the source entries for this adventure
             // go through each key

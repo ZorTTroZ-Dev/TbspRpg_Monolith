@@ -720,7 +720,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 testContents);
             
             // act
-            var unreferencedSources = await processor.GetUnreferencedSource(new UnreferencedSourceModel()
+            var unreferencedSources = await processor.GetUnreferencedSources(new UnreferencedSourceModel()
             {
                 AdventureId = testAdventure.Id
             });

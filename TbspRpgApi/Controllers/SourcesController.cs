@@ -44,6 +44,22 @@ namespace TbspRpgApi.Controllers
             return Ok(source);
         }
         
+        [HttpGet("adventure/{adventureId:guid}/unreferenced")]
+        [Authorize]
+        public async Task<IActionResult> GetUnreferencedSourcesForAdventure(Guid adventureId)
+        {
+            var canAccessAdventure = await _permissionService.CanWriteAdventure(
+                GetUserId().GetValueOrDefault(),
+                adventureId);
+            if(!canAccessAdventure)
+            {
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            }
+
+            var sources = await _sourcesService.GetUnreferencedSourcesForAdventure(adventureId);
+            return Ok(sources);
+        }
+        
         [HttpGet("adventure/{adventureId:guid}")]
         [Authorize]
         public async Task<IActionResult> GetSourcesForAdventure(Guid adventureId, [FromQuery]SourceFilterRequest filters)

@@ -299,5 +299,65 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+        
+        #region GetUnreferencedSourcesForAdventure
+
+        [Fact]
+        public async void GetUnreferencedSourcesForAdventure_Invalid_ReturnEmpty()
+        {
+            // arrange
+            var testSources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                }
+            };
+            var service = CreateSourcesService(testSources, Guid.Empty);
+            
+            // act
+            var sources = await service.GetUnreferencedSourcesForAdventure(Guid.NewGuid());
+            
+            // assert
+            Assert.Empty(sources);
+        }
+
+        [Fact]
+        public async void GetUnreferencedSourcesForAdventure_Valid_ReturnList()
+        {
+            // arrange
+            var testSources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                }
+            };
+            var service = CreateSourcesService(testSources, Guid.Empty);
+            
+            // act
+            var sources = await service.GetUnreferencedSourcesForAdventure(testSources[0].AdventureId);
+            
+            // assert
+            Assert.Single(sources);
+        }
+        
+        #endregion
     }
 }

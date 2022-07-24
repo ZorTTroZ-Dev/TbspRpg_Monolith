@@ -28,6 +28,7 @@ namespace TbspRpgProcessor.Tests
             sources ??= new List<En>();
             games ??= new List<Game>();
             contents ??= new List<Content>();
+            scripts ??= new List<Script>();
             
             var usersService = MockServices.MockDataLayerUsersService(users);
             var scriptsService = MockServices.MockDataLayerScriptsService(scripts);
