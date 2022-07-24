@@ -19,6 +19,7 @@ namespace TbspRpgDataLayer.Repositories
         void RemoveRoutes(ICollection<Route> routes);
         Task AddRoute(Route route);
         Task<List<Route>> GetRoutesWithScript(Guid scriptId);
+        Task<List<Route>> GetAdventureRoutesWithSource(Guid adventureId, Guid sourceKey);
     }
     
     public class RoutesRepository : IRoutesRepository
@@ -70,6 +71,14 @@ namespace TbspRpgDataLayer.Repositories
         {
             return _databaseContext.Routes.AsQueryable()
                 .Where(route => route.RouteTakenScriptId == scriptId)
+                .ToListAsync();
+        }
+
+        public Task<List<Route>> GetAdventureRoutesWithSource(Guid adventureId, Guid sourceKey)
+        {
+            return _databaseContext.Routes.AsQueryable()
+                .Where(route => route.Location.AdventureId == adventureId &&
+                                (route.SourceKey == sourceKey || route.RouteTakenSourceKey == sourceKey))
                 .ToListAsync();
         }
 

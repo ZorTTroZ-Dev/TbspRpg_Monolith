@@ -332,6 +332,15 @@ namespace TbspRpgDataLayer.Tests
                         }
                     }
                 });
+            
+            routesService.Setup(service =>
+                    service.DoesAdventureRouteUseSource(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId, Guid sourceKey) =>
+                {
+                    var locs = routes.Where(a => a.Location.AdventureId == adventureId && 
+                                                 (a.SourceKey == sourceKey || a.RouteTakenSourceKey == sourceKey));
+                    return locs.Any();
+                });
 
             return routesService.Object;
         }
