@@ -290,4 +290,105 @@ public class ScriptsServiceTests: InMemoryTest
     }
 
     #endregion
+    
+    #region GetAdventureScriptsWithSourceReference
+
+    [Fact]
+    public async void GetAdventureScriptsWithSourceReference_ContainsReference_ReturnScript()
+    {
+        // arrange
+        await using var context = new DatabaseContext(DbContextOptions);
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            AdventureId = Guid.NewGuid(),
+            Content = Guid.NewGuid().ToString()
+        };
+        await context.Scripts.AddAsync(testScript);
+        await context.SaveChangesAsync();
+        var service = CreateService(context);
+        
+        // act
+        var scripts = await service.GetAdventureScriptsWithSourceReference(
+            testScript.AdventureId, Guid.Parse(testScript.Content));
+        
+        // assert
+        Assert.Single(scripts);
+        Assert.Equal(testScript.Content, scripts[0].Content);
+    }
+    
+    [Fact]
+    public async void GetAdventureScriptsWithSourceReference_NoContainsReference_ReturnEmpty()
+    {
+        // arrange
+        await using var context = new DatabaseContext(DbContextOptions);
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            AdventureId = Guid.NewGuid(),
+            Content = Guid.NewGuid().ToString()
+        };
+        await context.Scripts.AddAsync(testScript);
+        await context.SaveChangesAsync();
+        var service = CreateService(context);
+        
+        // act
+        var scripts = await service.GetAdventureScriptsWithSourceReference(
+            testScript.AdventureId, Guid.NewGuid());
+        
+        // assert
+        Assert.Empty(scripts);
+    }
+
+    #endregion
+
+    #region IsSourceKeyReferenced
+
+    [Fact]
+    public async void IsSourceKeyReferenced_Referenced_ReturnTrue()
+    {
+        // arrange
+        await using var context = new DatabaseContext(DbContextOptions);
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            AdventureId = Guid.NewGuid(),
+            Content = Guid.NewGuid().ToString()
+        };
+        await context.Scripts.AddAsync(testScript);
+        await context.SaveChangesAsync();
+        var service = CreateService(context);
+        
+        // act
+        var referenced = await service.IsSourceKeyReferenced(testScript.AdventureId,
+            Guid.Parse(testScript.Content));
+        
+        // assert
+        Assert.True(referenced);
+    }
+    
+    [Fact]
+    public async void IsSourceKeyReferenced_NotReferenced_ReturnFalse()
+    {
+        // arrange
+        await using var context = new DatabaseContext(DbContextOptions);
+        var testScript = new Script()
+        {
+            Id = Guid.NewGuid(),
+            AdventureId = Guid.NewGuid(),
+            Content = Guid.NewGuid().ToString()
+        };
+        await context.Scripts.AddAsync(testScript);
+        await context.SaveChangesAsync();
+        var service = CreateService(context);
+        
+        // act
+        var referenced = await service.IsSourceKeyReferenced(Guid.NewGuid(), 
+            Guid.Parse(testScript.Content));
+        
+        // assert
+        Assert.False(referenced);
+    }
+
+    #endregion
 }

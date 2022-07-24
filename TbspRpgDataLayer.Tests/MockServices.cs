@@ -263,6 +263,15 @@ namespace TbspRpgDataLayer.Tests
                     }
                 });
             
+            scriptsService.Setup(service =>
+                    service.IsSourceKeyReferenced(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId, Guid sourceKey) =>
+                {
+                    var locs = scripts.Where(a => a.AdventureId == adventureId && 
+                                                   a.Content.Contains(sourceKey.ToString()));
+                    return locs.Any();
+                });
+            
             return scriptsService.Object;
         }
 

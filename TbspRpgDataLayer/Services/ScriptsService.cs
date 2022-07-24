@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgDataLayer.Entities;
@@ -18,6 +19,7 @@ public interface IScriptsService: IBaseService
     void RemoveScripts(ICollection<Script> scripts);
     void AttachScript(Script script);
     Task<bool> IsSourceKeyReferenced(Guid adventureId, Guid sourceKey);
+    Task<List<Script>> GetAdventureScriptsWithSourceReference(Guid adventureId, Guid sourceKey);
 }
 
 public class ScriptsService: IScriptsService
@@ -78,8 +80,14 @@ public class ScriptsService: IScriptsService
         _scriptsRepository.AttachScript(script);
     }
 
-    public Task<bool> IsSourceKeyReferenced(Guid adventureId, Guid sourceKey)
+    public async Task<bool> IsSourceKeyReferenced(Guid adventureId, Guid sourceKey)
     {
-        throw new NotImplementedException();
+        var scripts = await GetAdventureScriptsWithSourceReference(adventureId, sourceKey);
+        return scripts.Any();
+    }
+
+    public Task<List<Script>> GetAdventureScriptsWithSourceReference(Guid adventureId, Guid sourceKey)
+    {
+        return _scriptsRepository.GetAdventureScriptsWithSourceReference(adventureId, sourceKey);
     }
 }
