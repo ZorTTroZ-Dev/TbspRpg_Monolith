@@ -101,5 +101,27 @@ namespace TbspRpgApi.Controllers
             var source = await _sourcesService.GetProcessedSourceForKey(filters.Key.GetValueOrDefault(), adventureId, filters.Language);
             return Ok(source);
         }
+        
+        [HttpPut, Authorize]
+        public async Task<IActionResult> UpdateSource([FromBody] SourceUpdateRequest sourceUpdateRequest)
+        {
+            var canAccessAdventure = await _permissionService.CanReadAdventure(
+                GetUserId().GetValueOrDefault(),
+                sourceUpdateRequest.Source.AdventureId);
+            if (!canAccessAdventure)
+            {
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            }
+
+            try
+            {
+                await _sourcesService.UpdateSource(sourceUpdateRequest);
+                return Ok(null);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest((new {message = ex.Message}));
+            }
+        }
     }
 }
