@@ -20,9 +20,9 @@ namespace TbspRpgDataLayer.Entities
         public Location Location { get; set; }
         public ICollection<Content> Contents { get; set; }
 
-        private JsonObject GameStateJson { get; set; }
+        public JsonObject GameStateJson { get; set; }
 
-        private void LoadGameStateJson()
+        public void LoadGameStateJson()
         {
             if (GameStateJson != null) return;
             GameState ??= "{}";
