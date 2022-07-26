@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
@@ -18,6 +19,8 @@ namespace TbspRpgDataLayer.Services
         void RemoveLocation(Location location);
         void RemoveLocations(ICollection<Location> locations);
         void RemoveScriptFromLocations(Guid scriptId);
+        Task<bool> DoesAdventureLocationUseSource(Guid adventureId, Guid sourceKey);
+        Task<List<Location>> GetAdventureLocationsWithSource(Guid adventureId, Guid sourceKey);
     }
     
     public class LocationsService : ILocationsService
@@ -78,6 +81,17 @@ namespace TbspRpgDataLayer.Services
                 if (location.ExitScriptId == scriptId)
                     location.ExitScriptId = null;
             }
+        }
+
+        public async Task<bool> DoesAdventureLocationUseSource(Guid adventureId, Guid sourceKey)
+        {
+            var locations = await GetAdventureLocationsWithSource(adventureId, sourceKey);
+            return locations.Any();
+        }
+
+        public Task<List<Location>> GetAdventureLocationsWithSource(Guid adventureId, Guid sourceKey)
+        {
+            return _locationsRepository.GetAdventureLocationsWithSource(adventureId, sourceKey);
         }
 
         public async Task SaveChanges()

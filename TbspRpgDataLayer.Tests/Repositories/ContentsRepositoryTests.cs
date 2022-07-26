@@ -666,5 +666,70 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+
+        #region GetAdventureContentsWithSource
+
+        [Fact]
+        public async void GetAdventureContentsWithSource_HasSource_ReturnsContents()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testContent = new Content()
+            {
+                Id = Guid.NewGuid(),
+                SourceKey = Guid.NewGuid(),
+                Game = new Game()
+                {
+                    Id = Guid.NewGuid(),
+                    Adventure = new Adventure()
+                    {
+                        Id = Guid.NewGuid()
+                    }
+                }
+            };
+            await context.Contents.AddAsync(testContent);
+            await context.SaveChangesAsync();
+            var repository = CreateRepository(context);
+            
+            // act
+            var contents = await repository.GetAdventureContentsWithSource(
+                testContent.Game.AdventureId, testContent.SourceKey);
+            
+            // assert
+            Assert.Single(contents);
+            Assert.Equal(testContent.SourceKey, contents[0].SourceKey);
+        }
+
+        [Fact]
+        public async void GetAdventureContentsWithSource_NoHasSource_ReturnsEmptyList()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testContent = new Content()
+            {
+                Id = Guid.NewGuid(),
+                SourceKey = Guid.NewGuid(),
+                Game = new Game()
+                {
+                    Id = Guid.NewGuid(),
+                    Adventure = new Adventure()
+                    {
+                        Id = Guid.NewGuid()
+                    }
+                }
+            };
+            await context.Contents.AddAsync(testContent);
+            await context.SaveChangesAsync();
+            var repository = CreateRepository(context);
+            
+            // act
+            var contents = await repository.GetAdventureContentsWithSource(
+                testContent.Game.AdventureId, Guid.NewGuid());
+            
+            // assert
+            Assert.Empty(contents);
+        }
+
+        #endregion
     }
 }

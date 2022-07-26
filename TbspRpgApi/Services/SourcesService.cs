@@ -17,6 +17,7 @@ namespace TbspRpgApi.Services
         public Task<List<SourceViewModel>> GetSourcesForAdventure(Guid adventureId, string language);
         public Task<List<SourceViewModel>> GetSourceAllLanguagesForAdventure(Guid adventureId);
         Task UpdateSource(SourceUpdateRequest sourceUpdateRequest);
+        Task<List<SourceViewModel>> GetUnreferencedSourcesForAdventure(Guid adventureId);
     }
     
     public class SourcesService: ISourcesService
@@ -66,8 +67,17 @@ namespace TbspRpgApi.Services
 
         public async Task UpdateSource(SourceUpdateRequest sourceUpdateRequest)
         {
-            await _sourceProcessor.CreateOrUpdateSource(sourceUpdateRequest.Source.ToEntity(),
+            await _tbspRpgProcessor.CreateOrUpdateSource(sourceUpdateRequest.Source.ToEntity(),
                 sourceUpdateRequest.Source.Language);
+        }
+
+        public async Task<List<SourceViewModel>> GetUnreferencedSourcesForAdventure(Guid adventureId)
+        {
+            var sources = await _tbspRpgProcessor.GetUnreferencedSources(new UnreferencedSourceModel()
+            {
+                AdventureId = adventureId
+            });
+            return sources.Select(source => new SourceViewModel(source)).ToList();
         }
     }
 }

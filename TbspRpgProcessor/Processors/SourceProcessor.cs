@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Markdig;
 using Microsoft.Extensions.Logging;
@@ -13,22 +14,38 @@ namespace TbspRpgProcessor.Processors
         Task<Source> CreateOrUpdateSource(Source updatedSource, string language);
         Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
         Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
+        Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel);
     }
     
     public class SourceProcessor : ISourceProcessor
     {
         private readonly IScriptProcessor _scriptProcessor;
         private readonly ISourcesService _sourcesService;
+        private readonly IAdventuresService _adventuresService;
+        private readonly ILocationsService _locationsService;
+        private readonly IRoutesService _routesService;
+        private readonly IContentsService _contentsService;
+        private readonly IScriptsService _scriptsService;
         private readonly ILogger _logger;
         private readonly int MaxLoopCount = 5;
 
         public SourceProcessor(
             IScriptProcessor scriptProcessor,
             ISourcesService sourcesService,
+            IAdventuresService adventuresService,
+            ILocationsService locationsService,
+            IRoutesService routesService,
+            IContentsService contentsService,
+            IScriptsService scriptsService,
             ILogger logger)
         {
             _scriptProcessor = scriptProcessor;
             _sourcesService = sourcesService;
+            _adventuresService = adventuresService;
+            _locationsService = locationsService;
+            _routesService = routesService;
+            _contentsService = contentsService;
+            _scriptsService = scriptsService;
             _logger = logger;
         }
 
@@ -110,6 +127,53 @@ namespace TbspRpgProcessor.Processors
             }
 
             return dbSource.Key;
+        }
+
+        public async Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel)
+        {
+            // get all of the source entries for this adventure
+            // go through each key
+            // check if there is an adventure that has an InitialSourceKey or a DescriptionSourceKey equal to the key
+            // check if there is content that has a SourceKey equal to the key
+            // check if there is a location that has a SourceKey equal to the key
+            // check if there is a route that has a SourceKey or a RouteTakenSourceKy equal to the key
+            // check if there is a script with content that contains the key
+
+            var sources = await _sourcesService.GetAllSourceAllLanguagesForAdventure(
+                unreferencedSourceModel.AdventureId);
+            for (var i = sources.Count - 1; i >= 0; i--)
+            {
+                var sourceKey = sources[i].Key;
+                
+                // check the adventure
+                var adventureUseSource = await _adventuresService.DoesAdventureUseSource(
+                    unreferencedSourceModel.AdventureId, sourceKey);
+
+                // check the location
+                var locationUseSource = await _locationsService.DoesAdventureLocationUseSource(
+                    unreferencedSourceModel.AdventureId, sourceKey);
+                
+                // check the route
+                var routeUseSource = await _routesService.DoesAdventureRouteUseSource(
+                    unreferencedSourceModel.AdventureId, sourceKey);
+                
+                // check content
+                var contentUseSource = await _contentsService.DoesAdventureContentUseSource(
+                    unreferencedSourceModel.AdventureId, sourceKey);
+                
+                // check scripts
+                var scriptsUseSource = await _scriptsService.IsSourceKeyReferenced(
+                    unreferencedSourceModel.AdventureId, sourceKey);
+                
+                if(adventureUseSource
+                   || locationUseSource
+                   || routeUseSource
+                   || contentUseSource
+                   || scriptsUseSource)
+                    sources.RemoveAt(i);
+            }
+
+            return sources;
         }
     }
 }

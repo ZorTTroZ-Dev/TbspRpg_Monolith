@@ -16,6 +16,7 @@ public interface IScriptsRepository: IBaseRepository
     void RemoveScript(Script script);
     void RemoveScripts(ICollection<Script> scripts);
     void AttachScript(Script script);
+    Task<List<Script>> GetAdventureScriptsWithSourceReference(Guid adventureId, Guid sourceKey);
 }
 
 public class ScriptsRepository: IScriptsRepository
@@ -67,6 +68,13 @@ public class ScriptsRepository: IScriptsRepository
     public void AttachScript(Script script)
     {
         _databaseContext.Attach(script);
+    }
+
+    public Task<List<Script>> GetAdventureScriptsWithSourceReference(Guid adventureId, Guid sourceKey)
+    {
+        return _databaseContext.Scripts.AsQueryable()
+            .Where(script => script.AdventureId == adventureId && script.Content.Contains(sourceKey.ToString()))
+            .ToListAsync();
     }
 
     public async Task SaveChanges()
