@@ -11,7 +11,7 @@ namespace TbspRpgProcessor.Processors
 {
     public interface ISourceProcessor
     {
-        Task<Source> CreateOrUpdateSource(Source updatedSource, string language);
+        Task<Source> CreateOrUpdateSource(Source updatedSource, string language, bool saveChanges = false);
         Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
         Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
         Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel);
@@ -49,7 +49,7 @@ namespace TbspRpgProcessor.Processors
             _logger = logger;
         }
 
-        public async Task<Source> CreateOrUpdateSource(Source updatedSource, string language)
+        public async Task<Source> CreateOrUpdateSource(Source updatedSource, string language, bool saveChanges = false)
         {
             if (updatedSource.Key == Guid.Empty)
             {
@@ -63,6 +63,8 @@ namespace TbspRpgProcessor.Processors
                     ScriptId = updatedSource.ScriptId
                 };
                 await _sourcesService.AddSource(newSource);
+                if (saveChanges)
+                    await _sourcesService.SaveChanges();
                 return newSource;
             }
             var dbSource = await _sourcesService.GetSourceForKey(updatedSource.Key, updatedSource.AdventureId, language);
@@ -70,6 +72,9 @@ namespace TbspRpgProcessor.Processors
                 throw new ArgumentException("invalid source key");
             dbSource.Text = updatedSource.Text;
             dbSource.ScriptId = updatedSource.ScriptId;
+            dbSource.Name = updatedSource.Name;
+            if(saveChanges)
+                await _sourcesService.SaveChanges();
             return dbSource;
         }
 
