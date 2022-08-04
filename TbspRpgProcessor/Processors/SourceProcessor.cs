@@ -70,6 +70,7 @@ namespace TbspRpgProcessor.Processors
                 throw new ArgumentException("invalid source key");
             dbSource.Text = updatedSource.Text;
             dbSource.ScriptId = updatedSource.ScriptId;
+            await _sourcesService.SaveChanges();
             return dbSource;
         }
 

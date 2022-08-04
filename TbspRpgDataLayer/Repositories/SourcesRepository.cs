@@ -11,7 +11,7 @@ using TbspRpgSettings.Settings;
 
 namespace TbspRpgDataLayer.Repositories
 {
-    public interface ISourcesRepository
+    public interface ISourcesRepository: IBaseRepository
     {
         Task<string> GetSourceTextForKey(Guid key, string language = null);
         Task<Source> GetSourceForKey(Guid key, Guid adventureId, string language);
@@ -151,6 +151,11 @@ namespace TbspRpgDataLayer.Repositories
                 sources.AddRange(await query.Where(source => source.ScriptId == scriptId).ToListAsync());
             }
             return sources;
+        }
+
+        public async Task SaveChanges()
+        {
+            await _databaseContext.SaveChangesAsync();
         }
     }
 }

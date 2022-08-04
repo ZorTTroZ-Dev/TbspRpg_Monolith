@@ -9,7 +9,7 @@ using TbspRpgSettings.Settings;
 
 namespace TbspRpgDataLayer.Services
 {
-    public interface ISourcesService
+    public interface ISourcesService: IBaseService
     {
         Task<string> GetSourceTextForKey(Guid key, string language = null);
         Task<Source> GetSourceForKey(Guid key, Guid adventureId, string language);
@@ -70,6 +70,11 @@ namespace TbspRpgDataLayer.Services
         public async Task<List<Source>> GetAllSourceAllLanguagesForAdventure(Guid adventureId)
         {
             return await _sourcesRepository.GetAllSourceAllLanguagesForAdventure(adventureId);
+        }
+
+        public async Task SaveChanges()
+        {
+            await _sourcesRepository.SaveChanges();
         }
     }
 }
