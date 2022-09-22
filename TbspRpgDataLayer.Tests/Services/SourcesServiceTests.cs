@@ -239,6 +239,98 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+        
+        #region RemoveSource
+        
+        [Fact]
+        public async void RemoveSource_InvalidSourceId_SourceNotRemoved()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = testSource.AdventureId,
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEnTwo = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = Guid.NewGuid(),
+                Name = "test source two",
+                Text = "test source two"
+            };
+            context.SourcesEsp.Add(testSource);
+            context.SourcesEn.Add(testSourceEn);
+            context.SourcesEn.Add(testSourceEnTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            await service.RemoveSource(Guid.NewGuid());
+            await context.SaveChangesAsync();
+            
+            // assert
+            Assert.Equal(2, context.SourcesEn.Count());
+            Assert.Single(context.SourcesEsp);
+        }
+
+        [Fact]
+        public async void RemoveSource_ValidSourceId_SourceRemoved()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = testSource.AdventureId,
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEnTwo = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = Guid.NewGuid(),
+                Name = "test source two",
+                Text = "test source two"
+            };
+            context.SourcesEsp.Add(testSource);
+            context.SourcesEn.Add(testSourceEn);
+            context.SourcesEn.Add(testSourceEnTwo);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            await service.RemoveSource(testSource.Id);
+            await context.SaveChangesAsync();
+            
+            // assert
+            Assert.Equal(2, context.SourcesEn.Count());
+            Assert.Empty(context.SourcesEsp);
+        }
+
+        #endregion
 
         #region RemoveScriptFromSources
 
