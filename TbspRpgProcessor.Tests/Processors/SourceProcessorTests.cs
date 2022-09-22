@@ -731,5 +731,39 @@ namespace TbspRpgProcessor.Tests.Processors
         }
 
         #endregion
+        
+        #region RemoveSource
+
+        [Fact]
+        public async void RemoveSource_ValidSourceId_SourceRemoved()
+        {
+            // arrange
+            var testSources = new List<En>()
+            {
+                new En()
+                {
+                    Id = Guid.NewGuid(),
+                    Language = Languages.ENGLISH
+                }
+            };
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                null,
+                null,
+                testSources);
+            
+            // act
+            await processor.RemoveSource(new SourceRemoveModel()
+            {
+                SourceId = testSources[0].Id
+            });
+            
+            // assert
+            Assert.Empty(testSources);
+        }
+
+        #endregion
     }
 }

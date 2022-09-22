@@ -402,6 +402,20 @@ namespace TbspRpgDataLayer.Tests
                         }
                     }
                 });
+
+            sourcesService.Setup(service =>
+                    service.RemoveSource(It.IsAny<Guid>()))
+                .Callback((Guid sourceId) =>
+                {
+                    for (int i = sources.Count - 1; i >= 0; i--)
+                    {
+                        // Do processing here, then...
+                        if (sources.ToArray()[i].Id == sourceId)
+                        {
+                            sources.Remove(sources.ToArray()[i]);
+                        }
+                    }
+                });
             
             sourcesService.Setup(service =>
                     service.RemoveScriptFromSources(It.IsAny<Guid>()))
