@@ -15,6 +15,7 @@ namespace TbspRpgProcessor.Processors
         Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
         Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
         Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel);
+        Task RemoveSource(SourceRemoveModel sourceRemoveModel);
     }
     
     public class SourceProcessor : ISourceProcessor
@@ -179,6 +180,12 @@ namespace TbspRpgProcessor.Processors
             }
 
             return sources;
+        }
+
+        public async Task RemoveSource(SourceRemoveModel sourceRemoveModel)
+        {
+            await _sourcesService.RemoveSource(sourceRemoveModel.SourceId);
+            await _sourcesService.SaveChanges();
         }
     }
 }

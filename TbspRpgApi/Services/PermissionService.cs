@@ -20,6 +20,7 @@ namespace TbspRpgApi.Services
         Task<bool> CanDeleteGame(Guid userId, Guid gameId);
         Task<bool> CanDeleteScript(Guid userId, Guid scriptId);
         Task<bool> CanDeleteRoute(Guid userId, Guid routeId);
+        Task<bool> CanDeleteSource(Guid userId, Guid sourceId);
     }
     
     public class PermissionService: IPermissionService
@@ -29,6 +30,7 @@ namespace TbspRpgApi.Services
         private Script Script { get; set; }
         private Route Route { get; set; }
         private Location Location { get; set; }
+        private Source Source { get; set; }
         private HashSet<string> Permissions { get; set; }
         private readonly TbspRpgDataLayer.Services.IUsersService _usersService;
         private readonly TbspRpgDataLayer.Services.ILocationsService _locationsService;
@@ -36,6 +38,7 @@ namespace TbspRpgApi.Services
         private readonly TbspRpgDataLayer.Services.IGamesService _gamesService;
         private readonly TbspRpgDataLayer.Services.IScriptsService _scriptsService;
         private readonly TbspRpgDataLayer.Services.IRoutesService _routesService;
+        private readonly TbspRpgDataLayer.Services.ISourcesService _sourcesService;
         private readonly ILogger<PermissionService> _logger;
 
         public PermissionService(
@@ -45,6 +48,7 @@ namespace TbspRpgApi.Services
             TbspRpgDataLayer.Services.IGamesService gamesService,
             TbspRpgDataLayer.Services.IScriptsService scriptsService,
             TbspRpgDataLayer.Services.IRoutesService routesService,
+            TbspRpgDataLayer.Services.ISourcesService sourcesService,
             ILogger<PermissionService> logger)
         {
             _usersService = usersService;
@@ -53,6 +57,7 @@ namespace TbspRpgApi.Services
             _gamesService = gamesService;
             _scriptsService = scriptsService;
             _routesService = routesService;
+            _sourcesService = sourcesService;
             _logger = logger;
         }
         
@@ -79,6 +84,11 @@ namespace TbspRpgApi.Services
         private async Task LoadRoute(Guid routeId)
         {
             Route ??= await _routesService.GetRouteById(routeId);
+        }
+
+        private async Task LoadSource(Guid sourceId)
+        {
+            Source ??= await _sourcesService.GetSourceById(sourceId);
         }
 
         protected async Task LoadPermissions(Guid userId)
@@ -206,6 +216,14 @@ namespace TbspRpgApi.Services
             if (Route == null)
                 return false;
             return await CanWriteLocation(userId, Route.LocationId);
+        }
+
+        public async Task<bool> CanDeleteSource(Guid userId, Guid sourceId)
+        {
+            await LoadSource(sourceId);
+            if (Source == null)
+                return false;
+            return await CanWriteAdventure(userId, Source.AdventureId);
         }
     }
 }

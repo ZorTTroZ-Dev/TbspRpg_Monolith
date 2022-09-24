@@ -359,5 +359,29 @@ namespace TbspRpgApi.Tests.Services
         }
         
         #endregion
+        
+        #region DeleteSource
+
+        [Fact]
+        public async void DeleteSource_SourceValid_Returns()
+        {
+            // arrange
+            var sources = new List<En>()
+            {
+                new En()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test source"
+                }
+            };
+            var service = CreateSourcesService(sources, Guid.NewGuid());
+            
+            // act
+            await service.DeleteSource(sources[0].Id);
+
+            // assert
+        }
+
+        #endregion
     }
 }

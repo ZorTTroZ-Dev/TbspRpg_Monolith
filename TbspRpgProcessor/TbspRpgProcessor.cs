@@ -25,6 +25,7 @@ public interface ITbspRpgProcessor
     Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
     Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
     Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel);
+    Task RemoveSource(SourceRemoveModel sourceRemoveModel);
 
     #endregion
     
@@ -203,6 +204,12 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     {
         LoadSourceProcessor();
         return _sourceProcessor.GetUnreferencedSources(unreferencedSourceModel);
+    }
+    
+    public Task RemoveSource(SourceRemoveModel sourceRemoveModel)
+    {
+        LoadSourceProcessor();
+        return _sourceProcessor.RemoveSource(sourceRemoveModel);
     }
 
     #endregion

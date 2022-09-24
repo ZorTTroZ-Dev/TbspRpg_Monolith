@@ -18,6 +18,7 @@ namespace TbspRpgApi.Services
         public Task<List<SourceViewModel>> GetSourceAllLanguagesForAdventure(Guid adventureId);
         Task UpdateSource(SourceUpdateRequest sourceUpdateRequest);
         Task<List<SourceViewModel>> GetUnreferencedSourcesForAdventure(Guid adventureId);
+        Task DeleteSource(Guid sourceId);
     }
     
     public class SourcesService: ISourcesService
@@ -78,6 +79,14 @@ namespace TbspRpgApi.Services
                 AdventureId = adventureId
             });
             return sources.Select(source => new SourceViewModel(source)).ToList();
+        }
+
+        public async Task DeleteSource(Guid sourceId)
+        {
+            await _tbspRpgProcessor.RemoveSource(new SourceRemoveModel()
+            {
+                SourceId = sourceId
+            });
         }
     }
 }
