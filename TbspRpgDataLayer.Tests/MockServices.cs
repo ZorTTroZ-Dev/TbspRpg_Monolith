@@ -418,6 +418,13 @@ namespace TbspRpgDataLayer.Tests
                 });
             
             sourcesService.Setup(service =>
+                    service.GetSourceById(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid sourceId) =>
+                {
+                    return sources.FirstOrDefault(en => en.Id == sourceId);
+                });
+            
+            sourcesService.Setup(service =>
                     service.RemoveScriptFromSources(It.IsAny<Guid>()))
                 .Callback((Guid scriptId) =>
                 {

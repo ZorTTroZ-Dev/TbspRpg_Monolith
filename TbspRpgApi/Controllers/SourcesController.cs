@@ -139,5 +139,27 @@ namespace TbspRpgApi.Controllers
                 return BadRequest((new {message = ex.Message}));
             }
         }
+        
+        [HttpDelete("{sourceId:guid}"), Authorize]
+        public async Task<IActionResult> DeleteSource(Guid sourceId)
+        {
+            var canDeleteSource = await _permissionService.CanDeleteSource(
+                GetUserId().GetValueOrDefault(),
+                sourceId);
+            if(!canDeleteSource)
+            {
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            }
+            
+            try
+            {
+                await _sourcesService.DeleteSource(sourceId);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest(new { message = "couldn't delete source" });
+            }
+        }
     }
 }

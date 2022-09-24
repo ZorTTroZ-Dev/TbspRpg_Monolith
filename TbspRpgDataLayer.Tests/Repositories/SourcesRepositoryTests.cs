@@ -735,5 +735,94 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+        
+        #region GetSourceById
+        
+        [Fact]
+        public async void GetSourceById_InvalidSourceId_ReturnNull()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = testSource.AdventureId,
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEnTwo = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = Guid.NewGuid(),
+                Name = "test source two",
+                Text = "test source two"
+            };
+            context.SourcesEsp.Add(testSource);
+            context.SourcesEn.Add(testSourceEn);
+            context.SourcesEn.Add(testSourceEnTwo);
+            await context.SaveChangesAsync();
+            var repository = new SourcesRepository(context);
+            
+            // act
+            var source = await repository.GetSourceById(Guid.NewGuid());
+            
+            // assert
+            Assert.Null(source);
+        }
+
+        [Fact]
+        public async void GetSourceId_ValidSourceId_SourceReturned()
+        {
+            //arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testSource = new Esp()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = testSource.AdventureId,
+                Name = "test source",
+                Text = "test source"
+            };
+            var testSourceEnTwo = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = testSource.Key,
+                AdventureId = Guid.NewGuid(),
+                Name = "test source two",
+                Text = "test source two"
+            };
+            context.SourcesEsp.Add(testSource);
+            context.SourcesEn.Add(testSourceEn);
+            context.SourcesEn.Add(testSourceEnTwo);
+            await context.SaveChangesAsync();
+            var repository = new SourcesRepository(context);
+            
+            // act
+            var source = await repository.GetSourceById(testSource.Id);
+
+            // assert
+            Assert.NotNull(source);
+            Assert.Equal(testSource.Id, source.Id);
+        }
+
+        #endregion
     }
 }
