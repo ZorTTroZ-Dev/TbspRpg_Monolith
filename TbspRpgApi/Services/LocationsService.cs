@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor;
 using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
@@ -12,21 +13,23 @@ namespace TbspRpgApi.Services
     public interface ILocationsService
     {
         Task<List<LocationViewModel>> GetLocationsForAdventure(Guid adventureId);
+        Task<LocationViewModel> GetLocationById(Guid locationId);
         Task UpdateLocationAndSource(LocationUpdateRequest locationUpdateRequest);
     }
 
     public class LocationsService : ILocationsService
     {
         private readonly TbspRpgDataLayer.Services.ILocationsService _locationsService;
-        private readonly ILocationProcessor _locationProcessor;
+        private readonly ITbspRpgProcessor _tbspRpgProcessor;
         private readonly ILogger<LocationsService> _logger;
 
-        public LocationsService(TbspRpgDataLayer.Services.ILocationsService locationsService,
-            ILocationProcessor locationProcessor,
+        public LocationsService(
+            ITbspRpgProcessor tbspRpgProcessor,
+            TbspRpgDataLayer.Services.ILocationsService locationsService,
             ILogger<LocationsService> logger)
         {
+            _tbspRpgProcessor = tbspRpgProcessor;
             _locationsService = locationsService;
-            _locationProcessor = locationProcessor;
             _logger = logger;
         }
 
@@ -36,11 +39,17 @@ namespace TbspRpgApi.Services
             return locations.Select(location => new LocationViewModel(location)).ToList();
         }
 
+        public async Task<LocationViewModel> GetLocationById(Guid locationId)
+        {
+            var location = await _locationsService.GetLocationById(locationId);
+            return new LocationViewModel(location);
+        }
+
         public async Task UpdateLocationAndSource(LocationUpdateRequest locationUpdateRequest)
         {
             var location = locationUpdateRequest.location.ToEntity();
             var source = locationUpdateRequest.source.ToEntity();
-            await _locationProcessor.UpdateLocation(location, source, locationUpdateRequest.source.Language);
+            await _tbspRpgProcessor.UpdateLocation(location, source, locationUpdateRequest.source.Language);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.Entities;
@@ -19,6 +20,8 @@ namespace TbspRpgDataLayer.Services
         void RemoveRoutes(ICollection<Route> routes);
         Task AddRoute(Route route);
         void RemoveScriptFromRoutes(Guid scriptId);
+        Task<bool> DoesAdventureRouteUseSource(Guid adventureId, Guid sourceKey);
+        Task<List<Route>> GetAdventureRoutesWithSource(Guid adventureId, Guid sourceKey);
     }
     
     public class RoutesService : IRoutesService
@@ -75,6 +78,17 @@ namespace TbspRpgDataLayer.Services
                 if (route.RouteTakenScriptId == scriptId)
                     route.RouteTakenScriptId = null;
             }
+        }
+
+        public async Task<bool> DoesAdventureRouteUseSource(Guid adventureId, Guid sourceKey)
+        {
+            var routes = await GetAdventureRoutesWithSource(adventureId, sourceKey);
+            return routes.Any();
+        }
+
+        public Task<List<Route>> GetAdventureRoutesWithSource(Guid adventureId, Guid sourceKey)
+        {
+            return _routesRepository.GetAdventureRoutesWithSource(adventureId, sourceKey);
         }
 
         public async Task SaveChanges()

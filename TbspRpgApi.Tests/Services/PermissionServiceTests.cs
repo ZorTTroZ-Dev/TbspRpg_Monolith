@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Entities;
 using Xunit;
 
@@ -2255,6 +2256,222 @@ namespace TbspRpgApi.Tests.Services
             
             // assert
             Assert.False(can);
+        }
+
+        #endregion
+        
+        #region CanDeleteSource
+
+        [Fact]
+        public async void CanDeleteSource_OwnAdventure_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = users[0].Id
+                }
+            };
+            var sources = new List<En>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures, null, null, null, sources);
+            
+            // act
+            var canWrite = await service.CanDeleteSource(users[0].Id, sources[0].Id);
+            
+            // assert
+            Assert.True(canWrite);
+        }
+        
+        [Fact]
+        public async void CanDeleteSource_HasPermission_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteAdventure
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var sources = new List<En>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures, null, null, null, sources);
+
+            // act
+            var canWrite = await service.CanDeleteSource(users[0].Id, sources[0].Id);
+            
+            // assert
+            Assert.True(canWrite);
+        }
+        
+        [Fact]
+        public async void CanDeleteSource_NoOwnerNoPermission_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "bananas"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var sources = new List<En>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures, null, null, null, sources);
+
+            // act
+            var canWrite = await service.CanDeleteSource(users[0].Id, sources[0].Id);
+            
+            // assert
+            Assert.False(canWrite);
+        }
+        
+        [Fact]
+        public async void CanDeleteSource_BadSourceId_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "bananas"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = users[0].Id
+                }
+            };
+            var sources = new List<En>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users, null, adventures, null, null, null, sources);
+            
+            // act
+            var canWrite = await service.CanDeleteSource(users[0].Id, Guid.NewGuid());
+            
+            // assert
+            Assert.False(canWrite);
         }
 
         #endregion

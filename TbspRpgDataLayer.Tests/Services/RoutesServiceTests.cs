@@ -454,5 +454,170 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+
+        #region GetAdventureRoutesWithSource
+
+        [Fact]
+        public async void GetAdventureRoutesWithSource_SourceKeyMatches_ReturnRoutes()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Location = new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Adventure = new Adventure()
+                    {
+                        Id = Guid.NewGuid()
+                    }
+                },
+                SourceKey = Guid.NewGuid(),
+                RouteTakenSourceKey = Guid.NewGuid()
+            };
+            await context.Routes.AddAsync(testRoute);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var routes = await service.GetAdventureRoutesWithSource(
+                testRoute.Location.AdventureId, testRoute.SourceKey);
+            
+            // assert
+            Assert.Single(routes);
+            Assert.Equal(testRoute.SourceKey, routes[0].SourceKey);
+        }
+
+        [Fact]
+        public async void GetAdventureRoutesWithSource_RouteTakenKeyMatches_ReturnRoutes()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Location = new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Adventure = new Adventure()
+                    {
+                        Id = Guid.NewGuid()
+                    }
+                },
+                SourceKey = Guid.NewGuid(),
+                RouteTakenSourceKey = Guid.NewGuid()
+            };
+            await context.Routes.AddAsync(testRoute);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var routes = await service.GetAdventureRoutesWithSource(
+                testRoute.Location.AdventureId, testRoute.RouteTakenSourceKey);
+            
+            // assert
+            Assert.Single(routes);
+            Assert.Equal(testRoute.RouteTakenSourceKey, routes[0].RouteTakenSourceKey);
+        }
+
+        [Fact]
+        public async void GetAdventureRoutesWithSource_NoMatch_ReturnEmptyList()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Location = new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Adventure = new Adventure()
+                    {
+                        Id = Guid.NewGuid()
+                    }
+                },
+                SourceKey = Guid.NewGuid(),
+                RouteTakenSourceKey = Guid.NewGuid()
+            };
+            await context.Routes.AddAsync(testRoute);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var routes = await service.GetAdventureRoutesWithSource(
+                Guid.NewGuid(), testRoute.SourceKey);
+            
+            // assert
+            Assert.Empty(routes);
+        }
+
+        #endregion
+
+        #region DoesAdventureRouteUseSource
+
+        [Fact]
+        public async void DoesAdventureRouteUseSource_UsesSource_ReturnTrue()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Location = new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Adventure = new Adventure()
+                    {
+                        Id = Guid.NewGuid()
+                    }
+                },
+                SourceKey = Guid.NewGuid(),
+                RouteTakenSourceKey = Guid.NewGuid()
+            };
+            await context.Routes.AddAsync(testRoute);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var usesSource = await service.DoesAdventureRouteUseSource(
+                testRoute.Location.AdventureId, testRoute.SourceKey);
+            
+            // assert
+            Assert.True(usesSource);
+        }
+
+        [Fact]
+        public async void DoesAdventureRouteUseSource_NotUseSource_ReturnFalse()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testRoute = new Route()
+            {
+                Id = Guid.NewGuid(),
+                Location = new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Adventure = new Adventure()
+                    {
+                        Id = Guid.NewGuid()
+                    }
+                },
+                SourceKey = Guid.NewGuid(),
+                RouteTakenSourceKey = Guid.NewGuid()
+            };
+            await context.Routes.AddAsync(testRoute);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var usesSource = await service.DoesAdventureRouteUseSource(
+                testRoute.Location.AdventureId, Guid.NewGuid());
+            
+            // assert
+            Assert.False(usesSource);
+        }
+
+        #endregion
     }
 }

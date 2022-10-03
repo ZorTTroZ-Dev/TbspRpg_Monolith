@@ -34,7 +34,13 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var adventures = new List<Adventure>() { testAdventure };
             var sources = new List<En>() {testSource};
-            var processor = CreateAdventureProcessor(adventures, sources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                adventures,
+                null,
+                null,
+                sources);
             
             // act
             Task Act() => processor.UpdateAdventure(new AdventureUpdateModel()
@@ -93,7 +99,13 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var adventures = new List<Adventure>() { testAdventure };
             var sources = new List<En>() {testSource, testDescriptionSource};
-            var processor = CreateAdventureProcessor(adventures, sources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                adventures,
+                null,
+                null,
+                sources);
             
             // act
             await processor.UpdateAdventure(new AdventureUpdateModel()
@@ -162,7 +174,13 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var adventures = new List<Adventure>() { testAdventure };
             var sources = new List<En>() {testSource, testDescriptionSource};
-            var processor = CreateAdventureProcessor(adventures, sources);
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                adventures,
+                null,
+                null,
+                sources);
             
             // act
             await processor.UpdateAdventure(new AdventureUpdateModel()
@@ -330,12 +348,14 @@ namespace TbspRpgProcessor.Tests.Processors
                     }
                 }
             };
-            var processor = CreateAdventureProcessor(
-                testAdventures,
-                testSources,
+            var processor = CreateTbspRpgProcessor(
                 testUsers,
-                testGames,
+                null,
+                testAdventures,
+                null,
                 testAdventures[0].Locations,
+                testSources,
+                testGames,
                 testContents);
             
             // act
@@ -495,15 +515,15 @@ namespace TbspRpgProcessor.Tests.Processors
                     TerminationScriptId = testScripts[1].Id
                 }
             };
-            var processor = CreateAdventureProcessor(
-                testAdventures,
-                testSources,
+            var processor = CreateTbspRpgProcessor(
                 testUsers,
-                testGames,
-                testLocations,
-                testContents,
+                testScripts,
+                testAdventures,
                 testRoutes,
-                testScripts);
+                testLocations,
+                testSources,
+                testGames,
+                testContents);
             
             // act
             await processor.RemoveAdventure(new AdventureRemoveModel()

@@ -28,9 +28,16 @@ namespace TbspRpgProcessor.Tests.Processors
                 Key = Guid.NewGuid(),
                 Text = "test source"
             };
-            var processor = CreateContentProcessor(
-                new List<Game>() {testGame},
-                new List<En>() {testSource});
+            var testGames = new List<Game>() {testGame};
+            var testSources = new List<En>() {testSource};
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                null,
+                null,
+                testSources,
+                testGames);
 
             // act
             Task Act() => processor.GetContentTextForKey(Guid.NewGuid(), testSource.Key);
@@ -53,9 +60,16 @@ namespace TbspRpgProcessor.Tests.Processors
                 Key = Guid.NewGuid(),
                 Text = "test source"
             };
-            var processor = CreateContentProcessor(
-                new List<Game>() {testGame},
-                new List<En>() {testSource});
+            var testGames = new List<Game>() {testGame};
+            var testSources = new List<En>() {testSource};
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                null,
+                null,
+                testSources,
+                testGames);
             
             // act
             var source = await processor.GetContentTextForKey(testGame.Id, testSource.Key);
@@ -80,9 +94,16 @@ namespace TbspRpgProcessor.Tests.Processors
                 Key = Guid.NewGuid(),
                 Text = "test source"
             };
-            var processor = CreateContentProcessor(
-                new List<Game>() {testGame},
-                new List<En>() {testSource});
+            var testGames = new List<Game>() {testGame};
+            var testSources = new List<En>() {testSource};
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                null,
+                null,
+                testSources,
+                testGames);
             
             // act
             var source = await processor.GetContentTextForKey(testGame.Id, testSource.Key);

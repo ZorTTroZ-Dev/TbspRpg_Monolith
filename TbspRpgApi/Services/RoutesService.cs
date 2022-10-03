@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor;
 using TbspRpgProcessor.Entities;
-using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
 {
@@ -15,21 +15,22 @@ namespace TbspRpgApi.Services
         Task<List<RouteViewModel>> GetRoutes(RouteFilterRequest routeFilterRequest);
         Task<RouteViewModel> GetRouteById(Guid routeId);
         Task UpdateRoutesWithSource(ICollection<RouteUpdateRequest> updateRouteRequests);
+        Task UpdateRouteWithSource(RouteUpdateRequest updateRouteRequest);
         Task DeleteRoute(Guid routeId);
     }
     
     public class RoutesService : IRoutesService
     {
-        private readonly IRouteProcessor _routeProcessor;
+        private readonly ITbspRpgProcessor _tbspRpgProcessor;
         private readonly TbspRpgDataLayer.Services.IRoutesService _routesService;
         private readonly ILogger<RoutesService> _logger;
 
         public RoutesService(
-            IRouteProcessor routeProcessor,
+            ITbspRpgProcessor tbspRpgProcessor,
             TbspRpgDataLayer.Services.IRoutesService routesService,
             ILogger<RoutesService> logger)
         {
-            _routeProcessor = routeProcessor;
+            _tbspRpgProcessor = tbspRpgProcessor;
             _routesService = routesService;
             _logger = logger;
         }
@@ -50,18 +51,23 @@ namespace TbspRpgApi.Services
         {
             // remove any routes
             var routeIds = updateRouteRequests.Select(routeRequest => routeRequest.route.Id).ToList();
-            await _routeProcessor.RemoveRoutes(routeIds,
+            await _tbspRpgProcessor.RemoveRoutes(routeIds,
                 updateRouteRequests.First().route.LocationId);
             
             foreach (var updateRouteRequest in updateRouteRequests)
             {
-                await _routeProcessor.UpdateRoute(updateRouteRequest.ToRouteUpdateModel());
+                await _tbspRpgProcessor.UpdateRoute(updateRouteRequest.ToRouteUpdateModel());
             }
+        }
+
+        public async Task UpdateRouteWithSource(RouteUpdateRequest updateRouteRequest)
+        {
+            await _tbspRpgProcessor.UpdateRoute(updateRouteRequest.ToRouteUpdateModel());
         }
 
         public async Task DeleteRoute(Guid routeId)
         {
-            await _routeProcessor.RemoveRoute(new RouteRemoveModel()
+            await _tbspRpgProcessor.RemoveRoute(new RouteRemoveModel()
             {
                 RouteId = routeId
             });

@@ -110,5 +110,35 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+
+        #region GetLocationById
+
+        [Fact]
+        public async void GetLocationById_ReturnsLocation()
+        {
+            // arrange
+            var testLocations = new List<Location>()
+            {
+                new Location()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Name = "test"
+                }
+            };
+            var controller = CreateController(testLocations);
+            
+            // act
+            var response = await controller.GetLocationById(testLocations[0].Id);
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+            var locationViewModel = okObjectResult.Value as LocationViewModel;
+            Assert.NotNull(locationViewModel);
+            Assert.Equal("test", locationViewModel.Name);
+        }
+
+        #endregion
     }
 }

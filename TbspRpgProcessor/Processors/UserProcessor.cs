@@ -18,11 +18,11 @@ namespace TbspRpgProcessor.Processors
     {
         private readonly IUsersService _usersService;
         private readonly IMailClient _mailClient;
-        private readonly ILogger<UserProcessor> _logger;
+        private readonly ILogger _logger;
 
         public UserProcessor(IUsersService usersService,
             IMailClient mailClient,
-            ILogger<UserProcessor> logger)
+            ILogger logger)
         {
             _usersService = usersService;
             _mailClient = mailClient;

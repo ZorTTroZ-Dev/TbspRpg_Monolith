@@ -15,12 +15,12 @@ namespace TbspRpgProcessor.Processors
     {
         private readonly IGamesService _gamesService;
         private readonly ISourceProcessor _sourceProcessor;
-        private readonly ILogger<ContentProcessor> _logger;
+        private readonly ILogger _logger;
 
         public ContentProcessor(
             IGamesService gamesService,
             ISourceProcessor sourceProcessor,
-            ILogger<ContentProcessor> logger)
+            ILogger logger)
         {
             _gamesService = gamesService;
             _sourceProcessor = sourceProcessor;

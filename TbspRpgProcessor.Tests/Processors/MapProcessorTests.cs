@@ -31,9 +31,14 @@ namespace TbspRpgProcessor.Tests.Processors
                     LocationId = testRoute.LocationId
                 }
             };
-            var processor = CreateMapProcessor(
-                testGames, 
-                new List<Route>() { testRoute },
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                new List<Route>() {testRoute},
+                null,
+                null,
+                testGames,
                 new List<Content>());
             
             // act
@@ -63,9 +68,14 @@ namespace TbspRpgProcessor.Tests.Processors
                     LocationId = testRoute.LocationId
                 }
             };
-            var processor = CreateMapProcessor(
-                testGames, 
-                new List<Route>() { testRoute },
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                new List<Route>() {testRoute},
+                null,
+                null,
+                testGames,
                 new List<Content>());
             
             // act
@@ -97,9 +107,14 @@ namespace TbspRpgProcessor.Tests.Processors
                     LocationId = Guid.NewGuid()
                 }
             };
-            var processor = CreateMapProcessor(
-                testGames, 
-                new List<Route>() { testRoute },
+            var processor = CreateTbspRpgProcessor(
+                null,
+                null,
+                null,
+                new List<Route>() {testRoute},
+                null,
+                null,
+                testGames,
                 new List<Content>());
             
             // act
@@ -156,12 +171,15 @@ namespace TbspRpgProcessor.Tests.Processors
                 }
             };
             var testContents = new List<Content>();
-            var processor = CreateMapProcessor(
-                testGames, 
-                new List<Route>() { testRoute },
-                testContents,
+            var processor = CreateTbspRpgProcessor(
                 null,
-                testSources);
+                null,
+                null,
+                new List<Route>() {testRoute},
+                null,
+                testSources,
+                testGames,
+                testContents);
             
             // act
             await processor.ChangeLocationViaRoute(
@@ -281,12 +299,15 @@ namespace TbspRpgProcessor.Tests.Processors
                 }
             };
             var testContents = new List<Content>();
-            var processor = CreateMapProcessor(
-                testGames, 
-                new List<Route>() { testRoute },
-                testContents,
+            var processor = CreateTbspRpgProcessor(
+                null,
                 new List<Script>() { exitLocationTestScript, enterLocationTestScript, routeTakenTestScript, terminationTestScript },
-                testSources);
+                null,
+                new List<Route>() {testRoute},
+                null,
+                testSources,
+                testGames,
+                testContents);
             
             // act
             await processor.ChangeLocationViaRoute(
@@ -401,12 +422,15 @@ namespace TbspRpgProcessor.Tests.Processors
                 }
             };
             var testContents = new List<Content>();
-            var processor = CreateMapProcessor(
-                testGames, 
-                new List<Route>() { testRoute },
-                testContents,
+            var processor = CreateTbspRpgProcessor(
+                null,
                 new List<Script>() { testScript, testScriptReturnKey },
-                testSources);
+                null,
+                new List<Route>() {testRoute},
+                null,
+                testSources,
+                testGames,
+                testContents);
             
             // act
             await processor.ChangeLocationViaRoute(

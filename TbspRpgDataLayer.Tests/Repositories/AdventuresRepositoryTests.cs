@@ -445,5 +445,79 @@ namespace TbspRpgDataLayer.Tests.Repositories
         }
 
         #endregion
+
+        #region GetAdventureWithSource
+
+        [Fact]
+        public async void GetAdventureWithSource_DoesntExist_ReturnNull()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                DescriptionSourceKey = Guid.NewGuid(),
+                InitialSourceKey = Guid.NewGuid()
+            };
+            await context.AddRangeAsync(testAdventure);
+            await context.SaveChangesAsync();
+            var repository = new AdventuresRepository(context);
+            
+            // act
+            var adventure = await repository.GetAdventureWithSource(Guid.NewGuid(), Guid.NewGuid());
+            
+            // assert
+            Assert.Null(adventure);
+        }
+
+        [Fact]
+        public async void GetAdventureWithSource_DescriptionSourceKey_ReturnAdventure()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                DescriptionSourceKey = Guid.NewGuid(),
+                InitialSourceKey = Guid.NewGuid()
+            };
+            await context.AddRangeAsync(testAdventure);
+            await context.SaveChangesAsync();
+            var repository = new AdventuresRepository(context);
+            
+            // act
+            var adventure =
+                await repository.GetAdventureWithSource(testAdventure.Id, testAdventure.DescriptionSourceKey);
+            
+            // assert
+            Assert.NotNull(adventure);
+            Assert.Equal(testAdventure.Id, adventure.Id);
+        }
+
+        [Fact]
+        public async void GetAdventureWithSource_InitialSourceKey_ReturnAdventure()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testAdventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                DescriptionSourceKey = Guid.NewGuid(),
+                InitialSourceKey = Guid.NewGuid()
+            };
+            await context.AddRangeAsync(testAdventure);
+            await context.SaveChangesAsync();
+            var repository = new AdventuresRepository(context);
+            
+            // act
+            var adventure =
+                await repository.GetAdventureWithSource(testAdventure.Id, testAdventure.InitialSourceKey);
+            
+            // assert
+            Assert.NotNull(adventure);
+            Assert.Equal(testAdventure.Id, adventure.Id);
+        }
+
+        #endregion
     }
 }

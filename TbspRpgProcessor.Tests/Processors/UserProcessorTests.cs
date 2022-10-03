@@ -24,7 +24,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     Email = "test@test.com"
                 }
             };
-            var processor = CreateUserProcessor(testUsers);
+            var processor = CreateTbspRpgProcessor(testUsers);
             
             // act
             Task Act() => processor.RegisterUser(new UserRegisterModel()
@@ -49,7 +49,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     Email = "test@test.com"
                 }
             };
-            var processor = CreateUserProcessor(testUsers);
+            var processor = CreateTbspRpgProcessor(testUsers);
             
             // act
             var user = await processor.RegisterUser(new UserRegisterModel()
@@ -81,7 +81,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     Email = "test@test.com"
                 }
             };
-            var processor = CreateUserProcessor(testUsers);
+            var processor = CreateTbspRpgProcessor(testUsers);
             
             // act
             Task Act() => processor.VerifyUserRegistration(new UserVerifyRegisterModel()
@@ -107,7 +107,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     RegistrationComplete = true
                 }
             };
-            var processor = CreateUserProcessor(testUsers);
+            var processor = CreateTbspRpgProcessor(testUsers);
             
             // act
             Task Act() => processor.VerifyUserRegistration(new UserVerifyRegisterModel()
@@ -134,7 +134,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     RegistrationKey = "000000"
                 }
             };
-            var processor = CreateUserProcessor(testUsers);
+            var processor = CreateTbspRpgProcessor(testUsers);
             
             // act
             var user = await processor.VerifyUserRegistration(new UserVerifyRegisterModel()
@@ -161,7 +161,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     RegistrationKey = "000000"
                 }
             };
-            var processor = CreateUserProcessor(testUsers);
+            var processor = CreateTbspRpgProcessor(testUsers);
             
             // act
             var user = await processor.VerifyUserRegistration(new UserVerifyRegisterModel()
@@ -194,7 +194,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     RegistrationKey = "000000"
                 }
             };
-            var processor = CreateUserProcessor(testUsers);
+            var processor = CreateTbspRpgProcessor(testUsers);
             
             // act
             Task Act() => processor.ResendUserRegistration(new UserRegisterResendModel()
@@ -220,7 +220,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     RegistrationKey = "000000"
                 }
             };
-            var processor = CreateUserProcessor(testUsers);
+            var processor = CreateTbspRpgProcessor(testUsers);
             
             // act
             Task Act() => processor.ResendUserRegistration(new UserRegisterResendModel()
@@ -233,7 +233,7 @@ namespace TbspRpgProcessor.Tests.Processors
         }
 
         [Fact]
-        public async void ResendUserRegistration_Vald_ResendRegistration()
+        public async void ResendUserRegistration_Valid_ResendRegistration()
         {
             // arrange
             var testUsers = new List<User>()
@@ -246,7 +246,7 @@ namespace TbspRpgProcessor.Tests.Processors
                     RegistrationKey = "000000"
                 }
             };
-            var processor = CreateUserProcessor(testUsers);
+            var processor = CreateTbspRpgProcessor(testUsers);
             
             // act
             var user = await processor.ResendUserRegistration(new UserRegisterResendModel()

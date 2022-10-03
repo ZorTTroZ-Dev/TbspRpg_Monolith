@@ -1,10 +1,8 @@
-using System;
 using System.Threading.Tasks;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
-using TbspRpgProcessor.Entities;
-using TbspRpgProcessor.Processors;
+using TbspRpgProcessor;
 
 namespace TbspRpgApi.Services
 {
@@ -19,16 +17,16 @@ namespace TbspRpgApi.Services
     public class UsersService : IUsersService
     {
         private readonly TbspRpgDataLayer.Services.IUsersService _usersService;
-        private readonly IUserProcessor _userProcessor;
+        private readonly ITbspRpgProcessor _tbspRpgProcessor;
         private readonly IJwtHelper _jwtHelper;
 
         public UsersService(
             TbspRpgDataLayer.Services.IUsersService usersService,
-            IUserProcessor userProcessor,
+            ITbspRpgProcessor tbspRpgProcessor,
             IJwtSettings jwtSettings)
         {
             _usersService = usersService;
-            _userProcessor = userProcessor;
+            _tbspRpgProcessor = tbspRpgProcessor;
             _jwtHelper = new JwtHelper(jwtSettings.Secret);
         }
 
@@ -42,13 +40,13 @@ namespace TbspRpgApi.Services
 
         public async Task<UserViewModel> Register(UsersRegisterRequest registerRequest)
         {
-            var user = await _userProcessor.RegisterUser(registerRequest.ToUserRegisterModel());
+            var user = await _tbspRpgProcessor.RegisterUser(registerRequest.ToUserRegisterModel());
             return new UserViewModel(user);
         }
 
         public async Task<UserViewModel> VerifyRegistration(UsersRegisterVerifyRequest verifyRequest)
         {
-            var user = await _userProcessor.VerifyUserRegistration(verifyRequest.ToUserVerifyRegisterModel());
+            var user = await _tbspRpgProcessor.VerifyUserRegistration(verifyRequest.ToUserVerifyRegisterModel());
             if (user == null) return null;
             var token = _jwtHelper.GenerateToken(user.Id.ToString());
             return new UserAuthViewModel(user, token);
@@ -56,7 +54,7 @@ namespace TbspRpgApi.Services
 
         public async Task<UserViewModel> RegisterResend(UsersRegisterResendRequest registerRequest)
         {
-            var user = await _userProcessor.ResendUserRegistration(registerRequest.ToUserRegisterResendModel());
+            var user = await _tbspRpgProcessor.ResendUserRegistration(registerRequest.ToUserRegisterResendModel());
             return user == null ? null : new UserViewModel(user);
         }
     }

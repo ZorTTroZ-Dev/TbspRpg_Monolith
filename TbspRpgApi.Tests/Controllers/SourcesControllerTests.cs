@@ -371,5 +371,79 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+
+        #region UpdateSource
+
+        [Fact]
+        public async void UpdateSource_Valid_SourceUpdated()
+        {
+            // arrange
+            var testSources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                }
+            };
+            var controller = CreateController(testSources);
+            
+            // act
+            var response = await controller.UpdateSource(new SourceUpdateRequest()
+            {
+                Source = new SourceViewModel()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.Empty,
+                    Language = Languages.ENGLISH,
+                    Name = "new source",
+                    Text = "hello"
+                }
+            });
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+        }
+
+        #endregion
+        
+        #region DeleteRoute
+
+        [Fact]
+        public async void DeleteSource_Valid_NoException()
+        {
+            // arrange
+            var testSources = new List<En>()
+            {
+                new En()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test route"
+                },
+                new En()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test route two"
+                }
+            };
+            var controller = CreateController(testSources);
+        
+            // act
+            var response = await controller.DeleteSource(testSources[0].Id);
+        
+            // assert
+            var okResult = response as OkResult;
+            Assert.NotNull(okResult);
+        }
+
+        #endregion
     }
 }

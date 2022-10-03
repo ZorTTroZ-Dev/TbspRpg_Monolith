@@ -108,6 +108,15 @@ namespace TbspRpgDataLayer.Tests
                     }
                 });
 
+            adventuresService.Setup(service =>
+                    service.DoesAdventureUseSource(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId, Guid sourceKey) =>
+                {
+                    var advs = adventures.Where(a => a.Id == adventureId && (
+                        a.DescriptionSourceKey == sourceKey || a.InitialSourceKey == sourceKey));
+                    return advs.Any();
+                });
+
             return adventuresService.Object;
         }
         
@@ -204,6 +213,14 @@ namespace TbspRpgDataLayer.Tests
                         }
                     }
                 });
+            
+            locationsService.Setup(service =>
+                    service.DoesAdventureLocationUseSource(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId, Guid sourceKey) =>
+                {
+                    var locs = locations.Where(a => a.AdventureId == adventureId && a.SourceKey == sourceKey);
+                    return locs.Any();
+                });
 
             return locationsService.Object;
         }
@@ -244,6 +261,15 @@ namespace TbspRpgDataLayer.Tests
                             scripts.Remove(scripts.ToArray()[i]);
                         }
                     }
+                });
+            
+            scriptsService.Setup(service =>
+                    service.IsSourceKeyReferenced(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId, Guid sourceKey) =>
+                {
+                    var locs = scripts.Where(a => a.AdventureId == adventureId && 
+                                                   a.Content.Contains(sourceKey.ToString()));
+                    return locs.Any();
                 });
             
             return scriptsService.Object;
@@ -315,6 +341,15 @@ namespace TbspRpgDataLayer.Tests
                         }
                     }
                 });
+            
+            routesService.Setup(service =>
+                    service.DoesAdventureRouteUseSource(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId, Guid sourceKey) =>
+                {
+                    var locs = routes.Where(a => a.Location.AdventureId == adventureId && 
+                                                 (a.SourceKey == sourceKey || a.RouteTakenSourceKey == sourceKey));
+                    return locs.Any();
+                });
 
             return routesService.Object;
         }
@@ -366,6 +401,27 @@ namespace TbspRpgDataLayer.Tests
                             sources.Remove(sources.ToArray()[i]);
                         }
                     }
+                });
+
+            sourcesService.Setup(service =>
+                    service.RemoveSource(It.IsAny<Guid>()))
+                .Callback((Guid sourceId) =>
+                {
+                    for (int i = sources.Count - 1; i >= 0; i--)
+                    {
+                        // Do processing here, then...
+                        if (sources.ToArray()[i].Id == sourceId)
+                        {
+                            sources.Remove(sources.ToArray()[i]);
+                        }
+                    }
+                });
+            
+            sourcesService.Setup(service =>
+                    service.GetSourceById(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid sourceId) =>
+                {
+                    return sources.FirstOrDefault(en => en.Id == sourceId);
                 });
             
             sourcesService.Setup(service =>
@@ -513,6 +569,15 @@ namespace TbspRpgDataLayer.Tests
                     }
 
                     throw new ArgumentException("invalid direction argument");
+                });
+            
+            contentsService.Setup(service =>
+                    service.DoesAdventureContentUseSource(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId, Guid sourceKey) =>
+                {
+                    var locs = contents.Where(a => a.Game.AdventureId == adventureId && 
+                                                 a.SourceKey == sourceKey);
+                    return locs.Any();
                 });
 
             return contentsService.Object;

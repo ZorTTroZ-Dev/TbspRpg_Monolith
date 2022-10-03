@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TbspRpgApi.Entities.LanguageSources;
+using TbspRpgApi.RequestModels;
+using TbspRpgApi.ViewModels;
 using TbspRpgSettings.Settings;
 using Xunit;
 
@@ -254,6 +257,131 @@ namespace TbspRpgApi.Tests.Services
             Assert.Single(sources);
         }
         
+        #endregion
+        
+        #region UpdateSource
+
+        [Fact]
+        public async void UpdateSource_Valid_SourceUpdated()
+        {
+            // arrange
+            var testSources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                }
+            };
+            var service = CreateSourcesService(testSources, Guid.Empty);
+            
+            // act
+            await service.UpdateSource(new SourceUpdateRequest()
+            {
+                Source = new SourceViewModel()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.Empty,
+                    Language = Languages.ENGLISH,
+                    Name = "new source",
+                    Text = "hello"
+                }
+            });
+
+            // assert
+        }
+
+        #endregion
+        
+        #region GetUnreferencedSourcesForAdventure
+
+        [Fact]
+        public async void GetUnreferencedSourcesForAdventure_Invalid_ReturnEmpty()
+        {
+            // arrange
+            var testSources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                }
+            };
+            var service = CreateSourcesService(testSources, Guid.Empty);
+            
+            // act
+            var sources = await service.GetUnreferencedSourcesForAdventure(Guid.NewGuid());
+            
+            // assert
+            Assert.Empty(sources);
+        }
+
+        [Fact]
+        public async void GetUnreferencedSourcesForAdventure_Valid_ReturnList()
+        {
+            // arrange
+            var testSources = new List<En>()
+            {
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                },
+                new En()
+                {
+                    AdventureId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
+                    Key = Guid.NewGuid()
+                }
+            };
+            var service = CreateSourcesService(testSources, Guid.Empty);
+            
+            // act
+            var sources = await service.GetUnreferencedSourcesForAdventure(testSources[0].AdventureId);
+            
+            // assert
+            Assert.Single(sources);
+        }
+        
+        #endregion
+        
+        #region DeleteSource
+
+        [Fact]
+        public async void DeleteSource_SourceValid_Returns()
+        {
+            // arrange
+            var sources = new List<En>()
+            {
+                new En()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test source"
+                }
+            };
+            var service = CreateSourcesService(sources, Guid.NewGuid());
+            
+            // act
+            await service.DeleteSource(sources[0].Id);
+
+            // assert
+        }
+
         #endregion
     }
 }

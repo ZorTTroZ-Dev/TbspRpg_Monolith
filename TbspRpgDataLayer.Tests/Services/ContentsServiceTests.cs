@@ -770,5 +770,134 @@ namespace TbspRpgDataLayer.Tests.Services
         }
 
         #endregion
+        
+        #region GetAdventureContentsWithSource
+
+        [Fact]
+        public async void GetAdventureContentsWithSource_HasSource_ReturnsContents()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testContent = new Content()
+            {
+                Id = Guid.NewGuid(),
+                SourceKey = Guid.NewGuid(),
+                Game = new Game()
+                {
+                    Id = Guid.NewGuid(),
+                    Adventure = new Adventure()
+                    {
+                        Id = Guid.NewGuid()
+                    }
+                }
+            };
+            await context.Contents.AddAsync(testContent);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var contents = await service.GetAdventureContentsWithSource(
+                testContent.Game.AdventureId, testContent.SourceKey);
+            
+            // assert
+            Assert.Single(contents);
+            Assert.Equal(testContent.SourceKey, contents[0].SourceKey);
+        }
+
+        [Fact]
+        public async void GetAdventureContentsWithSource_NoHasSource_ReturnsEmptyList()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testContent = new Content()
+            {
+                Id = Guid.NewGuid(),
+                SourceKey = Guid.NewGuid(),
+                Game = new Game()
+                {
+                    Id = Guid.NewGuid(),
+                    Adventure = new Adventure()
+                    {
+                        Id = Guid.NewGuid()
+                    }
+                }
+            };
+            await context.Contents.AddAsync(testContent);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var contents = await service.GetAdventureContentsWithSource(
+                testContent.Game.AdventureId, Guid.NewGuid());
+            
+            // assert
+            Assert.Empty(contents);
+        }
+
+        #endregion
+
+        #region DoesAdventureContentUseSource
+
+        [Fact]
+        public async void DoesAdventureContentUseSource_UsesSource_ReturnTrue()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testContent = new Content()
+            {
+                Id = Guid.NewGuid(),
+                SourceKey = Guid.NewGuid(),
+                Game = new Game()
+                {
+                    Id = Guid.NewGuid(),
+                    Adventure = new Adventure()
+                    {
+                        Id = Guid.NewGuid()
+                    }
+                }
+            };
+            await context.Contents.AddAsync(testContent);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var usesSource = await service.DoesAdventureContentUseSource(
+                testContent.Game.AdventureId, testContent.SourceKey);
+            
+            // assert
+            Assert.True(usesSource);
+        }
+
+        [Fact]
+        public async void DoesAdventurecontentUseSource_NoUseSource_ReturnFalse()
+        {
+            // arrange
+            await using var context = new DatabaseContext(DbContextOptions);
+            var testContent = new Content()
+            {
+                Id = Guid.NewGuid(),
+                SourceKey = Guid.NewGuid(),
+                Game = new Game()
+                {
+                    Id = Guid.NewGuid(),
+                    Adventure = new Adventure()
+                    {
+                        Id = Guid.NewGuid()
+                    }
+                }
+            };
+            await context.Contents.AddAsync(testContent);
+            await context.SaveChangesAsync();
+            var service = CreateService(context);
+            
+            // act
+            var usesSource = await service.DoesAdventureContentUseSource(
+                Guid.NewGuid(), testContent.SourceKey);
+            
+            // assert
+            Assert.False(usesSource);
+        }
+
+        #endregion
     }
 }

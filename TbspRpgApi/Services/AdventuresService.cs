@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TbspRpgApi.Entities;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor;
 using TbspRpgProcessor.Entities;
 using TbspRpgProcessor.Processors;
 
@@ -23,13 +24,14 @@ namespace TbspRpgApi.Services
     public class AdventuresService : IAdventuresService
     {
         private readonly TbspRpgDataLayer.Services.IAdventuresService _adventuresService;
-        private readonly IAdventureProcessor _adventureProcessor;
+        private readonly ITbspRpgProcessor _tbspRpgProcessor;
 
-        public AdventuresService(TbspRpgDataLayer.Services.IAdventuresService adventuresService,
-            IAdventureProcessor adventureProcessor)
+        public AdventuresService(
+            ITbspRpgProcessor tbspRpgProcessor,
+            TbspRpgDataLayer.Services.IAdventuresService adventuresService)
         {
+            _tbspRpgProcessor = tbspRpgProcessor;
             _adventuresService = adventuresService;
-            _adventureProcessor = adventureProcessor;
         }
 
         public async Task<List<AdventureViewModel>> GetAllAdventures(AdventureFilterRequest filters)
@@ -62,12 +64,12 @@ namespace TbspRpgApi.Services
         {
             var adventureUpdateModel = adventureUpdateRequest.ToAdventureUpdateModel();
             adventureUpdateModel.UserId = userId;
-            await _adventureProcessor.UpdateAdventure(adventureUpdateModel);
+            await _tbspRpgProcessor.UpdateAdventure(adventureUpdateModel);
         }
 
         public async Task DeleteAdventure(Guid adventureId)
         {
-            await _adventureProcessor.RemoveAdventure(new AdventureRemoveModel()
+            await _tbspRpgProcessor.RemoveAdventure(new AdventureRemoveModel()
             {
                 AdventureId = adventureId
             });

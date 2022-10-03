@@ -9,15 +9,17 @@ using TbspRpgSettings.Settings;
 
 namespace TbspRpgDataLayer.Services
 {
-    public interface ISourcesService
+    public interface ISourcesService: IBaseService
     {
         Task<string> GetSourceTextForKey(Guid key, string language = null);
         Task<Source> GetSourceForKey(Guid key, Guid adventureId, string language);
         Task AddSource(Source source, string language = null);
         Task RemoveAllSourceForAdventure(Guid adventureId);
+        Task RemoveSource(Guid sourceId);
         void RemoveScriptFromSources(Guid scriptId);
         Task<List<Source>> GetAllSourceForAdventure(Guid adventureId, string language);
         Task<List<Source>> GetAllSourceAllLanguagesForAdventure(Guid adventureId);
+        Task<Source> GetSourceById(Guid sourceId);
     }
     
     public class SourcesService : ISourcesService
@@ -53,6 +55,11 @@ namespace TbspRpgDataLayer.Services
             await _sourcesRepository.RemoveAllSourceForAdventure(adventureId);
         }
 
+        public async Task RemoveSource(Guid sourceId)
+        {
+            await _sourcesRepository.RemoveSource(sourceId);
+        }
+
         public async void RemoveScriptFromSources(Guid scriptId)
         {
             var sources = await _sourcesRepository.GetSourcesWithScript(scriptId);
@@ -62,14 +69,24 @@ namespace TbspRpgDataLayer.Services
             }
         }
 
-        public async Task<List<Source>> GetAllSourceForAdventure(Guid adventureId, string language)
+        public Task<List<Source>> GetAllSourceForAdventure(Guid adventureId, string language)
         {
-            return await _sourcesRepository.GetAllSourceForAdventure(adventureId, language);
+            return _sourcesRepository.GetAllSourceForAdventure(adventureId, language);
         }
 
-        public async Task<List<Source>> GetAllSourceAllLanguagesForAdventure(Guid adventureId)
+        public Task<List<Source>> GetAllSourceAllLanguagesForAdventure(Guid adventureId)
         {
-            return await _sourcesRepository.GetAllSourceAllLanguagesForAdventure(adventureId);
+            return _sourcesRepository.GetAllSourceAllLanguagesForAdventure(adventureId);
+        }
+
+        public Task<Source> GetSourceById(Guid sourceId)
+        {
+            return _sourcesRepository.GetSourceById(sourceId);
+        }
+
+        public async Task SaveChanges()
+        {
+            await _sourcesRepository.SaveChanges();
         }
     }
 }

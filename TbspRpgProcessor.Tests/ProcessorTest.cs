@@ -6,177 +6,50 @@ using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Tests;
 using TbspRpgProcessor.Entities;
-using TbspRpgProcessor.Processors;
 
 namespace TbspRpgProcessor.Tests
 {
     public class ProcessorTest
     {
-        protected static IGameProcessor CreateGameProcessor(
+        public static ITbspRpgProcessor CreateTbspRpgProcessor(
             ICollection<User> users = null,
-            ICollection<Adventure> adventures = null,
-            ICollection<Game> games = null,
-            ICollection<Location> locations = null,
-            ICollection<Content> contents = null,
-            ICollection<Script> scripts = null)
-        {
-            var scriptProcessor = CreateScriptProcessor(scripts);
-            var usersService = MockServices.MockDataLayerUsersService(users);
-            var adventuresService = MockServices.MockDataLayerAdventuresService(adventures);
-            var gamesService = MockServices.MockDataLayerGamesService(games);
-            var locationsService = MockServices.MockDataLayerLocationsService(locations);
-            var contentsService = MockServices.MockDataLayerContentsService(contents);
-            return new GameProcessor(
-                scriptProcessor,
-                adventuresService,
-                usersService,
-                gamesService,
-                locationsService,
-                contentsService,
-                NullLogger<GameProcessor>.Instance);
-        }
-
-        protected static ILocationProcessor CreateLocationProcessor(
-            ICollection<Location> locations = null,
-            ICollection<En> sources = null,
-            ICollection<Route> routes = null)
-        {
-            var sourceProcessor = CreateSourceProcessor(sources);
-            var locationService = MockServices.MockDataLayerLocationsService(locations);
-            var routeService = MockServices.MockDataLayerRoutesService(routes);
-            return new LocationProcessor(
-                sourceProcessor,
-                locationService,
-                routeService,
-                NullLogger<LocationProcessor>.Instance);
-        }
-
-        protected static IContentProcessor CreateContentProcessor(
-            ICollection<Game> games = null,
-            ICollection<En> sources = null)
-        {
-            var gamesService = MockServices.MockDataLayerGamesService(games);
-            var sourceProcessor = CreateSourceProcessor(sources);
-            return new ContentProcessor(gamesService, sourceProcessor, NullLogger<ContentProcessor>.Instance);
-        }
-
-        protected static IMapProcessor CreateMapProcessor(
-            ICollection<Game> games = null,
-            ICollection<Route> routes = null,
-            ICollection<Content> contents = null,
-            ICollection<Script> scripts = null,
-            ICollection<En> sources = null)
-        {
-            var scriptProcessor = CreateScriptProcessor(scripts);
-            var sourceProcessor = CreateSourceProcessor(sources, scripts);
-            var gamesService = MockServices.MockDataLayerGamesService(games);
-            var routesService = MockServices.MockDataLayerRoutesService(routes);
-            var contentsService = MockServices.MockDataLayerContentsService(contents);
-            return new MapProcessor(
-                scriptProcessor,
-                sourceProcessor,
-                gamesService,
-                routesService,
-                contentsService, 
-                NullLogger<MapProcessor>.Instance);
-        }
-
-        protected static ISourceProcessor CreateSourceProcessor(
-            ICollection<En> sources = null,
-            ICollection<Script> scripts = null)
-        {
-            var scriptProcessor = CreateScriptProcessor(
-                scripts,
-                null,
-                null,
-                null,
-                sources);
-            var sourcesService = MockServices.MockDataLayerSourcesService(sources);
-            return new SourceProcessor(
-                scriptProcessor,
-                sourcesService,
-                NullLogger<SourceProcessor>.Instance);
-        }
-
-        protected static IRouteProcessor CreateRouteProcessor(
-            ICollection<Route> routes = null,
-            ICollection<Location> locations = null,
-            ICollection<En> sources = null)
-        {
-            var routesService = MockServices.MockDataLayerRoutesService(routes);
-            var sourceProcessor = CreateSourceProcessor(sources);
-            var locationService = MockServices.MockDataLayerLocationsService(locations);
-            return new RouteProcessor(
-                sourceProcessor,
-                routesService,
-                locationService,
-                NullLogger<RouteProcessor>.Instance);
-        }
-
-        protected static IAdventureProcessor CreateAdventureProcessor(
-            ICollection<Adventure> adventures = null,
-            ICollection<En> sources = null,
-            ICollection<User> users = null,
-            ICollection<Game> games = null,
-            ICollection<Location> locations = null,
-            ICollection<Content> contents = null,
-            ICollection<Route> routes = null,
-            ICollection<Script> scripts = null)
-        {
-            var adventuresService = MockServices.MockDataLayerAdventuresService(adventures);
-            var sourceProcessor = CreateSourceProcessor(
-                sources, scripts);
-            var gameProcessor = CreateGameProcessor(
-                users,
-                adventures,
-                games,
-                locations,
-                contents,
-                scripts);
-            var locationProcessor = CreateLocationProcessor(locations, sources, routes);
-            var sourceService = MockServices.MockDataLayerSourcesService(sources);
-            var scriptsService = MockServices.MockDataLayerScriptsService(scripts);
-            return new AdventureProcessor(
-                sourceProcessor,
-                gameProcessor,
-                locationProcessor,
-                adventuresService,
-                sourceService,
-                scriptsService,
-                NullLogger<AdventureProcessor>.Instance);
-        }
-
-        protected static IUserProcessor CreateUserProcessor(
-            ICollection<User> users = null)
-        {
-            var usersService = MockServices.MockDataLayerUsersService(users);
-            return new UserProcessor(
-                usersService,
-                MockMailClient(),
-                NullLogger<UserProcessor>.Instance);
-        }
-
-        protected static IScriptProcessor CreateScriptProcessor(
             ICollection<Script> scripts = null,
             ICollection<Adventure> adventures = null,
             ICollection<Route> routes = null,
             ICollection<Location> locations = null,
             ICollection<En> sources = null,
-            ICollection<Game> games = null)
+            ICollection<Game> games = null,
+            ICollection<Content> contents = null)
         {
+            users ??= new List<User>();
             adventures ??= new List<Adventure>();
             routes ??= new List<Route>();
             locations ??= new List<Location>();
             sources ??= new List<En>();
             games ??= new List<Game>();
-            return new ScriptProcessor(
-                MockServices.MockDataLayerScriptsService(scripts),
-                MockServices.MockDataLayerAdventuresService(adventures),
-                MockServices.MockDataLayerRoutesService(routes),
-                MockServices.MockDataLayerLocationsService(locations),
-                MockServices.MockDataLayerSourcesService(sources),
-                MockServices.MockDataLayerGamesService(games),
-                NullLogger<ScriptProcessor>.Instance);
+            contents ??= new List<Content>();
+            scripts ??= new List<Script>();
+            
+            var usersService = MockServices.MockDataLayerUsersService(users);
+            var scriptsService = MockServices.MockDataLayerScriptsService(scripts);
+            var adventuresService = MockServices.MockDataLayerAdventuresService(adventures);
+            var routesService = MockServices.MockDataLayerRoutesService(routes);
+            var locationsService = MockServices.MockDataLayerLocationsService(locations);
+            var sourcesService = MockServices.MockDataLayerSourcesService(sources);
+            var gamesService = MockServices.MockDataLayerGamesService(games);
+            var contentsService = MockServices.MockDataLayerContentsService(contents);
+            
+            return new TbspRpgProcessor(
+                usersService,
+                sourcesService,
+                scriptsService,
+                adventuresService,
+                routesService,
+                locationsService,
+                gamesService,
+                contentsService,
+                MockMailClient(),
+                NullLogger<TbspRpgProcessor>.Instance);
         }
 
         public static IMailClient MockMailClient()
@@ -188,11 +61,11 @@ namespace TbspRpgProcessor.Tests
             return mailClient.Object;
         }
 
-        public static IUserProcessor MockUserProcessor(string exceptionEmail)
+        public static ITbspRpgProcessor MockTbspRpgProcessor(string exceptionEmail, Guid exceptionId)
         {
-            var userProcessor = new Mock<IUserProcessor>();
+            var tbspProcessor = new Mock<ITbspRpgProcessor>();
 
-            userProcessor.Setup(processor =>
+            tbspProcessor.Setup(processor =>
                     processor.RegisterUser(It.IsAny<UserRegisterModel>()))
                 .ReturnsAsync((UserRegisterModel userRegisterModel) =>
                 {
@@ -204,7 +77,7 @@ namespace TbspRpgProcessor.Tests
                     };
                 });
 
-            userProcessor.Setup(processor =>
+            tbspProcessor.Setup(processor =>
                     processor.VerifyUserRegistration(It.IsAny<UserVerifyRegisterModel>()))
                 .ReturnsAsync((UserVerifyRegisterModel userVerifyRegisterModel) =>
                 {
@@ -216,7 +89,7 @@ namespace TbspRpgProcessor.Tests
                     };
                 });
             
-            userProcessor.Setup(processor =>
+            tbspProcessor.Setup(processor =>
                     processor.ResendUserRegistration(It.IsAny<UserRegisterResendModel>()))
                 .ReturnsAsync((UserRegisterResendModel userRegisterResendModel) =>
                 {
@@ -227,42 +100,84 @@ namespace TbspRpgProcessor.Tests
                         Id = Guid.NewGuid()
                     };
                 });
-
-            return userProcessor.Object;
-        }
-
-        public static IAdventureProcessor MockAdventureProcessor(Guid updateAdventureExceptionId)
-        {
-            var adventureProcessor = new Mock<IAdventureProcessor>();
-
-            adventureProcessor.Setup(service =>
-                    service.UpdateAdventure(It.IsAny<AdventureUpdateModel>()))
-                .Callback((AdventureUpdateModel adventureUpdateModel) =>
+            
+            tbspProcessor.Setup(service =>
+                    service.ExecuteScript(It.IsAny<Guid>()))
+                .Callback((Guid scriptId) =>
                 {
-                    if (adventureUpdateModel.Adventure.Id == updateAdventureExceptionId)
-                        throw new ArgumentException("invalid adventure id");
+                    if (scriptId == exceptionId)
+                    {
+                        throw new ArgumentException("invalid script id");
+                    }
                 });
             
-            adventureProcessor.Setup(service =>
-                    service.RemoveAdventure(It.IsAny<AdventureRemoveModel>()))
-                .Callback((AdventureRemoveModel adventureRemoveModel) =>
+            tbspProcessor.Setup(service =>
+                    service.UpdateScript(It.IsAny<ScriptUpdateModel>()))
+                .Callback((ScriptUpdateModel scriptUpdateModel) =>
                 {
-                    if (adventureRemoveModel.AdventureId == updateAdventureExceptionId)
-                        throw new ArgumentException("invalid adventure id");
+                    if (scriptUpdateModel.script.Id == exceptionId)
+                    {
+                        throw new ArgumentException("invalid script id");
+                    }
                 });
 
-            return adventureProcessor.Object;
-        }
-
-        public static IGameProcessor MockGameProcessor(Guid startGameExceptionId)
-        {
-            var gameProcessor = new Mock<IGameProcessor>();
+            tbspProcessor.Setup(service =>
+                    service.RemoveScript(It.IsAny<ScriptRemoveModel>()))
+                .Callback((ScriptRemoveModel scriptRemoveModel) =>
+                {
+                    if (scriptRemoveModel.ScriptId == exceptionId)
+                    {
+                        throw new ArgumentException("invalid script id");
+                    }
+                });
             
-            gameProcessor.Setup(service =>
+            tbspProcessor.Setup(service =>
+                    service.UpdateRoute(It.IsAny<RouteUpdateModel>()))
+                .Callback((RouteUpdateModel routeUpdateModel) =>
+                {
+                    if (routeUpdateModel.route.Id == exceptionId)
+                        throw new ArgumentException("can't update route");
+                });
+
+            tbspProcessor.Setup(service =>
+                    service.RemoveRoutes(It.IsAny <List<Guid>>(), It.IsAny<Guid>()))
+                .Callback((List<Guid> routeIds, Guid locationId) => { });
+            
+            tbspProcessor.Setup(service =>
+                    service.RemoveRoute(It.IsAny<RouteRemoveModel>()))
+                .Callback((RouteRemoveModel routeRemoveModel) =>
+                {
+                    if (routeRemoveModel.RouteId == exceptionId)
+                    {
+                        throw new ArgumentException("invalid route id");
+                    }
+                });
+            
+            tbspProcessor.Setup(service =>
+                    service.ChangeLocationViaRoute(It.IsAny<Guid>(), It.IsAny<Guid>(),It.IsAny<DateTime>()))
+                .Callback((Guid gameId, Guid routeId, DateTime timeStamp) =>
+                {
+                    if (gameId == exceptionId)
+                    {
+                        throw new ArgumentException("can't change location");
+                    }
+                });
+            
+            tbspProcessor.Setup(service =>
+                    service.UpdateLocation(It.IsAny<Location>(), It.IsAny<Source>(), It.IsAny<string>()))
+                .Callback((Location location, Source source, string language) =>
+                {
+                    if (location.Id == exceptionId)
+                    {
+                        throw new ArgumentException("can't update location");
+                    }
+                });
+            
+            tbspProcessor.Setup(service =>
                     service.StartGame(It.IsAny<Guid>(), It.IsAny<Guid>(),It.IsAny<DateTime>()))
                 .ReturnsAsync((Guid userId, Guid adventureId, DateTime timeStamp) =>
                 {
-                    if (userId == startGameExceptionId)
+                    if (userId == exceptionId)
                     {
                         throw new ArgumentException("can't start game");
                     }
@@ -273,133 +188,33 @@ namespace TbspRpgProcessor.Tests
                     };
                 });
             
-            gameProcessor.Setup(service =>
+            tbspProcessor.Setup(service =>
                     service.RemoveGame(It.IsAny<GameRemoveModel>()))
                 .Callback((GameRemoveModel gameRemoveModel) =>
                 {
-                    if (gameRemoveModel.GameId == startGameExceptionId)
+                    if (gameRemoveModel.GameId == exceptionId)
                     {
                         throw new ArgumentException("can't remove game");
                     }
                 });
             
-            return gameProcessor.Object;
-        }
-
-        public static ILocationProcessor MockLocationProcessor(Guid updateLocationExceptionId)
-        {
-            var locationProcessor = new Mock<ILocationProcessor>();
-
-            locationProcessor.Setup(service =>
-                    service.UpdateLocation(It.IsAny<Location>(), It.IsAny<Source>(), It.IsAny<string>()))
-                .Callback((Location location, Source source, string language) =>
+            tbspProcessor.Setup(service =>
+                    service.UpdateAdventure(It.IsAny<AdventureUpdateModel>()))
+                .Callback((AdventureUpdateModel adventureUpdateModel) =>
                 {
-                    if (location.Id == updateLocationExceptionId)
-                    {
-                        throw new ArgumentException("can't update location");
-                    }
-                });
-            return locationProcessor.Object;
-        }
-
-        public static IRouteProcessor MockRouteProcessor(Guid updateRouteExceptionId)
-        {
-            var routeProcessor = new Mock<IRouteProcessor>();
-
-            routeProcessor.Setup(service =>
-                    service.UpdateRoute(It.IsAny<RouteUpdateModel>()))
-                .Callback((RouteUpdateModel routeUpdateModel) =>
-                {
-                    if (routeUpdateModel.route.Id == updateRouteExceptionId)
-                        throw new ArgumentException("can't update route");
-                });
-
-            routeProcessor.Setup(service =>
-                    service.RemoveRoutes(It.IsAny <List<Guid>>(), It.IsAny<Guid>()))
-                .Callback((List<Guid> routeIds, Guid locationId) => { });
-            
-            routeProcessor.Setup(service =>
-                    service.RemoveRoute(It.IsAny<RouteRemoveModel>()))
-                .Callback((RouteRemoveModel routeRemoveModel) =>
-                {
-                    if (routeRemoveModel.RouteId == updateRouteExceptionId)
-                    {
-                        throw new ArgumentException("invalid route id");
-                    }
-                });
-
-            return routeProcessor.Object;
-        }
-        
-        public static IMapProcessor MockMapProcessor(Guid changeLocationViaRouteExceptionId)
-        {
-            var mapProcessor = new Mock<IMapProcessor>();
-            
-            mapProcessor.Setup(service =>
-                    service.ChangeLocationViaRoute(It.IsAny<Guid>(), It.IsAny<Guid>(),It.IsAny<DateTime>()))
-                .Callback((Guid gameId, Guid routeId, DateTime timeStamp) =>
-                {
-                    if (gameId == changeLocationViaRouteExceptionId)
-                    {
-                        throw new ArgumentException("can't change location");
-                    }
+                    if (adventureUpdateModel.Adventure.Id == exceptionId)
+                        throw new ArgumentException("invalid adventure id");
                 });
             
-            return mapProcessor.Object;
-        }
-        
-        public static IScriptProcessor MockScriptProcessor(Guid executeScriptExceptionId)
-        {
-            var scriptProcessor = new Mock<IScriptProcessor>();
-            
-            scriptProcessor.Setup(service =>
-                    service.ExecuteScript(It.IsAny<Guid>()))
-                .Callback((Guid scriptId) =>
+            tbspProcessor.Setup(service =>
+                    service.RemoveAdventure(It.IsAny<AdventureRemoveModel>()))
+                .Callback((AdventureRemoveModel adventureRemoveModel) =>
                 {
-                    if (scriptId == executeScriptExceptionId)
-                    {
-                        throw new ArgumentException("invalid script id");
-                    }
-                });
-            
-            scriptProcessor.Setup(service =>
-                    service.UpdateScript(It.IsAny<ScriptUpdateModel>()))
-                .Callback((ScriptUpdateModel scriptUpdateModel) =>
-                {
-                    if (scriptUpdateModel.script.Id == executeScriptExceptionId)
-                    {
-                        throw new ArgumentException("invalid script id");
-                    }
+                    if (adventureRemoveModel.AdventureId == exceptionId)
+                        throw new ArgumentException("invalid adventure id");
                 });
 
-            scriptProcessor.Setup(service =>
-                    service.RemoveScript(It.IsAny<ScriptRemoveModel>()))
-                .Callback((ScriptRemoveModel scriptRemoveModel) =>
-                {
-                    if (scriptRemoveModel.ScriptId == executeScriptExceptionId)
-                    {
-                        throw new ArgumentException("invalid script id");
-                    }
-                });
-            
-            return scriptProcessor.Object;
-        }
-
-        public static IContentProcessor MockContentProcessor(ICollection<Game> games, ICollection<En> sources, Guid scriptExceptionId)
-        {
-            var gamesService = MockServices.MockDataLayerGamesService(games);
-            var sourceProcessor = MockSourceProcessor(sources, scriptExceptionId);
-            return new ContentProcessor(gamesService, sourceProcessor, NullLogger<ContentProcessor>.Instance);
-        }
-        
-        public static ISourceProcessor MockSourceProcessor(ICollection<En> sources, Guid scriptExceptionId)
-        {
-            var sourcesService = MockServices.MockDataLayerSourcesService(sources);
-            var scriptProcessor = MockScriptProcessor(scriptExceptionId);
-            return new SourceProcessor(
-                scriptProcessor,
-                sourcesService,
-                NullLogger<SourceProcessor>.Instance);
+            return tbspProcessor.Object;
         }
     }
 }

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
+using TbspRpgProcessor;
 using TbspRpgProcessor.Entities;
-using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
 {
@@ -15,20 +16,23 @@ namespace TbspRpgApi.Services
         public Task<SourceViewModel> GetProcessedSourceForKey(Guid key, Guid adventureId, string language);
         public Task<List<SourceViewModel>> GetSourcesForAdventure(Guid adventureId, string language);
         public Task<List<SourceViewModel>> GetSourceAllLanguagesForAdventure(Guid adventureId);
+        Task UpdateSource(SourceUpdateRequest sourceUpdateRequest);
+        Task<List<SourceViewModel>> GetUnreferencedSourcesForAdventure(Guid adventureId);
+        Task DeleteSource(Guid sourceId);
     }
     
     public class SourcesService: ISourcesService
     {
         private readonly TbspRpgDataLayer.Services.ISourcesService _sourcesService;
-        private readonly ISourceProcessor _sourceProcessor;
+        private readonly ITbspRpgProcessor _tbspRpgProcessor;
         private readonly ILogger<SourcesService> _logger;
 
         public SourcesService(TbspRpgDataLayer.Services.ISourcesService sourcesService,
-            ISourceProcessor sourceProcessor,
+            ITbspRpgProcessor tbspRpgProcessor,
             ILogger<SourcesService> logger)
         {
             _sourcesService = sourcesService;
-            _sourceProcessor = sourceProcessor;
+            _tbspRpgProcessor = tbspRpgProcessor;
             _logger = logger;
         }
 
@@ -40,7 +44,7 @@ namespace TbspRpgApi.Services
         
         public async Task<SourceViewModel> GetProcessedSourceForKey(Guid key, Guid adventureId, string language)
         {
-            var source = await _sourceProcessor.GetSourceForKey(new SourceForKeyModel()
+            var source = await _tbspRpgProcessor.GetSourceForKey(new SourceForKeyModel()
             {
                 Key = key,
                 AdventureId = adventureId,
@@ -60,6 +64,29 @@ namespace TbspRpgApi.Services
         {
             var sources = await _sourcesService.GetAllSourceAllLanguagesForAdventure(adventureId);
             return sources.Select(source => new SourceViewModel(source)).ToList();
+        }
+
+        public async Task UpdateSource(SourceUpdateRequest sourceUpdateRequest)
+        {
+            await _tbspRpgProcessor.CreateOrUpdateSource(sourceUpdateRequest.Source.ToEntity(),
+                sourceUpdateRequest.Source.Language, true);
+        }
+
+        public async Task<List<SourceViewModel>> GetUnreferencedSourcesForAdventure(Guid adventureId)
+        {
+            var sources = await _tbspRpgProcessor.GetUnreferencedSources(new UnreferencedSourceModel()
+            {
+                AdventureId = adventureId
+            });
+            return sources.Select(source => new SourceViewModel(source)).ToList();
+        }
+
+        public async Task DeleteSource(Guid sourceId)
+        {
+            await _tbspRpgProcessor.RemoveSource(new SourceRemoveModel()
+            {
+                SourceId = sourceId
+            });
         }
     }
 }

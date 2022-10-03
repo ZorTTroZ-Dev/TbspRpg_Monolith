@@ -44,6 +44,22 @@ namespace TbspRpgApi.Controllers
             return Ok(source);
         }
         
+        [HttpGet("adventure/{adventureId:guid}/unreferenced")]
+        [Authorize]
+        public async Task<IActionResult> GetUnreferencedSourcesForAdventure(Guid adventureId)
+        {
+            var canAccessAdventure = await _permissionService.CanWriteAdventure(
+                GetUserId().GetValueOrDefault(),
+                adventureId);
+            if(!canAccessAdventure)
+            {
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            }
+
+            var sources = await _sourcesService.GetUnreferencedSourcesForAdventure(adventureId);
+            return Ok(sources);
+        }
+        
         [HttpGet("adventure/{adventureId:guid}")]
         [Authorize]
         public async Task<IActionResult> GetSourcesForAdventure(Guid adventureId, [FromQuery]SourceFilterRequest filters)
@@ -100,6 +116,50 @@ namespace TbspRpgApi.Controllers
             
             var source = await _sourcesService.GetProcessedSourceForKey(filters.Key.GetValueOrDefault(), adventureId, filters.Language);
             return Ok(source);
+        }
+        
+        [HttpPut, Authorize]
+        public async Task<IActionResult> UpdateSource([FromBody] SourceUpdateRequest sourceUpdateRequest)
+        {
+            var canAccessAdventure = await _permissionService.CanReadAdventure(
+                GetUserId().GetValueOrDefault(),
+                sourceUpdateRequest.Source.AdventureId);
+            if (!canAccessAdventure)
+            {
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            }
+
+            try
+            {
+                await _sourcesService.UpdateSource(sourceUpdateRequest);
+                return Ok(null);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest((new {message = ex.Message}));
+            }
+        }
+        
+        [HttpDelete("{sourceId:guid}"), Authorize]
+        public async Task<IActionResult> DeleteSource(Guid sourceId)
+        {
+            var canDeleteSource = await _permissionService.CanDeleteSource(
+                GetUserId().GetValueOrDefault(),
+                sourceId);
+            if(!canDeleteSource)
+            {
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            }
+            
+            try
+            {
+                await _sourcesService.DeleteSource(sourceId);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest(new { message = "couldn't delete source" });
+            }
         }
     }
 }

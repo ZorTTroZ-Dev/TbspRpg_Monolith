@@ -96,6 +96,7 @@ namespace TbspRpgDataLayer
                 .HasColumnType("uuid")
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();
+            modelBuilder.Entity<Script>().HasIndex(s => s.Content);
 
             modelBuilder.Entity<Adventure>()
                 .HasMany(a => a.Locations)
@@ -170,6 +171,8 @@ namespace TbspRpgDataLayer
             modelBuilder.Entity<Game>()
                 .Property(g => g.GameState)
                 .HasColumnType("jsonb");
+
+            modelBuilder.Entity<Game>().Ignore(game => game.GameStateJson);
 
             #endregion
 
