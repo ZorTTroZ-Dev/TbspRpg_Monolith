@@ -13,7 +13,7 @@ namespace TbspRpgApi.Services
 {
     public interface IGamesService
     {
-        Task StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
+        Task<GameRouteListContentViewModel> StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
         Task<GameViewModel> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId);
         Task<List<GameUserViewModel>> GetGames(GameFilterRequest gameFilterRequest);
         Task DeleteGame(Guid gameId);
@@ -23,25 +23,37 @@ namespace TbspRpgApi.Services
     public class GamesService : IGamesService
     {
         private readonly TbspRpgDataLayer.Services.IGamesService _gamesService;
+        private readonly IContentsService _contentsService;
+        private readonly IMapsService _mapsService;
         private readonly ITbspRpgProcessor _tbspRpgProcessor;
         private readonly ILogger<GamesService> _logger;
 
         public GamesService(
             ITbspRpgProcessor tbspRpgProcessor,
             TbspRpgDataLayer.Services.IGamesService gamesService,
+            IContentsService contentsService,
+            IMapsService mapsService,
             ILogger<GamesService> logger)
         {
             _tbspRpgProcessor = tbspRpgProcessor;
             _gamesService = gamesService;
+            _contentsService = contentsService;
+            _mapsService = mapsService;
             _logger = logger;
         }
 
-        public async Task StartGame(Guid userId, Guid adventureId, DateTime timeStamp)
+        public async Task<GameRouteListContentViewModel> StartGame(Guid userId, Guid adventureId, DateTime timeStamp)
         {
-            //this may eventually become sending a message to rabbit mq or another
-            //messaging service which will then pass messages to worker processes
-            //for now we're calling directly
-            await _tbspRpgProcessor.StartGame(userId, adventureId, timeStamp);
+            var game = await _tbspRpgProcessor.StartGame(userId, adventureId, timeStamp);
+            var routesViewModelTask = _mapsService.GetCurrentRoutesForGame(game.Id);
+            var position = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds() - 1;
+            var contentViewModelTask = _contentsService.GetContentForGameAfterPosition(game.Id, (ulong)position);
+            return new GameRouteListContentViewModel()
+            {
+                Game = new GameViewModel(game),
+                Routes = await routesViewModelTask,
+                Contents = await contentViewModelTask
+            };
         }
 
         public async Task<GameViewModel> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId)

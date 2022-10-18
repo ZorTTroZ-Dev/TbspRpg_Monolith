@@ -78,7 +78,7 @@ namespace TbspRpgApi.Controllers
                 var userId = GetUserId();
                 if (userId != null)
                 {
-                    await _gamesService.StartGame(userId.GetValueOrDefault(), adventureId, DateTime.UtcNow);
+                    return Ok(await _gamesService.StartGame(userId.GetValueOrDefault(), adventureId, DateTime.UtcNow));
                 }
                 else
                 {
@@ -89,8 +89,6 @@ namespace TbspRpgApi.Controllers
             {
                 return BadRequest(new { message = "couldn't start game" });
             }
-
-            return Accepted();
         }
         
         [HttpGet("state/{gameId:guid}")]

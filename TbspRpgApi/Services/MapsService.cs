@@ -12,8 +12,7 @@ namespace TbspRpgApi.Services
     {
         Task<LocationViewModel> GetCurrentLocationForGame(Guid gameId);
         Task<RouteListViewModel> GetCurrentRoutesForGame(Guid gameId);
-        Task<RouteListViewModel> GetCurrentRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp);
-        Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp);
+        Task<RouteListContentViewModel> ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp);
     }
     
     public class MapsService : IMapsService
@@ -21,17 +20,20 @@ namespace TbspRpgApi.Services
         private readonly TbspRpgDataLayer.Services.IGamesService _gamesService;
         private readonly TbspRpgDataLayer.Services.IRoutesService _routesService;
         private readonly ITbspRpgProcessor _tbspRpgProcessor;
+        private readonly IContentsService _contentsService;
         private readonly ILogger<MapsService> _logger;
 
         public MapsService(
             ITbspRpgProcessor tbspRpgProcessor,
             TbspRpgDataLayer.Services.IGamesService gamesService,
             TbspRpgDataLayer.Services.IRoutesService routesService,
+            IContentsService contentsService,
             ILogger<MapsService> logger)
         {
             _tbspRpgProcessor = tbspRpgProcessor;
             _gamesService = gamesService;
             _routesService = routesService;
+            _contentsService = contentsService;
             _logger = logger;
         }
         
@@ -57,29 +59,20 @@ namespace TbspRpgApi.Services
                 Routes = routes.Select(route => new RouteViewModel(route, game)).ToList()
             };
         }
-        
-        public async Task<RouteListViewModel> GetCurrentRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp)
-        {
-            var game = await _gamesService.GetGameByIdIncludeLocation(gameId);
-            if (game == null || game.LocationId == Guid.Empty)
-                throw new Exception("invalid game id or no location");
-            if (game.LocationUpdateTimeStamp <= timeStamp)
-                return new RouteListViewModel()
-                {
-                    Location = new LocationViewModel(game.Location),
-                    Routes = new List<RouteViewModel>()
-                };
-            var routes = await _routesService.GetRoutesForLocation(game.LocationId);
-            return new RouteListViewModel()
-            {
-                Location = new LocationViewModel(game.Location),
-                Routes = routes.Select(route => new RouteViewModel(route, game)).ToList()
-            };
-        }
 
-        public async Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp)
+        public async Task<RouteListContentViewModel> ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp)
         {
             await _tbspRpgProcessor.ChangeLocationViaRoute(gameId, routeId, timeStamp);
+
+            var routeListTask = GetCurrentRoutesForGame(gameId);
+            var position = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds() - 1;
+            var contentsTask = _contentsService.GetContentForGameAfterPosition(gameId, (ulong)position);
+            
+            return new RouteListContentViewModel()
+            {
+                Routes = await routeListTask,
+                Contents = await contentsTask
+            };
         }
     }
 }
