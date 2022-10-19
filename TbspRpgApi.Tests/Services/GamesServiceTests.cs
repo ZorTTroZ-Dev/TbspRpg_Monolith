@@ -18,26 +18,13 @@ namespace TbspRpgApi.Tests.Services
         {
             // arrange
             var exceptionId = Guid.NewGuid();
-            var service = CreateGamesService(new List<Game>(), exceptionId);
+            var service = CreateGamesService(new List<Game>(), null, null, null, exceptionId);
             
             // act
             Task Act() => service.StartGame(exceptionId, Guid.NewGuid(), DateTime.Now);
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
-        }
-
-        [Fact]
-        public async void StartGame_GameStarted()
-        {
-            // arrange
-            var service = CreateGamesService(new List<Game>());
-            
-            // act
-            await service.StartGame(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now);
-            
-            // assert
-            
         }
 
         #endregion
@@ -126,7 +113,7 @@ namespace TbspRpgApi.Tests.Services
         {
             // arrange
             var exceptionId = Guid.NewGuid();
-            var service = CreateGamesService(new List<Game>(), exceptionId);
+            var service = CreateGamesService(new List<Game>(), null, null, null, exceptionId);
             
             // act
             Task Act() => service.DeleteGame(exceptionId);
