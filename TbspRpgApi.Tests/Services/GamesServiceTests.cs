@@ -211,5 +211,55 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+        
+        #region UpdateGameState
+
+        [Fact]
+        public async void UpdateGameState_ValidGameId_GameStateUpdated()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test\":\"value\"}"
+            };
+            var service = CreateGamesService(new List<Game>() {testGame});
+            
+            // act
+            await service.UpdateGameState(new GameStateUpdateRequest()
+            {
+                GameId = testGame.Id,
+                GameState = "{\"test\":\"banana\"}"
+            });
+            
+            // assert
+            Assert.Equal("{\"test\":\"banana\"}", testGame.GameState);
+        }
+
+        [Fact]
+        public async void UpdateGameState_InvalidGameId_ExceptionThrown()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test\":\"value\"}"
+            };
+            var service = CreateGamesService(new List<Game>() {testGame});
+            
+            // act
+            Task Act() => service.UpdateGameState(new GameStateUpdateRequest()
+            {
+                GameId = Guid.NewGuid(),
+                GameState = "{\"test\":\"banana\"}"
+            });
+
+            // assert
+            await Assert.ThrowsAsync<NullReferenceException>(Act);
+        }
+
+        #endregion
     }
 }

@@ -328,5 +328,58 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+        
+        #region UpdateGameState
+
+        [Fact]
+        public async void UpdateGameState_ValidGameId_GameStateUpdated()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test\":\"value\"}"
+            };
+            var controller = CreateGamesController(new List<Game>() {testGame}, Guid.Empty, null);
+            
+            // act
+            var response = await controller.UpdateGameState(new GameStateUpdateRequest()
+            {
+                GameId = testGame.Id,
+                GameState = "{\"test\":\"banana\"}"
+            });
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+        }
+
+        [Fact]
+        public async void UpdateGameState_InvalidGameId_BadRequest()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test\":\"value\"}"
+            };
+            var controller = CreateGamesController(new List<Game>() {testGame}, Guid.Empty, null);
+            
+            // act
+            var response = await controller.UpdateGameState(new GameStateUpdateRequest()
+            {
+                GameId = Guid.NewGuid(),
+                GameState = "{\"test\":\"banana\"}"
+            });
+
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+        
+        #endregion
     }
 }

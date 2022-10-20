@@ -18,6 +18,7 @@ namespace TbspRpgApi.Services
         Task<List<GameUserViewModel>> GetGames(GameFilterRequest gameFilterRequest);
         Task DeleteGame(Guid gameId);
         Task<JsonObject> GetGameState(Guid gameId);
+        Task UpdateGameState(GameStateUpdateRequest updateRequest);
     }
     
     public class GamesService : IGamesService
@@ -73,6 +74,13 @@ namespace TbspRpgApi.Services
             var game = await _gamesService.GetGameById(gameId);
             game.LoadGameStateJson();
             return game.GameStateJson;
+        }
+
+        public async Task UpdateGameState(GameStateUpdateRequest updateRequest)
+        {
+            var game = await _gamesService.GetGameById(updateRequest.GameId);
+            game.GameState = updateRequest.GameState;
+            await _gamesService.SaveChanges();
         }
     }
 }
