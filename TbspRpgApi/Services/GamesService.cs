@@ -51,14 +51,17 @@ namespace TbspRpgApi.Services
                 AdventureId = adventureId,
                 TimeStamp = timeStamp
             });
-            var routesViewModelTask = _mapsService.GetCurrentRoutesForGame(game.Id);
-            var position = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds() - 1;
-            var contentViewModelTask = _contentsService.GetContentForGameAfterPosition(game.Id, (ulong)position);
+            var routesViewModel = await _mapsService.GetCurrentRoutesForGame(game.Id);
+            var contentViewModel = await _contentsService.GetPartialContentForGame(game.Id, new ContentFilterRequest()
+            {
+                Count = 10,
+                Direction = "b"
+            });
             return new GameRouteListContentViewModel()
             {
                 Game = new GameViewModel(game),
-                Routes = await routesViewModelTask,
-                Contents = await contentViewModelTask
+                Routes = routesViewModel,
+                Contents = contentViewModel
             };
         }
 
