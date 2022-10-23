@@ -39,8 +39,12 @@ namespace TbspRpgProcessor.Tests.Processors
                 testAdventures);
             
             // act
-            Task Act() => processor.StartGame(Guid.NewGuid(),
-                testAdventures[0].Id, DateTime.Now);
+            Task Act() => processor.StartGame(new GameStartModel()
+            {
+                UserId = Guid.NewGuid(),
+                AdventureId = testAdventures[0].Id,
+                TimeStamp = DateTime.Now
+            });
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
@@ -72,8 +76,12 @@ namespace TbspRpgProcessor.Tests.Processors
                 testAdventures);
             
             // act
-            Task Act() => processor.StartGame(testUsers[0].Id,
-                Guid.NewGuid(), DateTime.Now);
+            Task Act() => processor.StartGame(new GameStartModel()
+            {
+                UserId = testUsers[0].Id,
+                AdventureId = Guid.NewGuid(),
+                TimeStamp = DateTime.Now
+            });
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
@@ -118,8 +126,12 @@ namespace TbspRpgProcessor.Tests.Processors
                 testGames);
 
             // act
-            var game = await processor.StartGame(testUsers[0].Id,
-                testAdventures[0].Id, DateTime.Now);
+            var game = await processor.StartGame(new GameStartModel()
+            {
+                UserId = testUsers[0].Id,
+                AdventureId = testAdventures[0].Id,
+                TimeStamp = DateTime.Now
+            });
 
             // assert
             Assert.Single(testGames);
@@ -158,8 +170,12 @@ namespace TbspRpgProcessor.Tests.Processors
                 new List<Game>());
             
             // act
-            Task Act() => processor.StartGame(testUsers[0].Id,
-                testAdventures[0].Id, DateTime.Now);
+            Task Act() => processor.StartGame(new GameStartModel()
+            {
+                UserId = testUsers[0].Id,
+                AdventureId = testAdventures[0].Id,
+                TimeStamp = DateTime.Now
+            });
 
             // assert
             await Assert.ThrowsAsync<Exception>(Act);
@@ -223,8 +239,12 @@ namespace TbspRpgProcessor.Tests.Processors
                 testContents);
             
             // act
-            var game = await processor.StartGame(testUsers[0].Id,
-                testAdventures[0].Id, DateTime.UtcNow);
+            var game = await processor.StartGame(new GameStartModel()
+            {
+                UserId = testUsers[0].Id,
+                AdventureId = testAdventures[0].Id,
+                TimeStamp = DateTime.UtcNow
+            });
 
             // assert
             Assert.Single(testGames);
@@ -285,8 +305,12 @@ namespace TbspRpgProcessor.Tests.Processors
                 testContents);
             
             // act
-            var game = await processor.StartGame(testUsers[0].Id,
-                testAdventures[0].Id, DateTime.UtcNow);
+            var game = await processor.StartGame(new GameStartModel()
+            {
+                UserId = testUsers[0].Id,
+                AdventureId = testAdventures[0].Id,
+                TimeStamp = DateTime.UtcNow
+            });
 
             // assert
             Assert.Single(testGames);
@@ -549,9 +573,12 @@ namespace TbspRpgProcessor.Tests.Processors
                 testContents);
             
             // act
-            await processor.RemoveGames(new List<Game>()
+            await processor.RemoveGames(new GamesRemoveModel()
             {
-                testGames[0], testGames[1]
+                Games = new List<Game>()
+                {
+                    testGames[0], testGames[1]
+                }
             });
             
             // assert

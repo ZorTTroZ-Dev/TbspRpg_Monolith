@@ -100,7 +100,11 @@ namespace TbspRpgProcessor.Processors
             if (adventure == null)
                 throw new ArgumentException("invalid adventure id");
             
-            await _gameProcessor.RemoveGames(adventure.Games, false);
+            await _gameProcessor.RemoveGames(new GamesRemoveModel()
+            {
+                Games = adventure.Games,
+                Save = false
+            });
             await _locationProcessor.RemoveLocations(adventure.Locations, false);
             await _sourcesService.RemoveAllSourceForAdventure(adventure.Id);
             _adventuresService.RemoveAdventure(adventure);

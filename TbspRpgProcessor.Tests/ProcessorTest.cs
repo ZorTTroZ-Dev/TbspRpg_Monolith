@@ -174,10 +174,10 @@ namespace TbspRpgProcessor.Tests
                 });
             
             tbspProcessor.Setup(service =>
-                    service.StartGame(It.IsAny<Guid>(), It.IsAny<Guid>(),It.IsAny<DateTime>()))
-                .ReturnsAsync((Guid userId, Guid adventureId, DateTime timeStamp) =>
+                    service.StartGame(It.IsAny<GameStartModel>()))
+                .ReturnsAsync((GameStartModel gameStartModel) =>
                 {
-                    if (userId == exceptionId)
+                    if (gameStartModel.UserId == exceptionId)
                     {
                         throw new ArgumentException("can't start game");
                     }

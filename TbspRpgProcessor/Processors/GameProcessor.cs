@@ -10,10 +10,9 @@ namespace TbspRpgProcessor.Processors
 {
     public interface IGameProcessor
     {
-        Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
+        Task<Game> StartGame(GameStartModel gameStartModel);
         Task RemoveGame(GameRemoveModel gameRemoveModel);
-        Task RemoveGame(Game game, bool save = true);
-        Task RemoveGames(ICollection<Game> games, bool save = true);
+        Task RemoveGames(GamesRemoveModel gamesRemoveModel);
     }
     
     public class GameProcessor : IGameProcessor
@@ -44,13 +43,13 @@ namespace TbspRpgProcessor.Processors
             _logger = logger;
         }
         
-        public async Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp)
+        public async Task<Game> StartGame(GameStartModel gameStartModel)
         {
-            var user = await _usersService.GetById(userId);
+            var user = await _usersService.GetById(gameStartModel.UserId);
             if (user == null)
                 throw new ArgumentException("invalid user id");
 
-            var adventure = await _adventuresService.GetAdventureById(adventureId);
+            var adventure = await _adventuresService.GetAdventureById(gameStartModel.AdventureId);
             if (adventure == null)
                 throw new ArgumentException("invalid adventure id");
             
@@ -65,7 +64,7 @@ namespace TbspRpgProcessor.Processors
                 throw new Exception("no initial location for adventure");
             
             // add game to the context
-            var secondsSinceEpoch = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds();
+            var secondsSinceEpoch = new DateTimeOffset(gameStartModel.TimeStamp).ToUnixTimeMilliseconds();
             game = new Game()
             {
                 Id = Guid.NewGuid(),
@@ -113,8 +112,19 @@ namespace TbspRpgProcessor.Processors
 
             await RemoveGame(game);
         }
+        
+        public async Task RemoveGames(GamesRemoveModel gamesRemoveModel)
+        {
+            foreach (var game in gamesRemoveModel.Games)
+            {
+                await RemoveGame(game, false);
+            }
 
-        public async Task RemoveGame(Game game, bool save = true)
+            if (gamesRemoveModel.Save)
+                await _gamesService.SaveChanges();
+        }
+        
+        private async Task RemoveGame(Game game, bool save = true)
         {
             // delete any associated content
             await _contentsService.RemoveAllContentsForGame(game.Id);
@@ -122,17 +132,6 @@ namespace TbspRpgProcessor.Processors
             _gamesService.RemoveGame(game);
             
             if(save)
-                await _gamesService.SaveChanges();
-        }
-
-        public async Task RemoveGames(ICollection<Game> games, bool save = true)
-        {
-            foreach (var game in games)
-            {
-                await RemoveGame(game, false);
-            }
-
-            if (save)
                 await _gamesService.SaveChanges();
         }
     }

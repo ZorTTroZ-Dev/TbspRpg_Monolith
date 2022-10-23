@@ -65,10 +65,9 @@ public interface ITbspRpgProcessor
 
     #region GameProcessor
 
-    Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
+    Task<Game> StartGame(GameStartModel gameStartModel);
     Task RemoveGame(GameRemoveModel gameRemoveModel);
-    Task RemoveGame(Game game, bool save = true);
-    Task RemoveGames(ICollection<Game> games, bool save = true);
+    Task RemoveGames(GamesRemoveModel gamesRemoveModel);
 
     #endregion
 
@@ -374,10 +373,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _logger);
     }
 
-    public Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp)
+    public Task<Game> StartGame(GameStartModel gameStartModel)
     {
         LoadGameProcessor();
-        return _gameProcessor.StartGame(userId, adventureId, timeStamp);
+        return _gameProcessor.StartGame(gameStartModel);
     }
 
     public Task RemoveGame(GameRemoveModel gameRemoveModel)
@@ -386,16 +385,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         return _gameProcessor.RemoveGame(gameRemoveModel);
     }
 
-    public Task RemoveGame(Game game, bool save = true)
+    public Task RemoveGames(GamesRemoveModel gamesRemoveModel)
     {
         LoadGameProcessor();
-        return _gameProcessor.RemoveGame(game, save);
-    }
-
-    public Task RemoveGames(ICollection<Game> games, bool save = true)
-    {
-        LoadGameProcessor();
-        return _gameProcessor.RemoveGames(games, save);
+        return _gameProcessor.RemoveGames(gamesRemoveModel);
     }
 
     #endregion
