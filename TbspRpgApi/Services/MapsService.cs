@@ -70,14 +70,14 @@ namespace TbspRpgApi.Services
                 TimeStamp = timeStamp
             });
 
-            var routeListTask = GetCurrentRoutesForGame(gameId);
+            var routeList = await GetCurrentRoutesForGame(gameId);
             var position = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds() - 1;
-            var contentsTask = _contentsService.GetContentForGameAfterPosition(gameId, (ulong)position);
+            var contents = await _contentsService.GetContentForGameAfterPosition(gameId, (ulong)position);
             
             return new RouteListContentViewModel()
             {
-                Routes = await routeListTask,
-                Contents = await contentsTask
+                Routes = routeList,
+                Contents = contents
             };
         }
     }
