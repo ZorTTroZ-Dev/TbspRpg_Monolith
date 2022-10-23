@@ -124,15 +124,24 @@ namespace TbspRpgApi.Tests
             return new AdventuresService(tbspRpgProcessor, dlAdventuresService);
         }
 
-        protected static GamesService CreateGamesService(ICollection<Game> games, Guid? startGameExceptionId = null)
+        protected static GamesService CreateGamesService(ICollection<Game> games, 
+            ICollection<Route> routes = null,
+            ICollection<Content> contents = null,
+            ICollection<En> sources = null,
+            Guid? startGameExceptionId = null)
         {
             startGameExceptionId ??= Guid.NewGuid();
             var dlGamesService = MockServices.MockDataLayerGamesService(games);
             var tbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(null,
                 startGameExceptionId.GetValueOrDefault());
+            var mapsService = CreateMapsService(games, routes, contents, sources, startGameExceptionId);
+            var contentsService =
+                CreateContentsService(contents, startGameExceptionId.GetValueOrDefault(), games, sources);
             return new GamesService(
                 tbspRpgProcessor,
                 dlGamesService,
+                contentsService,
+                mapsService,
                 NullLogger<GamesService>.Instance);
         }
 
@@ -151,16 +160,21 @@ namespace TbspRpgApi.Tests
 
         protected static MapsService CreateMapsService(ICollection<Game> games,
             ICollection<Route> routes = null,
+            ICollection<Content> contents = null,
+            ICollection<En> sources = null,
             Guid? changeLocationViaRouteExceptionId = null)
         {
             var dlGamesService = MockServices.MockDataLayerGamesService(games);
             var dlRoutesService = MockServices.MockDataLayerRoutesService(routes);
+            var contentsService = CreateContentsService(contents,
+                changeLocationViaRouteExceptionId.GetValueOrDefault(), games, sources);
             var tbspRpgProcessor =
                 ProcessorTest.MockTbspRpgProcessor(null, changeLocationViaRouteExceptionId.GetValueOrDefault());
             return new MapsService(
                 tbspRpgProcessor,
                 dlGamesService,
                 dlRoutesService,
+                contentsService,
                 NullLogger<MapsService>.Instance);
         }
 
