@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TbspRpgApi.Entities;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
 using TbspRpgProcessor.Entities;
@@ -11,10 +9,9 @@ namespace TbspRpgProcessor.Processors
 {
     public interface ILocationProcessor
     {
-        Task UpdateLocation(Location location, Source source, string language);
+        Task UpdateLocation(LocationUpdateModel locationUpdateModel);
         Task RemoveLocation(LocationRemoveModel locationRemoveModel);
-        Task RemoveLocation(Location location, bool save = true);
-        Task RemoveLocations(ICollection<Location> locations, bool save = true);
+        Task RemoveLocations(LocationsRemoveModel locationsRemoveModel);
     }
     
     public class LocationProcessor : ILocationProcessor
@@ -36,41 +33,42 @@ namespace TbspRpgProcessor.Processors
             _logger = logger;
         }
         
-        public async Task UpdateLocation(Location location, Source source, string language)
+        public async Task UpdateLocation(LocationUpdateModel locationUpdateModel)
         {
             Location dbLocation = null;
-            if (location.Id == Guid.Empty)
+            if (locationUpdateModel.Location.Id == Guid.Empty)
             {
                 dbLocation = new Location()
                 {
                     Id = Guid.NewGuid(),
-                    Name = location.Name,
-                    Initial = location.Initial,
-                    Final = location.Final,
-                    AdventureId = location.AdventureId,
-                    EnterScriptId = location.EnterScriptId,
-                    ExitScriptId = location.ExitScriptId
+                    Name = locationUpdateModel.Location.Name,
+                    Initial = locationUpdateModel.Location.Initial,
+                    Final = locationUpdateModel.Location.Final,
+                    AdventureId = locationUpdateModel.Location.AdventureId,
+                    EnterScriptId = locationUpdateModel.Location.EnterScriptId,
+                    ExitScriptId = locationUpdateModel.Location.ExitScriptId
                 };
                 await _locationsService.AddLocation(dbLocation);
             }
             else
             {
                 // load the location, update the name and initial fields, save it
-                dbLocation = await _locationsService.GetLocationById(location.Id);
+                dbLocation = await _locationsService.GetLocationById(locationUpdateModel.Location.Id);
                 if (dbLocation == null)
                     throw new ArgumentException("invalid location id");
-                dbLocation.Name = location.Name;
-                dbLocation.Initial = location.Initial;
-                dbLocation.Final = location.Final;
-                dbLocation.EnterScriptId = location.EnterScriptId;
-                dbLocation.ExitScriptId = location.ExitScriptId;
+                dbLocation.Name = locationUpdateModel.Location.Name;
+                dbLocation.Initial = locationUpdateModel.Location.Initial;
+                dbLocation.Final = locationUpdateModel.Location.Final;
+                dbLocation.EnterScriptId = locationUpdateModel.Location.EnterScriptId;
+                dbLocation.ExitScriptId = locationUpdateModel.Location.ExitScriptId;
             }
             
             // update the source
-            source.AdventureId = location.AdventureId;
-            if (string.IsNullOrEmpty(source.Name))
-                source.Name = location.Name;
-            var dbSource = await _sourceProcessor.CreateOrUpdateSource(source, language);
+            locationUpdateModel.Source.AdventureId = locationUpdateModel.Location.AdventureId;
+            if (string.IsNullOrEmpty(locationUpdateModel.Source.Name))
+                locationUpdateModel.Source.Name = locationUpdateModel.Location.Name;
+            var dbSource = await _sourceProcessor.CreateOrUpdateSource(
+                locationUpdateModel.Source, locationUpdateModel.Language);
             dbLocation.SourceKey = dbSource.Key;
             
             // save the changes
@@ -88,7 +86,18 @@ namespace TbspRpgProcessor.Processors
             await RemoveLocation(dbLocation);
         }
 
-        public async Task RemoveLocation(Location location, bool save = true)
+        public async Task RemoveLocations(LocationsRemoveModel locationsRemoveModel)
+        {
+            foreach (var location in locationsRemoveModel.Locations)
+            {
+                await RemoveLocation(location, false);
+            }
+
+            if (locationsRemoveModel.Save)
+                await _locationsService.SaveChanges();
+        }
+        
+        private async Task RemoveLocation(Location location, bool save = true)
         {
             if (location.Routes != null && location.Routes.Count > 0)
             {
@@ -97,17 +106,6 @@ namespace TbspRpgProcessor.Processors
             _locationsService.RemoveLocation(location);
             
             if(save)
-                await _locationsService.SaveChanges();
-        }
-
-        public async Task RemoveLocations(ICollection<Location> locations, bool save = true)
-        {
-            foreach (var location in locations)
-            {
-                await RemoveLocation(location, false);
-            }
-
-            if (save)
                 await _locationsService.SaveChanges();
         }
     }

@@ -105,7 +105,10 @@ namespace TbspRpgProcessor.Processors
                 Games = adventure.Games,
                 Save = false
             });
-            await _locationProcessor.RemoveLocations(adventure.Locations, false);
+            await _locationProcessor.RemoveLocations(new LocationsRemoveModel() {
+                Locations = adventure.Locations,
+                Save = false
+            });
             await _sourcesService.RemoveAllSourceForAdventure(adventure.Id);
             _adventuresService.RemoveAdventure(adventure);
             await _adventuresService.SaveChanges();

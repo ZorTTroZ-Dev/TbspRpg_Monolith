@@ -164,10 +164,10 @@ namespace TbspRpgProcessor.Tests
                 });
             
             tbspProcessor.Setup(service =>
-                    service.UpdateLocation(It.IsAny<Location>(), It.IsAny<Source>(), It.IsAny<string>()))
-                .Callback((Location location, Source source, string language) =>
+                    service.UpdateLocation(It.IsAny<LocationUpdateModel>()))
+                .Callback((LocationUpdateModel locationUpdateModel) =>
                 {
-                    if (location.Id == exceptionId)
+                    if (locationUpdateModel.Location.Id == exceptionId)
                     {
                         throw new ArgumentException("can't update location");
                     }

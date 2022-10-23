@@ -56,10 +56,9 @@ public interface ITbspRpgProcessor
 
     #region LocationProcessor
 
-    Task UpdateLocation(Location location, Source source, string language);
+    Task UpdateLocation(LocationUpdateModel locationUpdateModel);
     Task RemoveLocation(LocationRemoveModel locationRemoveModel);
-    Task RemoveLocation(Location location, bool save = true);
-    Task RemoveLocations(ICollection<Location> locations, bool save = true);
+    Task RemoveLocations(LocationsRemoveModel locationsRemoveModel);
 
     #endregion
 
@@ -332,10 +331,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _logger);
     }
 
-    public Task UpdateLocation(Location location, Source source, string language)
+    public Task UpdateLocation(LocationUpdateModel locationUpdateModel)
     {
         LoadLocationProcessor();
-        return _locationProcessor.UpdateLocation(location, source, language);
+        return _locationProcessor.UpdateLocation(locationUpdateModel);
     }
 
     public Task RemoveLocation(LocationRemoveModel locationRemoveModel)
@@ -344,16 +343,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         return _locationProcessor.RemoveLocation(locationRemoveModel);
     }
 
-    public Task RemoveLocation(Location location, bool save = true)
+    public Task RemoveLocations(LocationsRemoveModel locationsRemoveModel)
     {
         LoadLocationProcessor();
-        return _locationProcessor.RemoveLocation(location, save);
-    }
-
-    public Task RemoveLocations(ICollection<Location> locations, bool save = true)
-    {
-        LoadLocationProcessor();
-        return _locationProcessor.RemoveLocations(locations, save);
+        return _locationProcessor.RemoveLocations(locationsRemoveModel);
     }
 
     #endregion
