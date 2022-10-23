@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using TbspRpgProcessor;
+using TbspRpgProcessor.Entities;
 using TbspRpgProcessor.Processors;
 
 namespace TbspRpgApi.Services
@@ -59,13 +60,22 @@ namespace TbspRpgApi.Services
         
         public async Task<SourceViewModel> GetContentTextForKey(Guid gameId, Guid sourceKey)
         {
-            var text = await _tbspRpgProcessor.GetContentTextForKey(gameId, sourceKey);
+            var text = await _tbspRpgProcessor.GetContentTextForKey(new ContentTextForKeyModel()
+            {
+                GameId = gameId,
+                SourceKey = sourceKey
+            });
             return text == null ? null : new SourceViewModel(sourceKey, text);
         }
         
         public async Task<SourceViewModel> GetProcessedContentTextForKey(Guid gameId, Guid sourceKey)
         {
-            var text = await _tbspRpgProcessor.GetContentTextForKey(gameId, sourceKey, true);
+            var text = await _tbspRpgProcessor.GetContentTextForKey(new ContentTextForKeyModel()
+            {
+                GameId = gameId,
+                SourceKey = sourceKey,
+                Processed = true
+            });
             return text == null ? null : new SourceViewModel(sourceKey, text);
         }
     }

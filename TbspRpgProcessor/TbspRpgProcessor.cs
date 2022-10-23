@@ -74,7 +74,7 @@ public interface ITbspRpgProcessor
 
     #region ContentProcessor
 
-    Task<string> GetContentTextForKey(Guid gameId, Guid sourceKey, bool processed = false);
+    Task<string> GetContentTextForKey(ContentTextForKeyModel contentTextForKeyModel);
 
     #endregion
     
@@ -409,10 +409,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _sourceProcessor, _logger);
     }
     
-    public Task<string> GetContentTextForKey(Guid gameId, Guid sourceKey, bool processed = false)
+    public Task<string> GetContentTextForKey(ContentTextForKeyModel contentTextForKeyModel)
     {
         LoadContentProcessor();
-        return _contentProcessor.GetContentTextForKey(gameId, sourceKey, processed);
+        return _contentProcessor.GetContentTextForKey(contentTextForKeyModel);
     }
 
     #endregion
