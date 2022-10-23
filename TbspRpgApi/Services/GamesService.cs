@@ -41,7 +41,12 @@ namespace TbspRpgApi.Services
             //this may eventually become sending a message to rabbit mq or another
             //messaging service which will then pass messages to worker processes
             //for now we're calling directly
-            await _tbspRpgProcessor.StartGame(userId, adventureId, timeStamp);
+            await _tbspRpgProcessor.StartGame(new GameStartModel()
+            {
+                UserId = userId,
+                AdventureId = adventureId,
+                TimeStamp = timeStamp
+            });
         }
 
         public async Task<GameViewModel> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId)

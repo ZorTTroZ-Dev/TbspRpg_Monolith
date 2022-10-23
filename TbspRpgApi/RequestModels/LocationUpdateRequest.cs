@@ -1,4 +1,5 @@
 ﻿using TbspRpgApi.ViewModels;
+using TbspRpgProcessor.Entities;
 
 namespace TbspRpgApi.RequestModels
 {
@@ -6,5 +7,15 @@ namespace TbspRpgApi.RequestModels
     {
         public LocationViewModel location { get; set; }
         public SourceViewModel source { get; set; }
+
+        public LocationUpdateModel ToLocationUpdateModel()
+        {
+            return new LocationUpdateModel()
+            {
+                Location = location.ToEntity(),
+                Source = source.ToEntity(),
+                Language = source.Language
+            };
+        }
     }
 }

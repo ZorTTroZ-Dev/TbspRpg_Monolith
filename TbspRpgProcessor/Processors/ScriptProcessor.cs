@@ -13,10 +13,7 @@ namespace TbspRpgProcessor.Processors;
 
 public interface IScriptProcessor
 {
-    Task<string> ExecuteScript(Guid scriptId, Guid gameId);
-    Task<string> ExecuteScript(Guid scriptId, Game game);
-    Task<string> ExecuteScript(Guid scriptId);
-    string ExecuteScript(Script script, Game game);
+    Task<string> ExecuteScript(ScriptExecuteModel scriptExecuteModel);
     Task RemoveScript(ScriptRemoveModel scriptIdRemoveModel);
     Task UpdateScript(ScriptUpdateModel scriptUpdateModel);
 }
@@ -72,54 +69,49 @@ public class ScriptProcessor : IScriptProcessor
         
         return dbScript;
     }
-    
-    public async Task<string> ExecuteScript(Guid scriptId, Guid gameId)
-    {
-        var dbScript = await VerifyScriptId(scriptId);
-        
-        var dbGame = await _gamesService.GetGameById(gameId);
-        if (dbGame == null)
-            throw new ArgumentException("invalid game id");
-        
-        return ExecuteScript(dbScript, dbGame);
-    }
-    
-    public async Task<string> ExecuteScript(Guid scriptId, Game game)
-    {
-        var dbScript = await VerifyScriptId(scriptId);
-        return ExecuteScript(dbScript, game);
-    }
-    
-    public async Task<string> ExecuteScript(Guid scriptId)
-    {
-        var dbScript = await VerifyScriptId(scriptId);
-        return ExecuteScript(dbScript, null);
-    }
 
-    public string ExecuteScript(Script script, Game game)
+    public async Task<string> ExecuteScript(ScriptExecuteModel scriptExecuteModel)
     {
+        // could have just a script id
+        // or a game id with a script id
+        // or a game id with a script object
+        // or a game with a script id
+        // or a game with a script object
+        if (scriptExecuteModel.Game == null && scriptExecuteModel.GameId != Guid.Empty)
+        {
+            var dbGame = await _gamesService.GetGameById(scriptExecuteModel.GameId);
+            if (dbGame == null)
+                throw new ArgumentException("invalid game id");
+            scriptExecuteModel.Game = dbGame;
+        }
+
+        if (scriptExecuteModel.Script == null)
+        {
+            scriptExecuteModel.Script = await VerifyScriptId(scriptExecuteModel.ScriptId);
+        }
+        
         var luaState = new Lua();
         
         // load sandbox lua library
         luaState["sandbox"] = luaState.DoString(LuaSandbox.LuaSandboxCode).First();
         
         // add the game as a global variable if it exists
-        if (game != null)
+        if (scriptExecuteModel.Game != null)
         {
-            luaState["game"] = game;
+            luaState["game"] = scriptExecuteModel.Game;
         }
         
         // load any includes
-        if (script.Includes != null)
+        if (scriptExecuteModel.Script.Includes != null)
         {
-            foreach (var include in script.Includes)
+            foreach (var include in scriptExecuteModel.Script.Includes)
             {
                 luaState.DoString(include.Content);
             }
         }
 
         // load the script
-        luaState.DoString(script.Content);
+        luaState.DoString(scriptExecuteModel.Script.Content);
         
         // have to put the run function in the environment or it won't run
         luaState.DoString("sandbox_run = sandbox('run()', {env = { run = run }})");
