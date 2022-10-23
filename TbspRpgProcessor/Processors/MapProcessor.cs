@@ -9,7 +9,7 @@ namespace TbspRpgProcessor.Processors
 {
     public interface IMapProcessor
     {
-        Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp);
+        Task ChangeLocationViaRoute(MapChangeLocationModel mapChangeLocationModel);
     }
     
     public class MapProcessor: IMapProcessor
@@ -43,15 +43,15 @@ namespace TbspRpgProcessor.Processors
         // check if the player can take route
         //  if fail add failure content to game
         //  if pass update location id, location time stamp, add pass content to game
-        public async Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp)
+        public async Task ChangeLocationViaRoute(MapChangeLocationModel mapChangeLocationModel)
         {
-            var game = await _gamesService.GetGameByIdIncludeAdventure(gameId);
+            var game = await _gamesService.GetGameByIdIncludeAdventure(mapChangeLocationModel.GameId);
             if (game == null)
             {
                 throw new ArgumentException("invalid game id");
             }
 
-            var route = await _routesService.GetRouteById(routeId);
+            var route = await _routesService.GetRouteById(mapChangeLocationModel.RouteId);
             if (route == null)
             {
                 throw new ArgumentException("invalid route id");
@@ -88,7 +88,7 @@ namespace TbspRpgProcessor.Processors
             }
 
             // for now assume the check passed
-            var secondsSinceEpoch = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds();
+            var secondsSinceEpoch = new DateTimeOffset(mapChangeLocationModel.TimeStamp).ToUnixTimeMilliseconds();
             game.LocationId = route.DestinationLocationId;
             game.LocationUpdateTimeStamp = secondsSinceEpoch;
 

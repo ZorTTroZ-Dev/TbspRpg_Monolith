@@ -154,10 +154,10 @@ namespace TbspRpgProcessor.Tests
                 });
             
             tbspProcessor.Setup(service =>
-                    service.ChangeLocationViaRoute(It.IsAny<Guid>(), It.IsAny<Guid>(),It.IsAny<DateTime>()))
-                .Callback((Guid gameId, Guid routeId, DateTime timeStamp) =>
+                    service.ChangeLocationViaRoute(It.IsAny<MapChangeLocationModel>()))
+                .Callback((MapChangeLocationModel mapChangeLocationModel) =>
                 {
-                    if (gameId == exceptionId)
+                    if (mapChangeLocationModel.GameId == exceptionId)
                     {
                         throw new ArgumentException("can't change location");
                     }

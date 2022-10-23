@@ -50,7 +50,7 @@ public interface ITbspRpgProcessor
 
     #region MapProcessor
 
-    Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp);
+    Task ChangeLocationViaRoute(MapChangeLocationModel mapChangeLocationModel);
 
     #endregion
 
@@ -311,10 +311,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _logger);
     }
     
-    public Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp)
+    public Task ChangeLocationViaRoute(MapChangeLocationModel mapChangeLocationModel)
     {
         LoadMapProcessor();
-        return _mapProcessor.ChangeLocationViaRoute(gameId, routeId, timeStamp);
+        return _mapProcessor.ChangeLocationViaRoute(mapChangeLocationModel);
     }
 
     #endregion
