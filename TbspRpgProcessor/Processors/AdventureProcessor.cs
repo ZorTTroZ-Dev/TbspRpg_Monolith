@@ -76,18 +76,20 @@ namespace TbspRpgProcessor.Processors
             adventureUpdateModel.InitialSource.AdventureId = adventure.Id;
             if (string.IsNullOrEmpty(adventureUpdateModel.InitialSource.Name))
                 adventureUpdateModel.InitialSource.Name = $"Initial{adventureUpdateModel.Adventure.Name}";
-            var dbSource = await _sourceProcessor.CreateOrUpdateSource(
-                adventureUpdateModel.InitialSource,
-                adventureUpdateModel.Language);
+            var dbSource = await _sourceProcessor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+                Source = adventureUpdateModel.InitialSource,
+                Language = adventureUpdateModel.Language
+            });
             adventure.InitialSourceKey = dbSource.Key;
             
             // update/create description source
             adventureUpdateModel.DescriptionSource.AdventureId = adventure.Id;
             if (string.IsNullOrEmpty(adventureUpdateModel.InitialSource.Name))
                 adventureUpdateModel.DescriptionSource.Name = $"Description{adventureUpdateModel.Adventure.Name}";
-            var dbDescriptionSource = await _sourceProcessor.CreateOrUpdateSource(
-                adventureUpdateModel.DescriptionSource,
-                adventureUpdateModel.Language);
+            var dbDescriptionSource = await _sourceProcessor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+                Source = adventureUpdateModel.DescriptionSource,
+                Language = adventureUpdateModel.Language
+            });
             adventure.DescriptionSourceKey = dbDescriptionSource.Key;
 
             await _adventuresService.SaveChanges();

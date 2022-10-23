@@ -99,18 +99,20 @@ namespace TbspRpgProcessor.Processors
             routeUpdateModel.source.AdventureId = dbLocation.AdventureId;
             if (string.IsNullOrEmpty(routeUpdateModel.source.Name))
                 routeUpdateModel.source.Name = routeUpdateModel.route.Name;
-            var dbSource = await _sourceProcessor.CreateOrUpdateSource(
-                routeUpdateModel.source,
-                routeUpdateModel.language);
+            var dbSource = await _sourceProcessor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+                Source = routeUpdateModel.source,
+                Language = routeUpdateModel.language
+            });
             route.SourceKey = dbSource.Key;
             
             // create update successSource set successSourceKey
             routeUpdateModel.successSource.AdventureId = dbLocation.AdventureId;
             if (string.IsNullOrEmpty(routeUpdateModel.successSource.Name))
                 routeUpdateModel.successSource.Name = routeUpdateModel.route.Name;
-            var dbSuccessSource = await _sourceProcessor.CreateOrUpdateSource(
-                routeUpdateModel.successSource,
-                routeUpdateModel.language);
+            var dbSuccessSource = await _sourceProcessor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+                Source = routeUpdateModel.successSource,
+                Language = routeUpdateModel.language
+            });
             route.RouteTakenSourceKey = dbSuccessSource.Key;
 
             await _routesService.SaveChanges();

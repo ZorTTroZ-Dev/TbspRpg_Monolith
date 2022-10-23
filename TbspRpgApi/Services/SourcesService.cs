@@ -68,8 +68,11 @@ namespace TbspRpgApi.Services
 
         public async Task UpdateSource(SourceUpdateRequest sourceUpdateRequest)
         {
-            await _tbspRpgProcessor.CreateOrUpdateSource(sourceUpdateRequest.Source.ToEntity(),
-                sourceUpdateRequest.Source.Language, true);
+            await _tbspRpgProcessor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+                Source = sourceUpdateRequest.Source.ToEntity(),
+                Language = sourceUpdateRequest.Source.Language,
+                Save = true
+            });
         }
 
         public async Task<List<SourceViewModel>> GetUnreferencedSourcesForAdventure(Guid adventureId)

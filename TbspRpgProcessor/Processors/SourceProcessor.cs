@@ -11,7 +11,7 @@ namespace TbspRpgProcessor.Processors
 {
     public interface ISourceProcessor
     {
-        Task<Source> CreateOrUpdateSource(Source updatedSource, string language, bool saveChanges = false);
+        Task<Source> CreateOrUpdateSource(SourceCreateOrUpdateModel sourceCreateOrUpdateModel);
         Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
         Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
         Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel);
@@ -50,31 +50,34 @@ namespace TbspRpgProcessor.Processors
             _logger = logger;
         }
 
-        public async Task<Source> CreateOrUpdateSource(Source updatedSource, string language, bool saveChanges = false)
+        public async Task<Source> CreateOrUpdateSource(SourceCreateOrUpdateModel sourceCreateOrUpdateModel)
         {
-            if (updatedSource.Key == Guid.Empty)
+            if (sourceCreateOrUpdateModel.Source.Key == Guid.Empty)
             {
                 // we need to create a new source object and save it
                 var newSource = new Source()
                 {
                     Key = Guid.NewGuid(),
-                    AdventureId = updatedSource.AdventureId,
-                    Name = updatedSource.Name,
-                    Text = updatedSource.Text,
-                    ScriptId = updatedSource.ScriptId
+                    AdventureId = sourceCreateOrUpdateModel.Source.AdventureId,
+                    Name = sourceCreateOrUpdateModel.Source.Name,
+                    Text = sourceCreateOrUpdateModel.Source.Text,
+                    ScriptId = sourceCreateOrUpdateModel.Source.ScriptId
                 };
                 await _sourcesService.AddSource(newSource);
-                if (saveChanges)
+                if (sourceCreateOrUpdateModel.Save)
                     await _sourcesService.SaveChanges();
                 return newSource;
             }
-            var dbSource = await _sourcesService.GetSourceForKey(updatedSource.Key, updatedSource.AdventureId, language);
+            var dbSource = await _sourcesService.GetSourceForKey(
+                sourceCreateOrUpdateModel.Source.Key,
+                sourceCreateOrUpdateModel.Source.AdventureId,
+                sourceCreateOrUpdateModel.Language);
             if(dbSource == null)
                 throw new ArgumentException("invalid source key");
-            dbSource.Text = updatedSource.Text;
-            dbSource.ScriptId = updatedSource.ScriptId;
-            dbSource.Name = updatedSource.Name;
-            if(saveChanges)
+            dbSource.Text = sourceCreateOrUpdateModel.Source.Text;
+            dbSource.ScriptId = sourceCreateOrUpdateModel.Source.ScriptId;
+            dbSource.Name = sourceCreateOrUpdateModel.Source.Name;
+            if(sourceCreateOrUpdateModel.Save)
                 await _sourcesService.SaveChanges();
             return dbSource;
         }

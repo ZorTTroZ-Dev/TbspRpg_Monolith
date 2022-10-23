@@ -21,7 +21,7 @@ public interface ITbspRpgProcessor
 
     #region SourceProcessor
 
-    Task<Source> CreateOrUpdateSource(Source updatedSource, string language, bool saveChanges = false);
+    Task<Source> CreateOrUpdateSource(SourceCreateOrUpdateModel sourceCreateOrUpdateModel);
     Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
     Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
     Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel);
@@ -177,10 +177,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _logger);
     }
 
-    public Task<Source> CreateOrUpdateSource(Source updatedSource, string language, bool saveChanges = false)
+    public Task<Source> CreateOrUpdateSource(SourceCreateOrUpdateModel sourceCreateOrUpdateModel)
     {
         LoadSourceProcessor();
-        return _sourceProcessor.CreateOrUpdateSource(updatedSource, language, saveChanges);
+        return _sourceProcessor.CreateOrUpdateSource(sourceCreateOrUpdateModel);
     }
 
     public Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel)

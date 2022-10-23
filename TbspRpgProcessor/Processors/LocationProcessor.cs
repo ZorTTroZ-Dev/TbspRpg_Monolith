@@ -67,8 +67,10 @@ namespace TbspRpgProcessor.Processors
             locationUpdateModel.Source.AdventureId = locationUpdateModel.Location.AdventureId;
             if (string.IsNullOrEmpty(locationUpdateModel.Source.Name))
                 locationUpdateModel.Source.Name = locationUpdateModel.Location.Name;
-            var dbSource = await _sourceProcessor.CreateOrUpdateSource(
-                locationUpdateModel.Source, locationUpdateModel.Language);
+            var dbSource = await _sourceProcessor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+                Source = locationUpdateModel.Source,
+                Language = locationUpdateModel.Language
+            });
             dbLocation.SourceKey = dbSource.Key;
             
             // save the changes
