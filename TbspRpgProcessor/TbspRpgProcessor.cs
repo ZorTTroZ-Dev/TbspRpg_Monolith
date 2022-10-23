@@ -31,10 +31,7 @@ public interface ITbspRpgProcessor
     
     #region ScriptProcessor
     
-    Task<string> ExecuteScript(Guid scriptId, Guid gameId);
-    Task<string> ExecuteScript(Guid scriptId, Game game);
-    Task<string> ExecuteScript(Guid scriptId);
-    string ExecuteScript(Script script, Game game);
+    Task<string> ExecuteScript(ScriptExecuteModel scriptExecuteModel);
     Task RemoveScript(ScriptRemoveModel scriptIdRemoveModel);
     Task UpdateScript(ScriptUpdateModel scriptUpdateModel);
     
@@ -226,28 +223,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _logger);
     }
 
-    public Task<string> ExecuteScript(Guid scriptId, Guid gameId)
+    public Task<string> ExecuteScript(ScriptExecuteModel scriptExecuteModel)
     {
         LoadScriptProcessor();
-        return _scriptProcessor.ExecuteScript(scriptId, gameId);
-    }
-
-    public Task<string> ExecuteScript(Guid scriptId, Game game)
-    {
-        LoadScriptProcessor();
-        return _scriptProcessor.ExecuteScript(scriptId, game);
-    }
-
-    public Task<string> ExecuteScript(Guid scriptId)
-    {
-        LoadScriptProcessor();
-        return _scriptProcessor.ExecuteScript(scriptId);
-    }
-
-    public string ExecuteScript(Script script, Game game)
-    {
-        LoadScriptProcessor();
-        return _scriptProcessor.ExecuteScript(script, game);
+        return _scriptProcessor.ExecuteScript(scriptExecuteModel);
     }
 
     public Task RemoveScript(ScriptRemoveModel scriptIdRemoveModel)

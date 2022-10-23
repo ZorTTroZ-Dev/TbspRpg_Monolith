@@ -102,10 +102,10 @@ namespace TbspRpgProcessor.Tests
                 });
             
             tbspProcessor.Setup(service =>
-                    service.ExecuteScript(It.IsAny<Guid>()))
-                .Callback((Guid scriptId) =>
+                    service.ExecuteScript(It.IsAny<ScriptExecuteModel>()))
+                .Callback((ScriptExecuteModel scriptExecuteModel) =>
                 {
-                    if (scriptId == exceptionId)
+                    if (scriptExecuteModel.ScriptId == exceptionId)
                     {
                         throw new ArgumentException("invalid script id");
                     }

@@ -66,25 +66,41 @@ namespace TbspRpgProcessor.Processors
             // run the location exit script
             if (route.Location.ExitScriptId != null)
             {
-                await _scriptProcessor.ExecuteScript(route.Location.ExitScriptId.GetValueOrDefault(), game);
+                await _scriptProcessor.ExecuteScript(new ScriptExecuteModel()
+                {
+                    ScriptId = route.Location.ExitScriptId.GetValueOrDefault(),
+                    Game = game
+                });
             }
                 
             // run the route taken script
             if (route.RouteTakenScriptId != null)
             {
-                await _scriptProcessor.ExecuteScript(route.RouteTakenScriptId.GetValueOrDefault(), game);
+                await _scriptProcessor.ExecuteScript(new ScriptExecuteModel()
+                {
+                    ScriptId = route.RouteTakenScriptId.GetValueOrDefault(),
+                    Game = game
+                });
             }
             
             // run the location enter script
             if (route.DestinationLocation.EnterScriptId != null)
             {
-                await _scriptProcessor.ExecuteScript(route.DestinationLocation.EnterScriptId.GetValueOrDefault(), game);
+                await _scriptProcessor.ExecuteScript(new ScriptExecuteModel()
+                {
+                    ScriptId = route.DestinationLocation.EnterScriptId.GetValueOrDefault(),
+                    Game = game
+                });
             }
 
             // if we're entering the final location run the adventure completion script
             if (route.DestinationLocation.Final && game.Adventure.TerminationScriptId != null)
             {
-                await _scriptProcessor.ExecuteScript(game.Adventure.TerminationScriptId.GetValueOrDefault(), game);
+                await _scriptProcessor.ExecuteScript(new ScriptExecuteModel()
+                {
+                    ScriptId = game.Adventure.TerminationScriptId.GetValueOrDefault(),
+                    Game = game
+                });
             }
 
             // for now assume the check passed

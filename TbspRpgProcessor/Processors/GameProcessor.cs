@@ -78,7 +78,11 @@ namespace TbspRpgProcessor.Processors
             // run the initialization script for the adventure if there is one
             if (adventure.InitializationScriptId != null)
             {
-                await _scriptProcessor.ExecuteScript(adventure.InitializationScriptId.GetValueOrDefault(), game);
+                await _scriptProcessor.ExecuteScript(new ScriptExecuteModel()
+                {
+                    ScriptId = adventure.InitializationScriptId.GetValueOrDefault(),
+                    Game = game
+                });
             }
 
             // create content entry for adventure's source key
