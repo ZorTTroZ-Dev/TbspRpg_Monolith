@@ -44,7 +44,7 @@ public interface ITbspRpgProcessor
 
     Task UpdateRoute(RouteUpdateModel routeUpdateModel);
     Task RemoveRoute(RouteRemoveModel routeRemoveModel);
-    Task RemoveRoutes(List<Guid> currentRouteIds, Guid locationId);
+    Task RemoveRoutes(RoutesRemoveModel routesRemoveModel);
 
     #endregion
 
@@ -288,10 +288,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         return _routeProcessor.RemoveRoute(routeRemoveModel);
     }
 
-    public Task RemoveRoutes(List<Guid> currentRouteIds, Guid locationId)
+    public Task RemoveRoutes(RoutesRemoveModel routesRemoveModel)
     {
         LoadRouteProcessor();
-        return _routeProcessor.RemoveRoutes(currentRouteIds, locationId);
+        return _routeProcessor.RemoveRoutes(routesRemoveModel);
     }
 
     #endregion

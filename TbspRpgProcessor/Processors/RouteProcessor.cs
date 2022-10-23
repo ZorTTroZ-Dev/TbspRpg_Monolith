@@ -14,7 +14,7 @@ namespace TbspRpgProcessor.Processors
     {
         Task UpdateRoute(RouteUpdateModel routeUpdateModel);
         Task RemoveRoute(RouteRemoveModel routeRemoveModel);
-        Task RemoveRoutes(List<Guid> currentRouteIds, Guid locationId);
+        Task RemoveRoutes(RoutesRemoveModel routesRemoveModel);
     }
     
     public class RouteProcessor: IRouteProcessor
@@ -127,13 +127,13 @@ namespace TbspRpgProcessor.Processors
             await _routesService.SaveChanges();
         }
 
-        public async Task RemoveRoutes(List<Guid> currentRouteIds, Guid locationId)
+        public async Task RemoveRoutes(RoutesRemoveModel routesRemoveModel)
         {
             // get a list of routes for this location id
             // remove any routes in the db list that aren't in the given list
-            var routes = await _routesService.GetRoutesForLocation(locationId);
+            var routes = await _routesService.GetRoutesForLocation(routesRemoveModel.LocationId);
             var dbRouteIds = routes.Select(route => route.Id);
-            var idsToRemove = dbRouteIds.Except(currentRouteIds);
+            var idsToRemove = dbRouteIds.Except(routesRemoveModel.CurrentRouteIds);
             routes.Where(route => idsToRemove.Contains(route.Id))
                 .ToList()
                 .ForEach(route => _routesService.RemoveRoute(route));

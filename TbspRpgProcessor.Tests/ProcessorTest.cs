@@ -140,8 +140,8 @@ namespace TbspRpgProcessor.Tests
                 });
 
             tbspProcessor.Setup(service =>
-                    service.RemoveRoutes(It.IsAny <List<Guid>>(), It.IsAny<Guid>()))
-                .Callback((List<Guid> routeIds, Guid locationId) => { });
+                    service.RemoveRoutes(It.IsAny <RoutesRemoveModel>()))
+                .Callback((RoutesRemoveModel routesRemoveModel) => { });
             
             tbspProcessor.Setup(service =>
                     service.RemoveRoute(It.IsAny<RouteRemoveModel>()))
