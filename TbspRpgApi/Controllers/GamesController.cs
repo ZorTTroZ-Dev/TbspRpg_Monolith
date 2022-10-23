@@ -107,5 +107,26 @@ namespace TbspRpgApi.Controllers
                 return BadRequest(new { message = "couldn't get game state" });
             }
         }
+        
+        [HttpPut("state"), Authorize]
+        public async Task<IActionResult> UpdateGameState([FromBody] GameStateUpdateRequest gameStateUpdateRequest)
+        {
+            var canWriteGame = await _permissionService.CanWriteGame(GetUserId().GetValueOrDefault(),
+                gameStateUpdateRequest.GameId);
+            if (!canWriteGame)
+            {
+                return BadRequest(new { message = NotYourGameErrorMessage });
+            }
+
+            try
+            {
+                await _gamesService.UpdateGameState(gameStateUpdateRequest);
+                return Ok(null);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest((new {message = ex.Message}));
+            }
+        }
     }
 }
