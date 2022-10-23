@@ -9,7 +9,7 @@ namespace TbspRpgProcessor.Processors
 {
     public interface IMapProcessor
     {
-        Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp);
+        Task ChangeLocationViaRoute(MapChangeLocationModel mapChangeLocationModel);
     }
     
     public class MapProcessor: IMapProcessor
@@ -43,15 +43,15 @@ namespace TbspRpgProcessor.Processors
         // check if the player can take route
         //  if fail add failure content to game
         //  if pass update location id, location time stamp, add pass content to game
-        public async Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp)
+        public async Task ChangeLocationViaRoute(MapChangeLocationModel mapChangeLocationModel)
         {
-            var game = await _gamesService.GetGameByIdIncludeAdventure(gameId);
+            var game = await _gamesService.GetGameByIdIncludeAdventure(mapChangeLocationModel.GameId);
             if (game == null)
             {
                 throw new ArgumentException("invalid game id");
             }
 
-            var route = await _routesService.GetRouteById(routeId);
+            var route = await _routesService.GetRouteById(mapChangeLocationModel.RouteId);
             if (route == null)
             {
                 throw new ArgumentException("invalid route id");
@@ -66,29 +66,45 @@ namespace TbspRpgProcessor.Processors
             // run the location exit script
             if (route.Location.ExitScriptId != null)
             {
-                await _scriptProcessor.ExecuteScript(route.Location.ExitScriptId.GetValueOrDefault(), game);
+                await _scriptProcessor.ExecuteScript(new ScriptExecuteModel()
+                {
+                    ScriptId = route.Location.ExitScriptId.GetValueOrDefault(),
+                    Game = game
+                });
             }
                 
             // run the route taken script
             if (route.RouteTakenScriptId != null)
             {
-                await _scriptProcessor.ExecuteScript(route.RouteTakenScriptId.GetValueOrDefault(), game);
+                await _scriptProcessor.ExecuteScript(new ScriptExecuteModel()
+                {
+                    ScriptId = route.RouteTakenScriptId.GetValueOrDefault(),
+                    Game = game
+                });
             }
             
             // run the location enter script
             if (route.DestinationLocation.EnterScriptId != null)
             {
-                await _scriptProcessor.ExecuteScript(route.DestinationLocation.EnterScriptId.GetValueOrDefault(), game);
+                await _scriptProcessor.ExecuteScript(new ScriptExecuteModel()
+                {
+                    ScriptId = route.DestinationLocation.EnterScriptId.GetValueOrDefault(),
+                    Game = game
+                });
             }
 
             // if we're entering the final location run the adventure completion script
             if (route.DestinationLocation.Final && game.Adventure.TerminationScriptId != null)
             {
-                await _scriptProcessor.ExecuteScript(game.Adventure.TerminationScriptId.GetValueOrDefault(), game);
+                await _scriptProcessor.ExecuteScript(new ScriptExecuteModel()
+                {
+                    ScriptId = game.Adventure.TerminationScriptId.GetValueOrDefault(),
+                    Game = game
+                });
             }
 
             // for now assume the check passed
-            var secondsSinceEpoch = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds();
+            var secondsSinceEpoch = new DateTimeOffset(mapChangeLocationModel.TimeStamp).ToUnixTimeMilliseconds();
             game.LocationId = route.DestinationLocationId;
             game.LocationUpdateTimeStamp = secondsSinceEpoch;
 

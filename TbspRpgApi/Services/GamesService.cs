@@ -44,7 +44,12 @@ namespace TbspRpgApi.Services
 
         public async Task<GameRouteListContentViewModel> StartGame(Guid userId, Guid adventureId, DateTime timeStamp)
         {
-            var game = await _tbspRpgProcessor.StartGame(userId, adventureId, timeStamp);
+            var game = await _tbspRpgProcessor.StartGame(new GameStartModel()
+            {
+                UserId = userId,
+                AdventureId = adventureId,
+                TimeStamp = timeStamp
+            });
             var routesViewModelTask = _mapsService.GetCurrentRoutesForGame(game.Id);
             var position = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds() - 1;
             var contentViewModelTask = _contentsService.GetContentForGameAfterPosition(game.Id, (ulong)position);

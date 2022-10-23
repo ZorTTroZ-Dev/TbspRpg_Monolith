@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.ViewModels;
 using TbspRpgProcessor;
+using TbspRpgProcessor.Entities;
 
 namespace TbspRpgApi.Services
 {
@@ -62,7 +63,12 @@ namespace TbspRpgApi.Services
 
         public async Task<RouteListContentViewModel> ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp)
         {
-            await _tbspRpgProcessor.ChangeLocationViaRoute(gameId, routeId, timeStamp);
+             await _tbspRpgProcessor.ChangeLocationViaRoute(new MapChangeLocationModel()
+            {
+                GameId = gameId,
+                RouteId = routeId,
+                TimeStamp = timeStamp
+            });
 
             var routeListTask = GetCurrentRoutesForGame(gameId);
             var position = new DateTimeOffset(timeStamp).ToUnixTimeMilliseconds() - 1;
