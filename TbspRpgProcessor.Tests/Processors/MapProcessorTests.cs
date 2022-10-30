@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Entities;
+using TbspRpgProcessor.Entities;
 using TbspRpgSettings.Settings;
 using Xunit;
 
@@ -42,8 +43,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 new List<Content>());
             
             // act
-            Task Act() => processor.ChangeLocationViaRoute(Guid.NewGuid(),
-                testRoute.Id, DateTime.UtcNow);
+            Task Act() => processor.ChangeLocationViaRoute(new MapChangeLocationModel() {
+                GameId = Guid.NewGuid(),
+                RouteId = testRoute.Id,
+                TimeStamp = DateTime.UtcNow
+            });
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
@@ -79,10 +83,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 new List<Content>());
             
             // act
-            Task Act() => processor.ChangeLocationViaRoute(
-                testGames[0].Id,
-                Guid.NewGuid(), 
-                DateTime.UtcNow);
+            Task Act() => processor.ChangeLocationViaRoute(new MapChangeLocationModel() {
+                GameId = testGames[0].Id,
+                RouteId = Guid.NewGuid(), 
+                TimeStamp = DateTime.UtcNow
+            });
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
@@ -118,10 +123,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 new List<Content>());
             
             // act
-            Task Act() => processor.ChangeLocationViaRoute(
-                testGames[0].Id,
-                testRoute.Id,
-                DateTime.UtcNow);
+            Task Act() => processor.ChangeLocationViaRoute(new MapChangeLocationModel() {
+                GameId = testGames[0].Id,
+                RouteId = testRoute.Id,
+                TimeStamp = DateTime.UtcNow
+            });
 
             // assert
             await Assert.ThrowsAsync<Exception>(Act);
@@ -182,10 +188,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 testContents);
             
             // act
-            await processor.ChangeLocationViaRoute(
-                testGames[0].Id,
-                testRoute.Id,
-                DateTime.UtcNow);
+            await processor.ChangeLocationViaRoute(new MapChangeLocationModel() {
+                GameId = testGames[0].Id,
+                RouteId = testRoute.Id,
+                TimeStamp = DateTime.UtcNow
+            });
             
             // assert
             var game = testGames[0];
@@ -310,10 +317,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 testContents);
             
             // act
-            await processor.ChangeLocationViaRoute(
-                testGames[0].Id,
-                testRoute.Id,
-                DateTime.UtcNow);
+            await processor.ChangeLocationViaRoute(new MapChangeLocationModel() {
+                GameId = testGames[0].Id,
+                RouteId = testRoute.Id,
+                TimeStamp = DateTime.UtcNow
+            });
             
             // assert
             var game = testGames[0];
@@ -433,10 +441,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 testContents);
             
             // act
-            await processor.ChangeLocationViaRoute(
-                testGames[0].Id,
-                testRoute.Id,
-                DateTime.UtcNow);
+            await processor.ChangeLocationViaRoute(new MapChangeLocationModel() {
+                GameId = testGames[0].Id,
+                RouteId = testRoute.Id,
+                TimeStamp = DateTime.UtcNow
+            });
             
             // assert
             var game = testGames[0];

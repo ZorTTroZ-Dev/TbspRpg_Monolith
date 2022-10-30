@@ -27,12 +27,15 @@ namespace TbspRpgProcessor.Tests.Processors
                 new List<En>() {testEn});
             
             // act
-            Task Act() => processor.CreateOrUpdateSource(new Source()
-            {
-                Id = testEn.Id,
-                AdventureId = testEn.AdventureId,
-                Key = Guid.NewGuid()
-            }, Languages.ENGLISH);
+            Task Act() => processor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+                Source = new Source()
+                {
+                    Id = testEn.Id,
+                    AdventureId = testEn.AdventureId,
+                    Key = Guid.NewGuid()
+                },
+                Language = Languages.ENGLISH
+            });
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
@@ -57,12 +60,15 @@ namespace TbspRpgProcessor.Tests.Processors
             
             
             // act
-            var dbSource = await processor.CreateOrUpdateSource(new Source()
-            {
-                AdventureId = testEn.AdventureId,
-                Key = Guid.Empty,
-                Text = "new source"
-            }, Languages.ENGLISH);
+            var dbSource = await processor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+                Source = new Source()
+                {
+                    AdventureId = testEn.AdventureId,
+                    Key = Guid.Empty,
+                    Text = "new source"
+                }, 
+                Language = Languages.ENGLISH
+            });
             
             // assert
             Assert.NotNull(dbSource);
@@ -90,13 +96,16 @@ namespace TbspRpgProcessor.Tests.Processors
                 new List<En>() {testEn});
             
             // act
-            var dbSource = await processor.CreateOrUpdateSource(new Source()
-            {
-                Id = testEn.Id,
-                Key = testEn.Key,
-                AdventureId = testEn.AdventureId,
-                Text = "updated text"
-            }, Languages.ENGLISH);
+            var dbSource = await processor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+                Source = new Source()
+                {
+                    Id = testEn.Id,
+                    Key = testEn.Key,
+                    AdventureId = testEn.AdventureId,
+                    Text = "updated text"
+                },
+                Language = Languages.ENGLISH
+            });
             
             // assert
             Assert.Single(sources);

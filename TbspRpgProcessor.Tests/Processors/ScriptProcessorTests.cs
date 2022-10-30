@@ -37,7 +37,9 @@ public class ScriptProcessorTests: ProcessorTest
             null, new List<Script>() {script});
         
         // act
-        var result = await processor.ExecuteScript(script.Id);
+        var result = await processor.ExecuteScript(new ScriptExecuteModel() {
+            ScriptId = script.Id
+        });
         
         // assert
         Assert.Equal("foo", result);
@@ -76,7 +78,9 @@ public class ScriptProcessorTests: ProcessorTest
             null, new List<Script>() {script});
         
         // act
-        var result = await processor.ExecuteScript(script.Id);
+        var result = await processor.ExecuteScript(new ScriptExecuteModel() {
+            ScriptId = script.Id
+        });
         
         // assert
         Assert.Equal("foo", result);
@@ -105,7 +109,9 @@ public class ScriptProcessorTests: ProcessorTest
             null, new List<Script>() {script});
         
         // act
-        Task Act() => processor.ExecuteScript(script.Id);
+        Task Act() => processor.ExecuteScript(new ScriptExecuteModel() {
+            ScriptId = script.Id
+        });
         
         // assert
         await Assert.ThrowsAsync<LuaScriptException>(Act);
@@ -134,7 +140,9 @@ public class ScriptProcessorTests: ProcessorTest
             null, new List<Script>() {script});
         
         // act
-        Task Act() => processor.ExecuteScript(Guid.NewGuid());
+        Task Act() => processor.ExecuteScript(new ScriptExecuteModel() {
+            ScriptId = Guid.NewGuid()
+        });
         
         // assert
         await Assert.ThrowsAsync<ArgumentException>(Act);
@@ -163,7 +171,9 @@ public class ScriptProcessorTests: ProcessorTest
             null, new List<Script>() {script});
         
         // act
-        Task Act() => processor.ExecuteScript(Guid.Empty);
+        Task Act() => processor.ExecuteScript(new ScriptExecuteModel() {
+            ScriptId = Guid.Empty
+        });
         
         // assert
         await Assert.ThrowsAsync<ArgumentException>(Act);

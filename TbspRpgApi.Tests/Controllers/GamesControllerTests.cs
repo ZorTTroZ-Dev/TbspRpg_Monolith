@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Controllers;
-using TbspRpgApi.Entities;
+using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
@@ -19,7 +19,8 @@ namespace TbspRpgApi.Tests.Controllers
         private static GamesController CreateGamesController(
             ICollection<Game> games, Guid startGameExceptionId, Guid? userId)
         {
-            var service = CreateGamesService(games, startGameExceptionId);
+            var service = CreateGamesService(games, 
+                new List<Route>(), new List<Content>(), new List<En>(), startGameExceptionId);
             var controller = new GamesController(service,
                 MockPermissionService(),
                 NullLogger<GamesController>.Instance)
@@ -68,22 +69,6 @@ namespace TbspRpgApi.Tests.Controllers
             var badRequestResult = response as BadRequestObjectResult;
             Assert.NotNull(badRequestResult);
             Assert.Equal(400, badRequestResult.StatusCode);
-        }
-
-        [Fact]
-        public async void StartGame_Valid_Accepted()
-        {
-            // arrange
-            var userId = Guid.NewGuid();
-            var controller = CreateGamesController(new List<Game>(), Guid.NewGuid(), userId);
-            
-            // act
-            var response = await controller.StartGame(Guid.NewGuid());
-            
-            // assert
-            var acceptedResult = response as AcceptedResult;
-            Assert.NotNull(acceptedResult);
-            Assert.Equal(202, acceptedResult.StatusCode);
         }
 
         #endregion
@@ -327,6 +312,59 @@ namespace TbspRpgApi.Tests.Controllers
             Assert.Equal(400, badRequestResult.StatusCode);
         }
 
+        #endregion
+        
+        #region UpdateGameState
+
+        [Fact]
+        public async void UpdateGameState_ValidGameId_GameStateUpdated()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test\":\"value\"}"
+            };
+            var controller = CreateGamesController(new List<Game>() {testGame}, Guid.Empty, null);
+            
+            // act
+            var response = await controller.UpdateGameState(new GameStateUpdateRequest()
+            {
+                GameId = testGame.Id,
+                GameState = "{\"test\":\"banana\"}"
+            });
+            
+            // assert
+            var okObjectResult = response as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+        }
+
+        [Fact]
+        public async void UpdateGameState_InvalidGameId_BadRequest()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test\":\"value\"}"
+            };
+            var controller = CreateGamesController(new List<Game>() {testGame}, Guid.Empty, null);
+            
+            // act
+            var response = await controller.UpdateGameState(new GameStateUpdateRequest()
+            {
+                GameId = Guid.NewGuid(),
+                GameState = "{\"test\":\"banana\"}"
+            });
+
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+        
         #endregion
     }
 }

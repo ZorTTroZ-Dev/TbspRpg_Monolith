@@ -17,7 +17,7 @@ namespace TbspRpgApi.Tests.Controllers
             ICollection<Route> routes = null,
             Guid? changeLocationViaRouteExceptionId = null)
         {
-            var mapsService = CreateMapsService(games, routes, changeLocationViaRouteExceptionId);
+            var mapsService = CreateMapsService(games, routes, null, null, changeLocationViaRouteExceptionId);
             return new MapsController(mapsService,
                 MockPermissionService(),
                 NullLogger<MapsController>.Instance);
@@ -220,100 +220,6 @@ namespace TbspRpgApi.Tests.Controllers
 
         #endregion
 
-        #region GetRoutesForGameAfterTimeStamp
-
-        [Fact]
-        public async void GetCurrentRoutesForGameAfterTimeStamp_UpdatesExist_ReturnsRoutes()
-        {
-            // arrange
-            var testLocationId = Guid.NewGuid();
-            var testGame = new Game()
-            {
-                Id = Guid.NewGuid(),
-                LocationId = testLocationId,
-                LocationUpdateTimeStamp = 42,
-                Location = new Location()
-                {
-                    Id = testLocationId,
-                    Name = "test location",
-                    Initial = true
-                }
-            };
-            var testRoutes = new List<Route>()
-            {
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "route1",
-                    LocationId = testLocationId
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "route2",
-                    LocationId = testLocationId
-                }
-            };
-            var controller = CreateController(new List<Game>() {testGame}, testRoutes);
-            
-            // act
-            var response = await controller.GetRoutesForGameAfterTimeStamp(testGame.Id, 40);
-            
-            // assert
-            var okObjectResult = response as OkObjectResult;
-            Assert.NotNull(okObjectResult);
-            var routeViewModels = okObjectResult.Value as RouteListViewModel;
-            Assert.NotNull(routeViewModels);
-            Assert.Equal(2, routeViewModels.Routes.Count);
-        }
-        
-        [Fact]
-        public async void GetCurrentRoutesForGameAfterTimeStamp_NoUpdates_ReturnsRoutes()
-        {
-            // arrange
-            var testLocationId = Guid.NewGuid();
-            var testGame = new Game()
-            {
-                Id = Guid.NewGuid(),
-                LocationId = testLocationId,
-                LocationUpdateTimeStamp = 42,
-                Location = new Location()
-                {
-                    Id = testLocationId,
-                    Name = "test location",
-                    Initial = true
-                }
-            };
-            var testRoutes = new List<Route>()
-            {
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "route1",
-                    LocationId = testLocationId
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "route2",
-                    LocationId = testLocationId
-                }
-            };
-            var controller = CreateController(new List<Game>() {testGame}, testRoutes);
-            
-            // act
-            var response = await controller.GetRoutesForGameAfterTimeStamp(testGame.Id, 43);
-            
-            // assert
-            var okObjectResult = response as OkObjectResult;
-            Assert.NotNull(okObjectResult);
-            var routeViewModels = okObjectResult.Value as RouteListViewModel;
-            Assert.NotNull(routeViewModels);
-            Assert.Empty(routeViewModels.Routes);
-        }
-
-        #endregion
-
         #region ChangeLocationViaRoute
 
         [Fact]
@@ -348,39 +254,6 @@ namespace TbspRpgApi.Tests.Controllers
             var badRequestResult = response as BadRequestObjectResult;
             Assert.NotNull(badRequestResult);
             Assert.Equal(400, badRequestResult.StatusCode);
-        }
-
-        [Fact]
-        public async void ChangeLocationViaRoute_Valid_Accepted()
-        {
-            // arrange
-            var testLocationId = Guid.NewGuid();
-            var testGame = new Game()
-            {
-                Id = Guid.NewGuid(),
-                LocationId = testLocationId,
-                LocationUpdateTimeStamp = 42
-            };
-            var testRoutes = new List<Route>()
-            {
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "route1",
-                    LocationId = testLocationId
-                }
-            };
-            var controller = CreateController(
-                new List<Game>() {testGame},
-                testRoutes);
-            
-            // act
-            var response = await controller.ChangeLocationViaRoute(testGame.Id, testRoutes[0].Id);
-            
-            // assert
-            var acceptedResult = response as AcceptedResult;
-            Assert.NotNull(acceptedResult);
-            Assert.Equal(202, acceptedResult.StatusCode);
         }
 
         #endregion

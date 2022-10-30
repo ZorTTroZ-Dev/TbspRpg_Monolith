@@ -21,7 +21,7 @@ public interface ITbspRpgProcessor
 
     #region SourceProcessor
 
-    Task<Source> CreateOrUpdateSource(Source updatedSource, string language, bool saveChanges = false);
+    Task<Source> CreateOrUpdateSource(SourceCreateOrUpdateModel sourceCreateOrUpdateModel);
     Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
     Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
     Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel);
@@ -31,10 +31,7 @@ public interface ITbspRpgProcessor
     
     #region ScriptProcessor
     
-    Task<string> ExecuteScript(Guid scriptId, Guid gameId);
-    Task<string> ExecuteScript(Guid scriptId, Game game);
-    Task<string> ExecuteScript(Guid scriptId);
-    string ExecuteScript(Script script, Game game);
+    Task<string> ExecuteScript(ScriptExecuteModel scriptExecuteModel);
     Task RemoveScript(ScriptRemoveModel scriptIdRemoveModel);
     Task UpdateScript(ScriptUpdateModel scriptUpdateModel);
     
@@ -44,37 +41,35 @@ public interface ITbspRpgProcessor
 
     Task UpdateRoute(RouteUpdateModel routeUpdateModel);
     Task RemoveRoute(RouteRemoveModel routeRemoveModel);
-    Task RemoveRoutes(List<Guid> currentRouteIds, Guid locationId);
+    Task RemoveRoutes(RoutesRemoveModel routesRemoveModel);
 
     #endregion
 
     #region MapProcessor
 
-    Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp);
+    Task ChangeLocationViaRoute(MapChangeLocationModel mapChangeLocationModel);
 
     #endregion
 
     #region LocationProcessor
 
-    Task UpdateLocation(Location location, Source source, string language);
+    Task UpdateLocation(LocationUpdateModel locationUpdateModel);
     Task RemoveLocation(LocationRemoveModel locationRemoveModel);
-    Task RemoveLocation(Location location, bool save = true);
-    Task RemoveLocations(ICollection<Location> locations, bool save = true);
+    Task RemoveLocations(LocationsRemoveModel locationsRemoveModel);
 
     #endregion
 
     #region GameProcessor
 
-    Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
+    Task<Game> StartGame(GameStartModel gameStartModel);
     Task RemoveGame(GameRemoveModel gameRemoveModel);
-    Task RemoveGame(Game game, bool save = true);
-    Task RemoveGames(ICollection<Game> games, bool save = true);
+    Task RemoveGames(GamesRemoveModel gamesRemoveModel);
 
     #endregion
 
     #region ContentProcessor
 
-    Task<string> GetContentTextForKey(Guid gameId, Guid sourceKey, bool processed = false);
+    Task<string> GetContentTextForKey(ContentTextForKeyModel contentTextForKeyModel);
 
     #endregion
     
@@ -182,10 +177,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _logger);
     }
 
-    public Task<Source> CreateOrUpdateSource(Source updatedSource, string language, bool saveChanges = false)
+    public Task<Source> CreateOrUpdateSource(SourceCreateOrUpdateModel sourceCreateOrUpdateModel)
     {
         LoadSourceProcessor();
-        return _sourceProcessor.CreateOrUpdateSource(updatedSource, language, saveChanges);
+        return _sourceProcessor.CreateOrUpdateSource(sourceCreateOrUpdateModel);
     }
 
     public Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel)
@@ -228,28 +223,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _logger);
     }
 
-    public Task<string> ExecuteScript(Guid scriptId, Guid gameId)
+    public Task<string> ExecuteScript(ScriptExecuteModel scriptExecuteModel)
     {
         LoadScriptProcessor();
-        return _scriptProcessor.ExecuteScript(scriptId, gameId);
-    }
-
-    public Task<string> ExecuteScript(Guid scriptId, Game game)
-    {
-        LoadScriptProcessor();
-        return _scriptProcessor.ExecuteScript(scriptId, game);
-    }
-
-    public Task<string> ExecuteScript(Guid scriptId)
-    {
-        LoadScriptProcessor();
-        return _scriptProcessor.ExecuteScript(scriptId);
-    }
-
-    public string ExecuteScript(Script script, Game game)
-    {
-        LoadScriptProcessor();
-        return _scriptProcessor.ExecuteScript(script, game);
+        return _scriptProcessor.ExecuteScript(scriptExecuteModel);
     }
 
     public Task RemoveScript(ScriptRemoveModel scriptIdRemoveModel)
@@ -290,10 +267,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         return _routeProcessor.RemoveRoute(routeRemoveModel);
     }
 
-    public Task RemoveRoutes(List<Guid> currentRouteIds, Guid locationId)
+    public Task RemoveRoutes(RoutesRemoveModel routesRemoveModel)
     {
         LoadRouteProcessor();
-        return _routeProcessor.RemoveRoutes(currentRouteIds, locationId);
+        return _routeProcessor.RemoveRoutes(routesRemoveModel);
     }
 
     #endregion
@@ -313,10 +290,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _logger);
     }
     
-    public Task ChangeLocationViaRoute(Guid gameId, Guid routeId, DateTime timeStamp)
+    public Task ChangeLocationViaRoute(MapChangeLocationModel mapChangeLocationModel)
     {
         LoadMapProcessor();
-        return _mapProcessor.ChangeLocationViaRoute(gameId, routeId, timeStamp);
+        return _mapProcessor.ChangeLocationViaRoute(mapChangeLocationModel);
     }
 
     #endregion
@@ -333,10 +310,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _logger);
     }
 
-    public Task UpdateLocation(Location location, Source source, string language)
+    public Task UpdateLocation(LocationUpdateModel locationUpdateModel)
     {
         LoadLocationProcessor();
-        return _locationProcessor.UpdateLocation(location, source, language);
+        return _locationProcessor.UpdateLocation(locationUpdateModel);
     }
 
     public Task RemoveLocation(LocationRemoveModel locationRemoveModel)
@@ -345,16 +322,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         return _locationProcessor.RemoveLocation(locationRemoveModel);
     }
 
-    public Task RemoveLocation(Location location, bool save = true)
+    public Task RemoveLocations(LocationsRemoveModel locationsRemoveModel)
     {
         LoadLocationProcessor();
-        return _locationProcessor.RemoveLocation(location, save);
-    }
-
-    public Task RemoveLocations(ICollection<Location> locations, bool save = true)
-    {
-        LoadLocationProcessor();
-        return _locationProcessor.RemoveLocations(locations, save);
+        return _locationProcessor.RemoveLocations(locationsRemoveModel);
     }
 
     #endregion
@@ -374,10 +345,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _logger);
     }
 
-    public Task<Game> StartGame(Guid userId, Guid adventureId, DateTime timeStamp)
+    public Task<Game> StartGame(GameStartModel gameStartModel)
     {
         LoadGameProcessor();
-        return _gameProcessor.StartGame(userId, adventureId, timeStamp);
+        return _gameProcessor.StartGame(gameStartModel);
     }
 
     public Task RemoveGame(GameRemoveModel gameRemoveModel)
@@ -386,16 +357,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         return _gameProcessor.RemoveGame(gameRemoveModel);
     }
 
-    public Task RemoveGame(Game game, bool save = true)
+    public Task RemoveGames(GamesRemoveModel gamesRemoveModel)
     {
         LoadGameProcessor();
-        return _gameProcessor.RemoveGame(game, save);
-    }
-
-    public Task RemoveGames(ICollection<Game> games, bool save = true)
-    {
-        LoadGameProcessor();
-        return _gameProcessor.RemoveGames(games, save);
+        return _gameProcessor.RemoveGames(gamesRemoveModel);
     }
 
     #endregion
@@ -409,10 +374,10 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _sourceProcessor, _logger);
     }
     
-    public Task<string> GetContentTextForKey(Guid gameId, Guid sourceKey, bool processed = false)
+    public Task<string> GetContentTextForKey(ContentTextForKeyModel contentTextForKeyModel)
     {
         LoadContentProcessor();
-        return _contentProcessor.GetContentTextForKey(gameId, sourceKey, processed);
+        return _contentProcessor.GetContentTextForKey(contentTextForKeyModel);
     }
 
     #endregion

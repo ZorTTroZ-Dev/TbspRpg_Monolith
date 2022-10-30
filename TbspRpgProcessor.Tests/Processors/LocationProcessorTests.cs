@@ -42,19 +42,22 @@ namespace TbspRpgProcessor.Tests.Processors
                 sources);
             
             // act
-            Task Act() => processor.UpdateLocation(new Location()
-            {
-                Id = Guid.NewGuid(),
-                Name = "updated location name",
-                Initial = false,
-                SourceKey = testLocation.SourceKey
-            }, new En()
-            {
-                Id = testSource.Id,
-                Key = testSource.Key,
-                Name = "test location",
-                Text = "updated source"
-            }, Languages.ENGLISH);
+            Task Act() => processor.UpdateLocation(new LocationUpdateModel() {
+                Location = new Location() {
+                    Id = Guid.NewGuid(),
+                    Name = "updated location name",
+                    Initial = false,
+                    SourceKey = testLocation.SourceKey
+                },
+                Source = new En()
+                {
+                    Id = testSource.Id,
+                    Key = testSource.Key,
+                    Name = "test location",
+                    Text = "updated source"
+                },
+                Language = Languages.ENGLISH
+            });
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
@@ -82,16 +85,20 @@ namespace TbspRpgProcessor.Tests.Processors
                 sources);
             
             // act
-            await processor.UpdateLocation(new Location()
-            {
-                Id = testLocation.Id,
-                Name = "updated location name",
-                Initial = true
-            }, new En()
-            {
-                Key = Guid.Empty,
-                Text = "updated source"
-            }, Languages.ENGLISH);
+            await processor.UpdateLocation(new LocationUpdateModel() {
+                Location = new Location()
+                {
+                    Id = testLocation.Id,
+                    Name = "updated location name",
+                    Initial = true
+                },
+                Source = new En()
+                {
+                    Key = Guid.Empty,
+                    Text = "updated source"
+                },
+                Language = Languages.ENGLISH
+            });
 
             // assert
             Assert.Single(sources);
@@ -130,19 +137,23 @@ namespace TbspRpgProcessor.Tests.Processors
                 sources);
             
             // act
-            Task Act() => processor.UpdateLocation(new Location()
-            {
-                Id = testLocation.Id,
-                Name = "updated location name",
-                Initial = false,
-                SourceKey = testLocation.SourceKey
-            }, new En()
-            {
-                Id = testSource.Id,
-                Key = Guid.NewGuid(),
-                Name = "test location",
-                Text = "updated source"
-            }, Languages.ENGLISH);
+            Task Act() => processor.UpdateLocation(new LocationUpdateModel() {
+                Location = new Location()
+                {
+                    Id = testLocation.Id,
+                    Name = "updated location name",
+                    Initial = false,
+                    SourceKey = testLocation.SourceKey
+                },
+                Source = new En()
+                {
+                    Id = testSource.Id,
+                    Key = Guid.NewGuid(),
+                    Name = "test location",
+                    Text = "updated source"
+                },
+                Language = Languages.ENGLISH
+            });
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
@@ -177,19 +188,23 @@ namespace TbspRpgProcessor.Tests.Processors
                 sources);
             
             // act
-            await processor.UpdateLocation(new Location()
-            {
-                Id = testLocation.Id,
-                Name = "updated location name",
-                Initial = false,
-                SourceKey = testLocation.SourceKey
-            }, new En()
-            {
-                Id = testSource.Id,
-                Key = testLocation.SourceKey,
-                Name = "test location",
-                Text = "updated source"
-            }, Languages.ENGLISH);
+            await processor.UpdateLocation(new LocationUpdateModel() {
+                Location = new Location()
+                {
+                    Id = testLocation.Id,
+                    Name = "updated location name",
+                    Initial = false,
+                    SourceKey = testLocation.SourceKey
+                },
+                Source = new En()
+                {
+                    Id = testSource.Id,
+                    Key = testLocation.SourceKey,
+                    Name = "test location",
+                    Text = "updated source"
+                },
+                Language = Languages.ENGLISH
+            });
             
             // assert
             Assert.Single(sources);
@@ -214,18 +229,22 @@ namespace TbspRpgProcessor.Tests.Processors
                 sources);
             
             // act
-            await processor.UpdateLocation(new Location()
-            {
-                Id = Guid.Empty,
-                Name = "new location name",
-                Initial = false,
-                SourceKey = Guid.Empty
-            }, new En()
-            {
-                Key = Guid.Empty,
-                Name = "new location name",
-                Text = "updated source"
-            }, Languages.ENGLISH);
+            await processor.UpdateLocation(new LocationUpdateModel() {
+                Location = new Location()
+                {
+                    Id = Guid.Empty,
+                    Name = "new location name",
+                    Initial = false,
+                    SourceKey = Guid.Empty
+                },
+                Source = new En()
+                {
+                    Key = Guid.Empty,
+                    Name = "new location name",
+                    Text = "updated source"
+                },
+                Language = Languages.ENGLISH
+            });
             
             // assert
             Assert.Single(sources);
@@ -403,9 +422,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 sources);
             
             // act
-            await processor.RemoveLocations(new List<Location>()
-            {
-                testLocation, testLocationTwo
+            await processor.RemoveLocations(new LocationsRemoveModel() {
+                Locations = new List<Location>()
+                {
+                    testLocation, testLocationTwo
+                }
             });
             
             // assert

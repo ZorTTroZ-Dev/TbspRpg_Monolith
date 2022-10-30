@@ -194,95 +194,6 @@ namespace TbspRpgApi.Tests.Services
 
         #endregion
 
-        #region GetCurrentRoutesForGameAfterTimeStamp
-
-        [Fact]
-        public async void GetCurrentRoutesForGameAfterTimeStamp_NewRoutes_ReturnRoutes()
-        {
-            // arrange
-            var testLocationId = Guid.NewGuid();
-            var testGame = new Game()
-            {
-                Id = Guid.NewGuid(),
-                LocationId = testLocationId,
-                LocationUpdateTimeStamp = 42,
-                Location = new Location()
-                {
-                    Id = testLocationId,
-                    Name = "test location",
-                    Initial = false
-                }
-            };
-            var testRoutes = new List<Route>()
-            {
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "route1",
-                    LocationId = testLocationId
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "route2",
-                    LocationId = testLocationId
-                }
-            };
-            var service = CreateMapsService(new List<Game>() {testGame}, testRoutes);
-            
-            // act
-            var routes = 
-                await service.GetCurrentRoutesForGameAfterTimeStamp(testGame.Id, 15);
-            
-            // assert
-            Assert.Equal(2, routes.Routes.Count);
-            Assert.NotNull(routes.Routes.FirstOrDefault(r => r.Name == "route1"));
-        }
-        
-        [Fact]
-        public async void GetCurrentRoutesForGameAfterTimeStamp_NoNewRoutes_ReturnEmpty()
-        {
-            // arrange
-            var testLocationId = Guid.NewGuid();
-            var testGame = new Game()
-            {
-                Id = Guid.NewGuid(),
-                LocationId = testLocationId,
-                LocationUpdateTimeStamp = 42,
-                Location = new Location()
-                {
-                    Id = testLocationId,
-                    Name = "test location",
-                    Initial = true
-                }
-            };
-            var testRoutes = new List<Route>()
-            {
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "route1",
-                    LocationId = testLocationId
-                },
-                new()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "route2",
-                    LocationId = testLocationId
-                }
-            };
-            var service = CreateMapsService(new List<Game>() {testGame}, testRoutes);
-            
-            // act
-            var routes = 
-                await service.GetCurrentRoutesForGameAfterTimeStamp(testGame.Id, 50);
-            
-            // assert
-            Assert.Empty(routes.Routes);
-        }
-
-        #endregion
-
         #region ChangeLocationViaRoute
 
         [Fact]
@@ -290,7 +201,7 @@ namespace TbspRpgApi.Tests.Services
         {
             // arrange
             var exceptionId = Guid.NewGuid();
-            var service = CreateMapsService(null, null, exceptionId);
+            var service = CreateMapsService(null, null, null, null, exceptionId);
             
             // act
             Task Act() => service.ChangeLocationViaRoute(exceptionId, Guid.NewGuid(), DateTime.UtcNow);

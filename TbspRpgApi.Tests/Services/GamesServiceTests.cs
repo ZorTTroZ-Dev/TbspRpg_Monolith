@@ -18,26 +18,13 @@ namespace TbspRpgApi.Tests.Services
         {
             // arrange
             var exceptionId = Guid.NewGuid();
-            var service = CreateGamesService(new List<Game>(), exceptionId);
+            var service = CreateGamesService(new List<Game>(), null, null, null, exceptionId);
             
             // act
             Task Act() => service.StartGame(exceptionId, Guid.NewGuid(), DateTime.Now);
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
-        }
-
-        [Fact]
-        public async void StartGame_GameStarted()
-        {
-            // arrange
-            var service = CreateGamesService(new List<Game>());
-            
-            // act
-            await service.StartGame(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now);
-            
-            // assert
-            
         }
 
         #endregion
@@ -126,7 +113,7 @@ namespace TbspRpgApi.Tests.Services
         {
             // arrange
             var exceptionId = Guid.NewGuid();
-            var service = CreateGamesService(new List<Game>(), exceptionId);
+            var service = CreateGamesService(new List<Game>(), null, null, null, exceptionId);
             
             // act
             Task Act() => service.DeleteGame(exceptionId);
@@ -208,6 +195,56 @@ namespace TbspRpgApi.Tests.Services
 
             // assert
             await Assert.ThrowsAsync<System.Text.Json.JsonException>(Act);
+        }
+
+        #endregion
+        
+        #region UpdateGameState
+
+        [Fact]
+        public async void UpdateGameState_ValidGameId_GameStateUpdated()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test\":\"value\"}"
+            };
+            var service = CreateGamesService(new List<Game>() {testGame});
+            
+            // act
+            await service.UpdateGameState(new GameStateUpdateRequest()
+            {
+                GameId = testGame.Id,
+                GameState = "{\"test\":\"banana\"}"
+            });
+            
+            // assert
+            Assert.Equal("{\"test\":\"banana\"}", testGame.GameState);
+        }
+
+        [Fact]
+        public async void UpdateGameState_InvalidGameId_ExceptionThrown()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                GameState = "{\"test\":\"value\"}"
+            };
+            var service = CreateGamesService(new List<Game>() {testGame});
+            
+            // act
+            Task Act() => service.UpdateGameState(new GameStateUpdateRequest()
+            {
+                GameId = Guid.NewGuid(),
+                GameState = "{\"test\":\"banana\"}"
+            });
+
+            // assert
+            await Assert.ThrowsAsync<NullReferenceException>(Act);
         }
 
         #endregion

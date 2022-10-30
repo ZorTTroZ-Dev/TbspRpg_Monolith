@@ -50,8 +50,7 @@ namespace TbspRpgApi.Controllers
                 return BadRequest(new { message = NotYourGameErrorMessage });
             try
             {
-                await _mapsService.ChangeLocationViaRoute(gameId, routeId, DateTime.UtcNow);
-                return Accepted();
+                return Ok(await _mapsService.ChangeLocationViaRoute(gameId, routeId, DateTime.UtcNow));
             }
             catch (Exception ex)
             {
@@ -67,23 +66,6 @@ namespace TbspRpgApi.Controllers
             try
             {
                 var routes = await _mapsService.GetCurrentRoutesForGame(gameId);
-                return Ok(routes);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new {message = ex.Message});
-            }
-        }
-        
-        [HttpGet("routes/after/{timeStamp}"), Authorize]
-        public async Task<IActionResult> GetRoutesForGameAfterTimeStamp(Guid gameId, long timeStamp) {
-            var canAccessGame = await _permissionService.CanReadGame(GetUserId().GetValueOrDefault(), gameId);
-            if(!canAccessGame)
-                return BadRequest(new { message = NotYourGameErrorMessage });
-            try
-            {
-                var routes = await _mapsService.GetCurrentRoutesForGameAfterTimeStamp(
-                    gameId, timeStamp);
                 return Ok(routes);
             }
             catch (Exception ex)

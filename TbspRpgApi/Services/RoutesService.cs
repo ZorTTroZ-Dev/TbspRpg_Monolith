@@ -51,8 +51,10 @@ namespace TbspRpgApi.Services
         {
             // remove any routes
             var routeIds = updateRouteRequests.Select(routeRequest => routeRequest.route.Id).ToList();
-            await _tbspRpgProcessor.RemoveRoutes(routeIds,
-                updateRouteRequests.First().route.LocationId);
+            await _tbspRpgProcessor.RemoveRoutes(new RoutesRemoveModel() {
+                CurrentRouteIds = routeIds,
+                LocationId = updateRouteRequests.First().route.LocationId
+            });
             
             foreach (var updateRouteRequest in updateRouteRequests)
             {

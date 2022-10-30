@@ -102,10 +102,10 @@ namespace TbspRpgProcessor.Tests
                 });
             
             tbspProcessor.Setup(service =>
-                    service.ExecuteScript(It.IsAny<Guid>()))
-                .Callback((Guid scriptId) =>
+                    service.ExecuteScript(It.IsAny<ScriptExecuteModel>()))
+                .Callback((ScriptExecuteModel scriptExecuteModel) =>
                 {
-                    if (scriptId == exceptionId)
+                    if (scriptExecuteModel.ScriptId == exceptionId)
                     {
                         throw new ArgumentException("invalid script id");
                     }
@@ -140,8 +140,8 @@ namespace TbspRpgProcessor.Tests
                 });
 
             tbspProcessor.Setup(service =>
-                    service.RemoveRoutes(It.IsAny <List<Guid>>(), It.IsAny<Guid>()))
-                .Callback((List<Guid> routeIds, Guid locationId) => { });
+                    service.RemoveRoutes(It.IsAny <RoutesRemoveModel>()))
+                .Callback((RoutesRemoveModel routesRemoveModel) => { });
             
             tbspProcessor.Setup(service =>
                     service.RemoveRoute(It.IsAny<RouteRemoveModel>()))
@@ -154,30 +154,30 @@ namespace TbspRpgProcessor.Tests
                 });
             
             tbspProcessor.Setup(service =>
-                    service.ChangeLocationViaRoute(It.IsAny<Guid>(), It.IsAny<Guid>(),It.IsAny<DateTime>()))
-                .Callback((Guid gameId, Guid routeId, DateTime timeStamp) =>
+                    service.ChangeLocationViaRoute(It.IsAny<MapChangeLocationModel>()))
+                .Callback((MapChangeLocationModel mapChangeLocationModel) =>
                 {
-                    if (gameId == exceptionId)
+                    if (mapChangeLocationModel.GameId == exceptionId)
                     {
                         throw new ArgumentException("can't change location");
                     }
                 });
             
             tbspProcessor.Setup(service =>
-                    service.UpdateLocation(It.IsAny<Location>(), It.IsAny<Source>(), It.IsAny<string>()))
-                .Callback((Location location, Source source, string language) =>
+                    service.UpdateLocation(It.IsAny<LocationUpdateModel>()))
+                .Callback((LocationUpdateModel locationUpdateModel) =>
                 {
-                    if (location.Id == exceptionId)
+                    if (locationUpdateModel.Location.Id == exceptionId)
                     {
                         throw new ArgumentException("can't update location");
                     }
                 });
             
             tbspProcessor.Setup(service =>
-                    service.StartGame(It.IsAny<Guid>(), It.IsAny<Guid>(),It.IsAny<DateTime>()))
-                .ReturnsAsync((Guid userId, Guid adventureId, DateTime timeStamp) =>
+                    service.StartGame(It.IsAny<GameStartModel>()))
+                .ReturnsAsync((GameStartModel gameStartModel) =>
                 {
-                    if (userId == exceptionId)
+                    if (gameStartModel.UserId == exceptionId)
                     {
                         throw new ArgumentException("can't start game");
                     }

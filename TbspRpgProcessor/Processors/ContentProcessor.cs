@@ -8,7 +8,7 @@ namespace TbspRpgProcessor.Processors
 {
     public interface IContentProcessor
     {
-        Task<string> GetContentTextForKey(Guid gameId, Guid sourceKey, bool processed = false);
+        Task<string> GetContentTextForKey(ContentTextForKeyModel contentTextForKeyModel);
     }
     
     public class ContentProcessor : IContentProcessor
@@ -27,18 +27,18 @@ namespace TbspRpgProcessor.Processors
             _logger = logger;
         }
 
-        public async Task<string> GetContentTextForKey(Guid gameId, Guid sourceKey, bool processed = false)
+        public async Task<string> GetContentTextForKey(ContentTextForKeyModel contentTextForKeyModel)
         {
-            var game = await _gamesService.GetGameById(gameId);
+            var game = await _gamesService.GetGameById(contentTextForKeyModel.GameId);
             if (game == null)
                 throw new ArgumentException("invalid game id");
 
             var dbSource = await _sourceProcessor.GetSourceForKey(new SourceForKeyModel()
             {
-                Key = sourceKey,
+                Key = contentTextForKeyModel.SourceKey,
                 AdventureId = game.AdventureId,
                 Language = game.Language,
-                Processed = processed
+                Processed = contentTextForKeyModel.Processed
             });
             
             return dbSource?.Text;

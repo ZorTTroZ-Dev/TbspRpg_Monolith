@@ -634,7 +634,10 @@ namespace TbspRpgProcessor.Tests.Processors
                 testRoutes);
             
             // act
-            await processor.RemoveRoutes(new List<Guid>() {testRouteTwo.Id}, testRoute.LocationId);
+            await processor.RemoveRoutes(new RoutesRemoveModel() {
+                CurrentRouteIds = new List<Guid>() { testRouteTwo.Id },
+                LocationId = testRoute.LocationId
+            });
             
             // assert
             Assert.Single(testRoutes);
@@ -665,7 +668,10 @@ namespace TbspRpgProcessor.Tests.Processors
                 testRoutes);
             
             // act
-            await processor.RemoveRoutes(new List<Guid>() {testRoute.Id, testRouteTwo.Id}, testRoute.LocationId);
+            await processor.RemoveRoutes(new RoutesRemoveModel() {
+                CurrentRouteIds = new List<Guid>() { testRoute.Id, testRouteTwo.Id },
+                LocationId = testRoute.LocationId
+            });
             
             // assert
             Assert.Equal(2, testRoutes.Count);
@@ -695,7 +701,10 @@ namespace TbspRpgProcessor.Tests.Processors
                 testRoutes);
             
             // act
-            await processor.RemoveRoutes(new List<Guid>(), testRoute.LocationId);
+            await processor.RemoveRoutes(new RoutesRemoveModel() {
+                CurrentRouteIds = new List<Guid>(),
+                LocationId = testRoute.LocationId
+            });
             
             // assert
             Assert.Empty(testRoutes);

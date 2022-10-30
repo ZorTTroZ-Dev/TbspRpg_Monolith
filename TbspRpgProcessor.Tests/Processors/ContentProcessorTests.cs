@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using TbspRpgApi.Entities;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Entities;
+using TbspRpgProcessor.Entities;
 using TbspRpgSettings.Settings;
 using Xunit;
 
@@ -40,7 +41,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 testGames);
 
             // act
-            Task Act() => processor.GetContentTextForKey(Guid.NewGuid(), testSource.Key);
+            Task Act() => processor.GetContentTextForKey(new ContentTextForKeyModel()
+            {
+                GameId = Guid.NewGuid(),
+                SourceKey = testSource.Key
+            });
 
             // assert
             await Assert.ThrowsAsync<ArgumentException>(Act);
@@ -72,7 +77,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 testGames);
             
             // act
-            var source = await processor.GetContentTextForKey(testGame.Id, testSource.Key);
+            var source = await processor.GetContentTextForKey(new ContentTextForKeyModel()
+            {
+                GameId = testGame.Id,
+                SourceKey = testSource.Key
+            });
             
             // assert
             Assert.NotNull(source);
@@ -106,7 +115,11 @@ namespace TbspRpgProcessor.Tests.Processors
                 testGames);
             
             // act
-            var source = await processor.GetContentTextForKey(testGame.Id, testSource.Key);
+            var source = await processor.GetContentTextForKey(new ContentTextForKeyModel()
+            {
+                GameId = testGame.Id,
+                SourceKey = testSource.Key
+            });
             
             // assert
             Assert.NotNull(source);

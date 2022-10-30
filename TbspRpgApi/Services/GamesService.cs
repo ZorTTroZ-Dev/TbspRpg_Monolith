@@ -13,35 +13,56 @@ namespace TbspRpgApi.Services
 {
     public interface IGamesService
     {
-        Task StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
+        Task<GameRouteListContentViewModel> StartGame(Guid userId, Guid adventureId, DateTime timeStamp);
         Task<GameViewModel> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId);
         Task<List<GameUserViewModel>> GetGames(GameFilterRequest gameFilterRequest);
         Task DeleteGame(Guid gameId);
         Task<JsonObject> GetGameState(Guid gameId);
+        Task UpdateGameState(GameStateUpdateRequest updateRequest);
     }
     
     public class GamesService : IGamesService
     {
         private readonly TbspRpgDataLayer.Services.IGamesService _gamesService;
+        private readonly IContentsService _contentsService;
+        private readonly IMapsService _mapsService;
         private readonly ITbspRpgProcessor _tbspRpgProcessor;
         private readonly ILogger<GamesService> _logger;
 
         public GamesService(
             ITbspRpgProcessor tbspRpgProcessor,
             TbspRpgDataLayer.Services.IGamesService gamesService,
+            IContentsService contentsService,
+            IMapsService mapsService,
             ILogger<GamesService> logger)
         {
             _tbspRpgProcessor = tbspRpgProcessor;
             _gamesService = gamesService;
+            _contentsService = contentsService;
+            _mapsService = mapsService;
             _logger = logger;
         }
 
-        public async Task StartGame(Guid userId, Guid adventureId, DateTime timeStamp)
+        public async Task<GameRouteListContentViewModel> StartGame(Guid userId, Guid adventureId, DateTime timeStamp)
         {
-            //this may eventually become sending a message to rabbit mq or another
-            //messaging service which will then pass messages to worker processes
-            //for now we're calling directly
-            await _tbspRpgProcessor.StartGame(userId, adventureId, timeStamp);
+            var game = await _tbspRpgProcessor.StartGame(new GameStartModel()
+            {
+                UserId = userId,
+                AdventureId = adventureId,
+                TimeStamp = timeStamp
+            });
+            var routesViewModel = await _mapsService.GetCurrentRoutesForGame(game.Id);
+            var contentViewModel = await _contentsService.GetPartialContentForGame(game.Id, new ContentFilterRequest()
+            {
+                Count = 10,
+                Direction = "b"
+            });
+            return new GameRouteListContentViewModel()
+            {
+                Game = new GameViewModel(game),
+                Routes = routesViewModel,
+                Contents = contentViewModel
+            };
         }
 
         public async Task<GameViewModel> GetGameByAdventureIdAndUserId(Guid adventureId, Guid userId)
@@ -73,6 +94,13 @@ namespace TbspRpgApi.Services
             var game = await _gamesService.GetGameById(gameId);
             game.LoadGameStateJson();
             return game.GameStateJson;
+        }
+
+        public async Task UpdateGameState(GameStateUpdateRequest updateRequest)
+        {
+            var game = await _gamesService.GetGameById(updateRequest.GameId);
+            game.GameState = updateRequest.GameState;
+            await _gamesService.SaveChanges();
         }
     }
 }
