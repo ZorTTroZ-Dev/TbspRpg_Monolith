@@ -27,6 +27,7 @@ namespace TbspRpgApi.Services
     {
         private User User { get; set; }
         private Adventure Adventure { get; set; }
+        private Game Game { get; set; }
         private Script Script { get; set; }
         private Route Route { get; set; }
         private Location Location { get; set; }
@@ -69,6 +70,11 @@ namespace TbspRpgApi.Services
         private async Task LoadAdventure(Guid adventureId)
         {
             Adventure ??= await _adventuresService.GetAdventureById(adventureId);
+        }
+        
+        private async Task LoadGame(Guid gameId)
+        {
+            Game ??= await _gamesService.GetGameById(gameId);
         }
 
         private async Task LoadScript(Guid scriptId)
@@ -143,16 +149,18 @@ namespace TbspRpgApi.Services
                    || await CanAccessLocation(userId, locationId);
         }
 
-        private bool CanAccessAdventure(Guid userId)
+        private async Task<bool> CanAccessAdventure(Guid userId, Guid adventureId)
         {
+            await LoadAdventure(adventureId);
             if (Adventure == null)
                 return false;
 
             return Adventure.CreatedByUserId == userId;
         }
 
-        private bool IsAdventurePublished()
+        private async Task<bool> IsAdventurePublished(Guid adventureId)
         {
+            await LoadAdventure(adventureId);
             if (Adventure == null)
                 return false;
 
@@ -161,39 +169,43 @@ namespace TbspRpgApi.Services
 
         public async Task<bool> CanReadAdventure(Guid userId, Guid adventureId)
         {
-            await LoadAdventure(adventureId);
             return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.ReadAdventure)
-                   || CanAccessAdventure(userId)
-                   || IsAdventurePublished();
+                   || await CanAccessAdventure(userId, adventureId)
+                   || await IsAdventurePublished(adventureId);
         }
 
         public async Task<bool> CanWriteAdventure(Guid userId, Guid adventureId)
         {
-            await LoadAdventure(adventureId);
             return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.WriteAdventure)
                    || await IsInGroup(userId, TbspRpgSettings.Settings.Permissions.AdminGroup)
-                   || CanAccessAdventure(userId);
+                   || await CanAccessAdventure(userId, adventureId);
         }
 
         private async Task<bool> CanAccessGame(Guid userId, Guid gameId)
         {
-            var game = await _gamesService.GetGameById(gameId);
-            if (game == null)
+            await LoadGame(gameId);
+            if (Game == null)
                 return false;
 
-            return game.UserId == userId;
+            return Game.UserId == userId;
         }
 
         public async Task<bool> CanReadGame(Guid userId, Guid gameId)
         {
-            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.ReadGame) ||
-                   await CanAccessGame(userId, gameId);
+            await LoadGame(gameId);
+            if (Game == null)
+                return false;
+            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.ReadGame)
+                   || await IsInGroup(userId, TbspRpgSettings.Settings.Permissions.AdminGroup)
+                   || await CanAccessGame(userId, gameId)
+                   || await CanAccessAdventure(userId, Game.AdventureId);
         }
 
         public async Task<bool> CanWriteGame(Guid userId, Guid gameId)
         {
-            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.WriteGame) ||
-                   await CanAccessGame(userId, gameId);
+            return await HasPermission(userId, TbspRpgSettings.Settings.Permissions.WriteGame)
+                   || await IsInGroup(userId, TbspRpgSettings.Settings.Permissions.AdminGroup)
+                   || await CanAccessGame(userId, gameId);
         }
 
         public async Task<bool> CanDeleteGame(Guid userId, Guid gameId)
