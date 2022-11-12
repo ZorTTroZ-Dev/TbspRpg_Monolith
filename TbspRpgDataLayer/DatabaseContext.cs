@@ -25,6 +25,8 @@ namespace TbspRpgDataLayer
         public DbSet<En> SourcesEn { get; set; }
         public DbSet<Esp> SourcesEsp { get; set; }
         public DbSet<Script> Scripts { get; set; }
+        public DbSet<AdventureObject> AdventureObjects { get; set; }
+        public DbSet<AdventureObjectGameState> AdventureObjectGameStates { get; set; }
 
         #endregion
 
@@ -72,6 +74,8 @@ namespace TbspRpgDataLayer
             modelBuilder.Entity<En>().ToTable("sources_en");
             modelBuilder.Entity<Esp>().ToTable("sources_esp");
             modelBuilder.Entity<Script>().ToTable("scripts");
+            modelBuilder.Entity<AdventureObject>().ToTable("adventure_objects");
+            modelBuilder.Entity<AdventureObjectGameState>().ToTable("adventure_object_game_states");
 
             modelBuilder.Entity<Adventure>().HasKey(a => a.Id);
             modelBuilder.Entity<Adventure>().Property(a => a.Id)
@@ -87,6 +91,18 @@ namespace TbspRpgDataLayer
             
             modelBuilder.Entity<Route>().HasKey(a => a.Id);
             modelBuilder.Entity<Route>().Property(a => a.Id)
+                .HasColumnType("uuid")
+                .HasDefaultValueSql("uuid_generate_v4()")
+                .IsRequired();
+            
+            modelBuilder.Entity<AdventureObject>().HasKey(a => a.Id);
+            modelBuilder.Entity<AdventureObject>().Property(a => a.Id)
+                .HasColumnType("uuid")
+                .HasDefaultValueSql("uuid_generate_v4()")
+                .IsRequired();
+            
+            modelBuilder.Entity<AdventureObjectGameState>().HasKey(a => a.Id);
+            modelBuilder.Entity<AdventureObjectGameState>().Property(a => a.Id)
                 .HasColumnType("uuid")
                 .HasDefaultValueSql("uuid_generate_v4()")
                 .IsRequired();

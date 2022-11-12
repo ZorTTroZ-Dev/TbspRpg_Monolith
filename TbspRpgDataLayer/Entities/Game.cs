@@ -19,6 +19,7 @@ namespace TbspRpgDataLayer.Entities
         public User User { get; set; }
         public Location Location { get; set; }
         public ICollection<Content> Contents { get; set; }
+        public ICollection<AdventureObjectGameState> AdventureObjectGameStates { get; set; }
 
         public JsonObject GameStateJson { get; set; }
 
