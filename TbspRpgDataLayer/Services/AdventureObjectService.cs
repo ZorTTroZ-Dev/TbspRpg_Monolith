@@ -30,31 +30,31 @@ public class AdventureObjectService: IAdventureObjectService
     
     public async Task SaveChanges()
     {
-        throw new System.NotImplementedException();
+        await _adventureObjectRepository.SaveChanges();
     }
 
-    public async Task<AdventureObject> GetAdventureObjectById(Guid adventureObjectId)
+    public Task<AdventureObject> GetAdventureObjectById(Guid adventureObjectId)
     {
-        throw new NotImplementedException();
+        return _adventureObjectRepository.GetAdventureObjectById(adventureObjectId);
     }
 
-    public async Task<List<AdventureObject>> GetAdventureObjectsForAdventure(Guid adventureId)
+    public Task<List<AdventureObject>> GetAdventureObjectsForAdventure(Guid adventureId)
     {
-        throw new NotImplementedException();
+        return _adventureObjectRepository.GetAdventureObjectsForAdventure(adventureId);
     }
 
     public async Task AddAdventureObject(AdventureObject adventureObject)
     {
-        throw new NotImplementedException();
+        await _adventureObjectRepository.AddAdventureObject(adventureObject);
     }
 
     public void RemoveAdventureObject(AdventureObject adventureObject)
     {
-        throw new NotImplementedException();
+        _adventureObjectRepository.RemoveAdventureObject(adventureObject);
     }
 
     public void RemoveAdventureObjects(ICollection<AdventureObject> adventureObjects)
     {
-        throw new NotImplementedException();
+        _adventureObjectRepository.RemoveAdventureObjects(adventureObjects);
     }
 }

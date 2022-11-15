@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TbspRpgDataLayer.Entities;
 
 namespace TbspRpgDataLayer.Repositories;
@@ -28,14 +30,17 @@ public class AdventureObjectRepository: IAdventureObjectRepository
         await _databaseContext.SaveChangesAsync();
     }
 
-    public async Task<AdventureObject> GetAdventureObjectById(Guid adventureObjectId)
+    public Task<AdventureObject> GetAdventureObjectById(Guid adventureObjectId)
     {
-        throw new NotImplementedException();
+        return _databaseContext.AdventureObjects.AsQueryable()
+            .FirstOrDefaultAsync(ao => ao.Id == adventureObjectId);
     }
 
-    public async Task<List<AdventureObject>> GetAdventureObjectsForAdventure(Guid adventureId)
+    public Task<List<AdventureObject>> GetAdventureObjectsForAdventure(Guid adventureId)
     {
-        throw new NotImplementedException();
+        return _databaseContext.AdventureObjects.AsQueryable()
+            .Where(ao => ao.AdventureId == adventureId)
+            .ToListAsync();
     }
     
     public async Task AddAdventureObject(AdventureObject adventureObject)
