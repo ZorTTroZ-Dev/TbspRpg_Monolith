@@ -21,6 +21,7 @@ namespace TbspRpgApi.Services
         Task<bool> CanDeleteScript(Guid userId, Guid scriptId);
         Task<bool> CanDeleteRoute(Guid userId, Guid routeId);
         Task<bool> CanDeleteSource(Guid userId, Guid sourceId);
+        Task<bool> CanDeleteObject(Guid userId, Guid objectId);
     }
     
     public class PermissionService: IPermissionService
@@ -32,6 +33,7 @@ namespace TbspRpgApi.Services
         private Route Route { get; set; }
         private Location Location { get; set; }
         private Source Source { get; set; }
+        private AdventureObject AdventureObject { get; set; }
         private HashSet<string> Permissions { get; set; }
         private readonly TbspRpgDataLayer.Services.IUsersService _usersService;
         private readonly TbspRpgDataLayer.Services.ILocationsService _locationsService;
@@ -40,6 +42,7 @@ namespace TbspRpgApi.Services
         private readonly TbspRpgDataLayer.Services.IScriptsService _scriptsService;
         private readonly TbspRpgDataLayer.Services.IRoutesService _routesService;
         private readonly TbspRpgDataLayer.Services.ISourcesService _sourcesService;
+        private readonly TbspRpgDataLayer.Services.IAdventureObjectService _adventureObjectService;
         private readonly ILogger<PermissionService> _logger;
 
         public PermissionService(
@@ -50,6 +53,7 @@ namespace TbspRpgApi.Services
             TbspRpgDataLayer.Services.IScriptsService scriptsService,
             TbspRpgDataLayer.Services.IRoutesService routesService,
             TbspRpgDataLayer.Services.ISourcesService sourcesService,
+            TbspRpgDataLayer.Services.IAdventureObjectService adventureObjectService,
             ILogger<PermissionService> logger)
         {
             _usersService = usersService;
@@ -59,6 +63,7 @@ namespace TbspRpgApi.Services
             _scriptsService = scriptsService;
             _routesService = routesService;
             _sourcesService = sourcesService;
+            _adventureObjectService = adventureObjectService;
             _logger = logger;
         }
         
@@ -95,6 +100,11 @@ namespace TbspRpgApi.Services
         private async Task LoadSource(Guid sourceId)
         {
             Source ??= await _sourcesService.GetSourceById(sourceId);
+        }
+
+        private async Task LoadAdventureObject(Guid objectId)
+        {
+            AdventureObject ??= await _adventureObjectService.GetAdventureObjectById(objectId);
         }
 
         protected async Task LoadPermissions(Guid userId)
@@ -236,6 +246,14 @@ namespace TbspRpgApi.Services
             if (Source == null)
                 return false;
             return await CanWriteAdventure(userId, Source.AdventureId);
+        }
+
+        public async Task<bool> CanDeleteObject(Guid userId, Guid objectId)
+        {
+            await LoadAdventureObject(objectId);
+            if (AdventureObject == null)
+                return false;
+            return await CanWriteAdventure(userId, AdventureObject.AdventureId);
         }
     }
 }
