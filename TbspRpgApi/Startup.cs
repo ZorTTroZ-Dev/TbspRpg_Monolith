@@ -54,6 +54,7 @@ namespace TbspRpgApi
             services.AddScoped<IRoutesService, RoutesService>();
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IScriptsService, ScriptsService>();
+            services.AddScoped<IObjectsService, ObjectsService>();
 
             // swagger
             services.AddSwaggerGen(c =>

@@ -582,5 +582,46 @@ namespace TbspRpgDataLayer.Tests
 
             return contentsService.Object;
         }
+        
+        public static IAdventureObjectService MockDataLayerAdventureObjectsService(ICollection<AdventureObject> objects)
+        {
+            var objectsService = new Mock<IAdventureObjectService>();
+            
+            objectsService.Setup(service =>
+                    service.GetAdventureObjectsForAdventure(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid adventureId) =>
+                    objects.Where(ao => ao.AdventureId == adventureId).ToList());
+            
+            // gamesService.Setup(service =>
+            //         service.AddGame(It.IsAny<Game>()))
+            //     .Callback((Game game) => games.Add(game));
+            //
+            // gamesService.Setup(service =>
+            //         service.GetGameByIdIncludeLocation(It.IsAny<Guid>()))
+            //     .ReturnsAsync((Guid gameId) => games.FirstOrDefault(g => g.Id == gameId));
+            //
+            // gamesService.Setup(service =>
+            //         service.GetGameById(It.IsAny<Guid>()))
+            //     .ReturnsAsync((Guid gameId) => games.FirstOrDefault(g => g.Id == gameId));
+            //
+            // gamesService.Setup(service =>
+            //         service.GetGameByIdIncludeAdventure(It.IsAny<Guid>()))
+            //     .ReturnsAsync((Guid gameId) => games.FirstOrDefault(g => g.Id == gameId));
+            //
+            // // doesn't do any actual filtering
+            // gamesService.Setup(service =>
+            //         service.GetGames(It.IsAny<GameFilter>()))
+            //     .ReturnsAsync((GameFilter filter) => games.ToList());
+            //
+            // gamesService.Setup(service =>
+            //         service.GetGamesIncludeUsers(It.IsAny<GameFilter>()))
+            //     .ReturnsAsync((GameFilter filter) => games.ToList());
+            //
+            // gamesService.Setup(service =>
+            //         service.RemoveGame(It.IsAny<Game>()))
+            //     .Callback((Game game) => games.Remove(game));
+
+            return objectsService.Object;
+        }
     }
 }
