@@ -43,21 +43,21 @@ public class ObjectsController : BaseController
     [HttpDelete("{objectId:guid}"), Authorize]
     public async Task<IActionResult> DeleteObject(Guid objectId)
     {
-        // var canDeleteScript = await _permissionService.CanDeleteScript(GetUserId().GetValueOrDefault(), scriptId);
-        // // make sure the user either is the adventure's owner or the user is an admin or has write adventure permission
-        // if(!canDeleteScript)
-        //     return BadRequest(new { message = NotYourAdventureErrorMessage });
-        //     
-        // try
-        // {
-        //     await _scriptsService.DeleteScript(scriptId);
-        //     return Ok();
-        // }
-        // catch
-        // {
-        //     return BadRequest(new { message = "couldn't delete script" });
-        // }
-        return Ok();
+        var canDeleteObject = await _permissionService.CanDeleteObject(
+            GetUserId().GetValueOrDefault(), objectId);
+        // make sure the user either is the adventure's owner or the user is an admin or has write adventure permission
+        if(!canDeleteObject)
+            return BadRequest(new { message = NotYourAdventureErrorMessage });
+            
+        try
+        {
+            await _objectsService.DeleteObject(objectId);
+            return Ok();
+        }
+        catch
+        {
+            return BadRequest(new { message = "couldn't delete object" });
+        }
     }
     
     [HttpPut, Authorize]

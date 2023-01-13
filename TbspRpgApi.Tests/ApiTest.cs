@@ -66,6 +66,10 @@ namespace TbspRpgApi.Tests
                     service.CanDeleteSource(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((Guid userId, Guid sourceId) => true);
             
+            permissionService.Setup(service =>
+                    service.CanDeleteObject(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid userId, Guid sourceId) => true);
+            
             return permissionService.Object;
         }
 

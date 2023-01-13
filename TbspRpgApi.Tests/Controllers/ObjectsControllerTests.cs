@@ -86,4 +86,39 @@ public class ObjectsControllerTests: ApiTest
     }
 
     #endregion
+    
+    #region DeleteAdventureObject
+
+    [Fact]
+    public async void DeleteAdventureObject_InvalidId_BadRequest()
+    {
+        // arrange
+        var exceptionId = Guid.NewGuid();
+        var controller = CreateController(new List<AdventureObject>(), exceptionId);
+            
+        // act
+        var response = await controller.DeleteObject(exceptionId);
+            
+        // assert
+        var badRequestResult = response as BadRequestObjectResult;
+        Assert.NotNull(badRequestResult);
+        Assert.Equal(400, badRequestResult.StatusCode);
+    }
+
+    [Fact]
+    public async void DeleteAdventureObject_Valid_ReturnOk()
+    {
+        // arrange
+        var exceptionId = Guid.NewGuid();
+        var controller = CreateController(new List<AdventureObject>(), exceptionId);
+            
+        // act
+        var response = await controller.DeleteObject(Guid.NewGuid());
+            
+        // assert
+        var okObjectResult = response as OkResult;
+        Assert.NotNull(okObjectResult);
+    }
+
+    #endregion
 }

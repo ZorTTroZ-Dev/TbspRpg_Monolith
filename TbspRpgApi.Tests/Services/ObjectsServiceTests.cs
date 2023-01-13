@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TbspRpgDataLayer.Entities;
 using Xunit;
 
@@ -66,5 +67,34 @@ public class ObjectsServiceTests: ApiTest
         Assert.Empty(objects);
     }
 
+    #endregion
+    
+    #region RemoveObject
+
+    [Fact]
+    public async void RemoveAdventureObject_InvalidId_ExceptionThrown()
+    {
+        // arrange
+        var exceptionId = Guid.NewGuid();
+        var service = CreateObjectsService(new List<AdventureObject>(), exceptionId);
+            
+        // act
+        Task Act() => service.DeleteObject(exceptionId);
+            
+        // assert
+        await Assert.ThrowsAsync<ArgumentException>(Act);
+    }
+
+    [Fact]
+    public async void RemoveAdventureObject_Valid_AdventureRemoved()
+    {
+        // arrange
+        var exceptionId = Guid.NewGuid();
+        var service = CreateObjectsService(new List<AdventureObject>(), exceptionId);
+            
+        // act
+        await service.DeleteObject(Guid.NewGuid());
+    }
+        
     #endregion
 }

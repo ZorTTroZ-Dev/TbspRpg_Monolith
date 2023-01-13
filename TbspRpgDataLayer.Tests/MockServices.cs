@@ -597,6 +597,10 @@ namespace TbspRpgDataLayer.Tests
                 .ReturnsAsync((Guid objectId) => 
                     objects.FirstOrDefault(ao => ao.Id == objectId));
             
+            objectsService.Setup(service =>
+                    service.RemoveAdventureObject(It.IsAny<AdventureObject>()))
+                .Callback((AdventureObject adventureObject) => objects.Remove(adventureObject));
+            
             // gamesService.Setup(service =>
             //         service.AddGame(It.IsAny<Game>()))
             //     .Callback((Game game) => games.Add(game));
