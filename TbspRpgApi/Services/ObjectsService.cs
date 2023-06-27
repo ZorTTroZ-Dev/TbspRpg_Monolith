@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using TbspRpgDataLayer.Services;
 using TbspRpgProcessor;
@@ -13,8 +14,7 @@ namespace TbspRpgApi.Services;
 public interface IObjectsService
 {
     Task<List<ObjectViewModel>> GetObjectsForAdventure(Guid adventureId);
-
-    // Task UpdateScript(ScriptUpdateRequest scriptUpdateRequest);
+    Task UpdateObject(ObjectUpdateRequest objectUpdateRequest);
     Task DeleteObject(Guid objectId);
 }
 
@@ -39,6 +39,11 @@ public class ObjectsService: IObjectsService
         var objects = await _adventureObjectService
             .GetAdventureObjectsForAdventure(adventureId);
         return objects.Select(aObject => new ObjectViewModel(aObject)).ToList();
+    }
+
+    public async Task UpdateObject(ObjectUpdateRequest objectUpdateRequest)
+    {
+        await _tbspRpgProcessor.UpdateAdventureObject(objectUpdateRequest.ToAdventureObjectUpdateModel());
     }
 
     public async Task DeleteObject(Guid objectId)

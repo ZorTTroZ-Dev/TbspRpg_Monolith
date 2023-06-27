@@ -83,6 +83,7 @@ public interface ITbspRpgProcessor
     #region AdventureObjectProcessor
 
     Task RemoveAdventureObject(AdventureObjectRemoveModel adventureObjectRemoveModel);
+    Task UpdateAdventureObject(AdventureObjectUpdateModel adventureObjectUpdateModel);
 
     #endregion
 }
@@ -436,6 +437,12 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     {
         LoadAdventureObjectProcessor();
         return _adventureObjectProcessor.RemoveAdventureObject(adventureObjectRemoveModel);
+    }
+
+    public Task UpdateAdventureObject(AdventureObjectUpdateModel adventureObjectUpdateModel)
+    {
+        LoadAdventureObjectProcessor();
+        throw new NotImplementedException();
     }
 
     #endregion

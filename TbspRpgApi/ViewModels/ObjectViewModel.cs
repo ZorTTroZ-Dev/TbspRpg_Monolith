@@ -9,6 +9,7 @@ public class ObjectViewModel
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Type { get; set; }
+    public Guid AdventureId { get; set; }
 
     public ObjectViewModel() { }
 
@@ -17,6 +18,7 @@ public class ObjectViewModel
         Id = adventureObject.Id;
         Name = adventureObject.Name;
         Type = adventureObject.Type;
+        AdventureId = adventureObject.AdventureId;
     }
 
     public AdventureObject ToEntity()
@@ -25,7 +27,8 @@ public class ObjectViewModel
         {
             Id = Id,
             Name = Name,
-            Type = Type
+            Type = Type,
+            AdventureId = AdventureId
         };
     }
 }

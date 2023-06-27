@@ -225,6 +225,16 @@ namespace TbspRpgProcessor.Tests
                     if (adventureRemoveModel.AdventureObjectId == exceptionId)
                         throw new ArgumentException("invalid adventure object id");
                 });
+            
+            tbspProcessor.Setup(service =>
+                    service.UpdateAdventureObject(It.IsAny<AdventureObjectUpdateModel>()))
+                .Callback((AdventureObjectUpdateModel adventureObjectUpdateModel) =>
+                {
+                    if (adventureObjectUpdateModel.adventureObject.Id == exceptionId)
+                    {
+                        throw new ArgumentException("invalid adventure object id");
+                    }
+                });
 
             return tbspProcessor.Object;
         }

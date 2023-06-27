@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TbspRpgApi.JwtAuthorization;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.Services;
 
 namespace TbspRpgApi.Controllers;
@@ -61,32 +62,23 @@ public class ObjectsController : BaseController
     }
     
     [HttpPut, Authorize]
-    public async Task<IActionResult> UpdateObject(/*[FromBody] ScriptUpdateRequest scriptUpdateRequest*/)
+    public async Task<IActionResult> UpdateObject([FromBody] ObjectUpdateRequest objectUpdateRequest)
     {
-        // var canAccessAdventure = await _permissionService.CanWriteAdventure(
-        //     GetUserId().GetValueOrDefault(),
-        //     scriptUpdateRequest.script.AdventureId);
-        // if (!canAccessAdventure)
-        // {
-        //     return BadRequest(new { message = NotYourAdventureErrorMessage });
-        // }
-        //
-        // // make sure the script doesn't include itself
-        // if (scriptUpdateRequest.script.Includes.FirstOrDefault(script =>
-        //         script.Id == scriptUpdateRequest.script.Id) != null)
-        // {
-        //     return BadRequest(new { message = "script can not include itself" });
-        // }
-        //
-        // try
-        // {
-        //     await _scriptsService.UpdateScript(scriptUpdateRequest);
-        //     return Ok(null);
-        // }
-        // catch (Exception ex)
-        // {
-        //     return BadRequest((new {message = ex.Message}));
-        // }
-        return Ok();
+        var canAccessAdventure = await _permissionService.CanWriteAdventure(
+            GetUserId().GetValueOrDefault(),
+            objectUpdateRequest.obj.AdventureId);
+        if (!canAccessAdventure)
+        {
+            return BadRequest(new { message = NotYourAdventureErrorMessage });
+        }
+        try
+        {
+            await _objectsService.UpdateObject(objectUpdateRequest);
+            return Ok(null);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest((new {message = ex.Message}));
+        }
     }
 }

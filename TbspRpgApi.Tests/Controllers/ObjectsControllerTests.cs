@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Controllers;
+using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using TbspRpgDataLayer.Entities;
+using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Controllers;
@@ -118,6 +120,59 @@ public class ObjectsControllerTests: ApiTest
         // assert
         var okObjectResult = response as OkResult;
         Assert.NotNull(okObjectResult);
+    }
+
+    #endregion
+
+    #region UpdateObject
+
+    [Fact]
+    public async void UpdateObject_Valid_ReturnOk()
+    {
+        // arrange
+        var controller = CreateController(new List<AdventureObject>(), Guid.NewGuid());
+        
+        // act
+        var response = await controller.UpdateObject(
+            new ObjectUpdateRequest()
+            {
+                obj = new ObjectViewModel()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = Guid.NewGuid(),
+                    Name = "script"
+                }
+            });
+        
+        // assert
+        var okObjectResult = response as OkObjectResult;
+        Assert.NotNull(okObjectResult);
+    }
+
+    [Fact]
+    public async void UpdateObject_UpdateFails_ReturnBadRequest()
+    {
+        // arrange
+        var exceptionId = Guid.NewGuid();
+        var controller = CreateController(new List<AdventureObject>(), exceptionId);
+        
+        // act
+        var response = await controller.UpdateObject(
+            new ObjectUpdateRequest()
+            {
+                obj = new ObjectViewModel()
+                {
+                    Id = exceptionId,
+                    AdventureId = Guid.NewGuid(),
+                    Name = "script",
+                    Type = AdventureObjectTypes.Generic
+                }
+            });
+        
+        // assert
+        var badRequestResult = response as BadRequestObjectResult;
+        Assert.NotNull(badRequestResult);
+        Assert.Equal(400, badRequestResult.StatusCode);
     }
 
     #endregion

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TbspRpgApi.RequestModels;
+using TbspRpgApi.ViewModels;
 using TbspRpgDataLayer.Entities;
 using Xunit;
 
@@ -96,5 +98,52 @@ public class ObjectsServiceTests: ApiTest
         await service.DeleteObject(Guid.NewGuid());
     }
         
+    #endregion
+    
+    #region UpdateAdventureObject
+    
+    [Fact]
+    public async void UpdateAdventureObject_InvalidId_ExceptionThrown()
+    {
+        // arrange
+        var exceptionId = Guid.NewGuid();
+        var service = CreateObjectsService(new List<AdventureObject>(), exceptionId);
+            
+        // act
+        Task Act() => service.UpdateObject(new ObjectUpdateRequest()
+        {
+            obj = new ObjectViewModel()
+            {
+                Id = exceptionId,
+                AdventureId = Guid.NewGuid(),
+                Name = "test",
+                Type = "generic"
+            }
+        });
+            
+        // assert
+        await Assert.ThrowsAsync<ArgumentException>(Act);
+    }
+
+    [Fact]
+    public async void UpdateAdventureObject_Valid_AdventureObjectUpdated()
+    {
+        // arrange
+        var exceptionId = Guid.NewGuid();
+        var service = CreateObjectsService(new List<AdventureObject>(), exceptionId);
+            
+        // act
+        await service.UpdateObject(new ObjectUpdateRequest()
+        {
+            obj = new ObjectViewModel()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test",
+                Type = "generic"
+            }
+        });
+    }
+    
     #endregion
 }
