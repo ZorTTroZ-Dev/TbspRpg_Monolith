@@ -442,7 +442,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     public Task UpdateAdventureObject(AdventureObjectUpdateModel adventureObjectUpdateModel)
     {
         LoadAdventureObjectProcessor();
-        throw new NotImplementedException();
+        return _adventureObjectProcessor.UpdateAdventureObject(adventureObjectUpdateModel);
     }
 
     #endregion
