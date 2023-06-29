@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using TbspRpgDataLayer.Entities;
 
 namespace TbspRpgApi.ViewModels;
@@ -8,6 +7,7 @@ public class ObjectViewModel
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public string Description { get; set; }
     public string Type { get; set; }
     public Guid AdventureId { get; set; }
 
@@ -17,6 +17,7 @@ public class ObjectViewModel
     {
         Id = adventureObject.Id;
         Name = adventureObject.Name;
+        Description = adventureObject.Description;
         Type = adventureObject.Type;
         AdventureId = adventureObject.AdventureId;
     }
@@ -27,6 +28,7 @@ public class ObjectViewModel
         {
             Id = Id,
             Name = Name,
+            Description = Description,
             Type = Type,
             AdventureId = AdventureId
         };

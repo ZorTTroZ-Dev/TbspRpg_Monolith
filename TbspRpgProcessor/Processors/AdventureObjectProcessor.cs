@@ -50,6 +50,7 @@ public class AdventureObjectProcessor: IAdventureObjectProcessor
                 Id = Guid.NewGuid(),
                 Name = adventureObjectUpdateModel.adventureObject.Name,
                 Description = adventureObjectUpdateModel.adventureObject.Description,
+                Type = adventureObjectUpdateModel.adventureObject.Type,
                 AdventureId = adventureObjectUpdateModel.adventureObject.AdventureId
             };
             await _adventureObjectService.AddAdventureObject(adventureObject);
@@ -65,6 +66,7 @@ public class AdventureObjectProcessor: IAdventureObjectProcessor
 
             dbAdventureObject.Name = adventureObjectUpdateModel.adventureObject.Name;
             dbAdventureObject.Description = adventureObjectUpdateModel.adventureObject.Description;
+            dbAdventureObject.Type = adventureObjectUpdateModel.adventureObject.Type;
         }
 
         await _adventureObjectService.SaveChanges();
