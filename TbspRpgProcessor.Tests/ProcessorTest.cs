@@ -174,6 +174,16 @@ namespace TbspRpgProcessor.Tests
                 });
             
             tbspProcessor.Setup(service =>
+                    service.RemoveLocation(It.IsAny<LocationRemoveModel>()))
+                .Callback((LocationRemoveModel locationRemoveModel) =>
+                {
+                    if (locationRemoveModel.LocationId == exceptionId)
+                    {
+                        throw new ArgumentException("invalid location id");
+                    }
+                });
+            
+            tbspProcessor.Setup(service =>
                     service.StartGame(It.IsAny<GameStartModel>()))
                 .ReturnsAsync((GameStartModel gameStartModel) =>
                 {

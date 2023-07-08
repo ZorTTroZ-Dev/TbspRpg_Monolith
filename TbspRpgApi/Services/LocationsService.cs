@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using TbspRpgProcessor;
+using TbspRpgProcessor.Entities;
 
 namespace TbspRpgApi.Services
 {
@@ -14,6 +15,7 @@ namespace TbspRpgApi.Services
         Task<List<LocationViewModel>> GetLocationsForAdventure(Guid adventureId);
         Task<LocationViewModel> GetLocationById(Guid locationId);
         Task UpdateLocationAndSource(LocationUpdateRequest locationUpdateRequest);
+        Task DeleteLocation(Guid locationId);
     }
 
     public class LocationsService : ILocationsService
@@ -47,6 +49,14 @@ namespace TbspRpgApi.Services
         public async Task UpdateLocationAndSource(LocationUpdateRequest locationUpdateRequest)
         {
             await _tbspRpgProcessor.UpdateLocation(locationUpdateRequest.ToLocationUpdateModel());
+        }
+        
+        public async Task DeleteLocation(Guid locationId)
+        {
+            await _tbspRpgProcessor.RemoveLocation(new LocationRemoveModel()
+            {
+                LocationId = locationId
+            });
         }
     }
 }

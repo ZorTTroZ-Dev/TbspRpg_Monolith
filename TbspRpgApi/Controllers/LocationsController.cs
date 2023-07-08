@@ -88,5 +88,24 @@ namespace TbspRpgApi.Controllers
                 return BadRequest((new {message = ex.Message}));
             }
         }
+        
+        [HttpDelete("{locationId:guid}"), Authorize]
+        public async Task<IActionResult> DeleteLocation(Guid locationId)
+        {
+            var canDeleteLocation = await _permissionService.CanWriteLocation(
+                GetUserId().GetValueOrDefault(), locationId);
+            if(!canDeleteLocation)
+                return BadRequest(new { message = NotYourAdventureErrorMessage });
+            
+            try
+            {
+                await _locationsService.DeleteLocation(locationId);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest(new { message = "couldn't delete object" });
+            }
+        }
     }
 }

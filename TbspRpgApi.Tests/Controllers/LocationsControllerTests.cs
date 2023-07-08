@@ -140,5 +140,40 @@ namespace TbspRpgApi.Tests.Controllers
         }
 
         #endregion
+
+        #region RemoveLocation
+
+        [Fact]
+        public async void RemoveLocation_InvalidId_BadRequest()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var controller = CreateController(new List<Location>(), exceptionId);
+            
+            // act
+            var response = await controller.DeleteLocation(exceptionId);
+            
+            // assert
+            var badRequestResult = response as BadRequestObjectResult;
+            Assert.NotNull(badRequestResult);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+
+        [Fact]
+        public async void RemoveLocation_Valid_ReturnOk()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var controller = CreateController(new List<Location>(), exceptionId);
+            
+            // act
+            var response = await controller.DeleteLocation(Guid.NewGuid());
+            
+            // assert
+            var okObjectResult = response as OkResult;
+            Assert.NotNull(okObjectResult);
+        }
+
+        #endregion
     }
 }
