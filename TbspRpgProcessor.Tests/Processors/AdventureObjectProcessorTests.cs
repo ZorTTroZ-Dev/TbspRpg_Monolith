@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TbspRpgDataLayer.Entities;
 using TbspRpgProcessor.Entities;
+using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgProcessor.Tests.Processors;
@@ -228,13 +229,15 @@ public class AdventureObjectProcessorTests: ProcessorTest
                 {
                     Id = testAdventureObjects[0].Id,
                     Name = "banana",
-                    AdventureId = testAdventures[0].Id
+                    AdventureId = testAdventures[0].Id,
+                    Type = AdventureObjectTypes.Generic
                 }
             });
             
             // assert
             Assert.Single(testAdventureObjects);
             Assert.Equal("banana", testAdventureObjects[0].Name);
+            Assert.Equal(AdventureObjectTypes.Generic, testAdventureObjects[0].Type);
         }
 
         #endregion
