@@ -19,7 +19,7 @@ namespace TbspRpgDataLayer.Services
         Task<Adventure> GetAdventureByIdIncludeAssociatedObjects(Guid adventureId);
         Task AddAdventure(Adventure adventure);
         void RemoveAdventure(Adventure adventure);
-        void RemoveScriptFromAdventures(Guid scriptId);
+        Task RemoveScriptFromAdventures(Guid scriptId);
         Task<Adventure> GetAdventureWithSource(Guid adventureId, Guid sourceKey);
         Task<bool> DoesAdventureUseSource(Guid adventureId, Guid sourceKey);
     }
@@ -71,7 +71,7 @@ namespace TbspRpgDataLayer.Services
             _adventuresRepository.RemoveAdventure(adventure);
         }
 
-        public async void RemoveScriptFromAdventures(Guid scriptId)
+        public async Task RemoveScriptFromAdventures(Guid scriptId)
         {
             var adventures = await _adventuresRepository.GetAdventuresWithScript(scriptId);
             foreach (var adventure in adventures)

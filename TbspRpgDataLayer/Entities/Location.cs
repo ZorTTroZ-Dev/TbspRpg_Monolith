@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using TbspRpgApi.Entities;
 
 namespace TbspRpgDataLayer.Entities
 {
@@ -20,5 +19,6 @@ namespace TbspRpgDataLayer.Entities
         public ICollection<Game> Games { get; set; }
         public Script EnterScript { get; set; }
         public Script ExitScript { get; set; }
+        public ICollection<AdventureObject> AdventureObjects { get; set; }
     }
 }

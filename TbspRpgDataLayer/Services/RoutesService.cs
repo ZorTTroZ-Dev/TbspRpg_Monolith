@@ -19,7 +19,7 @@ namespace TbspRpgDataLayer.Services
         void RemoveRoute(Route route);
         void RemoveRoutes(ICollection<Route> routes);
         Task AddRoute(Route route);
-        void RemoveScriptFromRoutes(Guid scriptId);
+        Task RemoveScriptFromRoutes(Guid scriptId);
         Task<bool> DoesAdventureRouteUseSource(Guid adventureId, Guid sourceKey);
         Task<List<Route>> GetAdventureRoutesWithSource(Guid adventureId, Guid sourceKey);
     }
@@ -70,7 +70,7 @@ namespace TbspRpgDataLayer.Services
             await _routesRepository.AddRoute(route);
         }
 
-        public async void RemoveScriptFromRoutes(Guid scriptId)
+        public async Task RemoveScriptFromRoutes(Guid scriptId)
         {
             var routes = await _routesRepository.GetRoutesWithScript(scriptId);
             foreach (var route in routes)

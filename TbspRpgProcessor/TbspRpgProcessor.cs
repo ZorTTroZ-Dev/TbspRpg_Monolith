@@ -79,6 +79,13 @@ public interface ITbspRpgProcessor
     Task RemoveAdventure(AdventureRemoveModel adventureRemoveModel);
     
     #endregion
+    
+    #region AdventureObjectProcessor
+
+    Task RemoveAdventureObject(AdventureObjectRemoveModel adventureObjectRemoveModel);
+    Task UpdateAdventureObject(AdventureObjectUpdateModel adventureObjectUpdateModel);
+
+    #endregion
 }
 
 public class TbspRpgProcessor: ITbspRpgProcessor
@@ -92,6 +99,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     private IGameProcessor _gameProcessor;
     private IContentProcessor _contentProcessor;
     private IAdventureProcessor _adventureProcessor;
+    private IAdventureObjectProcessor _adventureObjectProcessor;
 
     private readonly IUsersService _usersService;
     private readonly ISourcesService _sourcesService;
@@ -101,6 +109,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     private readonly ILocationsService _locationsService;
     private readonly IGamesService _gamesService;
     private readonly IContentsService _contentsService;
+    private readonly IAdventureObjectService _adventureObjectService;
 
     private readonly IMailClient _mailClient;
     
@@ -117,6 +126,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         ILocationsService locationsService,
         IGamesService gamesService,
         IContentsService contentsService,
+        IAdventureObjectService adventureObjectService,
         IMailClient mailClient,
         ILogger<TbspRpgProcessor> logger)
     {
@@ -128,6 +138,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         _locationsService = locationsService;
         _gamesService = gamesService;
         _contentsService = contentsService;
+        _adventureObjectService = adventureObjectService;
         _mailClient = mailClient;
         _logger = logger;
     }
@@ -410,6 +421,29 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         LoadAdventureProcessor();
         return _adventureProcessor.RemoveAdventure(adventureRemoveModel);
     }
+
+    #endregion
     
+    #region AdventureObjectProcessor
+
+    private void LoadAdventureObjectProcessor()
+    {
+        _adventureObjectProcessor ??= new AdventureObjectProcessor(
+            _adventureObjectService,
+            _logger);
+    }
+    
+    public Task RemoveAdventureObject(AdventureObjectRemoveModel adventureObjectRemoveModel)
+    {
+        LoadAdventureObjectProcessor();
+        return _adventureObjectProcessor.RemoveAdventureObject(adventureObjectRemoveModel);
+    }
+
+    public Task UpdateAdventureObject(AdventureObjectUpdateModel adventureObjectUpdateModel)
+    {
+        LoadAdventureObjectProcessor();
+        return _adventureObjectProcessor.UpdateAdventureObject(adventureObjectUpdateModel);
+    }
+
     #endregion
 }

@@ -132,10 +132,10 @@ public class ScriptProcessor : IScriptProcessor
         }
         
         // need to check if script attached to an adventure, location, route or source
-        _adventuresService.RemoveScriptFromAdventures(scriptRemoveModel.ScriptId);
-        _routesService.RemoveScriptFromRoutes(scriptRemoveModel.ScriptId);
-        _locationsService.RemoveScriptFromLocations(scriptRemoveModel.ScriptId);
-        _sourcesService.RemoveScriptFromSources(scriptRemoveModel.ScriptId);
+        await _adventuresService.RemoveScriptFromAdventures(scriptRemoveModel.ScriptId);
+        await _routesService.RemoveScriptFromRoutes(scriptRemoveModel.ScriptId);
+        await _locationsService.RemoveScriptFromLocations(scriptRemoveModel.ScriptId);
+        await _sourcesService.RemoveScriptFromSources(scriptRemoveModel.ScriptId);
         
         // remove this script from being included in other scripts
         dbScript.IncludedIn = new List<Script>();
