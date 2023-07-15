@@ -114,5 +114,34 @@ namespace TbspRpgApi.Tests.Services
         }
 
         #endregion
+
+        #region RemoveLocation
+
+        [Fact]
+        public async void RemoveLocation_InvalidId_ExceptionThrown()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var service = CreateLocationsService(new List<Location>(), exceptionId);
+            
+            // act
+            Task Act() => service.DeleteLocation(exceptionId);
+            
+            // assert
+            await Assert.ThrowsAsync<ArgumentException>(Act);
+        }
+
+        [Fact]
+        public async void RemoveLocation_Valid_LocationRemoved()
+        {
+            // arrange
+            var exceptionId = Guid.NewGuid();
+            var service = CreateLocationsService(new List<Location>(), exceptionId);
+            
+            // act
+            await service.DeleteLocation(Guid.NewGuid());
+        }
+
+        #endregion
     }
 }
