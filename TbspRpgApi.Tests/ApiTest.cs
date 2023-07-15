@@ -66,6 +66,10 @@ namespace TbspRpgApi.Tests
                     service.CanDeleteSource(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((Guid userId, Guid sourceId) => true);
             
+            permissionService.Setup(service =>
+                    service.CanDeleteObject(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .ReturnsAsync((Guid userId, Guid sourceId) => true);
+            
             return permissionService.Object;
         }
 
@@ -76,13 +80,15 @@ namespace TbspRpgApi.Tests
             ICollection<Game> games = null,
             ICollection<Script> scripts = null,
             ICollection<Route> routes = null,
-            ICollection<En> sources = null)
+            ICollection<En> sources = null,
+            ICollection<AdventureObject> objects = null)
         {
             locations ??= new List<Location>();
             adventures ??= new List<Adventure>();
             games ??= new List<Game>();
             routes ??= new List<Route>();
             sources ??= new List<En>();
+            objects ??= new List<AdventureObject>();
             
             var dlUsersService = MockServices.MockDataLayerUsersService(users);
             var dlLocationsService = MockServices.MockDataLayerLocationsService(locations);
@@ -91,6 +97,8 @@ namespace TbspRpgApi.Tests
             var dlScriptsService = MockServices.MockDataLayerScriptsService(scripts);
             var dlRoutesService = MockServices.MockDataLayerRoutesService(routes);
             var dlSourcesService = MockServices.MockDataLayerSourcesService(sources);
+            var dlObjectsService = MockServices.MockDataLayerAdventureObjectsService(objects);
+            
             return new PermissionService(dlUsersService,
                 dlLocationsService,
                 dlAdventuresService,
@@ -98,6 +106,7 @@ namespace TbspRpgApi.Tests
                 dlScriptsService,
                 dlRoutesService,
                 dlSourcesService,
+                dlObjectsService,
                 NullLogger<PermissionService>.Instance);
         }
         
@@ -223,6 +232,18 @@ namespace TbspRpgApi.Tests
             return new ScriptsService(
                 mockTbspRpgProcessor,
                 dlScriptService,
+                NullLogger<ScriptsService>.Instance);
+        }
+        
+        protected static ObjectsService CreateObjectsService(
+            ICollection<AdventureObject> objects = null,
+            Guid? exceptionId = null)
+        {
+            var mockTbspRpgProcessor = ProcessorTest.MockTbspRpgProcessor(null, exceptionId.GetValueOrDefault());
+            var dlObjectsService = MockServices.MockDataLayerAdventureObjectsService(objects);
+            return new ObjectsService(
+                mockTbspRpgProcessor,
+                dlObjectsService,
                 NullLogger<ScriptsService>.Instance);
         }
     }

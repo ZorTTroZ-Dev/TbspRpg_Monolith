@@ -19,7 +19,8 @@ namespace TbspRpgProcessor.Tests
             ICollection<Location> locations = null,
             ICollection<En> sources = null,
             ICollection<Game> games = null,
-            ICollection<Content> contents = null)
+            ICollection<Content> contents = null,
+            ICollection<AdventureObject> adventureObjects = null)
         {
             users ??= new List<User>();
             adventures ??= new List<Adventure>();
@@ -29,6 +30,7 @@ namespace TbspRpgProcessor.Tests
             games ??= new List<Game>();
             contents ??= new List<Content>();
             scripts ??= new List<Script>();
+            adventureObjects ??= new List<AdventureObject>();
             
             var usersService = MockServices.MockDataLayerUsersService(users);
             var scriptsService = MockServices.MockDataLayerScriptsService(scripts);
@@ -38,6 +40,7 @@ namespace TbspRpgProcessor.Tests
             var sourcesService = MockServices.MockDataLayerSourcesService(sources);
             var gamesService = MockServices.MockDataLayerGamesService(games);
             var contentsService = MockServices.MockDataLayerContentsService(contents);
+            var adventureObjectsService = MockServices.MockDataLayerAdventureObjectsService(adventureObjects);
             
             return new TbspRpgProcessor(
                 usersService,
@@ -48,6 +51,7 @@ namespace TbspRpgProcessor.Tests
                 locationsService,
                 gamesService,
                 contentsService,
+                adventureObjectsService,
                 MockMailClient(),
                 NullLogger<TbspRpgProcessor>.Instance);
         }
@@ -212,6 +216,24 @@ namespace TbspRpgProcessor.Tests
                 {
                     if (adventureRemoveModel.AdventureId == exceptionId)
                         throw new ArgumentException("invalid adventure id");
+                });
+            
+            tbspProcessor.Setup(service =>
+                    service.RemoveAdventureObject(It.IsAny<AdventureObjectRemoveModel>()))
+                .Callback((AdventureObjectRemoveModel adventureRemoveModel) =>
+                {
+                    if (adventureRemoveModel.AdventureObjectId == exceptionId)
+                        throw new ArgumentException("invalid adventure object id");
+                });
+            
+            tbspProcessor.Setup(service =>
+                    service.UpdateAdventureObject(It.IsAny<AdventureObjectUpdateModel>()))
+                .Callback((AdventureObjectUpdateModel adventureObjectUpdateModel) =>
+                {
+                    if (adventureObjectUpdateModel.adventureObject.Id == exceptionId)
+                    {
+                        throw new ArgumentException("invalid adventure object id");
+                    }
                 });
 
             return tbspProcessor.Object;

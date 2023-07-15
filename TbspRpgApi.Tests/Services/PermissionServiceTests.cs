@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Entities;
 using Xunit;
@@ -2616,6 +2617,315 @@ namespace TbspRpgApi.Tests.Services
             
             // assert
             Assert.False(canWrite);
+        }
+
+        #endregion
+        
+        #region CanDeleteObject
+
+        [Fact]
+        public async void CanDeleteObject_OwnsAdventure_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = users[0].Id
+                }
+            };
+            var objects = new List<AdventureObject>()
+            {
+                new AdventureObject()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users,
+                null,
+                adventures,
+                null,
+                null,
+                null,
+                null,
+                objects);
+            
+            // act
+            var can = await service.CanDeleteObject(users[0].Id, objects[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteObject_HasPermission_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = TbspRpgSettings.Settings.Permissions.WriteAdventure
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var objects = new List<AdventureObject>()
+            {
+                new AdventureObject()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users,
+                null,
+                adventures,
+                null,
+                null,
+                null,
+                null,
+                objects);
+            
+            // act
+            var can = await service.CanDeleteObject(users[0].Id, objects[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteObject_NoOwnNoPermissionIsAdmin_ReturnTrue()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var objects = new List<AdventureObject>()
+            {
+                new AdventureObject()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users,
+                null,
+                adventures,
+                null,
+                null,
+                null,
+                null,
+                objects);
+            
+            // act
+            var can = await service.CanDeleteObject(users[0].Id, objects[0].Id);
+            
+            // assert
+            Assert.True(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteObject_NoOwnNoPermissionNotAdmin_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var objects = new List<AdventureObject>()
+            {
+                new AdventureObject()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users,
+                null,
+                adventures,
+                null,
+                null,
+                null,
+                null,
+                objects);
+            
+            // act
+            var can = await service.CanDeleteObject(users[0].Id, objects[0].Id);
+            
+            // assert
+            Assert.False(can);
+        }
+        
+        [Fact]
+        public async void CanDeleteObject_BadObjectId_ReturnFalse()
+        {
+            // arrange
+            var users = new List<User>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "admin",
+                    Groups = new List<Group>()
+                    {
+                        new()
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "admin_group",
+                            Permissions = new List<Permission>()
+                            {
+                                new()
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Name = "banana"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var adventures = new List<Adventure>()
+            {
+                new Adventure()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "test adventure",
+                    CreatedByUserId = Guid.NewGuid()
+                }
+            };
+            var objects = new List<AdventureObject>()
+            {
+                new AdventureObject()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = adventures[0].Id
+                }
+            };
+            var service = CreatePermissionService(users,
+                null,
+                adventures,
+                null,
+                null,
+                null,
+                null,
+                objects);
+            
+            // act
+            var can = await service.CanDeleteObject(users[0].Id, Guid.NewGuid());
+            
+            // assert
+            Assert.False(can);
         }
 
         #endregion
