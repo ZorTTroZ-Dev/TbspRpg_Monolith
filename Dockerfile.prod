@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS build
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
 #make slimmed down image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
+FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine
 WORKDIR /app
 COPY --from=build /app/out .
 ENTRYPOINT ["dotnet", "TbspRpgApi.dll"]
