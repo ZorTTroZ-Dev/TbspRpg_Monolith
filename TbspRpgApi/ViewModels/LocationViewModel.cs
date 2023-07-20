@@ -1,5 +1,5 @@
 using System;
-using TbspRpgApi.Entities;
+using System.Collections.Generic;
 using TbspRpgDataLayer.Entities;
 
 namespace TbspRpgApi.ViewModels
@@ -14,6 +14,7 @@ namespace TbspRpgApi.ViewModels
         public Guid AdventureId { get; set; }
         public Guid? EnterScriptId { get; set; }
         public Guid? ExitScriptId { get; set; }
+        public List<ObjectViewModel> AdventureObjects { get; set; }
 
         public LocationViewModel() {}
 
@@ -27,10 +28,23 @@ namespace TbspRpgApi.ViewModels
             AdventureId = location.AdventureId;
             EnterScriptId = location.EnterScriptId;
             ExitScriptId = location.ExitScriptId;
+            if (location.AdventureObjects != null)
+            {
+                AdventureObjects = new List<ObjectViewModel>();
+                foreach (var obj in location.AdventureObjects)
+                {
+                    AdventureObjects.Add(new ObjectViewModel(obj));
+                }
+            }
         }
 
         public Location ToEntity()
         {
+            var objectEntities = new List<AdventureObject>();
+            foreach (var obj in AdventureObjects)
+            {
+                objectEntities.Add(obj.ToEntity());
+            }
             return new Location()
             {
                 Id = Id,
@@ -40,7 +54,8 @@ namespace TbspRpgApi.ViewModels
                 Name = Name,
                 SourceKey = SourceKey,
                 EnterScriptId = EnterScriptId,
-                ExitScriptId = ExitScriptId
+                ExitScriptId = ExitScriptId,
+                AdventureObjects = objectEntities
             };
         }
     }

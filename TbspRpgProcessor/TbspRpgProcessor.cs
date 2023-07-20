@@ -318,6 +318,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _sourceProcessor,
             _locationsService,
             _routesService,
+            _adventureObjectService,
             _logger);
     }
 
