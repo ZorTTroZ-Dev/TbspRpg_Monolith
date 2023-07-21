@@ -431,6 +431,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     {
         _adventureObjectProcessor ??= new AdventureObjectProcessor(
             _adventureObjectService,
+            _locationsService,
             _logger);
     }
     

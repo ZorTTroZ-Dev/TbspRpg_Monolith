@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgDataLayer.Entities;
@@ -16,13 +17,16 @@ public interface IAdventureObjectProcessor
 public class AdventureObjectProcessor: IAdventureObjectProcessor
 {
     private readonly IAdventureObjectService _adventureObjectService;
+    private readonly ILocationsService _locationsService;
     private readonly ILogger _logger;
 
     public AdventureObjectProcessor(
         IAdventureObjectService adventureObjectService,
+        ILocationsService locationsService,
         ILogger logger)
     {
         _adventureObjectService = adventureObjectService;
+        _locationsService = locationsService;
         _logger = logger;
     }
 
@@ -51,8 +55,14 @@ public class AdventureObjectProcessor: IAdventureObjectProcessor
                 Name = adventureObjectUpdateModel.adventureObject.Name,
                 Description = adventureObjectUpdateModel.adventureObject.Description,
                 Type = adventureObjectUpdateModel.adventureObject.Type,
-                AdventureId = adventureObjectUpdateModel.adventureObject.AdventureId
+                AdventureId = adventureObjectUpdateModel.adventureObject.AdventureId,
+                Locations = new List<Location>()
             };
+            foreach (var location in adventureObjectUpdateModel.adventureObject.Locations)
+            {
+                _locationsService.AttachLocation(location);
+                adventureObject.Locations.Add(location);
+            }
             await _adventureObjectService.AddAdventureObject(adventureObject);
         }
         else
@@ -67,6 +77,7 @@ public class AdventureObjectProcessor: IAdventureObjectProcessor
             dbAdventureObject.Name = adventureObjectUpdateModel.adventureObject.Name;
             dbAdventureObject.Description = adventureObjectUpdateModel.adventureObject.Description;
             dbAdventureObject.Type = adventureObjectUpdateModel.adventureObject.Type;
+            dbAdventureObject.Locations = adventureObjectUpdateModel.adventureObject.Locations;
         }
 
         await _adventureObjectService.SaveChanges();
