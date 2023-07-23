@@ -13,14 +13,12 @@ namespace TbspRpgProcessor.Processors
     {
         Task<Source> CreateOrUpdateSource(SourceCreateOrUpdateModel sourceCreateOrUpdateModel);
         Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
-        Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
         Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel);
         Task RemoveSource(SourceRemoveModel sourceRemoveModel);
     }
     
     public class SourceProcessor : ISourceProcessor
     {
-        private readonly IScriptProcessor _scriptProcessor;
         private readonly ISourcesService _sourcesService;
         private readonly IAdventuresService _adventuresService;
         private readonly ILocationsService _locationsService;
@@ -28,10 +26,8 @@ namespace TbspRpgProcessor.Processors
         private readonly IContentsService _contentsService;
         private readonly IScriptsService _scriptsService;
         private readonly ILogger _logger;
-        private readonly int MaxLoopCount = 5;
 
         public SourceProcessor(
-            IScriptProcessor scriptProcessor,
             ISourcesService sourcesService,
             IAdventuresService adventuresService,
             ILocationsService locationsService,
@@ -40,7 +36,6 @@ namespace TbspRpgProcessor.Processors
             IScriptsService scriptsService,
             ILogger logger)
         {
-            _scriptProcessor = scriptProcessor;
             _sourcesService = sourcesService;
             _adventuresService = adventuresService;
             _locationsService = locationsService;
@@ -95,49 +90,6 @@ namespace TbspRpgProcessor.Processors
             }
 
             return dbSource;
-        }
-
-        public async Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel)
-        {
-            // load the source for the given key
-            // while source is a script
-            // call script, get result, load source
-            var dbSource = await _sourcesService.GetSourceForKey(
-                sourceForKeyModel.Key,
-                sourceForKeyModel.AdventureId,
-                sourceForKeyModel.Language);
-
-            if (dbSource == null)
-            {
-                throw new ArgumentException("invalid source key");
-            }
-
-            var loopCount = 0;
-            while (dbSource.ScriptId != null && loopCount < MaxLoopCount)
-            {
-                var result = await _scriptProcessor.ExecuteScript(new ScriptExecuteModel() {
-                    ScriptId = dbSource.ScriptId.GetValueOrDefault(),
-                    Game = sourceForKeyModel.Game
-                });
-                var sourceKey = Guid.Parse(result);
-                dbSource = await _sourcesService.GetSourceForKey(
-                    sourceKey,
-                    sourceForKeyModel.AdventureId,
-                    sourceForKeyModel.Language);
-                if (dbSource == null)
-                {
-                    throw new ArgumentException("invalid source key");
-                }
-
-                loopCount++;
-            }
-
-            if (loopCount >= MaxLoopCount)
-            {
-                throw new Exception("source never resolved");
-            }
-
-            return dbSource.Key;
         }
 
         public async Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel)
