@@ -82,6 +82,21 @@ namespace TbspRpgProcessor.Processors
             return dbSource;
         }
 
+        public void ReplaceEmbeddedScript(string text)
+        {
+            // check if there are sections that are enclosed in {}
+            // if not return
+            
+            // start compiling a script
+            // create a function for each embedded chunk of lua
+            // generate a run function that calls each previously generated function
+            // take the result of each function and return as semicolon seperated string
+            
+            // split the returned string on ';'
+            // go through each entry, if it is a GUID, load the source text for that GUID
+            // if it's not a GUID replace the embedded chunk of Lua with the string
+        }
+
         public async Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel)
         {
             var dbSource = await _sourcesService.GetSourceForKey(
@@ -91,6 +106,11 @@ namespace TbspRpgProcessor.Processors
 
             if (sourceForKeyModel.Processed && dbSource != null)
             {
+                // check for embedded lua
+                // generate a lua script to resolve all of the embedded lua
+                // each bit of embedded lua should return a string
+                // run the lua script, it will return an array of strings seperated by semicolons
+                // replace the embedded lua with the corresponding string
                 dbSource.Text = Markdown.ToHtml(dbSource.Text).Trim();
             }
 
