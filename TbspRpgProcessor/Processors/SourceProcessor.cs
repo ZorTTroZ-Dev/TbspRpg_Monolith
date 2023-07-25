@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Markdig;
 using Microsoft.Extensions.Logging;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
 using TbspRpgProcessor.Entities;
+using TbspRpgSettings;
 
 namespace TbspRpgProcessor.Processors
 {
@@ -27,6 +29,7 @@ namespace TbspRpgProcessor.Processors
         private readonly IRoutesService _routesService;
         private readonly IContentsService _contentsService;
         private readonly IScriptsService _scriptsService;
+        private readonly TbspRpgUtilities _tbspRpgUtilities;
         private readonly ILogger _logger;
         private readonly int MaxLoopCount = 5;
 
@@ -38,6 +41,7 @@ namespace TbspRpgProcessor.Processors
             IRoutesService routesService,
             IContentsService contentsService,
             IScriptsService scriptsService,
+            TbspRpgUtilities tbspRpgUtilities,
             ILogger logger)
         {
             _scriptProcessor = scriptProcessor;
@@ -47,6 +51,7 @@ namespace TbspRpgProcessor.Processors
             _routesService = routesService;
             _contentsService = contentsService;
             _scriptsService = scriptsService;
+            _tbspRpgUtilities = tbspRpgUtilities;
             _logger = logger;
         }
 
@@ -82,16 +87,52 @@ namespace TbspRpgProcessor.Processors
             return dbSource;
         }
 
-        public void ReplaceEmbeddedScript(string text)
+        public void CompileSourceScript(Source source)
+        {
+            // create a function for each embedded chunk of lua
+            var scriptContent = "";
+            var functionCount = 0;
+            foreach (Match scriptChunk in _tbspRpgUtilities.EmbeddedSourceScriptRegex.Matches(source.Text))
+            {
+                var chunkContent = scriptChunk.Groups[1].Value.Trim();
+                scriptContent += $"\nfunction func{functionCount}() {chunkContent} end";
+                functionCount++;
+            }
+            
+            // generate a run function that calls each previously generated function
+            // take the result of each function and return as semicolon seperated string
+            scriptContent += "\nfunction run()";
+            var callFunctions = "\n\t";
+            var setResult = "\n\tresult = ";
+            for (var i = 0; i < functionCount; i++)
+            {
+                callFunctions += $"result{i} = func{i}()\n\t";
+                if (i != 0)
+                    setResult += " .. ';' .. ";
+                setResult += $"result{i}";
+            }
+
+            scriptContent += callFunctions;
+            scriptContent += setResult;
+            scriptContent += "\nend";
+            
+            // save the script to the database for this source object
+        }
+
+        public void ReplaceEmbeddedScript(Source source)
         {
             // check if there are sections that are enclosed in {}
             // if not return
+            if (!_tbspRpgUtilities.EmbeddedSourceScriptRegex.IsMatch(source.Text))
+            {
+                return;
+            }
             
             // start compiling a script
-            // create a function for each embedded chunk of lua
-            // generate a run function that calls each previously generated function
-            // take the result of each function and return as semicolon seperated string
-            
+            // check if we already have a script compiled
+            CompileSourceScript(source);
+
+            // execute the script
             // split the returned string on ';'
             // go through each entry, if it is a GUID, load the source text for that GUID
             // if it's not a GUID replace the embedded chunk of Lua with the string
@@ -106,11 +147,7 @@ namespace TbspRpgProcessor.Processors
 
             if (sourceForKeyModel.Processed && dbSource != null)
             {
-                // check for embedded lua
-                // generate a lua script to resolve all of the embedded lua
-                // each bit of embedded lua should return a string
-                // run the lua script, it will return an array of strings seperated by semicolons
-                // replace the embedded lua with the corresponding string
+                ReplaceEmbeddedScript(dbSource);
                 dbSource.Text = Markdown.ToHtml(dbSource.Text).Trim();
             }
 

@@ -207,6 +207,54 @@ namespace TbspRpgProcessor.Tests.Processors
             // Assert
             Assert.Equal("This is a text with some *emphasis*", source.Text);
         }
+        
+        [Fact]
+        public async void GetSourceForKey_ContainsScript_SourceTextScriptResolved()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                GameState = "{\"number\": 42, \"string\": \"banana\", \"boolean\": false}"
+            };
+            
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = @"This is a text with some *emphasis*, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'banana'
+                    else return 'france' end
+                >, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'france'
+                    else return 'banana' end
+                >."
+            };
+            var sources = new List<En>()
+            {
+                testEn
+            };
+            var scripts = new List<Script>();
+            var games = new List<Game>() {testGame};
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources, games);
+            
+            // act
+            var source = await processor.GetSourceForKey(new SourceForKeyModel()
+            {
+                Key = testEn.Key,
+                AdventureId = testEn.AdventureId,
+                Language = Languages.ENGLISH,
+                Processed = true
+            });
+            
+            // Assert
+            Assert.Equal("<p>This is a text with some <em>emphasis</em>, france, banana.</p>", source.Text);
+        }
 
         #endregion
 

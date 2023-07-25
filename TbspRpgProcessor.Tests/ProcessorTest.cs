@@ -6,6 +6,7 @@ using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Tests;
 using TbspRpgProcessor.Entities;
+using TbspRpgSettings;
 
 namespace TbspRpgProcessor.Tests
 {
@@ -52,6 +53,7 @@ namespace TbspRpgProcessor.Tests
                 gamesService,
                 contentsService,
                 adventureObjectsService,
+                new TbspRpgUtilities(),
                 MockMailClient(),
                 NullLogger<TbspRpgProcessor>.Instance);
         }
