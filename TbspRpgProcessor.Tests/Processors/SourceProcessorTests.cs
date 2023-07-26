@@ -214,12 +214,14 @@ namespace TbspRpgProcessor.Tests.Processors
             // arrange
             var testGame = new Game()
             {
+                Id = Guid.NewGuid(),
                 GameState = "{\"number\": 42, \"string\": \"banana\", \"boolean\": false}"
             };
             
             var testEn = new En()
             {
                 Id = Guid.NewGuid(),
+                Name = "test_source",
                 Key = Guid.NewGuid(),
                 AdventureId = Guid.NewGuid(),
                 Text = @"This is a text with some *emphasis*, <script:
@@ -249,10 +251,12 @@ namespace TbspRpgProcessor.Tests.Processors
                 Key = testEn.Key,
                 AdventureId = testEn.AdventureId,
                 Language = Languages.ENGLISH,
-                Processed = true
+                Processed = true,
+                Game = testGame
             });
             
             // Assert
+            Assert.Single(scripts);
             Assert.Equal("<p>This is a text with some <em>emphasis</em>, france, banana.</p>", source.Text);
         }
 

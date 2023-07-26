@@ -8,6 +8,7 @@ using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
 using TbspRpgProcessor.Entities;
 using TbspRpgSettings;
+using TbspRpgSettings.Settings;
 
 namespace TbspRpgProcessor.Processors
 {
@@ -87,7 +88,7 @@ namespace TbspRpgProcessor.Processors
             return dbSource;
         }
 
-        public void CompileSourceScript(Source source)
+        public async Task<Script> CompileSourceScript(Source source)
         {
             // create a function for each embedded chunk of lua
             var scriptContent = "";
@@ -95,7 +96,7 @@ namespace TbspRpgProcessor.Processors
             foreach (Match scriptChunk in _tbspRpgUtilities.EmbeddedSourceScriptRegex.Matches(source.Text))
             {
                 var chunkContent = scriptChunk.Groups[1].Value.Trim();
-                scriptContent += $"\nfunction func{functionCount}() {chunkContent} end";
+                scriptContent += $"\nfunction func{functionCount}()\n{chunkContent}\nend";
                 functionCount++;
             }
             
@@ -117,25 +118,64 @@ namespace TbspRpgProcessor.Processors
             scriptContent += "\nend";
             
             // save the script to the database for this source object
+            var script = await _scriptProcessor.CreateScript(new ScriptCreateModel()
+            {
+                script = new Script()
+                {
+                    Id = Guid.Empty,
+                    AdventureId = source.AdventureId,
+                    Name = source.Name + "_script",
+                    Type = ScriptTypes.LuaScript,
+                    Content = scriptContent,
+                    Includes = new List<Script>()
+                },
+                Save = false
+            });
+
+            source.ScriptId = script.Id;
+            await _sourcesService.SaveChanges();
+            return script;
         }
 
-        public void ReplaceEmbeddedScript(Source source)
+        public async Task ReplaceEmbeddedScript(Source source, Game game)
         {
-            // check if there are sections that are enclosed in {}
-            // if not return
+            // check if there are any script sections
             if (!_tbspRpgUtilities.EmbeddedSourceScriptRegex.IsMatch(source.Text))
             {
                 return;
             }
-            
-            // start compiling a script
-            // check if we already have a script compiled
-            CompileSourceScript(source);
+
+            Script script = null;
+            if (source.ScriptId == null || source.ScriptId == Guid.Empty)
+            {
+                script = await CompileSourceScript(source);
+            }
+            else
+            {
+                script = await _scriptsService.GetScriptById(source.ScriptId.GetValueOrDefault());
+            }
+            if (script == null)
+            {
+                throw new Exception("source has invalid script id");
+            }
 
             // execute the script
-            // split the returned string on ';'
-            // go through each entry, if it is a GUID, load the source text for that GUID
-            // if it's not a GUID replace the embedded chunk of Lua with the string
+            var result = await _scriptProcessor.ExecuteScript(new ScriptExecuteModel()
+            {
+                Script = script,
+                Game = game
+            });
+            var splitResult = result.Split(';');
+            if (_tbspRpgUtilities.EmbeddedSourceScriptRegex.Matches(source.Text).Count <= splitResult.Length)
+            {
+                var matchIndex = 0;
+                source.Text = _tbspRpgUtilities.EmbeddedSourceScriptRegex.Replace(
+                    source.Text, m => splitResult[matchIndex++]);
+            }
+            else
+            {
+                throw new Exception("source script bad result");
+            }
         }
 
         public async Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel)
@@ -147,7 +187,7 @@ namespace TbspRpgProcessor.Processors
 
             if (sourceForKeyModel.Processed && dbSource != null)
             {
-                ReplaceEmbeddedScript(dbSource);
+                await ReplaceEmbeddedScript(dbSource, sourceForKeyModel.Game);
                 dbSource.Text = Markdown.ToHtml(dbSource.Text).Trim();
             }
 
