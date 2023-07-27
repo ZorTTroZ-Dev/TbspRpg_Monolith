@@ -91,9 +91,14 @@ namespace TbspRpgProcessor.Processors
 
         private async Task RecompileSourceScript(Source source)
         {
-            if(source.ScriptId == null || source.ScriptId == Guid.Empty)
+            // the source currently doesn't have a script but they may have added some
+            if (source.ScriptId == null || source.ScriptId == Guid.Empty)
+            {
+                await CompileSourceScript(source, false);
                 return;
+            }
             
+            // the source currently has a script, check if it still does, if so update it
             var dbScript = await _scriptsService.GetScriptById(source.ScriptId.GetValueOrDefault());
             if (dbScript == null)
             {
