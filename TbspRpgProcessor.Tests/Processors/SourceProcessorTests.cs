@@ -259,6 +259,133 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.Single(scripts);
             Assert.Equal("<p>This is a text with some <em>emphasis</em>, france, banana.</p>", source.Text);
         }
+        
+        [Fact]
+        public async void GetSourceForKey_ContainsScript_InvalidScriptId_ExceptionThrown()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                GameState = "{\"number\": 42, \"string\": \"banana\", \"boolean\": false}"
+            };
+
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_source",
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = @"This is a text with some *emphasis*, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'banana'
+                    else return 'france' end
+                >, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'france'
+                    else return 'banana' end
+                >.",
+                ScriptId = Guid.NewGuid()
+            };
+            var sources = new List<En>()
+            {
+                testEn
+            };
+            var scripts = new List<Script>();
+            var games = new List<Game>() {testGame};
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources, games);
+            
+            // act
+            Task Act() => processor.GetSourceForKey(new SourceForKeyModel()
+            {
+                Key = testEn.Key,
+                AdventureId = testEn.AdventureId,
+                Language = Languages.ENGLISH,
+                Processed = true,
+                Game = testGame
+            });
+            
+            // Assert
+            await Assert.ThrowsAsync<Exception>(Act);
+        }
+        
+        [Fact]
+        public async void GetSourceForKey_ContainsScript_InvalidScript_ExceptionThrown()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                GameState = "{\"number\": 42, \"string\": \"banana\", \"boolean\": false}"
+            };
+
+            var script = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "viva_la_france",
+                Type = ScriptTypes.LuaScript,
+                Content = @"function func0()
+if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'banana'
+                    else return 'france' end
+end
+function func1()
+if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'france'
+                    else return 'banana' end
+end
+function run()
+	result0 = func0()
+	result1 = func1()
+	
+	result = result0 .. result1
+end"
+            };
+
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_source",
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = @"This is a text with some *emphasis*, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'banana'
+                    else return 'france' end
+                >, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'france'
+                    else return 'banana' end
+                >.",
+                ScriptId = script.Id
+            };
+            script.AdventureId = testEn.AdventureId;
+            var sources = new List<En>() {testEn};
+            var scripts = new List<Script>() {script};
+            var games = new List<Game>() {testGame};
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources, games);
+            
+            // act
+            Task Act() => processor.GetSourceForKey(new SourceForKeyModel()
+            {
+                Key = testEn.Key,
+                AdventureId = testEn.AdventureId,
+                Language = Languages.ENGLISH,
+                Processed = true,
+                Game = testGame
+            });
+            
+            // Assert
+            await Assert.ThrowsAsync<Exception>(Act);
+        }
 
         #endregion
 

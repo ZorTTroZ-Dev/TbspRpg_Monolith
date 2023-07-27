@@ -88,9 +88,9 @@ namespace TbspRpgProcessor.Processors
             return dbSource;
         }
 
-        public async Task<Script> CompileSourceScript(Source source)
+        private async Task<Script> CompileSourceScript(Source source)
         {
-            // create a function for each embedded chunk of lua
+            // create a function for each embedded chunk of script
             var scriptContent = "";
             var functionCount = 0;
             foreach (Match scriptChunk in _tbspRpgUtilities.EmbeddedSourceScriptRegex.Matches(source.Text))
@@ -137,7 +137,7 @@ namespace TbspRpgProcessor.Processors
             return script;
         }
 
-        public async Task ReplaceEmbeddedScript(Source source, Game game)
+        private async Task ReplaceEmbeddedScript(Source source, Game game)
         {
             // check if there are any script sections
             if (!_tbspRpgUtilities.EmbeddedSourceScriptRegex.IsMatch(source.Text))
