@@ -67,9 +67,10 @@ namespace TbspRpgProcessor.Processors
                     AdventureId = sourceCreateOrUpdateModel.Source.AdventureId,
                     Name = sourceCreateOrUpdateModel.Source.Name,
                     Text = sourceCreateOrUpdateModel.Source.Text,
-                    ScriptId = sourceCreateOrUpdateModel.Source.ScriptId
+                    ScriptId = Guid.Empty
                 };
                 await _sourcesService.AddSource(newSource);
+                await CompileSourceScript(newSource, false);
                 if (sourceCreateOrUpdateModel.Save)
                     await _sourcesService.SaveChanges();
                 return newSource;
@@ -81,19 +82,43 @@ namespace TbspRpgProcessor.Processors
             if(dbSource == null)
                 throw new ArgumentException("invalid source key");
             dbSource.Text = sourceCreateOrUpdateModel.Source.Text;
-            dbSource.ScriptId = sourceCreateOrUpdateModel.Source.ScriptId;
             dbSource.Name = sourceCreateOrUpdateModel.Source.Name;
+            await RecompileSourceScript(dbSource);
             if(sourceCreateOrUpdateModel.Save)
                 await _sourcesService.SaveChanges();
             return dbSource;
         }
 
-        private async Task<Script> CompileSourceScript(Source source)
+        private async Task RecompileSourceScript(Source source)
+        {
+            if(source.ScriptId == null || source.ScriptId == Guid.Empty)
+                return;
+            
+            var dbScript = await _scriptsService.GetScriptById(source.ScriptId.GetValueOrDefault());
+            if (dbScript == null)
+            {
+                throw new ArgumentException("invalid script id");
+            }
+
+            // check if there are any script sections
+            if (!_tbspRpgUtilities.EmbeddedSourceScriptRegex.IsMatch(source.Text))
+            {
+                // remove the script from the database, the script blocks from the source was removed
+                _scriptsService.RemoveScript(dbScript);
+                source.ScriptId = Guid.Empty;
+            }
+            else
+            {
+                dbScript.Content = GenerateSourceScript(source.Text);
+            }
+        }
+
+        private string GenerateSourceScript(string sourceContent)
         {
             // create a function for each embedded chunk of script
             var scriptContent = "";
             var functionCount = 0;
-            foreach (Match scriptChunk in _tbspRpgUtilities.EmbeddedSourceScriptRegex.Matches(source.Text))
+            foreach (Match scriptChunk in _tbspRpgUtilities.EmbeddedSourceScriptRegex.Matches(sourceContent))
             {
                 var chunkContent = scriptChunk.Groups[1].Value.Trim();
                 scriptContent += $"\nfunction func{functionCount}()\n{chunkContent}\nend";
@@ -116,6 +141,16 @@ namespace TbspRpgProcessor.Processors
             scriptContent += callFunctions;
             scriptContent += setResult;
             scriptContent += "\nend";
+            return scriptContent;
+        }
+
+        private async Task<Script> CompileSourceScript(Source source, bool save = true)
+        {
+            // check if there are any script sections
+            if (!_tbspRpgUtilities.EmbeddedSourceScriptRegex.IsMatch(source.Text))
+            {
+                return null;
+            }
             
             // save the script to the database for this source object
             var script = await _scriptProcessor.CreateScript(new ScriptCreateModel()
@@ -126,14 +161,15 @@ namespace TbspRpgProcessor.Processors
                     AdventureId = source.AdventureId,
                     Name = source.Name + "_script",
                     Type = ScriptTypes.LuaScript,
-                    Content = scriptContent,
+                    Content = GenerateSourceScript(source.Text),
                     Includes = new List<Script>()
                 },
                 Save = false
             });
 
             source.ScriptId = script.Id;
-            await _sourcesService.SaveChanges();
+            if(save)
+                await _sourcesService.SaveChanges();
             return script;
         }
 
