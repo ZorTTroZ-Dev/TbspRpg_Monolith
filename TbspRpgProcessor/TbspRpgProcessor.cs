@@ -23,7 +23,6 @@ public interface ITbspRpgProcessor
 
     Task<Source> CreateOrUpdateSource(SourceCreateOrUpdateModel sourceCreateOrUpdateModel);
     Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
-    Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
     Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel);
     Task RemoveSource(SourceRemoveModel sourceRemoveModel);
 
@@ -176,9 +175,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
 
     private void LoadSourceProcessor()
     {
-        LoadScriptProcessor();
         _sourceProcessor ??= new SourceProcessor(
-            _scriptProcessor,
             _sourcesService,
             _adventuresService,
             _locationsService,
@@ -198,12 +195,6 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     {
         LoadSourceProcessor();
         return _sourceProcessor.GetSourceForKey(sourceForKeyModel);
-    }
-
-    public Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel)
-    {
-        LoadSourceProcessor();
-        return _sourceProcessor.ResolveSourceKey(sourceForKeyModel);
     }
 
     public Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel)

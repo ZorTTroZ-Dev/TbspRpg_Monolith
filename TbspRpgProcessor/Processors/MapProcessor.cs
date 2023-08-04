@@ -114,14 +114,7 @@ namespace TbspRpgProcessor.Processors
                 Id = Guid.NewGuid(),
                 GameId = game.Id,
                 Position = (ulong)secondsSinceEpoch,
-                SourceKey = await _sourceProcessor.ResolveSourceKey(
-                    new SourceForKeyModel()
-                    {
-                        AdventureId = game.AdventureId,
-                        Key = route.RouteTakenSourceKey,
-                        Language = game.Language,
-                        Game = game
-                    })
+                SourceKey = route.RouteTakenSourceKey
             });
             
             // create content entry for the new location
@@ -130,14 +123,7 @@ namespace TbspRpgProcessor.Processors
                 Id = Guid.NewGuid(),
                 GameId = game.Id,
                 Position = (ulong)secondsSinceEpoch + 1,
-                SourceKey = await _sourceProcessor.ResolveSourceKey(
-                    new SourceForKeyModel()
-                    {
-                        AdventureId = game.AdventureId,
-                        Key = route.DestinationLocation.SourceKey,
-                        Language = game.Language,
-                        Game = game
-                    })
+                SourceKey = route.DestinationLocation.SourceKey
             });
 
             // save context changes

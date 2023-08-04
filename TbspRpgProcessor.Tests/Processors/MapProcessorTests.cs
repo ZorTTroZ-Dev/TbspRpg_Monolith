@@ -350,22 +350,6 @@ namespace TbspRpgProcessor.Tests.Processors
             };
             var resultSourceKey = Guid.NewGuid();
             var badResultSourceKey = Guid.NewGuid();
-            var testScriptReturnKey = new Script()
-            {
-                Id = Guid.NewGuid(),
-                Name = "destination key script",
-                Content = @$"
-                    function run()
-                        if(game:GetGameStatePropertyBoolean('ScriptRun'))
-                        then
-                            result = '{resultSourceKey}'
-                        else
-                            result = '{badResultSourceKey}'
-                        end
-                    end
-                ",
-                Type = ScriptTypes.LuaScript
-            };
             
             // arrange
             var testDestinationLocation = new Location()
@@ -410,9 +394,7 @@ namespace TbspRpgProcessor.Tests.Processors
                 new En()
                 {
                     Id = Guid.NewGuid(),
-                    Key = testDestinationLocation.SourceKey,
-                    ScriptId = testScriptReturnKey.Id,
-                    Script = testScriptReturnKey
+                    Key = testDestinationLocation.SourceKey
                 }
             };
             var testGames = new List<Game>()
@@ -432,7 +414,7 @@ namespace TbspRpgProcessor.Tests.Processors
             var testContents = new List<Content>();
             var processor = CreateTbspRpgProcessor(
                 null,
-                new List<Script>() { testScript, testScriptReturnKey },
+                new List<Script>() { testScript },
                 null,
                 new List<Route>() {testRoute},
                 null,
@@ -453,7 +435,7 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.True(game.LocationUpdateTimeStamp > 0);
             Assert.Equal(2, testContents.Count);
             Assert.Equal(testRoute.RouteTakenSourceKey, testContents[0].SourceKey);
-            Assert.Equal(resultSourceKey, testContents[1].SourceKey);
+            Assert.Equal(testDestinationLocation.SourceKey, testContents[1].SourceKey);
         }
 
         #endregion
