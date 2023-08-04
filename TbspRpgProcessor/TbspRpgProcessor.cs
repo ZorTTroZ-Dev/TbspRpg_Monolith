@@ -315,6 +315,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _sourceProcessor,
             _locationsService,
             _routesService,
+            _adventureObjectService,
             _logger);
     }
 
@@ -427,6 +428,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     {
         _adventureObjectProcessor ??= new AdventureObjectProcessor(
             _adventureObjectService,
+            _locationsService,
             _logger);
     }
     

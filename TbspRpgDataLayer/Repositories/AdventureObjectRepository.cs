@@ -14,6 +14,7 @@ public interface IAdventureObjectRepository: IBaseRepository
     Task AddAdventureObject(AdventureObject adventureObject);
     void RemoveAdventureObject(AdventureObject adventureObject);
     void RemoveAdventureObjects(ICollection<AdventureObject> adventureObjects);
+    void AttachObject(AdventureObject adventureObject);
 }
 
 public class AdventureObjectRepository: IAdventureObjectRepository
@@ -56,5 +57,10 @@ public class AdventureObjectRepository: IAdventureObjectRepository
     public void RemoveAdventureObjects(ICollection<AdventureObject> adventureObjects)
     {
         _databaseContext.RemoveRange(adventureObjects);
+    }
+
+    public void AttachObject(AdventureObject adventureObject)
+    {
+        _databaseContext.Attach(adventureObject);
     }
 }

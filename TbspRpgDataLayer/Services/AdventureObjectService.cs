@@ -14,6 +14,7 @@ public interface IAdventureObjectService : IBaseService
     Task AddAdventureObject(AdventureObject adventureObject);
     void RemoveAdventureObject(AdventureObject adventureObject);
     void RemoveAdventureObjects(ICollection<AdventureObject> adventureObjects);
+    void AttachObject(AdventureObject adventureObject);
 }
 
 public class AdventureObjectService: IAdventureObjectService
@@ -56,5 +57,10 @@ public class AdventureObjectService: IAdventureObjectService
     public void RemoveAdventureObjects(ICollection<AdventureObject> adventureObjects)
     {
         _adventureObjectRepository.RemoveAdventureObjects(adventureObjects);
+    }
+
+    public void AttachObject(AdventureObject adventureObject)
+    {
+        _adventureObjectRepository.AttachObject(adventureObject);
     }
 }

@@ -117,7 +117,8 @@ public class ObjectsServiceTests: ApiTest
                 Id = exceptionId,
                 AdventureId = Guid.NewGuid(),
                 Name = "test",
-                Type = "generic"
+                Type = "generic",
+                Locations = new List<LocationViewModel>()
             }
         });
             
@@ -140,7 +141,8 @@ public class ObjectsServiceTests: ApiTest
                 Id = Guid.NewGuid(),
                 AdventureId = Guid.NewGuid(),
                 Name = "test",
-                Type = "generic"
+                Type = "generic",
+                Locations = new List<LocationViewModel>()
             }
         });
     }

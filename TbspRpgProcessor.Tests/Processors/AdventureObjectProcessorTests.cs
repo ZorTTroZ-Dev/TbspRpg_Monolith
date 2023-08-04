@@ -98,7 +98,7 @@ public class AdventureObjectProcessorTests: ProcessorTest
 
         #endregion
 
-        #region UpdateAdventureObject
+    #region UpdateAdventureObject
 
         [Fact]
         public async void UpdateAdventureObject_EmptyId_CreateAdventureObject()
@@ -112,6 +112,14 @@ public class AdventureObjectProcessorTests: ProcessorTest
                     Name = "test adventure",
                 }
             };
+            var testLocations = new List<Location>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    AdventureId = testAdventures[0].Id
+                }
+            };
             var testAdventureObjects = new List<AdventureObject>();
                 
             var processor = CreateTbspRpgProcessor(
@@ -119,7 +127,7 @@ public class AdventureObjectProcessorTests: ProcessorTest
                 null,
                 testAdventures,
                 null,
-                null,
+                testLocations,
                 null,
                 null,
                 null,
@@ -133,12 +141,17 @@ public class AdventureObjectProcessorTests: ProcessorTest
                     Id = Guid.Empty,
                     AdventureId = testAdventures[0].Id,
                     Name = "test adventure object",
-                    Description = "test adventure object"
+                    Description = "test adventure object",
+                    Locations = new List<Location>()
+                    {
+                        testLocations[0]
+                    }
                 }
             });
             
             // assert
             Assert.Single(testAdventureObjects);
+            Assert.Single(testAdventureObjects[0].Locations);
             Assert.NotEqual(Guid.Empty, testAdventureObjects[0].Id);
             Assert.Equal("test adventure object", testAdventureObjects[0].Name);
         }
@@ -240,5 +253,5 @@ public class AdventureObjectProcessorTests: ProcessorTest
             Assert.Equal(AdventureObjectTypes.Generic, testAdventureObjects[0].Type);
         }
 
-        #endregion
+    #endregion
 }

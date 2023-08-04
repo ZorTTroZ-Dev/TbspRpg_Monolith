@@ -215,9 +215,15 @@ namespace TbspRpgProcessor.Tests.Processors
         }
 
         [Fact]
-        public async void UpdateLocation_EmptyLocaitonId_CreateNewLocation()
+        public async void UpdateLocation_EmptyLocationId_CreateNewLocation()
         {
             // arrange
+            var adventureObject = new AdventureObject()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_object"
+            };
+            var adventureObjects = new List<AdventureObject>() {adventureObject};
             var locations = new List<Location>();
             var sources = new List<En>();
             var processor = CreateTbspRpgProcessor(
@@ -226,7 +232,10 @@ namespace TbspRpgProcessor.Tests.Processors
                 null,
                 null,
                 locations,
-                sources);
+                sources,
+                null,
+                null,
+                adventureObjects);
             
             // act
             await processor.UpdateLocation(new LocationUpdateModel() {
@@ -235,7 +244,11 @@ namespace TbspRpgProcessor.Tests.Processors
                     Id = Guid.Empty,
                     Name = "new location name",
                     Initial = false,
-                    SourceKey = Guid.Empty
+                    SourceKey = Guid.Empty,
+                    AdventureObjects = new List<AdventureObject>()
+                    {
+                        adventureObject
+                    }
                 },
                 Source = new En()
                 {

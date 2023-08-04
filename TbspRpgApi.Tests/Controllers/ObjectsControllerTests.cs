@@ -140,7 +140,8 @@ public class ObjectsControllerTests: ApiTest
                 {
                     Id = Guid.NewGuid(),
                     AdventureId = Guid.NewGuid(),
-                    Name = "script"
+                    Name = "script",
+                    Locations = new List<LocationViewModel>()
                 }
             });
         

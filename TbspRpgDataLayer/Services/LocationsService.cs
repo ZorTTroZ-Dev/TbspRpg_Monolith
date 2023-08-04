@@ -21,6 +21,7 @@ namespace TbspRpgDataLayer.Services
         Task RemoveScriptFromLocations(Guid scriptId);
         Task<bool> DoesAdventureLocationUseSource(Guid adventureId, Guid sourceKey);
         Task<List<Location>> GetAdventureLocationsWithSource(Guid adventureId, Guid sourceKey);
+        void AttachLocation(Location location);
     }
     
     public class LocationsService : ILocationsService
@@ -92,6 +93,11 @@ namespace TbspRpgDataLayer.Services
         public Task<List<Location>> GetAdventureLocationsWithSource(Guid adventureId, Guid sourceKey)
         {
             return _locationsRepository.GetAdventureLocationsWithSource(adventureId, sourceKey);
+        }
+
+        public void AttachLocation(Location location)
+        {
+            _locationsRepository.AttachLocation(location);
         }
 
         public async Task SaveChanges()
