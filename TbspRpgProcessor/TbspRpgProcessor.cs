@@ -180,7 +180,9 @@ public class TbspRpgProcessor: ITbspRpgProcessor
 
     private void LoadSourceProcessor()
     {
+        LoadScriptProcessor();
         _sourceProcessor ??= new SourceProcessor(
+            _scriptProcessor,
             _sourcesService,
             _adventuresService,
             _locationsService,

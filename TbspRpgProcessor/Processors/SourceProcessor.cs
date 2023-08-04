@@ -29,9 +29,11 @@ namespace TbspRpgProcessor.Processors
         private readonly IContentsService _contentsService;
         private readonly IScriptsService _scriptsService;
         private readonly TbspRpgUtilities _tbspRpgUtilities;
+        private readonly IScriptProcessor _scriptProcessor;
         private readonly ILogger _logger;
 
         public SourceProcessor(
+            IScriptProcessor scriptProcessor,
             ISourcesService sourcesService,
             IAdventuresService adventuresService,
             ILocationsService locationsService,
@@ -41,6 +43,7 @@ namespace TbspRpgProcessor.Processors
             TbspRpgUtilities tbspRpgUtilities,
             ILogger logger)
         {
+            _scriptProcessor = scriptProcessor;
             _sourcesService = sourcesService;
             _adventuresService = adventuresService;
             _locationsService = locationsService;
