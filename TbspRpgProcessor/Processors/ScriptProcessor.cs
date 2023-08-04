@@ -16,6 +16,7 @@ public interface IScriptProcessor
     Task<string> ExecuteScript(ScriptExecuteModel scriptExecuteModel);
     Task RemoveScript(ScriptRemoveModel scriptIdRemoveModel);
     Task UpdateScript(ScriptUpdateModel scriptUpdateModel);
+    Task<Script> CreateScript(ScriptCreateModel scriptCreateModel);
 }
 
 public class ScriptProcessor : IScriptProcessor
@@ -146,26 +147,38 @@ public class ScriptProcessor : IScriptProcessor
         await _scriptsService.SaveChanges();
     }
 
+    public async Task<Script> CreateScript(ScriptCreateModel scriptCreateModel)
+    {
+        // create a new script
+        var script = new Script()
+        {
+            Id = Guid.NewGuid(),
+            AdventureId = scriptCreateModel.script.AdventureId,
+            Name = scriptCreateModel.script.Name,
+            Type = scriptCreateModel.script.Type,
+            Content = scriptCreateModel.script.Content,
+            Includes = new List<Script>()
+        };
+        foreach (var include in scriptCreateModel.script.Includes)
+        {
+            _scriptsService.AttachScript(include);
+            script.Includes.Add(include);
+        }
+        await _scriptsService.AddScript(script);
+        if (scriptCreateModel.Save)
+            await _scriptsService.SaveChanges();
+        return script;
+    }
+
     public async Task UpdateScript(ScriptUpdateModel scriptUpdateModel)
     {
         if (scriptUpdateModel.script.Id == Guid.Empty)
         {
-            // create a new script
-            var script = new Script()
+            var script = await CreateScript(new ScriptCreateModel()
             {
-                Id = Guid.NewGuid(),
-                AdventureId = scriptUpdateModel.script.AdventureId,
-                Name = scriptUpdateModel.script.Name,
-                Type = scriptUpdateModel.script.Type,
-                Content = scriptUpdateModel.script.Content,
-                Includes = new List<Script>()
-            };
-            foreach (var include in scriptUpdateModel.script.Includes)
-            {
-                _scriptsService.AttachScript(include);
-                script.Includes.Add(include);
-            }
-            await _scriptsService.AddScript(script);
+                script = scriptUpdateModel.script,
+                Save = false
+            });
         }
         else
         {

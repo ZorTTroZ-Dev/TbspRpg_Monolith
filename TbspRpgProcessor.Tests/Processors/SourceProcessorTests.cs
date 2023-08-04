@@ -112,6 +112,207 @@ namespace TbspRpgProcessor.Tests.Processors
             Assert.Equal("updated text", dbSource.Text);
         }
 
+        [Fact]
+        public async void CreateOrUpdateSource_NewWithScript_ScriptCompiled()
+        {
+            // arrange
+            var sources = new List<En>();
+            var scripts = new List<Script>();
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources);
+            
+            // act
+            var dbSource = await processor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+                Source = new Source()
+                {
+                    Id = Guid.Empty,
+                    Key = Guid.Empty,
+                    AdventureId = Guid.NewGuid(),
+                    Name = "banana",
+                    Text = @"This is a text with some *emphasis*, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'banana'
+                    else return 'france' end
+                >."
+                },
+                Language = Languages.ENGLISH
+            });
+            
+            // assert
+            Assert.Single(sources);
+            Assert.Single(scripts);
+            Assert.Equal("banana_script", scripts[0].Name);
+        }
+
+        [Fact]
+        public async void CreateOrUpdateSource_ExistingWithScript_ScriptUpdated()
+        {
+            // arrange
+            var testSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "banana",
+                Text = @"This is a text with some *emphasis*, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'banana'
+                    else return 'france' end
+                >."
+            };
+            var testScript = new Script()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Type = ScriptTypes.LuaScript,
+                Name = "banana_script",
+                Content = @"function func0()
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                                        then
+                                            return 'banana'
+                                        else return 'france' end
+                    end
+                    function run()
+	                    result0 = func0()
+	                    
+	                    result = result0
+                    end"
+            };
+            testSource.ScriptId = testScript.Id;
+            var sources = new List<En>() { testSource };
+            var scripts = new List<Script>() { testScript };
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources);
+            
+            // act
+            var dbSource = await processor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+                Source = new Source()
+                {
+                    Id = testSource.Id,
+                    Key = testSource.Key,
+                    AdventureId = testSource.AdventureId,
+                    Name = "banana",
+                    Text = @"This is a text with some *emphasis*, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'spain'
+                    end
+                >.",
+                    ScriptId = testSource.ScriptId
+                },
+                Language = Languages.ENGLISH
+            });
+            
+            // assert
+            Assert.Single(sources);
+            Assert.Single(scripts);
+            Assert.Contains("spain", scripts[0].Content);
+        }
+
+        [Fact]
+        public async void CreateOrUpdateSource_ExistingNoScript_ScriptRemoved()
+        {
+            // arrange
+            var testSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "banana",
+                Text = @"This is a text with some *emphasis*, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'banana'
+                    else return 'france' end
+                >."
+            };
+            var testScript = new Script()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Type = ScriptTypes.LuaScript,
+                Name = "banana_script",
+                Content = @"function func0()
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                                        then
+                                            return 'banana'
+                                        else return 'france' end
+                    end
+                    function run()
+	                    result0 = func0()
+	                    
+	                    result = result0
+                    end"
+            };
+            testSource.ScriptId = testScript.Id;
+            var sources = new List<En>() { testSource };
+            var scripts = new List<Script>() { testScript };
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources);
+            
+            // act
+            var dbSource = await processor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+                Source = new Source()
+                {
+                    Id = testSource.Id,
+                    Key = testSource.Key,
+                    AdventureId = testSource.AdventureId,
+                    Name = "banana",
+                    Text = @"This is a text with some *emphasis*.",
+                    ScriptId = testSource.ScriptId
+                },
+                Language = Languages.ENGLISH
+            });
+            
+            // assert
+            Assert.Single(sources);
+            Assert.Empty(scripts);
+            Assert.Equal(Guid.Empty, sources[0].ScriptId);
+        }
+
+        [Fact]
+        public async void CreateOrUpdateSource_ExistingAddScript_ScriptCompiled()
+        {
+            // arrange
+            var testSource = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "banana",
+                Text = @"This is a text with some *emphasis*."
+            };
+            var sources = new List<En>() { testSource };
+            var scripts = new List<Script>();
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources);
+            
+            // act
+            var dbSource = await processor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+                Source = new Source()
+                {
+                    Id = testSource.Id,
+                    Key = testSource.Key,
+                    AdventureId = testSource.AdventureId,
+                    Name = "banana",
+                    Text = @"This is a text with some *emphasis*, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'spain'
+                    end
+                >."
+                },
+                Language = Languages.ENGLISH
+            });
+            
+            // assert
+            Assert.Single(sources);
+            Assert.Single(scripts);
+            Assert.Contains("spain", scripts[0].Content);
+        }
+
         #endregion
 
         #region GetSourceForKey
@@ -206,6 +407,185 @@ namespace TbspRpgProcessor.Tests.Processors
             
             // Assert
             Assert.Equal("This is a text with some *emphasis*", source.Text);
+        }
+        
+        [Fact]
+        public async void GetSourceForKey_ContainsScript_SourceTextScriptResolved()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                GameState = "{\"number\": 42, \"string\": \"banana\", \"boolean\": false}"
+            };
+            
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_source",
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = @"This is a text with some *emphasis*, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'banana'
+                    else return 'france' end
+                >, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'france'
+                    else return 'banana' end
+                >."
+            };
+            var sources = new List<En>()
+            {
+                testEn
+            };
+            var scripts = new List<Script>();
+            var games = new List<Game>() {testGame};
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources, games);
+            
+            // act
+            var source = await processor.GetSourceForKey(new SourceForKeyModel()
+            {
+                Key = testEn.Key,
+                AdventureId = testEn.AdventureId,
+                Language = Languages.ENGLISH,
+                Processed = true,
+                Game = testGame
+            });
+            
+            // Assert
+            Assert.Single(scripts);
+            Assert.Equal("<p>This is a text with some <em>emphasis</em>, france, banana.</p>", source.Text);
+        }
+        
+        [Fact]
+        public async void GetSourceForKey_ContainsScript_InvalidScriptId_ExceptionThrown()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                GameState = "{\"number\": 42, \"string\": \"banana\", \"boolean\": false}"
+            };
+
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_source",
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = @"This is a text with some *emphasis*, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'banana'
+                    else return 'france' end
+                >, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'france'
+                    else return 'banana' end
+                >.",
+                ScriptId = Guid.NewGuid()
+            };
+            var sources = new List<En>()
+            {
+                testEn
+            };
+            var scripts = new List<Script>();
+            var games = new List<Game>() {testGame};
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources, games);
+            
+            // act
+            Task Act() => processor.GetSourceForKey(new SourceForKeyModel()
+            {
+                Key = testEn.Key,
+                AdventureId = testEn.AdventureId,
+                Language = Languages.ENGLISH,
+                Processed = true,
+                Game = testGame
+            });
+            
+            // Assert
+            await Assert.ThrowsAsync<Exception>(Act);
+        }
+        
+        [Fact]
+        public async void GetSourceForKey_ContainsScript_InvalidScript_ExceptionThrown()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                GameState = "{\"number\": 42, \"string\": \"banana\", \"boolean\": false}"
+            };
+
+            var script = new Script()
+            {
+                Id = Guid.NewGuid(),
+                Name = "viva_la_france",
+                Type = ScriptTypes.LuaScript,
+                Content = @"function func0()
+if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'banana'
+                    else return 'france' end
+end
+function func1()
+if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'france'
+                    else return 'banana' end
+end
+function run()
+	result0 = func0()
+	result1 = func1()
+	
+	result = result0 .. result1
+end"
+            };
+
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_source",
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = @"This is a text with some *emphasis*, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'banana'
+                    else return 'france' end
+                >, <script:
+                    if(game:GetGameStatePropertyBoolean('boolean'))
+                    then
+                        return 'france'
+                    else return 'banana' end
+                >.",
+                ScriptId = script.Id
+            };
+            script.AdventureId = testEn.AdventureId;
+            var sources = new List<En>() {testEn};
+            var scripts = new List<Script>() {script};
+            var games = new List<Game>() {testGame};
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources, games);
+            
+            // act
+            Task Act() => processor.GetSourceForKey(new SourceForKeyModel()
+            {
+                Key = testEn.Key,
+                AdventureId = testEn.AdventureId,
+                Language = Languages.ENGLISH,
+                Processed = true,
+                Game = testGame
+            });
+            
+            // Assert
+            await Assert.ThrowsAsync<Exception>(Act);
         }
 
         #endregion

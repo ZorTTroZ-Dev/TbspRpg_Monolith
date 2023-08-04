@@ -10,6 +10,7 @@ using TbspRpgApi.JwtAuthorization;
 using TbspRpgApi.Services;
 using TbspRpgDataLayer;
 using TbspRpgProcessor;
+using TbspRpgSettings;
 using TbspRpgSettings.Settings;
 
 namespace TbspRpgApi
@@ -41,6 +42,7 @@ namespace TbspRpgApi
             services.AddSingleton<IJwtSettings>(sp =>
                 sp.GetRequiredService<IOptions<JwtSettings>>().Value);
             
+            SettingsLayerStartUp.InitializeSettingsLayer(services);
             DataLayerStartUp.InitializeDataLayer(services);
             ProcessorStartup.InitializeProcessorLayer(services);
 

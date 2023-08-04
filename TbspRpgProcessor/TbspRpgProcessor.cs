@@ -6,6 +6,7 @@ using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
 using TbspRpgProcessor.Entities;
 using TbspRpgProcessor.Processors;
+using TbspRpgSettings;
 
 namespace TbspRpgProcessor;
 
@@ -109,6 +110,8 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     private readonly IGamesService _gamesService;
     private readonly IContentsService _contentsService;
     private readonly IAdventureObjectService _adventureObjectService;
+    
+    private readonly TbspRpgUtilities _tbspRpgUtilities;
 
     private readonly IMailClient _mailClient;
     
@@ -126,6 +129,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         IGamesService gamesService,
         IContentsService contentsService,
         IAdventureObjectService adventureObjectService,
+        TbspRpgUtilities tbspRpgUtilities,
         IMailClient mailClient,
         ILogger<TbspRpgProcessor> logger)
     {
@@ -138,6 +142,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         _gamesService = gamesService;
         _contentsService = contentsService;
         _adventureObjectService = adventureObjectService;
+        _tbspRpgUtilities = tbspRpgUtilities;
         _mailClient = mailClient;
         _logger = logger;
     }
@@ -182,6 +187,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _routesService,
             _contentsService,
             _scriptsService,
+            _tbspRpgUtilities,
             _logger);
     }
 
