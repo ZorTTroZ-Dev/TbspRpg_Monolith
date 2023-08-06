@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Repositories;
 using TbspRpgSettings.Settings;
@@ -271,6 +272,206 @@ public class AdventureObjectRepositoryTests: InMemoryTest
         
         // assert
         Assert.Empty(context.AdventureObjects);
+    }
+
+    #endregion
+    
+    #region GetAdventureObjectsByLocation
+
+    [Fact]
+    public async void GetAdventureObjectsForLocation_ValidId_ReturnsAdventureObjects()
+    {
+        // arrange
+        var testObject = new AdventureObject()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test object",
+            Description = "test object",
+            Type = AdventureObjectTypes.Generic,
+            Adventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test"
+            },
+            Locations = new List<Location>()
+            {
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "testlocation"
+                },
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "testlocation2"
+                }
+            }
+        };
+        var testObjectTwo = new AdventureObject()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test object two",
+            Description = "test object two",
+            Type = AdventureObjectTypes.Generic,
+            Adventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test two"
+            },
+            Locations = new List<Location>()
+            {
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "testlocation3"
+                },
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "testlocation4"
+                }
+            }
+        };
+        await using var context = new DatabaseContext(DbContextOptions);
+        await context.AdventureObjects.AddAsync(testObject);
+        await context.AdventureObjects.AddAsync(testObjectTwo);
+        await context.SaveChangesAsync();
+        var repository = new AdventureObjectRepository(context);
+
+        // act
+        var adventureObjects = 
+            await repository.GetAdventureObjectsByLocation(testObject.Locations.First().Id);
+        
+        // assert
+        Assert.Single(adventureObjects);
+        Assert.Equal("test", adventureObjects[0].Adventure.Name);
+        Assert.Equal(2, adventureObjects[0].Locations.Count);
+    }
+    
+    [Fact]
+    public async void GetAdventureObjectsForLocation_ValidId_ReturnsMultipleAdventureObjects()
+    {
+        // arrange
+        var testObject = new AdventureObject()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test object",
+            Description = "test object",
+            Type = AdventureObjectTypes.Generic,
+            Adventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test"
+            },
+            Locations = new List<Location>()
+            {
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "testlocation"
+                },
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "testlocation2"
+                }
+            }
+        };
+        var testObjectTwo = new AdventureObject()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test object two",
+            Description = "test object two",
+            Type = AdventureObjectTypes.Generic,
+            Adventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test two"
+            },
+            Locations = testObject.Locations
+        };
+        await using var context = new DatabaseContext(DbContextOptions);
+        await context.AdventureObjects.AddAsync(testObject);
+        await context.AdventureObjects.AddAsync(testObjectTwo);
+        await context.SaveChangesAsync();
+        var repository = new AdventureObjectRepository(context);
+
+        // act
+        var adventureObjects = 
+            await repository.GetAdventureObjectsByLocation(testObject.Locations.First().Id);
+        
+        // assert
+        Assert.Equal(2, adventureObjects.Count);
+        Assert.Equal(2, adventureObjects[0].Locations.Count);
+        Assert.Equal(2, adventureObjects[1].Locations.Count);
+    }
+
+    [Fact]
+    public async void GetAdventureObjectsForLocation_InvalidId_ReturnEmptyList()
+    {
+        // arrange
+        var testObject = new AdventureObject()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test object",
+            Description = "test object",
+            Type = AdventureObjectTypes.Generic,
+            Adventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test"
+            },
+            Locations = new List<Location>()
+            {
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "testlocation"
+                },
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "testlocation2"
+                }
+            }
+        };
+        var testObjectTwo = new AdventureObject()
+        {
+            Id = Guid.NewGuid(),
+            Name = "test object two",
+            Description = "test object two",
+            Type = AdventureObjectTypes.Generic,
+            Adventure = new Adventure()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test two"
+            },
+            Locations = new List<Location>()
+            {
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "testlocation3"
+                },
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "testlocation4"
+                }
+            }
+        };
+        
+        await using var context = new DatabaseContext(DbContextOptions);
+        await context.AdventureObjects.AddAsync(testObject);
+        await context.AdventureObjects.AddAsync(testObjectTwo);
+        await context.SaveChangesAsync();
+        var repository = new AdventureObjectRepository(context);
+        
+        // act
+        var adventureObjects = await repository.GetAdventureObjectsByLocation(Guid.NewGuid());
+        
+        // assert
+        Assert.Empty(adventureObjects);
     }
 
     #endregion

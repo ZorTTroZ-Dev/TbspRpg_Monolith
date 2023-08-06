@@ -14,6 +14,7 @@ namespace TbspRpgApi.Services;
 public interface IObjectsService
 {
     Task<List<ObjectViewModel>> GetObjectsForAdventure(Guid adventureId);
+    Task<List<ObjectViewModel>> GetObjectsByLocation(Guid locationId);
     Task UpdateObject(ObjectUpdateRequest objectUpdateRequest);
     Task DeleteObject(Guid objectId);
 }
@@ -38,6 +39,12 @@ public class ObjectsService: IObjectsService
     {
         var objects = await _adventureObjectService
             .GetAdventureObjectsForAdventure(adventureId);
+        return objects.Select(aObject => new ObjectViewModel(aObject)).ToList();
+    }
+
+    public async Task<List<ObjectViewModel>> GetObjectsByLocation(Guid locationId)
+    {
+        var objects = await _adventureObjectService.GetAdventureObjectsByLocation(locationId);
         return objects.Select(aObject => new ObjectViewModel(aObject)).ToList();
     }
 

@@ -11,6 +11,7 @@ public interface IAdventureObjectService : IBaseService
 {
     Task<AdventureObject> GetAdventureObjectById(Guid adventureObjectId);
     Task<List<AdventureObject>> GetAdventureObjectsForAdventure(Guid adventureId);
+    Task<List<AdventureObject>> GetAdventureObjectsByLocation(Guid locationId);
     Task AddAdventureObject(AdventureObject adventureObject);
     void RemoveAdventureObject(AdventureObject adventureObject);
     void RemoveAdventureObjects(ICollection<AdventureObject> adventureObjects);
@@ -42,6 +43,11 @@ public class AdventureObjectService: IAdventureObjectService
     public Task<List<AdventureObject>> GetAdventureObjectsForAdventure(Guid adventureId)
     {
         return _adventureObjectRepository.GetAdventureObjectsForAdventure(adventureId);
+    }
+
+    public Task<List<AdventureObject>> GetAdventureObjectsByLocation(Guid locationId)
+    {
+        return _adventureObjectRepository.GetAdventureObjectsByLocation(locationId);
     }
 
     public async Task AddAdventureObject(AdventureObject adventureObject)

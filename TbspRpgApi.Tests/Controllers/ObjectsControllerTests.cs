@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Controllers;
@@ -78,6 +79,106 @@ public class ObjectsControllerTests: ApiTest
         
         // act
         var response = await controller.GetObjectsForAdventure(Guid.NewGuid());
+        
+        // assert
+        var okObjectResult = response as OkObjectResult;
+        Assert.NotNull(okObjectResult);
+        var objectViewModels = okObjectResult.Value as List<ObjectViewModel>;
+        Assert.NotNull(objectViewModels);
+        Assert.Empty(objectViewModels);
+    }
+
+    #endregion
+    
+    #region GetObjectsByLocation
+
+    [Fact]
+    public async void GetsObjectsByLocation_HasObjects_ReturnList()
+    {
+        // arrange
+        var testObjects = new List<AdventureObject>()
+        {
+            new AdventureObject()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test",
+                Locations = new List<Location>()
+                {
+                    new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "tl"
+                    }
+                }
+            },
+            new AdventureObject()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test two",
+                Locations = new List<Location>()
+                {
+                    new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "tl"
+                    }
+                }
+            }
+        };
+        var controller = CreateController(testObjects);
+        
+        // act
+        var response = await controller.GetObjectsByLocation(testObjects[0].Locations.First().Id);
+        
+        // assert
+        var okObjectResult = response as OkObjectResult;
+        Assert.NotNull(okObjectResult);
+        var objectViewModels = okObjectResult.Value as List<ObjectViewModel>;
+        Assert.NotNull(objectViewModels);
+        Assert.Single(objectViewModels);
+    }
+    
+    [Fact]
+    public async void GetsObjectsByLocation_NoObjects_ReturnEmpty()
+    {
+        // arrange
+        var testObjects = new List<AdventureObject>()
+        {
+            new AdventureObject()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test",
+                Locations = new List<Location>()
+                {
+                    new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "tl"
+                    }
+                }
+            },
+            new AdventureObject()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test two",
+                Locations = new List<Location>()
+                {
+                    new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "tl"
+                    }
+                }
+            }
+        };
+        var controller = CreateController(testObjects);
+        
+        // act
+        var response = await controller.GetObjectsByLocation(Guid.NewGuid());
         
         // assert
         var okObjectResult = response as OkObjectResult;
