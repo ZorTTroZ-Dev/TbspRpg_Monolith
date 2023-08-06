@@ -20,4 +20,17 @@ public class AdventureObject
     public Script ActionScript { get; set; }
     public ICollection<Location> Locations { get; set; }
     public ICollection<AdventureObjectGameState> AdventureObjectGameStates { get; set; }
+
+    public override bool Equals(object obj)
+    {
+        var adventureObject = obj as AdventureObject;
+        if (adventureObject == null)
+            return false;
+        return Id == adventureObject.Id;
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
 }

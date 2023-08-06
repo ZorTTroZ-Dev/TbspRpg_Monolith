@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgDataLayer.Entities;
@@ -63,7 +64,8 @@ namespace TbspRpgProcessor.Processors
             else
             {
                 // load the location, update the name and initial fields, save it
-                dbLocation = await _locationsService.GetLocationById(locationUpdateModel.Location.Id);
+                // need to get the location with adventure objects
+                dbLocation = await _locationsService.GetLocationByIdWithObjects(locationUpdateModel.Location.Id);
                 if (dbLocation == null)
                     throw new ArgumentException("invalid location id");
                 dbLocation.Name = locationUpdateModel.Location.Name;
@@ -71,7 +73,20 @@ namespace TbspRpgProcessor.Processors
                 dbLocation.Final = locationUpdateModel.Location.Final;
                 dbLocation.EnterScriptId = locationUpdateModel.Location.EnterScriptId;
                 dbLocation.ExitScriptId = locationUpdateModel.Location.ExitScriptId;
-                dbLocation.AdventureObjects = locationUpdateModel.Location.AdventureObjects;
+                
+                // if there is an object on the location that is not in the update model remove it from the list
+                var adventureObjectsToRemove =
+                    dbLocation.AdventureObjects.Except(locationUpdateModel.Location.AdventureObjects);
+                var adventureObjectsToAdd =
+                    locationUpdateModel.Location.AdventureObjects.Except(dbLocation.AdventureObjects);
+                foreach (var adventureObject in adventureObjectsToRemove)
+                {
+                    dbLocation.AdventureObjects.Remove(adventureObject);
+                }
+                foreach (var adventureObject in adventureObjectsToAdd)
+                {
+                    dbLocation.AdventureObjects.Add(adventureObject);
+                }
             }
             
             // update the source

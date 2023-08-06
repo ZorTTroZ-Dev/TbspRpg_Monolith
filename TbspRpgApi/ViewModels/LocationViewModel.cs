@@ -41,9 +41,12 @@ namespace TbspRpgApi.ViewModels
         public Location ToEntity()
         {
             var objectEntities = new List<AdventureObject>();
-            foreach (var obj in AdventureObjects)
+            if (AdventureObjects != null)
             {
-                objectEntities.Add(obj.ToEntity());
+                foreach (var obj in AdventureObjects)
+                {
+                    objectEntities.Add(obj.ToEntity());
+                }    
             }
             return new Location()
             {

@@ -20,6 +20,7 @@ namespace TbspRpgDataLayer.Repositories
         Task<List<Location>> GetLocationsWithScript(Guid scriptId);
         Task<List<Location>> GetAdventureLocationsWithSource(Guid adventureId, Guid sourceKey);
         void AttachLocation(Location location);
+        Task<Location> GetLocationByIdWithObjects(Guid locationId);
     }
     
     public class LocationsRepository: ILocationsRepository
@@ -92,6 +93,13 @@ namespace TbspRpgDataLayer.Repositories
         public void AttachLocation(Location location)
         {
             _databaseContext.Attach(location);
+        }
+
+        public Task<Location> GetLocationByIdWithObjects(Guid locationId)
+        {
+            return _databaseContext.Locations.AsQueryable()
+                .Include(location => location.AdventureObjects)
+                .FirstOrDefaultAsync(location => location.Id == locationId);
         }
 
         public async Task SaveChanges()

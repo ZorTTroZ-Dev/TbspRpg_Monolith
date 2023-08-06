@@ -35,9 +35,12 @@ public class ObjectViewModel
     public AdventureObject ToEntity()
     {
         var locationEntities = new List<Location>();
-        foreach (var locationViewModel in Locations)
+        if (Locations != null)
         {
-            locationEntities.Add(locationViewModel.ToEntity());
+            foreach (var locationViewModel in Locations)
+            {
+                locationEntities.Add(locationViewModel.ToEntity());
+            }    
         }
         return new AdventureObject()
         {
