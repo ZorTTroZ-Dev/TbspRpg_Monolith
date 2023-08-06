@@ -90,7 +90,8 @@ namespace TbspRpgProcessor.Tests.Processors
                 {
                     Id = testLocation.Id,
                     Name = "updated location name",
-                    Initial = true
+                    Initial = true,
+                    AdventureObjects = new List<AdventureObject>()
                 },
                 Source = new En()
                 {
@@ -194,7 +195,8 @@ namespace TbspRpgProcessor.Tests.Processors
                     Id = testLocation.Id,
                     Name = "updated location name",
                     Initial = false,
-                    SourceKey = testLocation.SourceKey
+                    SourceKey = testLocation.SourceKey,
+                    AdventureObjects = new List<AdventureObject>()
                 },
                 Source = new En()
                 {

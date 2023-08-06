@@ -75,6 +75,8 @@ namespace TbspRpgProcessor.Processors
                 dbLocation.ExitScriptId = locationUpdateModel.Location.ExitScriptId;
                 
                 // if there is an object on the location that is not in the update model remove it from the list
+                if (dbLocation.AdventureObjects == null)
+                    dbLocation.AdventureObjects = new List<AdventureObject>();
                 var adventureObjectsToRemove =
                     dbLocation.AdventureObjects.Except(locationUpdateModel.Location.AdventureObjects);
                 var adventureObjectsToAdd =

@@ -184,6 +184,10 @@ namespace TbspRpgDataLayer.Tests
                 .ReturnsAsync((Guid locationId) => locations.FirstOrDefault(l => l.Id == locationId));
             
             locationsService.Setup(service =>
+                    service.GetLocationByIdWithObjects(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid locationId) => locations.FirstOrDefault(l => l.Id == locationId));
+            
+            locationsService.Setup(service =>
                     service.AddLocation(It.IsAny<Location>()))
                 .Callback((Location location) =>
                 {
