@@ -48,7 +48,20 @@ public class AdventureObjectRepositoryTests: InMemoryTest
             Id = Guid.NewGuid(),
             Name = "test object",
             Description = "test object",
-            Type = AdventureObjectTypes.Generic
+            Type = AdventureObjectTypes.Generic,
+            Locations = new List<Location>()
+            {
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "tl"
+                },
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "tl2"
+                }
+            }
         };
         await using var context = new DatabaseContext(DbContextOptions);
         await context.AdventureObjects.AddAsync(testObject);
@@ -61,6 +74,7 @@ public class AdventureObjectRepositoryTests: InMemoryTest
         // assert
         Assert.NotNull(adventureObject);
         Assert.Equal(testObject.Id, adventureObject.Id);
+        Assert.Equal(2, adventureObject.Locations.Count);
     }
 
     #endregion
@@ -81,6 +95,14 @@ public class AdventureObjectRepositoryTests: InMemoryTest
             {
                 Id = Guid.NewGuid(),
                 Name = "test"
+            },
+            Locations = new List<Location>()
+            {
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "tl"
+                }    
             }
         };
         var testObjectTwo = new AdventureObject()
@@ -93,6 +115,14 @@ public class AdventureObjectRepositoryTests: InMemoryTest
             {
                 Id = Guid.NewGuid(),
                 Name = "test two"
+            },
+            Locations = new List<Location>()
+            {
+                new Location()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "tl"
+                }    
             }
         };
         await using var context = new DatabaseContext(DbContextOptions);
@@ -108,6 +138,7 @@ public class AdventureObjectRepositoryTests: InMemoryTest
         // assert
         Assert.Single(adventureObjects);
         Assert.Equal("test", adventureObjects[0].Adventure.Name);
+        Assert.Single(adventureObjects[0].Locations);
     }
 
     [Fact]

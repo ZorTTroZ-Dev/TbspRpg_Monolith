@@ -35,6 +35,7 @@ public class AdventureObjectRepository: IAdventureObjectRepository
     public Task<AdventureObject> GetAdventureObjectById(Guid adventureObjectId)
     {
         return _databaseContext.AdventureObjects.AsQueryable()
+            .Include(ao => ao.Locations)
             .FirstOrDefaultAsync(ao => ao.Id == adventureObjectId);
     }
 
@@ -42,6 +43,7 @@ public class AdventureObjectRepository: IAdventureObjectRepository
     {
         return _databaseContext.AdventureObjects.AsQueryable()
             .Where(ao => ao.AdventureId == adventureId)
+            .Include(ao => ao.Locations)
             .ToListAsync();
     }
 

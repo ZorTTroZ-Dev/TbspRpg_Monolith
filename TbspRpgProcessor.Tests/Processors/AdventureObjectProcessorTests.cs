@@ -243,7 +243,8 @@ public class AdventureObjectProcessorTests: ProcessorTest
                     Id = testAdventureObjects[0].Id,
                     Name = "banana",
                     AdventureId = testAdventures[0].Id,
-                    Type = AdventureObjectTypes.Generic
+                    Type = AdventureObjectTypes.Generic,
+                    Locations = new List<Location>()
                 }
             });
             
