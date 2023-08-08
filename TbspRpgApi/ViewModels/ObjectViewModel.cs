@@ -22,12 +22,12 @@ public class ObjectViewModel
         Description = adventureObject.Description;
         Type = adventureObject.Type;
         AdventureId = adventureObject.AdventureId;
+        Locations = new List<LocationViewModel>();
         if (adventureObject.Locations != null)
         {
-            Locations = new List<LocationViewModel>();
             foreach (var location in adventureObject.Locations)
             {
-                Locations.Add(new LocationViewModel(location));
+                Locations.Add(new LocationViewModel(location, false));
             }
         }
     }
