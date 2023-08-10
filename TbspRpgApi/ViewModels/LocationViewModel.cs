@@ -18,7 +18,7 @@ namespace TbspRpgApi.ViewModels
 
         public LocationViewModel() {}
 
-        public LocationViewModel(Location location)
+        public LocationViewModel(Location location, bool includeObjects = true)
         {
             Id = location.Id;
             Name = location.Name;
@@ -28,9 +28,9 @@ namespace TbspRpgApi.ViewModels
             AdventureId = location.AdventureId;
             EnterScriptId = location.EnterScriptId;
             ExitScriptId = location.ExitScriptId;
-            if (location.AdventureObjects != null)
+            AdventureObjects = new List<ObjectViewModel>();
+            if (location.AdventureObjects != null && includeObjects)
             {
-                AdventureObjects = new List<ObjectViewModel>();
                 foreach (var obj in location.AdventureObjects)
                 {
                     AdventureObjects.Add(new ObjectViewModel(obj));

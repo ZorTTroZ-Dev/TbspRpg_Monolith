@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgDataLayer.Entities;
@@ -77,7 +78,22 @@ public class AdventureObjectProcessor: IAdventureObjectProcessor
             dbAdventureObject.Name = adventureObjectUpdateModel.adventureObject.Name;
             dbAdventureObject.Description = adventureObjectUpdateModel.adventureObject.Description;
             dbAdventureObject.Type = adventureObjectUpdateModel.adventureObject.Type;
-            dbAdventureObject.Locations = adventureObjectUpdateModel.adventureObject.Locations;
+            
+            // reconcile attached locations
+            if (dbAdventureObject.Locations == null)
+                dbAdventureObject.Locations = new List<Location>();
+            var locationsToRemove =
+                dbAdventureObject.Locations.Except(adventureObjectUpdateModel.adventureObject.Locations);
+            var locationsToAdd =
+                adventureObjectUpdateModel.adventureObject.Locations.Except(dbAdventureObject.Locations);
+            foreach (var location in locationsToRemove)
+            {
+                dbAdventureObject.Locations.Remove(location);
+            }
+            foreach (var location in locationsToAdd)
+            {
+                dbAdventureObject.Locations.Add(location);
+            }
         }
 
         await _adventureObjectService.SaveChanges();
