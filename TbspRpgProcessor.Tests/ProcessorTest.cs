@@ -42,6 +42,8 @@ namespace TbspRpgProcessor.Tests
             var gamesService = MockServices.MockDataLayerGamesService(games);
             var contentsService = MockServices.MockDataLayerContentsService(contents);
             var adventureObjectsService = MockServices.MockDataLayerAdventureObjectsService(adventureObjects);
+            var adventureObjectSourceService =
+                MockServices.MockDataLayerAdventureObjectsSourceService(adventureObjects, sources);
             
             return new TbspRpgProcessor(
                 usersService,
@@ -53,6 +55,7 @@ namespace TbspRpgProcessor.Tests
                 gamesService,
                 contentsService,
                 adventureObjectsService,
+                adventureObjectSourceService,
                 new TbspRpgUtilities(),
                 MockMailClient(),
                 NullLogger<TbspRpgProcessor>.Instance);
