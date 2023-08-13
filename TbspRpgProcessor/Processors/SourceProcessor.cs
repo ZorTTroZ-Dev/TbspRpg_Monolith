@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Markdig;
@@ -28,6 +29,7 @@ namespace TbspRpgProcessor.Processors
         private readonly IRoutesService _routesService;
         private readonly IContentsService _contentsService;
         private readonly IScriptsService _scriptsService;
+        private readonly IAdventureObjectSourceService _adventureObjectSourceService;
         private readonly TbspRpgUtilities _tbspRpgUtilities;
         private readonly IScriptProcessor _scriptProcessor;
         private readonly ILogger _logger;
@@ -40,6 +42,7 @@ namespace TbspRpgProcessor.Processors
             IRoutesService routesService,
             IContentsService contentsService,
             IScriptsService scriptsService,
+            IAdventureObjectSourceService adventureObjectSourceService,
             TbspRpgUtilities tbspRpgUtilities,
             ILogger logger)
         {
@@ -50,6 +53,7 @@ namespace TbspRpgProcessor.Processors
             _routesService = routesService;
             _contentsService = contentsService;
             _scriptsService = scriptsService;
+            _adventureObjectSourceService = adventureObjectSourceService;
             _tbspRpgUtilities = tbspRpgUtilities;
             _logger = logger;
         }
@@ -217,20 +221,68 @@ namespace TbspRpgProcessor.Processors
             }
         }
 
+        private async Task ReplaceEmbeddedObjects(Source source, SourceForKeyModel sourceForKeyModel)
+        {
+            // go through any sources in the source text, replace with html tooltip
+            if (!_tbspRpgUtilities.EmbeddedObjectRegex.IsMatch(source.Text))
+            {
+                return;
+            }
+            
+            // load the object for each object
+            var matchList = _tbspRpgUtilities.EmbeddedObjectRegex.Matches(source.Text);
+            var objectIds = matchList.Cast<Match>()
+                .Select(match => match.Groups[1].Value)
+                .Select(guidString => Guid.Parse(guidString))
+                .ToList();
+            
+            // get the objects with source
+            var objectsWithSource = await _adventureObjectSourceService
+                .GetAdventureObjectsWithSourceById(objectIds, sourceForKeyModel.Language);
+
+            var results = new List<string>();
+            foreach(var objectWithSource in objectsWithSource)
+            {
+                var computedNameSource = await GetSourceForKey(objectWithSource.NameSource, sourceForKeyModel);
+                var computedDescSource = await GetSourceForKey(objectWithSource.DescriptionSource, sourceForKeyModel);
+                var html = $"<object tooltip='{computedDescSource.Text}'>{computedNameSource.Text}</object>";
+                results.Add(html);
+            }
+            
+            if (_tbspRpgUtilities.EmbeddedObjectRegex.Matches(source.Text).Count <= results.Count)
+            {
+                var matchIndex = 0;
+                source.Text = _tbspRpgUtilities.EmbeddedObjectRegex.Replace(
+                    source.Text, m => results[matchIndex++]);
+            }
+            else
+            {
+                throw new Exception("invalid embedded object");
+            }
+        }
+
+        private async Task<Source> GetSourceForKey(Source source, SourceForKeyModel sourceForKeyModel)
+        {
+            if (sourceForKeyModel.Processed && source != null)
+            {
+                await ReplaceEmbeddedScript(source, sourceForKeyModel.Game);
+                await ReplaceEmbeddedObjects(source, sourceForKeyModel);
+            }
+            return source;
+        }
+
         public async Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel)
         {
             var dbSource = await _sourcesService.GetSourceForKey(
                 sourceForKeyModel.Key,
                 sourceForKeyModel.AdventureId,
                 sourceForKeyModel.Language);
-
-            if (sourceForKeyModel.Processed && dbSource != null)
+            var source = await GetSourceForKey(dbSource, sourceForKeyModel);
+            if (sourceForKeyModel.Processed && source != null)
             {
-                await ReplaceEmbeddedScript(dbSource, sourceForKeyModel.Game);
-                dbSource.Text = Markdown.ToHtml(dbSource.Text).Trim();
+                source.Text = Markdown.ToHtml(source.Text).Trim();
             }
-
-            return dbSource;
+            return source;
         }
 
         public async Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel)

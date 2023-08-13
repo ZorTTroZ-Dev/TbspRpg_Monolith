@@ -129,12 +129,12 @@ namespace TbspRpgProcessor.Tests.Processors
                     Key = Guid.Empty,
                     AdventureId = Guid.NewGuid(),
                     Name = "banana",
-                    Text = @"This is a text with some *emphasis*, <script:
+                    Text = @"This is a text with some *emphasis*, {script:
                     if(game:GetGameStatePropertyBoolean('boolean'))
                     then
                         return 'banana'
                     else return 'france' end
-                >."
+                }."
                 },
                 Language = Languages.ENGLISH
             });
@@ -155,12 +155,12 @@ namespace TbspRpgProcessor.Tests.Processors
                 Key = Guid.NewGuid(),
                 AdventureId = Guid.NewGuid(),
                 Name = "banana",
-                Text = @"This is a text with some *emphasis*, <script:
+                Text = @"This is a text with some *emphasis*, {script:
                     if(game:GetGameStatePropertyBoolean('boolean'))
                     then
                         return 'banana'
                     else return 'france' end
-                >."
+                }."
             };
             var testScript = new Script()
             {
@@ -194,12 +194,12 @@ namespace TbspRpgProcessor.Tests.Processors
                     Key = testSource.Key,
                     AdventureId = testSource.AdventureId,
                     Name = "banana",
-                    Text = @"This is a text with some *emphasis*, <script:
+                    Text = @"This is a text with some *emphasis*, {script:
                     if(game:GetGameStatePropertyBoolean('boolean'))
                     then
                         return 'spain'
                     end
-                >.",
+                }.",
                     ScriptId = testSource.ScriptId
                 },
                 Language = Languages.ENGLISH
@@ -297,12 +297,12 @@ namespace TbspRpgProcessor.Tests.Processors
                     Key = testSource.Key,
                     AdventureId = testSource.AdventureId,
                     Name = "banana",
-                    Text = @"This is a text with some *emphasis*, <script:
+                    Text = @"This is a text with some *emphasis*, {script:
                     if(game:GetGameStatePropertyBoolean('boolean'))
                     then
                         return 'spain'
                     end
-                >."
+                }."
                 },
                 Language = Languages.ENGLISH
             });
@@ -425,17 +425,17 @@ namespace TbspRpgProcessor.Tests.Processors
                 Name = "test_source",
                 Key = Guid.NewGuid(),
                 AdventureId = Guid.NewGuid(),
-                Text = @"This is a text with some *emphasis*, <script:
+                Text = @"This is a text with some *emphasis*, {script:
                     if(game:GetGameStatePropertyBoolean('boolean'))
                     then
                         return 'banana'
                     else return 'france' end
-                >, <script:
+                }, {script:
                     if(game:GetGameStatePropertyBoolean('boolean'))
                     then
                         return 'france'
                     else return 'banana' end
-                >."
+                }."
             };
             var sources = new List<En>()
             {
@@ -477,17 +477,17 @@ namespace TbspRpgProcessor.Tests.Processors
                 Name = "test_source",
                 Key = Guid.NewGuid(),
                 AdventureId = Guid.NewGuid(),
-                Text = @"This is a text with some *emphasis*, <script:
+                Text = @"This is a text with some *emphasis*, {script:
                     if(game:GetGameStatePropertyBoolean('boolean'))
                     then
                         return 'banana'
                     else return 'france' end
-                >, <script:
+                }, {script:
                     if(game:GetGameStatePropertyBoolean('boolean'))
                     then
                         return 'france'
                     else return 'banana' end
-                >.",
+                }.",
                 ScriptId = Guid.NewGuid()
             };
             var sources = new List<En>()
@@ -554,17 +554,17 @@ end"
                 Name = "test_source",
                 Key = Guid.NewGuid(),
                 AdventureId = Guid.NewGuid(),
-                Text = @"This is a text with some *emphasis*, <script:
+                Text = @"This is a text with some *emphasis*, {script:
                     if(game:GetGameStatePropertyBoolean('boolean'))
                     then
                         return 'banana'
                     else return 'france' end
-                >, <script:
+                }, {script:
                     if(game:GetGameStatePropertyBoolean('boolean'))
                     then
                         return 'france'
                     else return 'banana' end
-                >.",
+                }.",
                 ScriptId = script.Id
             };
             script.AdventureId = testEn.AdventureId;
@@ -586,6 +586,67 @@ end"
             
             // Assert
             await Assert.ThrowsAsync<Exception>(Act);
+        }
+        
+        [Fact]
+        public async void GetSourceForKey_ContainsObject_SourceTextScriptResolved()
+        {
+            // arrange
+            var testGame = new Game()
+            {
+                Id = Guid.NewGuid(),
+                GameState = "{\"number\": 42, \"string\": \"banana\", \"boolean\": false}"
+            };
+
+            var objectNameSourceEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                Name = "name_source",
+                Text = "object_name"
+            };
+            var objectDescriptionSourceEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Key = Guid.NewGuid(),
+                Name = "description_source",
+                Text = "object_description"
+            };
+            var obj = new AdventureObject()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_object",
+                Description = "test_description",
+                NameSourceKey = objectNameSourceEn.Key,
+                DescriptionSourceKey = objectDescriptionSourceEn.Key
+            };
+            var testEn = new En()
+            {
+                Id = Guid.NewGuid(),
+                Name = "test_source",
+                Key = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Text = @"This is a text with some *emphasis*, {object:" + obj.Id + "}."
+            };
+            var sources = new List<En>() {testEn, objectDescriptionSourceEn, objectNameSourceEn};
+            var scripts = new List<Script>();
+            var games = new List<Game>() {testGame};
+            var objects = new List<AdventureObject>() {obj};
+            var processor = CreateTbspRpgProcessor(null, scripts, null, null, null,
+                sources, games, null, objects);
+            
+            // act
+            var source = await processor.GetSourceForKey(new SourceForKeyModel()
+            {
+                Key = testEn.Key,
+                AdventureId = testEn.AdventureId,
+                Language = Languages.ENGLISH,
+                Processed = true,
+                Game = testGame
+            });
+            
+            // Assert
+            Assert.Equal("<p>This is a text with some <em>emphasis</em>, <object tooltip='object_description'>object_name</object>.</p>", source.Text);
         }
 
         #endregion
