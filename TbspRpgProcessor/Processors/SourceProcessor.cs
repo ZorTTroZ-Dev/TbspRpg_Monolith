@@ -245,7 +245,7 @@ namespace TbspRpgProcessor.Processors
             {
                 var computedNameSource = await GetSourceForKey(objectWithSource.NameSource, sourceForKeyModel);
                 var computedDescSource = await GetSourceForKey(objectWithSource.DescriptionSource, sourceForKeyModel);
-                var html = $"<a href='#' data-bs-toggle='tooltip' data-bs-html='true' data-bs-title='{computedDescSource.Text}'>{computedNameSource.Text}</a>";
+                var html = $"<object tooltip='{computedDescSource.Text}'>{computedNameSource.Text}</object>";
                 results.Add(html);
             }
             

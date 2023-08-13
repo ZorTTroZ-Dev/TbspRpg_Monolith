@@ -646,7 +646,7 @@ end"
             });
             
             // Assert
-            Assert.Equal("<p>This is a text with some <em>emphasis</em>, <a href='#' data-bs-toggle='tooltip' data-bs-html='true' data-bs-title='object_description'>object_name</a>.</p>", source.Text);
+            Assert.Equal("<p>This is a text with some <em>emphasis</em>, <object tooltip='object_description'>object_name</object>.</p>", source.Text);
         }
 
         #endregion
