@@ -17,15 +17,18 @@ public interface IAdventureObjectProcessor
 
 public class AdventureObjectProcessor: IAdventureObjectProcessor
 {
+    private readonly ISourceProcessor _sourceProcessor;
     private readonly IAdventureObjectService _adventureObjectService;
     private readonly ILocationsService _locationsService;
     private readonly ILogger _logger;
 
     public AdventureObjectProcessor(
+        ISourceProcessor sourceProcessor,
         IAdventureObjectService adventureObjectService,
         ILocationsService locationsService,
         ILogger logger)
     {
+        _sourceProcessor = sourceProcessor;
         _adventureObjectService = adventureObjectService;
         _locationsService = locationsService;
         _logger = logger;
@@ -48,9 +51,10 @@ public class AdventureObjectProcessor: IAdventureObjectProcessor
 
     public async Task UpdateAdventureObject(AdventureObjectUpdateModel adventureObjectUpdateModel)
     {
+        AdventureObject dbAdventureObject = null;
         if (adventureObjectUpdateModel.AdventureObject.Id == Guid.Empty)
         {
-            var adventureObject = new AdventureObject()
+            dbAdventureObject = new AdventureObject()
             {
                 Id = Guid.NewGuid(),
                 Name = adventureObjectUpdateModel.AdventureObject.Name,
@@ -62,13 +66,13 @@ public class AdventureObjectProcessor: IAdventureObjectProcessor
             foreach (var location in adventureObjectUpdateModel.AdventureObject.Locations)
             {
                 _locationsService.AttachLocation(location);
-                adventureObject.Locations.Add(location);
+                dbAdventureObject.Locations.Add(location);
             }
-            await _adventureObjectService.AddAdventureObject(adventureObject);
+            await _adventureObjectService.AddAdventureObject(dbAdventureObject);
         }
         else
         {
-            var dbAdventureObject =
+            dbAdventureObject =
                 await _adventureObjectService.GetAdventureObjectById(adventureObjectUpdateModel.AdventureObject.Id);
             if (dbAdventureObject == null)
             {
@@ -95,6 +99,24 @@ public class AdventureObjectProcessor: IAdventureObjectProcessor
                 dbAdventureObject.Locations.Add(location);
             }
         }
+        
+        // update the source
+        adventureObjectUpdateModel.NameSource.AdventureId = adventureObjectUpdateModel.AdventureObject.AdventureId;
+        adventureObjectUpdateModel.DescriptionSource.AdventureId = adventureObjectUpdateModel.AdventureObject.AdventureId;
+        if (string.IsNullOrEmpty(adventureObjectUpdateModel.NameSource.Name))
+            adventureObjectUpdateModel.NameSource.Name = adventureObjectUpdateModel.AdventureObject.Name + "_name";
+        if (string.IsNullOrEmpty(adventureObjectUpdateModel.DescriptionSource.Name))
+            adventureObjectUpdateModel.DescriptionSource.Name = adventureObjectUpdateModel.AdventureObject.Name + "_desc";
+        var dbNameSource = await _sourceProcessor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+            Source = adventureObjectUpdateModel.NameSource,
+            Language = adventureObjectUpdateModel.Language
+        });
+        var dbDescSource = await _sourceProcessor.CreateOrUpdateSource(new SourceCreateOrUpdateModel() {
+            Source = adventureObjectUpdateModel.DescriptionSource,
+            Language = adventureObjectUpdateModel.Language
+        });
+        dbAdventureObject.NameSourceKey = dbNameSource.Key;
+        dbAdventureObject.DescriptionSourceKey = dbDescSource.Key;
 
         await _adventureObjectService.SaveChanges();
     }

@@ -432,7 +432,9 @@ public class TbspRpgProcessor: ITbspRpgProcessor
 
     private void LoadAdventureObjectProcessor()
     {
+        LoadSourceProcessor();
         _adventureObjectProcessor ??= new AdventureObjectProcessor(
+            _sourceProcessor,
             _adventureObjectService,
             _locationsService,
             _logger);
