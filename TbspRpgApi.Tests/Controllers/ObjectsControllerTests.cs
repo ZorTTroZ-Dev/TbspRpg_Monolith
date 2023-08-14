@@ -243,6 +243,16 @@ public class ObjectsControllerTests: ApiTest
                     AdventureId = Guid.NewGuid(),
                     Name = "script",
                     Locations = new List<LocationViewModel>()
+                },
+                nameSource = new SourceViewModel()
+                {
+                    Id = Guid.NewGuid(),
+                    Language = Languages.ENGLISH
+                },
+                descriptionSource = new SourceViewModel()
+                {
+                    Id = Guid.NewGuid(),
+                    Language = Languages.ENGLISH
                 }
             });
         

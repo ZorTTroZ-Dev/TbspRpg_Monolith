@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using TbspRpgDataLayer.Entities;
+using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Services;
@@ -120,6 +121,16 @@ public class ObjectsServiceTests: ApiTest
                 Name = "test",
                 Type = "generic",
                 Locations = new List<LocationViewModel>()
+            },
+            nameSource = new SourceViewModel()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            },
+            descriptionSource = new SourceViewModel()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
             }
         });
             
@@ -144,6 +155,16 @@ public class ObjectsServiceTests: ApiTest
                 Name = "test",
                 Type = "generic",
                 Locations = new List<LocationViewModel>()
+            },
+            nameSource = new SourceViewModel()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            },
+            descriptionSource = new SourceViewModel()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
             }
         });
     }

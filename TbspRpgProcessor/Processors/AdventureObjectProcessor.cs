@@ -48,18 +48,18 @@ public class AdventureObjectProcessor: IAdventureObjectProcessor
 
     public async Task UpdateAdventureObject(AdventureObjectUpdateModel adventureObjectUpdateModel)
     {
-        if (adventureObjectUpdateModel.adventureObject.Id == Guid.Empty)
+        if (adventureObjectUpdateModel.AdventureObject.Id == Guid.Empty)
         {
             var adventureObject = new AdventureObject()
             {
                 Id = Guid.NewGuid(),
-                Name = adventureObjectUpdateModel.adventureObject.Name,
-                Description = adventureObjectUpdateModel.adventureObject.Description,
-                Type = adventureObjectUpdateModel.adventureObject.Type,
-                AdventureId = adventureObjectUpdateModel.adventureObject.AdventureId,
+                Name = adventureObjectUpdateModel.AdventureObject.Name,
+                Description = adventureObjectUpdateModel.AdventureObject.Description,
+                Type = adventureObjectUpdateModel.AdventureObject.Type,
+                AdventureId = adventureObjectUpdateModel.AdventureObject.AdventureId,
                 Locations = new List<Location>()
             };
-            foreach (var location in adventureObjectUpdateModel.adventureObject.Locations)
+            foreach (var location in adventureObjectUpdateModel.AdventureObject.Locations)
             {
                 _locationsService.AttachLocation(location);
                 adventureObject.Locations.Add(location);
@@ -69,23 +69,23 @@ public class AdventureObjectProcessor: IAdventureObjectProcessor
         else
         {
             var dbAdventureObject =
-                await _adventureObjectService.GetAdventureObjectById(adventureObjectUpdateModel.adventureObject.Id);
+                await _adventureObjectService.GetAdventureObjectById(adventureObjectUpdateModel.AdventureObject.Id);
             if (dbAdventureObject == null)
             {
                 throw new ArgumentException("invalid adventure object id");
             }
 
-            dbAdventureObject.Name = adventureObjectUpdateModel.adventureObject.Name;
-            dbAdventureObject.Description = adventureObjectUpdateModel.adventureObject.Description;
-            dbAdventureObject.Type = adventureObjectUpdateModel.adventureObject.Type;
+            dbAdventureObject.Name = adventureObjectUpdateModel.AdventureObject.Name;
+            dbAdventureObject.Description = adventureObjectUpdateModel.AdventureObject.Description;
+            dbAdventureObject.Type = adventureObjectUpdateModel.AdventureObject.Type;
             
             // reconcile attached locations
             if (dbAdventureObject.Locations == null)
                 dbAdventureObject.Locations = new List<Location>();
             var locationsToRemove =
-                dbAdventureObject.Locations.Except(adventureObjectUpdateModel.adventureObject.Locations);
+                dbAdventureObject.Locations.Except(adventureObjectUpdateModel.AdventureObject.Locations);
             var locationsToAdd =
-                adventureObjectUpdateModel.adventureObject.Locations.Except(dbAdventureObject.Locations);
+                adventureObjectUpdateModel.AdventureObject.Locations.Except(dbAdventureObject.Locations);
             foreach (var location in locationsToRemove)
             {
                 dbAdventureObject.Locations.Remove(location);

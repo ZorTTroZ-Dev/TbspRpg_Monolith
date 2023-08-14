@@ -136,7 +136,7 @@ public class AdventureObjectProcessorTests: ProcessorTest
             // act
             await processor.UpdateAdventureObject(new AdventureObjectUpdateModel()
             {
-                adventureObject = new AdventureObject()
+                AdventureObject = new AdventureObject()
                 {
                     Id = Guid.Empty,
                     AdventureId = testAdventures[0].Id,
@@ -191,7 +191,7 @@ public class AdventureObjectProcessorTests: ProcessorTest
             // act
             Task Act() => processor.UpdateAdventureObject(new AdventureObjectUpdateModel()
             {
-                adventureObject = new AdventureObject()
+                AdventureObject = new AdventureObject()
                 {
                     Id = Guid.NewGuid(),
                     Name = "banana"
@@ -238,7 +238,7 @@ public class AdventureObjectProcessorTests: ProcessorTest
             // act
             await processor.UpdateAdventureObject(new AdventureObjectUpdateModel()
             {
-                adventureObject = new AdventureObject()
+                AdventureObject = new AdventureObject()
                 {
                     Id = testAdventureObjects[0].Id,
                     Name = "banana",
