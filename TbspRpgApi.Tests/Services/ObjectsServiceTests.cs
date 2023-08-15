@@ -114,7 +114,7 @@ public class ObjectsServiceTests: ApiTest
         // act
         Task Act() => service.UpdateObject(new ObjectUpdateRequest()
         {
-            obj = new ObjectViewModel()
+            adventureObject = new ObjectViewModel()
             {
                 Id = exceptionId,
                 AdventureId = Guid.NewGuid(),
@@ -148,7 +148,7 @@ public class ObjectsServiceTests: ApiTest
         // act
         await service.UpdateObject(new ObjectUpdateRequest()
         {
-            obj = new ObjectViewModel()
+            adventureObject = new ObjectViewModel()
             {
                 Id = Guid.NewGuid(),
                 AdventureId = Guid.NewGuid(),

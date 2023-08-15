@@ -5,7 +5,7 @@ namespace TbspRpgApi.RequestModels;
 
 public class ObjectUpdateRequest
 {
-    public ObjectViewModel obj { get; set; }
+    public ObjectViewModel adventureObject { get; set; }
     public SourceViewModel nameSource { get; set; }
     public SourceViewModel descriptionSource { get; set; }
     
@@ -13,7 +13,7 @@ public class ObjectUpdateRequest
     {
         return new AdventureObjectUpdateModel()
         {
-            AdventureObject = obj.ToEntity(),
+            AdventureObject = adventureObject.ToEntity(),
             NameSource = nameSource.ToEntity(),
             DescriptionSource = descriptionSource.ToEntity(),
             Language = nameSource.Language

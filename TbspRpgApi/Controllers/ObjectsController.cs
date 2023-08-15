@@ -81,7 +81,7 @@ public class ObjectsController : BaseController
     {
         var canAccessAdventure = await _permissionService.CanWriteAdventure(
             GetUserId().GetValueOrDefault(),
-            objectUpdateRequest.obj.AdventureId);
+            objectUpdateRequest.adventureObject.AdventureId);
         if (!canAccessAdventure)
         {
             return BadRequest(new { message = NotYourAdventureErrorMessage });
