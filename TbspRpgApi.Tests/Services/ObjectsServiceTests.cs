@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using TbspRpgDataLayer.Entities;
+using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Services;
@@ -113,13 +114,23 @@ public class ObjectsServiceTests: ApiTest
         // act
         Task Act() => service.UpdateObject(new ObjectUpdateRequest()
         {
-            obj = new ObjectViewModel()
+            adventureObject = new ObjectViewModel()
             {
                 Id = exceptionId,
                 AdventureId = Guid.NewGuid(),
                 Name = "test",
                 Type = "generic",
                 Locations = new List<LocationViewModel>()
+            },
+            nameSource = new SourceViewModel()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            },
+            descriptionSource = new SourceViewModel()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
             }
         });
             
@@ -137,13 +148,23 @@ public class ObjectsServiceTests: ApiTest
         // act
         await service.UpdateObject(new ObjectUpdateRequest()
         {
-            obj = new ObjectViewModel()
+            adventureObject = new ObjectViewModel()
             {
                 Id = Guid.NewGuid(),
                 AdventureId = Guid.NewGuid(),
                 Name = "test",
                 Type = "generic",
                 Locations = new List<LocationViewModel>()
+            },
+            nameSource = new SourceViewModel()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            },
+            descriptionSource = new SourceViewModel()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
             }
         });
     }

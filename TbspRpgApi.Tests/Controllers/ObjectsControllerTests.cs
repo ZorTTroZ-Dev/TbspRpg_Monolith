@@ -237,12 +237,22 @@ public class ObjectsControllerTests: ApiTest
         var response = await controller.UpdateObject(
             new ObjectUpdateRequest()
             {
-                obj = new ObjectViewModel()
+                adventureObject = new ObjectViewModel()
                 {
                     Id = Guid.NewGuid(),
                     AdventureId = Guid.NewGuid(),
                     Name = "script",
                     Locations = new List<LocationViewModel>()
+                },
+                nameSource = new SourceViewModel()
+                {
+                    Id = Guid.NewGuid(),
+                    Language = Languages.ENGLISH
+                },
+                descriptionSource = new SourceViewModel()
+                {
+                    Id = Guid.NewGuid(),
+                    Language = Languages.ENGLISH
                 }
             });
         
@@ -262,7 +272,7 @@ public class ObjectsControllerTests: ApiTest
         var response = await controller.UpdateObject(
             new ObjectUpdateRequest()
             {
-                obj = new ObjectViewModel()
+                adventureObject = new ObjectViewModel()
                 {
                     Id = exceptionId,
                     AdventureId = Guid.NewGuid(),

@@ -12,6 +12,8 @@ public class ObjectViewModel
     public string Type { get; set; }
     public Guid AdventureId { get; set; }
     public List<LocationViewModel> Locations { get; set; }
+    public Guid NameSourceKey { get; set; }
+    public Guid DescriptionSourceKey { get; set; }
 
     public ObjectViewModel() { }
 
@@ -22,6 +24,8 @@ public class ObjectViewModel
         Description = adventureObject.Description;
         Type = adventureObject.Type;
         AdventureId = adventureObject.AdventureId;
+        NameSourceKey = adventureObject.NameSourceKey;
+        DescriptionSourceKey = adventureObject.DescriptionSourceKey;
         Locations = new List<LocationViewModel>();
         if (adventureObject.Locations != null)
         {

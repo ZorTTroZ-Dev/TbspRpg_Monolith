@@ -245,7 +245,7 @@ namespace TbspRpgProcessor.Tests
                     service.UpdateAdventureObject(It.IsAny<AdventureObjectUpdateModel>()))
                 .Callback((AdventureObjectUpdateModel adventureObjectUpdateModel) =>
                 {
-                    if (adventureObjectUpdateModel.adventureObject.Id == exceptionId)
+                    if (adventureObjectUpdateModel.AdventureObject.Id == exceptionId)
                     {
                         throw new ArgumentException("invalid adventure object id");
                     }
