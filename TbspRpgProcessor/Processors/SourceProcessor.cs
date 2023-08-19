@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Markdig;
 using Microsoft.Extensions.Logging;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
@@ -245,7 +244,7 @@ namespace TbspRpgProcessor.Processors
             {
                 var computedNameSource = await GetSourceForKey(objectWithSource.NameSource, sourceForKeyModel);
                 var computedDescSource = await GetSourceForKey(objectWithSource.DescriptionSource, sourceForKeyModel);
-                var html = $"<object tooltip='{computedDescSource.Text}'>{computedNameSource.Text}</object>";
+                var html = $"<object>;;tooltip={computedDescSource.Text};;text={computedNameSource.Text};;<object>";
                 results.Add(html);
             }
             
@@ -278,10 +277,6 @@ namespace TbspRpgProcessor.Processors
                 sourceForKeyModel.AdventureId,
                 sourceForKeyModel.Language);
             var source = await GetSourceForKey(dbSource, sourceForKeyModel);
-            if (sourceForKeyModel.Processed && source != null)
-            {
-                source.Text = Markdown.ToHtml(source.Text).Trim();
-            }
             return source;
         }
 

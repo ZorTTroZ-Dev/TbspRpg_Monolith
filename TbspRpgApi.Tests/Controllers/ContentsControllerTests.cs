@@ -379,7 +379,7 @@ namespace TbspRpgApi.Tests.Controllers
             Assert.NotNull(okObjectResult);
             var source = okObjectResult.Value as SourceViewModel;
             Assert.NotNull(source);
-            Assert.Equal("<p>test source</p>", source.Text);
+            Assert.Equal("test source", source.Text);
         }
 
         #endregion
