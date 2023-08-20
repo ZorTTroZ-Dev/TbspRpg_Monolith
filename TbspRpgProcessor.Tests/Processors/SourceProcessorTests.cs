@@ -615,7 +615,7 @@ end"
             });
             
             // Assert
-            Assert.Equal("This is a text with some *emphasis*, <object>;;tooltip=object_description;;text=object_name;;<object>.", source.Text);
+            Assert.Equal("This is a text with some *emphasis*, <object>{\"tooltip\":\"object_description\",\"text\":\"object_name\"<object>.", source.Text);
         }
 
         #endregion
