@@ -348,37 +348,6 @@ namespace TbspRpgProcessor.Tests.Processors
         }
 
         [Fact]
-        public async void GetSourceForKey_Valid_SourceTextIsHtml()
-        {
-            // arrange
-            var testEn = new En()
-            {
-                Id = Guid.NewGuid(),
-                Key = Guid.NewGuid(),
-                AdventureId = Guid.NewGuid(),
-                Text = "This is a text with some *emphasis*"
-            };
-            var sources = new List<En>()
-            {
-                testEn
-            };
-            var processor = CreateTbspRpgProcessor(null, null, null, null, null,
-                sources);
-            
-            // act
-            var source = await processor.GetSourceForKey(new SourceForKeyModel()
-            {
-                Key = testEn.Key,
-                AdventureId = testEn.AdventureId,
-                Language = Languages.ENGLISH,
-                Processed = true
-            });
-            
-            // Assert
-            Assert.Equal("<p>This is a text with some <em>emphasis</em></p>", source.Text);
-        }
-        
-        [Fact]
         public async void GetSourceForKey_ValidNotProcessed_SourceTextNotHtml()
         {
             // arrange
@@ -458,7 +427,7 @@ namespace TbspRpgProcessor.Tests.Processors
             
             // Assert
             Assert.Single(scripts);
-            Assert.Equal("<p>This is a text with some <em>emphasis</em>, france, banana.</p>", source.Text);
+            Assert.Equal("This is a text with some *emphasis*, france, banana.", source.Text);
         }
         
         [Fact]
@@ -646,7 +615,7 @@ end"
             });
             
             // Assert
-            Assert.Equal("<p>This is a text with some <em>emphasis</em>, <object tooltip='object_description'>object_name</object>.</p>", source.Text);
+            Assert.Equal("This is a text with some *emphasis*, <object>;;tooltip=object_description;;text=object_name;;<object>.", source.Text);
         }
 
         #endregion

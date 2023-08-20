@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="MailKit" Version="4.1.0" />
-    <PackageReference Include="Markdig" Version="0.31.0" />
     <PackageReference Include="NLua" Version="1.6.3" />
   </ItemGroup>
 
