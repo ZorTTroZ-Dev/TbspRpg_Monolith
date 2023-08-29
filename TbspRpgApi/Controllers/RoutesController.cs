@@ -96,15 +96,11 @@ namespace TbspRpgApi.Controllers
             return Ok(routes);
         }
         
-        [HttpPut("sync"), Authorize]
-        public async Task<IActionResult> UpdateRoutesWithSource([FromBody] RouteUpdateRequest[] updateRouteRequests)
+        [HttpPut("sync/{locationId:guid}"), Authorize]
+        public async Task<IActionResult> UpdateRoutesWithSource(Guid locationId, [FromBody] RouteUpdateRequest[] updateRouteRequests)
         {
-            if (updateRouteRequests.Length == 0)
-                return Ok(null);
-            
             var canAccessAdventure = await _permissionService.CanWriteLocation(
-                GetUserId().GetValueOrDefault(),
-                updateRouteRequests[0].route.LocationId);
+                GetUserId().GetValueOrDefault(), locationId);
             if (!canAccessAdventure)
             {
                 return BadRequest(new { message = NotYourAdventureErrorMessage });
@@ -112,7 +108,7 @@ namespace TbspRpgApi.Controllers
 
             try
             {
-                await _routesService.UpdateRoutesWithSource(updateRouteRequests);
+                await _routesService.UpdateRoutesWithSource(locationId, updateRouteRequests);
                 return Ok(null);
             }
             catch (Exception ex)
