@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.Extensions.Logging.Abstractions;
 using TbspRpgApi.Controllers;
 using TbspRpgApi.Entities;
@@ -315,6 +316,7 @@ namespace TbspRpgApi.Tests.Controllers
             
             // act
             var response = await controller.UpdateRoutesWithSource(
+                Guid.NewGuid(),
                 new RouteUpdateRequest[]
                 {
                     new()
@@ -344,6 +346,7 @@ namespace TbspRpgApi.Tests.Controllers
             
             // act
             var response = await controller.UpdateRoutesWithSource(
+                Guid.NewGuid(),
                 new RouteUpdateRequest[]
                 {
                     new()
