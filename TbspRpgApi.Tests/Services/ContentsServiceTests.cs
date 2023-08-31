@@ -351,7 +351,7 @@ namespace TbspRpgApi.Tests.Services
             
             // assert
             Assert.NotNull(sourceViewModel);
-            Assert.Equal("<p>test source</p>", sourceViewModel.Text);
+            Assert.Equal("test source", sourceViewModel.Text);
         }
 
         

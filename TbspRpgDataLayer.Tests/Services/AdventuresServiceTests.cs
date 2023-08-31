@@ -348,7 +348,7 @@ namespace TbspRpgDataLayer.Tests.Services
             var service = CreateService(context);
             
             // act
-            service.RemoveScriptFromAdventures(testAdventure.InitializationScript.Id);
+            await service.RemoveScriptFromAdventures(testAdventure.InitializationScript.Id);
             await service.SaveChanges();
             
             // assert

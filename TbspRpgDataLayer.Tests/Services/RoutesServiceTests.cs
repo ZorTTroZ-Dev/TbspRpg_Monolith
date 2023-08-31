@@ -446,7 +446,7 @@ namespace TbspRpgDataLayer.Tests.Services
             var service = CreateService(context);
             
             // act
-            service.RemoveScriptFromRoutes(testRoute.RouteTakenScript.Id);
+            await service.RemoveScriptFromRoutes(testRoute.RouteTakenScript.Id);
             await service.SaveChanges();
             
             // assert

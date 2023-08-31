@@ -41,6 +41,21 @@ public class ObjectsController : BaseController
         return Ok(objects);
     }
     
+    [HttpGet("location/{locationId:guid}"), Authorize]
+    public async Task<IActionResult> GetObjectsByLocation(Guid locationId)
+    {
+        var canAccessLocation = await _permissionService.CanWriteLocation(
+            GetUserId().GetValueOrDefault(),
+            locationId);
+        if(!canAccessLocation)
+        {
+            return BadRequest(new { message = NotYourAdventureErrorMessage });
+        }
+        
+        var objects = await _objectsService.GetObjectsByLocation(locationId);
+        return Ok(objects);
+    }
+    
     [HttpDelete("{objectId:guid}"), Authorize]
     public async Task<IActionResult> DeleteObject(Guid objectId)
     {
@@ -66,7 +81,7 @@ public class ObjectsController : BaseController
     {
         var canAccessAdventure = await _permissionService.CanWriteAdventure(
             GetUserId().GetValueOrDefault(),
-            objectUpdateRequest.obj.AdventureId);
+            objectUpdateRequest.adventureObject.AdventureId);
         if (!canAccessAdventure)
         {
             return BadRequest(new { message = NotYourAdventureErrorMessage });

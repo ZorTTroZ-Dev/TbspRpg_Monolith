@@ -6,6 +6,7 @@ using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
 using TbspRpgProcessor.Entities;
 using TbspRpgProcessor.Processors;
+using TbspRpgSettings;
 
 namespace TbspRpgProcessor;
 
@@ -23,7 +24,6 @@ public interface ITbspRpgProcessor
 
     Task<Source> CreateOrUpdateSource(SourceCreateOrUpdateModel sourceCreateOrUpdateModel);
     Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
-    Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
     Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel);
     Task RemoveSource(SourceRemoveModel sourceRemoveModel);
 
@@ -110,6 +110,9 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     private readonly IGamesService _gamesService;
     private readonly IContentsService _contentsService;
     private readonly IAdventureObjectService _adventureObjectService;
+    private readonly IAdventureObjectSourceService _adventureObjectSourceService;
+    
+    private readonly TbspRpgUtilities _tbspRpgUtilities;
 
     private readonly IMailClient _mailClient;
     
@@ -127,6 +130,8 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         IGamesService gamesService,
         IContentsService contentsService,
         IAdventureObjectService adventureObjectService,
+        IAdventureObjectSourceService adventureObjectSourceService,
+        TbspRpgUtilities tbspRpgUtilities,
         IMailClient mailClient,
         ILogger<TbspRpgProcessor> logger)
     {
@@ -139,6 +144,8 @@ public class TbspRpgProcessor: ITbspRpgProcessor
         _gamesService = gamesService;
         _contentsService = contentsService;
         _adventureObjectService = adventureObjectService;
+        _adventureObjectSourceService = adventureObjectSourceService;
+        _tbspRpgUtilities = tbspRpgUtilities;
         _mailClient = mailClient;
         _logger = logger;
     }
@@ -185,6 +192,8 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _routesService,
             _contentsService,
             _scriptsService,
+            _adventureObjectSourceService,
+            _tbspRpgUtilities,
             _logger);
     }
 
@@ -198,12 +207,6 @@ public class TbspRpgProcessor: ITbspRpgProcessor
     {
         LoadSourceProcessor();
         return _sourceProcessor.GetSourceForKey(sourceForKeyModel);
-    }
-
-    public Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel)
-    {
-        LoadSourceProcessor();
-        return _sourceProcessor.ResolveSourceKey(sourceForKeyModel);
     }
 
     public Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel)
@@ -318,6 +321,7 @@ public class TbspRpgProcessor: ITbspRpgProcessor
             _sourceProcessor,
             _locationsService,
             _routesService,
+            _adventureObjectService,
             _logger);
     }
 
@@ -428,8 +432,11 @@ public class TbspRpgProcessor: ITbspRpgProcessor
 
     private void LoadAdventureObjectProcessor()
     {
+        LoadSourceProcessor();
         _adventureObjectProcessor ??= new AdventureObjectProcessor(
+            _sourceProcessor,
             _adventureObjectService,
+            _locationsService,
             _logger);
     }
     

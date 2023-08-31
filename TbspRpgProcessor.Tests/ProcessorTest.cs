@@ -6,6 +6,7 @@ using TbspRpgApi.Entities.LanguageSources;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Tests;
 using TbspRpgProcessor.Entities;
+using TbspRpgSettings;
 
 namespace TbspRpgProcessor.Tests
 {
@@ -41,6 +42,8 @@ namespace TbspRpgProcessor.Tests
             var gamesService = MockServices.MockDataLayerGamesService(games);
             var contentsService = MockServices.MockDataLayerContentsService(contents);
             var adventureObjectsService = MockServices.MockDataLayerAdventureObjectsService(adventureObjects);
+            var adventureObjectSourceService =
+                MockServices.MockDataLayerAdventureObjectsSourceService(adventureObjects, sources);
             
             return new TbspRpgProcessor(
                 usersService,
@@ -52,6 +55,8 @@ namespace TbspRpgProcessor.Tests
                 gamesService,
                 contentsService,
                 adventureObjectsService,
+                adventureObjectSourceService,
+                new TbspRpgUtilities(),
                 MockMailClient(),
                 NullLogger<TbspRpgProcessor>.Instance);
         }
@@ -240,7 +245,7 @@ namespace TbspRpgProcessor.Tests
                     service.UpdateAdventureObject(It.IsAny<AdventureObjectUpdateModel>()))
                 .Callback((AdventureObjectUpdateModel adventureObjectUpdateModel) =>
                 {
-                    if (adventureObjectUpdateModel.adventureObject.Id == exceptionId)
+                    if (adventureObjectUpdateModel.AdventureObject.Id == exceptionId)
                     {
                         throw new ArgumentException("invalid adventure object id");
                     }

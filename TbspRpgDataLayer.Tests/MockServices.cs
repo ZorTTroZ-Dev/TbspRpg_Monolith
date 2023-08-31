@@ -184,6 +184,10 @@ namespace TbspRpgDataLayer.Tests
                 .ReturnsAsync((Guid locationId) => locations.FirstOrDefault(l => l.Id == locationId));
             
             locationsService.Setup(service =>
+                    service.GetLocationByIdWithObjects(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid locationId) => locations.FirstOrDefault(l => l.Id == locationId));
+            
+            locationsService.Setup(service =>
                     service.AddLocation(It.IsAny<Location>()))
                 .Callback((Location location) =>
                 {
@@ -591,6 +595,11 @@ namespace TbspRpgDataLayer.Tests
                     service.GetAdventureObjectsForAdventure(It.IsAny<Guid>()))
                 .ReturnsAsync((Guid adventureId) =>
                     objects.Where(ao => ao.AdventureId == adventureId).ToList());
+            
+            objectsService.Setup(service =>
+                    service.GetAdventureObjectsByLocation(It.IsAny<Guid>()))
+                .ReturnsAsync((Guid locationId) =>
+                    objects.Where(ao => ao.Locations.Any(location => location.Id == locationId)).ToList());
 
             objectsService.Setup(service =>
                     service.GetAdventureObjectById(It.IsAny<Guid>()))
@@ -604,34 +613,36 @@ namespace TbspRpgDataLayer.Tests
             objectsService.Setup(service =>
                     service.AddAdventureObject(It.IsAny<AdventureObject>()))
                 .Callback((AdventureObject adventureObject) => objects.Add(adventureObject));
-            
-            //
-            // gamesService.Setup(service =>
-            //         service.GetGameByIdIncludeLocation(It.IsAny<Guid>()))
-            //     .ReturnsAsync((Guid gameId) => games.FirstOrDefault(g => g.Id == gameId));
-            //
-            // gamesService.Setup(service =>
-            //         service.GetGameById(It.IsAny<Guid>()))
-            //     .ReturnsAsync((Guid gameId) => games.FirstOrDefault(g => g.Id == gameId));
-            //
-            // gamesService.Setup(service =>
-            //         service.GetGameByIdIncludeAdventure(It.IsAny<Guid>()))
-            //     .ReturnsAsync((Guid gameId) => games.FirstOrDefault(g => g.Id == gameId));
-            //
-            // // doesn't do any actual filtering
-            // gamesService.Setup(service =>
-            //         service.GetGames(It.IsAny<GameFilter>()))
-            //     .ReturnsAsync((GameFilter filter) => games.ToList());
-            //
-            // gamesService.Setup(service =>
-            //         service.GetGamesIncludeUsers(It.IsAny<GameFilter>()))
-            //     .ReturnsAsync((GameFilter filter) => games.ToList());
-            //
-            // gamesService.Setup(service =>
-            //         service.RemoveGame(It.IsAny<Game>()))
-            //     .Callback((Game game) => games.Remove(game));
 
             return objectsService.Object;
+        }
+        
+        public static IAdventureObjectSourceService MockDataLayerAdventureObjectsSourceService(
+            ICollection<AdventureObject> objects, ICollection<En> sources)
+        {
+            var objectSourceService = new Mock<IAdventureObjectSourceService>();
+
+            objectSourceService.Setup(service =>
+                    service.GetAdventureObjectsWithSourceById(It.IsAny<List<Guid>>(), It.IsAny<string>()))
+                .ReturnsAsync((List<Guid> objectIds, string language) =>
+                {
+                    var objs = objects.Where(obj => objectIds.Contains(obj.Id));
+                    var objectSources = new List<AdventureObjectSource>();
+                    foreach (var obj in objs)
+                    {
+                        var nameSource = sources.First(en => en.Key == obj.NameSourceKey);
+                        var descSource = sources.First(en => en.Key == obj.DescriptionSourceKey);
+                        objectSources.Add(new AdventureObjectSource()
+                        {
+                            AdventureObject = obj,
+                            DescriptionSource = descSource,
+                            NameSource = nameSource
+                        });
+                    }
+                    return objectSources;
+                });
+
+            return objectSourceService.Object;
         }
     }
 }

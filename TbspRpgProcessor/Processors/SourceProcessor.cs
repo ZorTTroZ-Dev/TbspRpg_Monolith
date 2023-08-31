@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Markdig;
 using Microsoft.Extensions.Logging;
 using TbspRpgDataLayer.Entities;
 using TbspRpgDataLayer.Services;
 using TbspRpgProcessor.Entities;
+using TbspRpgSettings;
+using TbspRpgSettings.Settings;
 
 namespace TbspRpgProcessor.Processors
 {
@@ -13,22 +16,22 @@ namespace TbspRpgProcessor.Processors
     {
         Task<Source> CreateOrUpdateSource(SourceCreateOrUpdateModel sourceCreateOrUpdateModel);
         Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel);
-        Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel);
         Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel);
         Task RemoveSource(SourceRemoveModel sourceRemoveModel);
     }
     
     public class SourceProcessor : ISourceProcessor
     {
-        private readonly IScriptProcessor _scriptProcessor;
         private readonly ISourcesService _sourcesService;
         private readonly IAdventuresService _adventuresService;
         private readonly ILocationsService _locationsService;
         private readonly IRoutesService _routesService;
         private readonly IContentsService _contentsService;
         private readonly IScriptsService _scriptsService;
+        private readonly IAdventureObjectSourceService _adventureObjectSourceService;
+        private readonly TbspRpgUtilities _tbspRpgUtilities;
+        private readonly IScriptProcessor _scriptProcessor;
         private readonly ILogger _logger;
-        private readonly int MaxLoopCount = 5;
 
         public SourceProcessor(
             IScriptProcessor scriptProcessor,
@@ -38,6 +41,8 @@ namespace TbspRpgProcessor.Processors
             IRoutesService routesService,
             IContentsService contentsService,
             IScriptsService scriptsService,
+            IAdventureObjectSourceService adventureObjectSourceService,
+            TbspRpgUtilities tbspRpgUtilities,
             ILogger logger)
         {
             _scriptProcessor = scriptProcessor;
@@ -47,6 +52,8 @@ namespace TbspRpgProcessor.Processors
             _routesService = routesService;
             _contentsService = contentsService;
             _scriptsService = scriptsService;
+            _adventureObjectSourceService = adventureObjectSourceService;
+            _tbspRpgUtilities = tbspRpgUtilities;
             _logger = logger;
         }
 
@@ -61,9 +68,10 @@ namespace TbspRpgProcessor.Processors
                     AdventureId = sourceCreateOrUpdateModel.Source.AdventureId,
                     Name = sourceCreateOrUpdateModel.Source.Name,
                     Text = sourceCreateOrUpdateModel.Source.Text,
-                    ScriptId = sourceCreateOrUpdateModel.Source.ScriptId
+                    ScriptId = Guid.Empty
                 };
                 await _sourcesService.AddSource(newSource);
+                await CompileSourceScript(newSource, false);
                 if (sourceCreateOrUpdateModel.Save)
                     await _sourcesService.SaveChanges();
                 return newSource;
@@ -75,11 +83,191 @@ namespace TbspRpgProcessor.Processors
             if(dbSource == null)
                 throw new ArgumentException("invalid source key");
             dbSource.Text = sourceCreateOrUpdateModel.Source.Text;
-            dbSource.ScriptId = sourceCreateOrUpdateModel.Source.ScriptId;
             dbSource.Name = sourceCreateOrUpdateModel.Source.Name;
+            await RecompileSourceScript(dbSource);
             if(sourceCreateOrUpdateModel.Save)
                 await _sourcesService.SaveChanges();
             return dbSource;
+        }
+
+        private async Task RecompileSourceScript(Source source)
+        {
+            // the source currently doesn't have a script but they may have added some
+            if (source.ScriptId == null || source.ScriptId == Guid.Empty)
+            {
+                await CompileSourceScript(source, false);
+                return;
+            }
+            
+            // the source currently has a script, check if it still does, if so update it
+            var dbScript = await _scriptsService.GetScriptById(source.ScriptId.GetValueOrDefault());
+            if (dbScript == null)
+            {
+                throw new ArgumentException("invalid script id");
+            }
+
+            // check if there are any script sections
+            if (!_tbspRpgUtilities.EmbeddedSourceScriptRegex.IsMatch(source.Text))
+            {
+                // remove the script from the database, the script blocks from the source was removed
+                _scriptsService.RemoveScript(dbScript);
+                source.ScriptId = Guid.Empty;
+            }
+            else
+            {
+                dbScript.Content = GenerateSourceScript(source.Text);
+            }
+        }
+
+        private string GenerateSourceScript(string sourceContent)
+        {
+            // create a function for each embedded chunk of script
+            var scriptContent = "";
+            var functionCount = 0;
+            foreach (Match scriptChunk in _tbspRpgUtilities.EmbeddedSourceScriptRegex.Matches(sourceContent))
+            {
+                var chunkContent = scriptChunk.Groups[1].Value.Trim();
+                scriptContent += $"\nfunction func{functionCount}()\n{chunkContent}\nend";
+                functionCount++;
+            }
+            
+            // generate a run function that calls each previously generated function
+            // take the result of each function and return as semicolon seperated string
+            scriptContent += "\nfunction run()";
+            var callFunctions = "\n\t";
+            var setResult = "\n\tresult = ";
+            for (var i = 0; i < functionCount; i++)
+            {
+                callFunctions += $"result{i} = func{i}()\n\t";
+                if (i != 0)
+                    setResult += " .. ';' .. ";
+                setResult += $"result{i}";
+            }
+
+            scriptContent += callFunctions;
+            scriptContent += setResult;
+            scriptContent += "\nend";
+            return scriptContent;
+        }
+
+        private async Task<Script> CompileSourceScript(Source source, bool save = true)
+        {
+            // check if there are any script sections
+            if (!_tbspRpgUtilities.EmbeddedSourceScriptRegex.IsMatch(source.Text))
+            {
+                return null;
+            }
+            
+            // save the script to the database for this source object
+            var script = await _scriptProcessor.CreateScript(new ScriptCreateModel()
+            {
+                script = new Script()
+                {
+                    Id = Guid.Empty,
+                    AdventureId = source.AdventureId,
+                    Name = source.Name + "_script",
+                    Type = ScriptTypes.LuaScript,
+                    Content = GenerateSourceScript(source.Text),
+                    Includes = new List<Script>()
+                },
+                Save = false
+            });
+
+            source.ScriptId = script.Id;
+            if(save)
+                await _sourcesService.SaveChanges();
+            return script;
+        }
+
+        private async Task ReplaceEmbeddedScript(Source source, Game game)
+        {
+            // check if there are any script sections
+            if (!_tbspRpgUtilities.EmbeddedSourceScriptRegex.IsMatch(source.Text))
+            {
+                return;
+            }
+
+            Script script = null;
+            if (source.ScriptId == null || source.ScriptId == Guid.Empty)
+            {
+                script = await CompileSourceScript(source);
+            }
+            else
+            {
+                script = await _scriptsService.GetScriptById(source.ScriptId.GetValueOrDefault());
+            }
+            if (script == null)
+            {
+                throw new Exception("source has invalid script id");
+            }
+
+            // execute the script
+            var result = await _scriptProcessor.ExecuteScript(new ScriptExecuteModel()
+            {
+                Script = script,
+                Game = game
+            });
+            var splitResult = result.Split(';');
+            if (_tbspRpgUtilities.EmbeddedSourceScriptRegex.Matches(source.Text).Count <= splitResult.Length)
+            {
+                var matchIndex = 0;
+                source.Text = _tbspRpgUtilities.EmbeddedSourceScriptRegex.Replace(
+                    source.Text, m => splitResult[matchIndex++]);
+            }
+            else
+            {
+                throw new Exception("source script bad result");
+            }
+        }
+
+        private async Task ReplaceEmbeddedObjects(Source source, SourceForKeyModel sourceForKeyModel)
+        {
+            // go through any sources in the source text, replace with html tooltip
+            if (!_tbspRpgUtilities.EmbeddedObjectRegex.IsMatch(source.Text))
+            {
+                return;
+            }
+            
+            // load the object for each object
+            var matchList = _tbspRpgUtilities.EmbeddedObjectRegex.Matches(source.Text);
+            var objectIds = matchList.Cast<Match>()
+                .Select(match => match.Groups[1].Value)
+                .Select(guidString => Guid.Parse(guidString))
+                .ToList();
+            
+            // get the objects with source
+            var objectsWithSource = await _adventureObjectSourceService
+                .GetAdventureObjectsWithSourceById(objectIds, sourceForKeyModel.Language);
+
+            var results = new List<string>();
+            foreach(var objectWithSource in objectsWithSource)
+            {
+                var computedNameSource = await GetSourceForKey(objectWithSource.NameSource, sourceForKeyModel);
+                var computedDescSource = await GetSourceForKey(objectWithSource.DescriptionSource, sourceForKeyModel);
+                var html = "<object>{\"tooltip\":\"" + computedDescSource.Text + "\",\"text\":\"" + computedNameSource.Text + "\"}<object>";
+                results.Add(html);
+            }
+            
+            if (_tbspRpgUtilities.EmbeddedObjectRegex.Matches(source.Text).Count <= results.Count)
+            {
+                var matchIndex = 0;
+                source.Text = _tbspRpgUtilities.EmbeddedObjectRegex.Replace(
+                    source.Text, m => results[matchIndex++]);
+            }
+            else
+            {
+                throw new Exception("invalid embedded object");
+            }
+        }
+
+        private async Task<Source> GetSourceForKey(Source source, SourceForKeyModel sourceForKeyModel)
+        {
+            if (sourceForKeyModel.Processed && source != null)
+            {
+                await ReplaceEmbeddedScript(source, sourceForKeyModel.Game);
+                await ReplaceEmbeddedObjects(source, sourceForKeyModel);
+            }
+            return source;
         }
 
         public async Task<Source> GetSourceForKey(SourceForKeyModel sourceForKeyModel)
@@ -88,56 +276,8 @@ namespace TbspRpgProcessor.Processors
                 sourceForKeyModel.Key,
                 sourceForKeyModel.AdventureId,
                 sourceForKeyModel.Language);
-
-            if (sourceForKeyModel.Processed && dbSource != null)
-            {
-                dbSource.Text = Markdown.ToHtml(dbSource.Text).Trim();
-            }
-
-            return dbSource;
-        }
-
-        public async Task<Guid> ResolveSourceKey(SourceForKeyModel sourceForKeyModel)
-        {
-            // load the source for the given key
-            // while source is a script
-            // call script, get result, load source
-            var dbSource = await _sourcesService.GetSourceForKey(
-                sourceForKeyModel.Key,
-                sourceForKeyModel.AdventureId,
-                sourceForKeyModel.Language);
-
-            if (dbSource == null)
-            {
-                throw new ArgumentException("invalid source key");
-            }
-
-            var loopCount = 0;
-            while (dbSource.ScriptId != null && loopCount < MaxLoopCount)
-            {
-                var result = await _scriptProcessor.ExecuteScript(new ScriptExecuteModel() {
-                    ScriptId = dbSource.ScriptId.GetValueOrDefault(),
-                    Game = sourceForKeyModel.Game
-                });
-                var sourceKey = Guid.Parse(result);
-                dbSource = await _sourcesService.GetSourceForKey(
-                    sourceKey,
-                    sourceForKeyModel.AdventureId,
-                    sourceForKeyModel.Language);
-                if (dbSource == null)
-                {
-                    throw new ArgumentException("invalid source key");
-                }
-
-                loopCount++;
-            }
-
-            if (loopCount >= MaxLoopCount)
-            {
-                throw new Exception("source never resolved");
-            }
-
-            return dbSource.Key;
+            var source = await GetSourceForKey(dbSource, sourceForKeyModel);
+            return source;
         }
 
         public async Task<List<Source>> GetUnreferencedSources(UnreferencedSourceModel unreferencedSourceModel)

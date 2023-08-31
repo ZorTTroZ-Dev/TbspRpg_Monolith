@@ -11,9 +11,11 @@ public interface IAdventureObjectRepository: IBaseRepository
 {
     Task<AdventureObject> GetAdventureObjectById(Guid adventureObjectId);
     Task<List<AdventureObject>> GetAdventureObjectsForAdventure(Guid adventureId);
+    Task<List<AdventureObject>> GetAdventureObjectsByLocation(Guid locationId);
     Task AddAdventureObject(AdventureObject adventureObject);
     void RemoveAdventureObject(AdventureObject adventureObject);
     void RemoveAdventureObjects(ICollection<AdventureObject> adventureObjects);
+    void AttachObject(AdventureObject adventureObject);
 }
 
 public class AdventureObjectRepository: IAdventureObjectRepository
@@ -33,6 +35,7 @@ public class AdventureObjectRepository: IAdventureObjectRepository
     public Task<AdventureObject> GetAdventureObjectById(Guid adventureObjectId)
     {
         return _databaseContext.AdventureObjects.AsQueryable()
+            .Include(ao => ao.Locations)
             .FirstOrDefaultAsync(ao => ao.Id == adventureObjectId);
     }
 
@@ -40,9 +43,17 @@ public class AdventureObjectRepository: IAdventureObjectRepository
     {
         return _databaseContext.AdventureObjects.AsQueryable()
             .Where(ao => ao.AdventureId == adventureId)
+            .Include(ao => ao.Locations)
             .ToListAsync();
     }
-    
+
+    public Task<List<AdventureObject>> GetAdventureObjectsByLocation(Guid locationId)
+    {
+        return _databaseContext.AdventureObjects.AsQueryable()
+            .Where(ao => ao.Locations.Any(location => location.Id == locationId))
+            .ToListAsync();
+    }
+
     public async Task AddAdventureObject(AdventureObject adventureObject)
     {
         await _databaseContext.AdventureObjects.AddAsync(adventureObject);
@@ -56,5 +67,10 @@ public class AdventureObjectRepository: IAdventureObjectRepository
     public void RemoveAdventureObjects(ICollection<AdventureObject> adventureObjects)
     {
         _databaseContext.RemoveRange(adventureObjects);
+    }
+
+    public void AttachObject(AdventureObject adventureObject)
+    {
+        _databaseContext.Attach(adventureObject);
     }
 }

@@ -14,7 +14,7 @@ namespace TbspRpgApi.Services
     {
         Task<List<RouteViewModel>> GetRoutes(RouteFilterRequest routeFilterRequest);
         Task<RouteViewModel> GetRouteById(Guid routeId);
-        Task UpdateRoutesWithSource(ICollection<RouteUpdateRequest> updateRouteRequests);
+        Task UpdateRoutesWithSource(Guid locationId, ICollection<RouteUpdateRequest> updateRouteRequests);
         Task UpdateRouteWithSource(RouteUpdateRequest updateRouteRequest);
         Task DeleteRoute(Guid routeId);
     }
@@ -47,13 +47,13 @@ namespace TbspRpgApi.Services
             return route != null ? new RouteViewModel(route) : null;
         }
 
-        public async Task UpdateRoutesWithSource(ICollection<RouteUpdateRequest> updateRouteRequests)
+        public async Task UpdateRoutesWithSource(Guid locationId, ICollection<RouteUpdateRequest> updateRouteRequests)
         {
             // remove any routes
             var routeIds = updateRouteRequests.Select(routeRequest => routeRequest.route.Id).ToList();
             await _tbspRpgProcessor.RemoveRoutes(new RoutesRemoveModel() {
                 CurrentRouteIds = routeIds,
-                LocationId = updateRouteRequests.First().route.LocationId
+                LocationId = locationId
             });
             
             foreach (var updateRouteRequest in updateRouteRequests)

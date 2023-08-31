@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TbspRpgDataLayer.Entities;
@@ -19,17 +21,20 @@ namespace TbspRpgProcessor.Processors
         private readonly ISourceProcessor _sourceProcessor;
         private readonly ILocationsService _locationsService;
         private readonly IRoutesService _routesService;
+        private readonly IAdventureObjectService _adventureObjectService;
         private readonly ILogger _logger;
 
         public LocationProcessor(
             ISourceProcessor sourceProcessor,
             ILocationsService locationsService,
             IRoutesService routesService,
+            IAdventureObjectService adventureObjectService,
             ILogger logger)
         {
             _sourceProcessor = sourceProcessor;
             _locationsService = locationsService;
             _routesService = routesService;
+            _adventureObjectService = adventureObjectService;
             _logger = logger;
         }
         
@@ -46,14 +51,21 @@ namespace TbspRpgProcessor.Processors
                     Final = locationUpdateModel.Location.Final,
                     AdventureId = locationUpdateModel.Location.AdventureId,
                     EnterScriptId = locationUpdateModel.Location.EnterScriptId,
-                    ExitScriptId = locationUpdateModel.Location.ExitScriptId
+                    ExitScriptId = locationUpdateModel.Location.ExitScriptId,
+                    AdventureObjects = new List<AdventureObject>()
                 };
+                foreach (var adventureObject in locationUpdateModel.Location.AdventureObjects)
+                {
+                    _adventureObjectService.AttachObject(adventureObject);
+                    dbLocation.AdventureObjects.Add(adventureObject);
+                }
                 await _locationsService.AddLocation(dbLocation);
             }
             else
             {
                 // load the location, update the name and initial fields, save it
-                dbLocation = await _locationsService.GetLocationById(locationUpdateModel.Location.Id);
+                // need to get the location with adventure objects
+                dbLocation = await _locationsService.GetLocationByIdWithObjects(locationUpdateModel.Location.Id);
                 if (dbLocation == null)
                     throw new ArgumentException("invalid location id");
                 dbLocation.Name = locationUpdateModel.Location.Name;
@@ -61,6 +73,22 @@ namespace TbspRpgProcessor.Processors
                 dbLocation.Final = locationUpdateModel.Location.Final;
                 dbLocation.EnterScriptId = locationUpdateModel.Location.EnterScriptId;
                 dbLocation.ExitScriptId = locationUpdateModel.Location.ExitScriptId;
+                
+                // reconcile attached adventure objects
+                if (dbLocation.AdventureObjects == null)
+                    dbLocation.AdventureObjects = new List<AdventureObject>();
+                var adventureObjectsToRemove =
+                    dbLocation.AdventureObjects.Except(locationUpdateModel.Location.AdventureObjects);
+                var adventureObjectsToAdd =
+                    locationUpdateModel.Location.AdventureObjects.Except(dbLocation.AdventureObjects);
+                foreach (var adventureObject in adventureObjectsToRemove)
+                {
+                    dbLocation.AdventureObjects.Remove(adventureObject);
+                }
+                foreach (var adventureObject in adventureObjectsToAdd)
+                {
+                    dbLocation.AdventureObjects.Add(adventureObject);
+                }
             }
             
             // update the source

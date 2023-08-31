@@ -11,9 +11,11 @@ public interface IAdventureObjectService : IBaseService
 {
     Task<AdventureObject> GetAdventureObjectById(Guid adventureObjectId);
     Task<List<AdventureObject>> GetAdventureObjectsForAdventure(Guid adventureId);
+    Task<List<AdventureObject>> GetAdventureObjectsByLocation(Guid locationId);
     Task AddAdventureObject(AdventureObject adventureObject);
     void RemoveAdventureObject(AdventureObject adventureObject);
     void RemoveAdventureObjects(ICollection<AdventureObject> adventureObjects);
+    void AttachObject(AdventureObject adventureObject);
 }
 
 public class AdventureObjectService: IAdventureObjectService
@@ -43,6 +45,11 @@ public class AdventureObjectService: IAdventureObjectService
         return _adventureObjectRepository.GetAdventureObjectsForAdventure(adventureId);
     }
 
+    public Task<List<AdventureObject>> GetAdventureObjectsByLocation(Guid locationId)
+    {
+        return _adventureObjectRepository.GetAdventureObjectsByLocation(locationId);
+    }
+
     public async Task AddAdventureObject(AdventureObject adventureObject)
     {
         await _adventureObjectRepository.AddAdventureObject(adventureObject);
@@ -56,5 +63,10 @@ public class AdventureObjectService: IAdventureObjectService
     public void RemoveAdventureObjects(ICollection<AdventureObject> adventureObjects)
     {
         _adventureObjectRepository.RemoveAdventureObjects(adventureObjects);
+    }
+
+    public void AttachObject(AdventureObject adventureObject)
+    {
+        _adventureObjectRepository.AttachObject(adventureObject);
     }
 }

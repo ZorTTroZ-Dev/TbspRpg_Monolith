@@ -54,7 +54,8 @@ namespace TbspRpgApi.Tests.Services
                     SourceKey = Guid.NewGuid(),
                     AdventureId = Guid.NewGuid(),
                     Name = "test location",
-                    Initial = true
+                    Initial = true,
+                    AdventureObjects = new List<AdventureObject>()
                 }),
                 source = new SourceViewModel(Guid.Empty, "test source")
             });
@@ -78,7 +79,8 @@ namespace TbspRpgApi.Tests.Services
                     SourceKey = Guid.NewGuid(),
                     AdventureId = Guid.NewGuid(),
                     Name = "test location",
-                    Initial = true
+                    Initial = true,
+                    AdventureObjects = new List<AdventureObject>()
                 }),
                 source = new SourceViewModel(Guid.Empty,"test source")
             });

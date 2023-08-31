@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TbspRpgApi.RequestModels;
 using TbspRpgApi.ViewModels;
 using TbspRpgDataLayer.Entities;
+using TbspRpgSettings.Settings;
 using Xunit;
 
 namespace TbspRpgApi.Tests.Services;
@@ -112,12 +114,23 @@ public class ObjectsServiceTests: ApiTest
         // act
         Task Act() => service.UpdateObject(new ObjectUpdateRequest()
         {
-            obj = new ObjectViewModel()
+            adventureObject = new ObjectViewModel()
             {
                 Id = exceptionId,
                 AdventureId = Guid.NewGuid(),
                 Name = "test",
-                Type = "generic"
+                Type = "generic",
+                Locations = new List<LocationViewModel>()
+            },
+            nameSource = new SourceViewModel()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            },
+            descriptionSource = new SourceViewModel()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
             }
         });
             
@@ -135,15 +148,120 @@ public class ObjectsServiceTests: ApiTest
         // act
         await service.UpdateObject(new ObjectUpdateRequest()
         {
-            obj = new ObjectViewModel()
+            adventureObject = new ObjectViewModel()
             {
                 Id = Guid.NewGuid(),
                 AdventureId = Guid.NewGuid(),
                 Name = "test",
-                Type = "generic"
+                Type = "generic",
+                Locations = new List<LocationViewModel>()
+            },
+            nameSource = new SourceViewModel()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
+            },
+            descriptionSource = new SourceViewModel()
+            {
+                Id = Guid.NewGuid(),
+                Language = Languages.ENGLISH
             }
         });
     }
     
+    #endregion
+    
+    #region GetObjectsByLocation
+
+    [Fact]
+    public async void GetsObjectsByLocation_HasObjects_ReturnList()
+    {
+        // arrange
+        var testObjects = new List<AdventureObject>()
+        {
+            new AdventureObject()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test",
+                Locations = new List<Location>()
+                {
+                    new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "tl"
+                    }
+                }
+            },
+            new AdventureObject()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test two",
+                Locations = new List<Location>()
+                {
+                    new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "tl2"
+                    }
+                }
+            }
+        };
+        var service = CreateObjectsService(testObjects);
+        
+        // act
+        var objects = await service.GetObjectsByLocation(testObjects[0].Locations.First().Id);
+        
+        // assert
+        Assert.Single(objects);
+        Assert.Equal("test", objects[0].Name);
+        Assert.Single(objects[0].Locations);
+    }
+    
+    [Fact]
+    public async void GetObjectsByLocation_NoObjects_ReturnEmpty()
+    {
+        // arrange
+        var testObjects = new List<AdventureObject>()
+        {
+            new AdventureObject()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test",
+                Locations = new List<Location>()
+                {
+                    new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "tl"
+                    }
+                }
+            },
+            new AdventureObject()
+            {
+                Id = Guid.NewGuid(),
+                AdventureId = Guid.NewGuid(),
+                Name = "test two",
+                Locations = new List<Location>()
+                {
+                    new Location()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "tl2"
+                    }
+                }
+            }
+        };
+        var service = CreateObjectsService(testObjects);
+        
+        // act
+        var objects = await service.GetObjectsByLocation(Guid.NewGuid());
+        
+        // assert
+        Assert.Empty(objects);
+    }
+
     #endregion
 }
