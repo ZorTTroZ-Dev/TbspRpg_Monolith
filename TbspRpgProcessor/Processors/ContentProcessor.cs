@@ -38,7 +38,8 @@ namespace TbspRpgProcessor.Processors
                 Key = contentTextForKeyModel.SourceKey,
                 AdventureId = game.AdventureId,
                 Language = game.Language,
-                Processed = contentTextForKeyModel.Processed
+                Processed = contentTextForKeyModel.Processed,
+                Game = game
             });
             
             return dbSource?.Text;
