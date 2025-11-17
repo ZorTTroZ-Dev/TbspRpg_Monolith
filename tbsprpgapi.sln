@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TbspRpgProcessor.Tests", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TbspRpgSettings", "TbspRpgSettings\TbspRpgSettings.csproj", "{4CD202D7-2AE6-43F0-AE85-2342FF18E77A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TbspRpgDatabaseSetup", "TbspRpgDatabaseSetup\TbspRpgDatabaseSetup.csproj", "{92AA7A2F-732C-4934-8AFB-482E5CA6EFBB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,5 +116,17 @@ Global
 		{4CD202D7-2AE6-43F0-AE85-2342FF18E77A}.Release|x64.Build.0 = Release|Any CPU
 		{4CD202D7-2AE6-43F0-AE85-2342FF18E77A}.Release|x86.ActiveCfg = Release|Any CPU
 		{4CD202D7-2AE6-43F0-AE85-2342FF18E77A}.Release|x86.Build.0 = Release|Any CPU
+		{92AA7A2F-732C-4934-8AFB-482E5CA6EFBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92AA7A2F-732C-4934-8AFB-482E5CA6EFBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92AA7A2F-732C-4934-8AFB-482E5CA6EFBB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{92AA7A2F-732C-4934-8AFB-482E5CA6EFBB}.Debug|x64.Build.0 = Debug|Any CPU
+		{92AA7A2F-732C-4934-8AFB-482E5CA6EFBB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{92AA7A2F-732C-4934-8AFB-482E5CA6EFBB}.Debug|x86.Build.0 = Debug|Any CPU
+		{92AA7A2F-732C-4934-8AFB-482E5CA6EFBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92AA7A2F-732C-4934-8AFB-482E5CA6EFBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92AA7A2F-732C-4934-8AFB-482E5CA6EFBB}.Release|x64.ActiveCfg = Release|Any CPU
+		{92AA7A2F-732C-4934-8AFB-482E5CA6EFBB}.Release|x64.Build.0 = Release|Any CPU
+		{92AA7A2F-732C-4934-8AFB-482E5CA6EFBB}.Release|x86.ActiveCfg = Release|Any CPU
+		{92AA7A2F-732C-4934-8AFB-482E5CA6EFBB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
